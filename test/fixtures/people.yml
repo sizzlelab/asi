@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+valid_person:
+  id: 1
+  username: kusti
+  password: aaaa
+
+invalid_person:
+  id: 2
+  username: ö/ö
+  password: 123

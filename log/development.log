@@ -1,0 +1,578 @@
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000186)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000369)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: #42000CREATE command denied to user 'cos'@'localhost' for table 'schema_migrations': CREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000158)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000374)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.108798)[0m   [0;1mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.010008)[0m   [0mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;36;1mSQL (0.000944)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.000711)[0m   [0mSELECT version FROM schema_migrations[0m
+Migrating to CreateUsers (20080616073330)
+  [4;36;1mSQL (0.000258)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.002696)[0m   [0mCREATE TABLE `users` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `nickname` varchar(255) DEFAULT NULL NULL, `email` varchar(255) DEFAULT NULL NULL, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.001495)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('20080616073330')[0m
+  [4;35;1mSQL (0.000570)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000561)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.004262)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mSQL (0.002453)[0m   [0;1mdescribe `users`[0m
+  [4;35;1mSQL (0.001392)[0m   [0mSHOW KEYS FROM `users`[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000162)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000415)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000366)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Migrating to CreatePeople (20080616101055)
+  [4;35;1mSQL (0.000208)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.003587)[0m   [0;1mCREATE TABLE `people` (`username` varchar(255) DEFAULT NULL NULL, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.043155)[0m   [0mALTER TABLE people ADD PRIMARY KEY (username)[0m
+  [4;36;1mSQL (0.000876)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('20080616101055')[0m
+  [4;35;1mSQL (0.000486)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000402)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001703)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.001643)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.000779)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.001790)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mSQL (0.003295)[0m   [0mdescribe `users`[0m
+  [4;36;1mSQL (0.002979)[0m   [0;1mSHOW KEYS FROM `users`[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000164)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000421)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000284)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000316)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000396)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002561)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.002400)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001959)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000151)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.018136)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.001032)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000216)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000515)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.032165)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000775)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002810)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.006134)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000972)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000671)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000862)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000156)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000415)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000326)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000390)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000424)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001599)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.003741)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001428)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000956)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.004150)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000729)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000230)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000575)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.036665)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.001019)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002231)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.006479)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.001136)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000673)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000974)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000155)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000409)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000288)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000326)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000358)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002578)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.002482)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001503)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000183)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003731)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000843)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000216)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000513)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.033746)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000677)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002336)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.008478)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000951)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000841)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000900)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000156)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000416)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000285)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000365)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000373)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001633)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.003706)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001215)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000152)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003724)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000541)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000139)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000405)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002677)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000930)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002642)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.008454)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.001094)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000644)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000765)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000155)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000412)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000300)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000388)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000377)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001545)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.004085)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001086)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000154)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003972)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000858)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000209)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000548)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.031142)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000736)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002374)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007698)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000752)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000549)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000870)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000141)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000877)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000526)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000736)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000684)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.003108)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.002249)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001487)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000215)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003976)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000635)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000153)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000394)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002877)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000911)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002688)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007237)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000712)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000539)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000811)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000157)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000409)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000284)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000384)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000444)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001625)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.003555)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001637)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000142)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.038989)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000955)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000217)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000593)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002644)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000859)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002763)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007010)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.001028)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000737)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000887)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000153)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000402)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000282)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000353)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000367)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001528)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.002149)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001786)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000150)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.038840)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000558)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000201)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000348)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002386)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000812)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002452)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007250)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.001034)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000876)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.001555)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000154)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000406)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000284)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000326)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000355)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002644)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.002929)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001299)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000164)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.049498)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.001385)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000162)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000352)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002595)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000711)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002206)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007839)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.001029)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000736)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.001503)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000152)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000403)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000276)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000311)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000398)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001581)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.004747)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001544)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000160)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003760)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000398)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000140)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000383)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002311)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000867)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.033532)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007920)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.001067)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000880)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.001192)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000154)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000409)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000252)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000354)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000400)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001569)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.002269)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.000838)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000133)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003279)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000602)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000152)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000384)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002489)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000921)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002474)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.008174)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000496)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000443)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000571)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000156)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000425)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000282)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000345)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000367)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001511)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.004404)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001555)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000150)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003668)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000636)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000152)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000351)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002321)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000892)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002839)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.008626)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000634)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000540)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000701)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000155)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000411)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000279)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000305)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000349)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001511)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.003438)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001377)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000284)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.005107)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000562)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000152)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000356)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002298)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000859)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.028593)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007122)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.001046)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000746)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000767)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000152)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000443)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000280)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000350)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000397)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002573)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.002215)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001311)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000159)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003126)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000878)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000231)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000497)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.028813)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000978)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002551)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.006239)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000797)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000616)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000913)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000156)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000410)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000347)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Migrating to CreatePeople (20080616101055)
+  [4;35;1mSQL (0.000270)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000263)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000358)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.001595)[0m   [0;1mSHOW FIELDS FROM `people`[0m
+  [4;35;1mSQL (0.002615)[0m   [0mdescribe `people`[0m
+  [4;36;1mSQL (0.001444)[0m   [0;1mSHOW KEYS FROM `people`[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000154)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000399)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000278)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000391)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000453)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001762)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.003843)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001230)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000174)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.002711)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000383)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000153)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000521)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.029339)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.001037)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002578)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.006563)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000709)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000591)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000880)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000155)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000414)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000262)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000351)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000368)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001555)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.003897)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001470)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000162)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003885)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000945)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000204)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000366)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002821)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000796)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002429)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007190)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000713)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000875)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000934)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000152)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000402)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000282)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000371)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000376)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001613)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.003564)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.002259)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000214)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003720)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000865)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000153)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000359)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.035561)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000745)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001863)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007006)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.001078)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000719)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.001214)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000154)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000410)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000379)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Migrating to CreatePeople (20080616101055)
+  [4;35;1mSQL (0.000225)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000263)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000372)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.002471)[0m   [0;1mSHOW FIELDS FROM `people`[0m
+  [4;35;1mSQL (0.002338)[0m   [0mdescribe `people`[0m
+  [4;36;1mSQL (0.001252)[0m   [0;1mSHOW KEYS FROM `people`[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000179)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000421)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000344)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000339)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000365)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001621)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.005043)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001237)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000148)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003854)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000757)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000233)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000544)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.032064)[0m   [0mCREATE TABLE `people` (`username` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000682)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002353)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007166)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000870)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000665)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.001055)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000153)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000320)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000407)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.000311)[0m   [0mSELECT version FROM schema_migrations[0m
+Migrating to CreatePeople (20080616101055)
+  [4;36;1mSQL (0.000226)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.054423)[0m   [0mDROP TABLE `people`[0m
+  [4;36;1mSQL (0.017494)[0m   [0;1mDELETE FROM schema_migrations WHERE version = '20080616101055'[0m
+  [4;35;1mSQL (0.000448)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000397)[0m   [0;1mSHOW TABLES[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000156)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000412)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000308)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Migrating to CreatePeople (20080616101055)
+  [4;35;1mSQL (0.000236)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.001857)[0m   [0;1mCREATE TABLE `people` (`id` varchar(255) DEFAULT NULL NULL, `username` varchar(255) DEFAULT NULL NULL, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.004792)[0m   [0mALTER TABLE people ADD PRIMARY KEY (id)[0m
+  [4;36;1mSQL (0.000935)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('20080616101055')[0m
+  [4;35;1mSQL (0.000693)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000553)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002425)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.002368)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001406)[0m   [0mSHOW KEYS FROM `people`[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000161)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000407)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000282)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000329)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000359)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001698)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.004285)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001566)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000149)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.004640)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000722)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000154)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000351)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.034022)[0m   [0mCREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `username` varchar(255) DEFAULT NULL NULL, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000612)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001970)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.008072)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.001117)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000551)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000693)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000151)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000407)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000280)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000317)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000353)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001928)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.004293)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001364)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000205)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003421)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000879)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000197)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000467)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.032225)[0m   [0mCREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `username` varchar(255) DEFAULT NULL NULL, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000793)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002391)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.006456)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000923)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000840)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000859)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000158)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mPerson Columns (0.002296)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.000326)[0m   [0;1mBEGIN[0m
+  [4;35;1mSQL (0.000502)[0m   [0mSELECT `username` FROM `people` WHERE (`people`.username = 'kusti') [0m
+  [4;36;1mSQL (0.000198)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.003340)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000567)[0m   [0;1mSELECT `username` FROM `people` WHERE (`people`.username = 'kusti') [0m
+  [4;35;1mPerson Create (0.000457)[0m   [0mINSERT INTO `people` (`updated_at`, `username`, `id`, `password`, `created_at`) VALUES('2008-06-16 13:13:55', 'kusti', 'ap2q8go6yr3AJlab9B7ckF', 'aaaa', '2008-06-16 13:13:55')[0m
+  [4;36;1mSQL (0.000610)[0m   [0;1mCOMMIT[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000155)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000411)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000284)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000334)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000369)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001615)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.004643)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001406)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000152)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.029481)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000947)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000210)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000560)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002678)[0m   [0mCREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `username` varchar(255) DEFAULT NULL NULL, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.001002)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002722)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.006862)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000708)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000594)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000962)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000154)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000438)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000320)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000330)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000365)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002974)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.002569)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001498)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000192)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.030922)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000631)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000188)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000442)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002320)[0m   [0mCREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `username` varchar(255) DEFAULT NULL NULL, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000634)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002481)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.005874)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.001070)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000917)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000792)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000212)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000507)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000344)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.000393)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.000385)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.001687)[0m   [0mSHOW FIELDS FROM `people`[0m
+  [4;36;1mSQL (0.003783)[0m   [0;1mdescribe `people`[0m
+  [4;35;1mSQL (0.001403)[0m   [0mSHOW KEYS FROM `people`[0m
+  [4;36;1mSQL (0.000202)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.003168)[0m   [0mDROP DATABASE IF EXISTS `commonservices_test`[0m
+  [4;36;1mSQL (0.000897)[0m   [0;1mCREATE DATABASE `commonservices_test` DEFAULT CHARACTER SET `utf8`[0m
+  [4;35;1mSQL (0.000212)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.000549)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002602)[0m   [0mCREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `username` varchar(255) DEFAULT NULL NULL, `password` varchar(255) DEFAULT NULL NULL, `created_at` datetime DEFAULT NULL NULL, `updated_at` datetime DEFAULT NULL NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000976)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.002636)[0m   [0mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.007441)[0m   [0;1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;35;1mSQL (0.000654)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.000528)[0m   [0;1mSELECT version FROM `schema_migrations`[0m
+  [4;35;1mSQL (0.000690)[0m   [0mINSERT INTO `schema_migrations` (version) VALUES ('20080616101055')[0m
