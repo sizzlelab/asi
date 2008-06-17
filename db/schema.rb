@@ -9,7 +9,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080616120429) do
+ActiveRecord::Schema.define(:version => 20080617073034) do
+
+  create_table "binary_items", :force => true do |t|
+    t.binary   "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "collection_items", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "collections", :force => true do |t|
     t.boolean  "read_only"
@@ -17,9 +28,23 @@ ActiveRecord::Schema.define(:version => 20080616120429) do
     t.datetime "updated_at"
   end
 
+  create_table "ownerships", :force => true do |t|
+    t.string   "collection_id"
+    t.string   "item_id"
+    t.string   "item_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "people", :force => true do |t|
     t.string   "username"
     t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "text_items", :force => true do |t|
+    t.text     "text"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
