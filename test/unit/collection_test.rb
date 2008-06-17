@@ -1,12 +1,22 @@
 require 'test_helper'
 
 class CollectionTest < ActiveSupport::TestCase
-  fixtures :collections
+  fixtures :collections, :people, :text_items, :binary_items
 
   def test_should_create_collection
     collection = Collection.new
     collection.read_only = true
+ 
+    collection.owner = people(:valid_person)
     assert collection.save
+
+    collection.items << text_items(:one)
+    collection.items << binary_items(:one)
+    assert collection.save
+
+    assert collection.items.count 2
+    assert collection.text_items.count 1
+    assert collection.binary_items.count 1
   end
 
   def test_should_find_collection
