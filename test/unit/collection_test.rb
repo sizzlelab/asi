@@ -23,6 +23,7 @@ class CollectionTest < ActiveSupport::TestCase
     collection = collections(:one)
     collection.destroy
     assert_raise(ActiveRecord::RecordNotFound) { Collection.find(collection.id) }
+
   end
 
 end
