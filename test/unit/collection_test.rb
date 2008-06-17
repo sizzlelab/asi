@@ -6,7 +6,7 @@ class CollectionTest < ActiveSupport::TestCase
   def test_should_create_collection
     collection = Collection.new
     collection.read_only = true
-    assert collection.save
+    assert ! collection.save
   end
 
   def test_should_find_collection
@@ -23,7 +23,6 @@ class CollectionTest < ActiveSupport::TestCase
     collection = collections(:one)
     collection.destroy
     assert_raise(ActiveRecord::RecordNotFound) { Collection.find(collection.id) }
-
   end
 
 end

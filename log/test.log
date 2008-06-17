@@ -143,3 +143,27 @@ WARNING: You're using the Ruby-based MySQL library that ships with Rails. This l
   [4;36;1mPerson Load (0.000435)[0m   [0;1mSELECT * FROM `people` WHERE (`people`.`id` = 2) [0m
   [4;35;1mSQL (0.000510)[0m   [0mSELECT `username` FROM `people` WHERE (`people`.username = 'kusti') [0m
   [4;36;1mSQL (0.000134)[0m   [0;1mROLLBACK[0m
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+  [4;36;1mSQL (0.000175)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.000085)[0m   [0mBEGIN[0m
+  [4;36;1mCollection Create (0.000198)[0m   [0;1mINSERT INTO `collections` (`updated_at`, `read_only`, `created_at`) VALUES('2008-06-17 06:23:33', 1, '2008-06-17 06:23:33')[0m
+  [4;35;1mSQL (0.000738)[0m   [0mROLLBACK[0m
+  [4;36;1mSQL (0.000095)[0m   [0;1mBEGIN[0m
+  [4;35;1mCollection Load (0.000500)[0m   [0mSELECT * FROM `collections` WHERE (`collections`.`id` = 953125641) [0m
+  [4;36;1mCollection Destroy (0.000174)[0m   [0;1m DELETE FROM `collections`
+ WHERE `id` = 953125641
+[0m
+  [4;35;1mCollection Load (0.000355)[0m   [0mSELECT * FROM `collections` WHERE (`collections`.`id` = 953125641) [0m
+  [4;36;1mSQL (0.000570)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000130)[0m   [0mBEGIN[0m
+  [4;36;1mCollection Load (0.000498)[0m   [0;1mSELECT * FROM `collections` WHERE (`collections`.`id` = 953125641) [0m
+  [4;35;1mCollection Load (0.000443)[0m   [0mSELECT * FROM `collections` WHERE (`collections`.`id` = 953125641) [0m
+  [4;36;1mSQL (0.000107)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000101)[0m   [0mBEGIN[0m
+  [4;36;1mCollection Load (0.000401)[0m   [0;1mSELECT * FROM `collections` WHERE (`collections`.`id` = 953125641) [0m
+  [4;35;1mSQL (0.000105)[0m   [0mROLLBACK[0m
+  [4;36;1mSQL (0.000099)[0m   [0;1mBEGIN[0m
+  [4;35;1mPerson Load (0.000454)[0m   [0mSELECT * FROM `people` WHERE (`people`.`id` = 1) [0m
+  [4;36;1mPerson Load (0.000493)[0m   [0;1mSELECT * FROM `people` WHERE (`people`.`id` = 2) [0m
+  [4;35;1mSQL (0.000485)[0m   [0mSELECT `username` FROM `people` WHERE (`people`.username = 'kusti') [0m
+  [4;36;1mSQL (0.000134)[0m   [0;1mROLLBACK[0m
