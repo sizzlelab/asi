@@ -1,13 +1,16 @@
 require 'test_helper'
 
 class CollectionTest < ActiveSupport::TestCase
-  fixtures :collections, :people, :text_items, :binary_items
+  fixtures :collections, :people, :text_items, :binary_items, :clients
 
   def test_should_create_collection
     collection = Collection.new
     collection.read_only = true
  
     collection.owner = people(:valid_person)
+    assert collection.save
+
+    collection.client = clients(:one)
     assert collection.save
 
     collection.items << text_items(:one)
@@ -21,8 +24,12 @@ class CollectionTest < ActiveSupport::TestCase
 
   def test_should_find_collection
     id = collections(:one).id
-    assert_nothing_raised { Collection.find(id) }
-  end
+    assert_nothing_raised { 
+      collection = Collection.find(id) 
+      assert_not_nil(collection.client)
+      assert_equal(collection.client, clients(:one)) 
+   }
+   end
 
   def test_should_update_collection
     collection = collections(:one)

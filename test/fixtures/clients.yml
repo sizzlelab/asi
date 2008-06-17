@@ -1,8 +1,8 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  read_only: false
-  client_id: 1
-
-two:
-  read_only: true
+   id: 1
+   name: "Ossi"
+#
+# two:
+#   column: value
