@@ -1,11 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  person_id: MyString
-  contact_id: MyString
-  status: MyString
+  person_id: 1
+  contact_id: 2
+  status: 'accepted'
 
 two:
-  person_id: MyString
-  contact_id: MyString
-  status: MyString
+  person_id: 2
+  contact_id: 1
+  status: 'accepted'
