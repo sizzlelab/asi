@@ -15,6 +15,7 @@ class CollectionsControllerTest < ActionController::TestCase
 
   def test_show
     get :show, { :id => collections(:one).id }
+
     assert_response :success
   end
 
