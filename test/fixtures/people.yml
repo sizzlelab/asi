@@ -9,3 +9,8 @@ invalid_person:
   id: 2
   username: ö/ö
   password: 123
+
+contact:
+  id: 3
+  username: kaveri
+  password: kafru
