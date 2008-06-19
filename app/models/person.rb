@@ -1,6 +1,27 @@
 class Person < ActiveRecord::Base
   usesguid
   
+  has_one :person_spec
+  
+  has_many :connections
+  
+  has_many :contacts, 
+           :through => :connections,
+           :conditions => "status = 'accepted'", 
+           :order => :username
+
+  has_many :requested_contacts, 
+           :through => :connections, 
+           :source => :contact,
+           :conditions => "status = 'requested'", 
+           :order => :created_at
+
+  has_many :pending_contacts, 
+           :through => :connections, 
+           :source => :contact,
+           :conditions => "status = 'pending'", 
+           :order => :created_at
+  
   # Max & min lengths for all fields 
   USERNAME_MIN_LENGTH = 4 
   USERNAME_MAX_LENGTH = 20 

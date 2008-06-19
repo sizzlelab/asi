@@ -30,73 +30,16 @@ class PersonTest < ActiveSupport::TestCase
     assert_equal @error_messages[:taken], person_repeat.errors.on(:username)
   end
 
-  # Make sure the screen name can't be too short. 
-  def test_username_minimum_length 
-    person = @valid_person 
-    min_length = Person::USERNAME_MIN_LENGTH 
-
-    # Screen name is too short. 
-    person.username = "a" * (min_length - 1) 
-    assert !person.valid?, "#{person.username} should raise a minimum length error" 
-    # Format the error message based on minimum length. 
-    correct_error_message = sprintf(@error_messages[:too_short], min_length) 
-    assert_equal correct_error_message, person.errors.on(:username) 
-
-    # Screen name is minimum length. 
-    person.username = "a" * min_length 
-    assert person.valid?, "#{person.username} should be just long enough to pass" 
+  # Check that username is not too long or too short.
+  def test_username_length_boundaries
+    assert_length :min, @valid_person, :username, Person::USERNAME_MIN_LENGTH
+    assert_length :max, @valid_person, :username, Person::USERNAME_MAX_LENGTH
   end
 
-  # Make sure the screen name can't be too long. 
-  def test_username_maximum_length 
-    person = @valid_person 
-    max_length = Person::USERNAME_MAX_LENGTH 
-
-    # Screen name is too long. 
-    person.username = "a" * (max_length + 1) 
-    assert !person.valid?, "#{person.username} should raise a maximum length error" 
-
-    # Format the error message based on maximum length 
-    correct_error_message = sprintf(@error_messages[:too_long], max_length) 
-    assert_equal correct_error_message, person.errors.on(:username) 
-
-    # Screen name is maximum length. 
-    person.username = "a" * max_length 
-    assert person.valid?, "#{person.username} should be just short enough to pass" 
-  end
-
-  # Make sure the password can't be too short. 
-  def test_password_minimum_length 
-    person = @valid_person 
-    min_length = Person::PASSWORD_MIN_LENGTH 
-
-    # Password is too short. 
-    person.password = "a" * (min_length - 1) 
-    assert !person.valid?, "#{person.password} should raise a minimum length error" 
-    # Format the error message based on minimum length. 
-    correct_error_message = sprintf(@error_messages[:too_short], min_length) 
-    assert_equal correct_error_message, person.errors.on(:password) 
-
-    # Password is just long enough. 
-    person.password = "a" * min_length 
-    assert person.valid?, "#{person.password} should be just long enough to pass" 
-  end 
-
-  # Make sure the password can't be too long. 
-  def test_password_maximum_length 
-    person = @valid_person 
-    max_length = Person::PASSWORD_MAX_LENGTH 
-
-    # Password is too long. 
-    person.password = "a" * (max_length + 1) 
-    assert !person.valid?, "#{person.password} should raise a maximum length error" 
-    # Format the error message based on maximum length. 
-    correct_error_message = sprintf(@error_messages[:too_long], max_length) 
-    assert_equal correct_error_message, person.errors.on(:password) 
-
-    # Password is maximum length. 
-    person.password = "a" * max_length 
-    assert person.valid?, "#{person.password} should be just short enough to pass" 
+  # Check that password is not too long or too short.
+  def test_password_length_boundaries
+    assert_length :min, @valid_person, :password, Person::PASSWORD_MIN_LENGTH
+    assert_length :max, @valid_person, :password, Person::PASSWORD_MAX_LENGTH
   end
 
   # Test the validations involving screen name with valid examples.

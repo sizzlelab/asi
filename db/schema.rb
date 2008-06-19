@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080619071224) do
+ActiveRecord::Schema.define(:version => 20080619105030) do
 
   create_table "binary_items", :force => true do |t|
     t.binary   "data"
@@ -20,11 +20,6 @@ ActiveRecord::Schema.define(:version => 20080619071224) do
   create_table "clients", :force => true do |t|
     t.string   "name"
     t.string   "api_key"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "collection_items", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -56,6 +51,16 @@ ActiveRecord::Schema.define(:version => 20080619071224) do
   create_table "people", :force => true do |t|
     t.string   "username"
     t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "person_specs", :force => true do |t|
+    t.string   "person_id"
+    t.string   "email"
+    t.string   "status_message"
+    t.date     "birthdate"
+    t.string   "gender"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
