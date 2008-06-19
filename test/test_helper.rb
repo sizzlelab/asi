@@ -36,3 +36,10 @@ class Test::Unit::TestCase
 
   # Add more helper methods to be used by all tests here...
 end
+
+# Add the possibility to set a custom header in functional tests
+class ActionController::TestRequest 
+  def set_header(name, value)
+    @env[name] = value
+  end
+end
