@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+valid_person_spec:
+  id: 1
+  person_id: 1
+  email: jesse.james@gposti.com
+  status_message: "Jesse jyrää."
+  gender: Male
+  birthdate: 1940-06-01 
+
+blank_spec:
+  id: 2
+  person_id: 2
+  
+friend_person_spec:
+  id: 3
+  person_id: 4
+  email: kaveri@gposti.com
+  status_message: "Kaveri on."
+  birthdate: 2000-01-01
+  gender: Male
+  
+  
