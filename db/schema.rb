@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080617122819) do
+ActiveRecord::Schema.define(:version => 20080619071224) do
 
   create_table "binary_items", :force => true do |t|
     t.binary   "data"
@@ -24,11 +24,17 @@ ActiveRecord::Schema.define(:version => 20080617122819) do
     t.datetime "updated_at"
   end
 
+  create_table "collection_items", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "collections", :force => true do |t|
     t.boolean  "read_only"
     t.string   "client_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "owner_id"
   end
 
   create_table "connections", :force => true do |t|

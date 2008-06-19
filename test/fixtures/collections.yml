@@ -6,3 +6,5 @@ one:
 
 two:
   read_only: true
+  client_id: 2
+  owner_id: 3
