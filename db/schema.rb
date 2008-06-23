@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080623110210) do
+ActiveRecord::Schema.define(:version => 20080623141403) do
 
   create_table "binary_items", :force => true do |t|
     t.binary   "data"
@@ -22,11 +22,6 @@ ActiveRecord::Schema.define(:version => 20080623110210) do
   create_table "clients", :force => true do |t|
     t.string   "name"
     t.string   "api_key"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "collection_items", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -47,6 +42,13 @@ ActiveRecord::Schema.define(:version => 20080623110210) do
     t.datetime "updated_at"
   end
 
+  create_table "names", :force => true do |t|
+    t.string   "given_name"
+    t.string   "family_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "ownerships", :force => true do |t|
     t.string   "collection_id"
     t.string   "item_id"
@@ -60,12 +62,19 @@ ActiveRecord::Schema.define(:version => 20080623110210) do
     t.string   "password"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "email"
+  end
+
+  create_table "person_names", :force => true do |t|
+    t.string   "given_name",  :default => ""
+    t.string   "family_name", :default => ""
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "person_specs", :force => true do |t|
     t.string   "person_id"
-    t.string   "email"
-    t.string   "status_message"
+    t.string   "status_message", :default => ""
     t.date     "birthdate"
     t.string   "gender"
     t.datetime "created_at"
