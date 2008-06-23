@@ -40,9 +40,6 @@ class CollectionsControllerTest < ActionController::TestCase
   end
 
   def test_create
-    # Create only accepts POST
-    #get :create, nil, { :client => clients(:one) }
-    #assert_response :method_not_allowed
 
     # With an owner and a client
     post :create, { :app_id => clients(:one).id, :format => 'json', :owner => people(:valid_person).id }, 
