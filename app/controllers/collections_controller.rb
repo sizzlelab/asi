@@ -19,6 +19,8 @@ class CollectionsController < ApplicationController
 
   def index
     @collections = Collection.find(:all, :conditions => { :client_id => session["client"] })
+    @app_id = params["app_id"]
+    @auth_app = session["client"]
   end
 
   def show
@@ -28,7 +30,6 @@ class CollectionsController < ApplicationController
       @collection = nil
       render:status => :forbidden
     end
-    
   end
 
   def create
@@ -50,16 +51,15 @@ class CollectionsController < ApplicationController
   def delete
     @collection = Collection.find(params['id'])
     if ! check_authorization(@collection)
-      render :status => :forbidden
-    else
-      @collection.destroy
+      render :status => :forbidden and return
     end
+    @collection.destroy
   end
 
   private
   def verify_client
-    if ! session["client"]
-      render :status => :forbidden
+    if ! session["client"] or params["app_id"].to_s != session["client"].to_s
+      render :status => :forbidden and return
     end
   end
 
