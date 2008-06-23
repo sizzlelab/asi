@@ -3,7 +3,7 @@ class CreatePersonSpecs < ActiveRecord::Migration
     create_table :person_specs do |t|
       t.string :person_id
       t.string :email
-      t.string :status_message
+      t.string :status_message, :default => ""
       t.date :birthdate
       t.string :gender
 

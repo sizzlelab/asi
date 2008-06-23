@@ -4,13 +4,16 @@ valid_person:
   id: 1
   username: kusti
   password: aaaa
+  email: working@address.com
 
 invalid_person:
   id: 2
-  username: ö/ö
+  username: a/a
   password: 123
-
+  email: dsfs
+  
 contact:
   id: 3
-  username: kaveri
-  password: kafru
+  username: contact
+  password: contact123
+  email: contact@address.com
