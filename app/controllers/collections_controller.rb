@@ -28,7 +28,7 @@ class CollectionsController < ApplicationController
 
     if ! check_authorization(@collection)
       @collection = nil
-      render:status => :forbidden
+      render :status => :forbidden
     end
   end
 

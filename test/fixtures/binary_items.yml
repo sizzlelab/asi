@@ -1,7 +1,19 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+<%
+def fixture_data(name)
+  render_binary("#{RAILS_ROOT}/test/fixtures/#{name}")
+end
 
-one:
-  data: CAFEBABE
-#
-# two:
-#   column: value
+def render_binary(filename)
+  data = File.open(filename,'rb').read
+  "!binary | #{[data].pack('m').gsub(/\n/,"\n    ")}\n"
+end
+%>
+
+jpg:
+  content_type: "image/jpeg"
+  data: <%= fixture_data("Australian_painted_lady.jpg") %>
+
+png:
+  content_type: "image/png"
+  data: <%= fixture_data("Bison_skull_pile.png") %>
+
