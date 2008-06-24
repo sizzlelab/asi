@@ -19,14 +19,17 @@ class CollectionsController < ApplicationController
 
   def index
     @collections = Collection.find(:all, :conditions => { :client_id => session["client"] })
-    @app_id = params["app_id"]
-    @auth_app = session["client"]
   end
 
   def show
-    @collection = Collection.find(params['id'])
 
-    if ! check_authorization(@collection)
+    begin
+      @collection = Collection.find(params['id'])
+    rescue ActiveRecord::RecordNotFound
+      render :status => :not_found and return
+    end
+
+    if @collection.client.id != session['client'] or ! @collection.read?(session_user, session_client)
       @collection = nil
       render :status => :forbidden
     end
@@ -50,7 +53,7 @@ class CollectionsController < ApplicationController
 
   def delete
     @collection = Collection.find(params['id'])
-    if ! check_authorization(@collection)
+    if ! @collection.delete?(session_user, session_client)
       render :status => :forbidden and return
     end
     @collection.destroy
@@ -61,15 +64,6 @@ class CollectionsController < ApplicationController
     if ! session["client"] or params["app_id"].to_s != session["client"].to_s
       render :status => :forbidden and return
     end
-  end
-
-  #TODO Should expose collections to friends
-  def check_authorization(collection)
-    if @collection.client.id != session["client"] or 
-        (@collection.owner and @collection.owner.id != session["user"])
-      return false
-    end
-    return true
   end
 
 end

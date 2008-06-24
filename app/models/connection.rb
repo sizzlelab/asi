@@ -46,4 +46,8 @@ class Connection < ActiveRecord::Base
     request.save!
   end
   
+  def to_s
+    return sprintf("%s, %s", person, contact)
+  end
+  
 end
