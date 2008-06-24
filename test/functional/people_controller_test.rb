@@ -27,16 +27,27 @@ class PeopleControllerTest < ActionController::TestCase
     
   end
   
+  def test_get_by_username  
+    #TODO
+  end
+  
   def test_create
     # create valid user
-    post :create, { :username => people(:valid_person).username, :password => people(:valid_person).password, :format => 'json'}
+    post :create, { :user => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov", :id => 42}, :format => 'json'}
+    assert_response :success
+    
+    user = assigns["person"]
+    assert_not_nil user
+    
+    # create another user
+    post :create, { :user => {:username  => "secondie", :password => "newbuzz", :email => "secondie@testland.gov"}, :format => 'json'}
     assert_response :success
     
     # TODO
     # check that the created user can be found
-    #get :show, { :id => people(:valid_person).id}, {:user => people(:valid_person).id}
+    #created_user = get :get_by_username, { :username  => "newbie", :format  => 'json'}
     #assert_response :success
-    
+    #assert_equal created_user, user
   end
   
   def test_update
@@ -60,4 +71,21 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :missing
   end
   
+  def test_add_friend
+    #add friend to a valid person
+    post :add_friend, { :id  => people(:valid_person).id, :format  => 'json'}, {:user => people(:valid_person).id}
+    assert_response :success
+    
+    #test that added friend ís added correctly
+      
+  end
+  
+  def test_get_friends
+    
+    
+  end
+  
+  def test_remove_friend
+    
+  end
 end

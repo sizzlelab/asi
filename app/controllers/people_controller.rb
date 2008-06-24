@@ -16,10 +16,25 @@ class PeopleController < ApplicationController
       render :status => 404 and return
     end
   end
+  
+  def get_by_username
+    #TODO limit viewers to logged in users
+    begin
+      @person = Person.find(params['username'])
+    rescue ActiveRecord::RecordNotFound => e
+      render :status  => 404 and return
+    end
+    
+  end
 
   def create
-    @person = Person.new
-    @person.save
+    @person = Person.new(params[:user])
+    logger.info "Creating user: " + params[:user].inspect
+    if @person.save
+      render :status  => 200 and return
+    else
+      render :status => 500 and return
+    end
   end
 
   def update
@@ -44,10 +59,11 @@ class PeopleController < ApplicationController
   
   def add_friend
     
+    
   end
   
   def get_friends
-    
+
   end
   
   def remove_friend
