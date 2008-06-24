@@ -17,3 +17,13 @@ contact:
   username: contact
   password: contact123
   email: contact@address.com
+
+friend:
+  id: 4
+  username: hawking
+  password: stephen
+
+requested:
+  id: 5
+  username: liimatta
+  password: krutsin
