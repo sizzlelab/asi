@@ -18,18 +18,18 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_show
     #show person with valid id
-    get :show, { :id => people(:valid_person).id}, {:user => people(:valid_person).id}
+    get :show, { :id => people(:valid_person).id, :format => 'json'}, {:user => people(:valid_person).id}
     assert_response :success
     
     #try to show a person with invalid id
-    delete :delete, { :id => -1}, {:user => -1 }
+    get :show, { :id => -1, :format => 'json' }, {:user => -1 }
     assert_response :missing
     
   end
   
   def test_create
     # create valid user
-    post :create, { :username => people(:valid_person).username, :password => people(:valid_person).password}
+    post :create, { :username => people(:valid_person).username, :password => people(:valid_person).password, :format => 'json'}
     assert_response :success
     
     # TODO
@@ -41,22 +41,22 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_update
     # update valid user
-    put :update, { :id => people(:valid_person).id }, {:user => people(:valid_person).id}
+    put :update, { :id => people(:valid_person).id, :format => 'json' }, {:user => people(:valid_person).id}
     assert_response :success
     # TODO asserts for checking that the updates really stored correctly
   end
   
   def test_delete
     #delete person with valid id
-    delete :delete, { :id => people(:valid_person).id}, {:user => people(:valid_person).id }
+    delete :delete, { :id => people(:valid_person).id, :format => 'json' }, {:user => people(:valid_person).id }
     assert_response :success
     
     # Check that deleted user is really removed
-    get :show, { :id => people(:valid_person).id}, {:user => people(:valid_person).id}
+    get :show, { :id => people(:valid_person).id, :format => 'json' }, {:user => people(:valid_person).id}
     assert_response :missing
     
     #try to delete person with invalid id
-    delete :delete, { :id => -1}, {:user => -1 }
+    delete :delete, { :id => -1, :format => 'json'}, {:user => -1 }
     assert_response :missing
   end
   
