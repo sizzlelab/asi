@@ -42,6 +42,18 @@ class PeopleController < ApplicationController
      @person.destroy
   end
   
+  def add_friend
+    
+  end
+  
+  def get_friends
+    
+  end
+  
+  def remove_friend
+    
+  end
+  
   private
   #TODO Should make more options for authorisation
 
