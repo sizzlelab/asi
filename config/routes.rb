@@ -10,6 +10,16 @@ ActionController::Routing::Routes.draw do |map|
                                                :format => 'json', 
                                                :conditions => { :method => :post }
 
+  map.connect '/session', :controller => 'pseudo_authentication',
+                          :action => 'login',
+                          :format => 'json',
+                          :conditions => { :method => :post }
+
+  map.connect '/session', :controller => 'pseudo_authentication',
+                          :action => 'logout',
+                          :format => 'json',
+                          :conditions => { :method => :delete } 
+
   # XXX This route is fake - but without it, functional tests won't run
   map.connect '/:controller/:action'
 end
