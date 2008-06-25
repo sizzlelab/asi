@@ -19,6 +19,7 @@ class CollectionsController < ApplicationController
 
   def index
     @collections = Collection.find(:all, :conditions => { :client_id => session["client"] })
+    @collections.reject! { |item| ! item.read?(session_user, session_client) }
   end
 
   def show
@@ -47,12 +48,22 @@ class CollectionsController < ApplicationController
   end
 
   def update
-    @collection = Collection.find(params['id'])
+    begin
+      @collection = Collection.find(params['id'])
+    rescue ActiveRecord::RecordNotFound
+      render :status => :not_found and return
+    end
+
     @collection.update_attributes(params[:collection])
   end
 
   def delete
-    @collection = Collection.find(params['id'])
+    begin
+      @collection = Collection.find(params['id'])
+    rescue ActiveRecord::RecordNotFound
+      render :status => :not_found and return
+    end
+
     if ! @collection.delete?(session_user, session_client)
       render :status => :forbidden and return
     end
