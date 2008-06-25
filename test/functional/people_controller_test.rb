@@ -35,7 +35,6 @@ class PeopleControllerTest < ActionController::TestCase
     get :get_by_username, { :username => "NonExistingUser", :format => 'json'}
     assert_response :missing
     
-    
   end
   
   def test_create
@@ -105,9 +104,42 @@ class PeopleControllerTest < ActionController::TestCase
   end
   
   def test_remove_friend
+    #test that friendship exists both ways
+    
+    get :show, { :id => people(:valid_person).id, :format => 'json'}
+    assert_response :success
+    user = assigns["person"]
+    get :show, { :id => people(:friend).id, :format => 'json'}
+    assert_response :success
+    friend = assigns["person"]
+    
+    assert user.contacts.include?(friend)
+    assert friend.contacts.include?(user)
+    
+    # breakup friendship
     delete :remove_friend, {:user_id => people(:valid_person), :friend_id => people(:friend).id, :format => 'json'}
     assert_response :success
     
+    #check that no more friends
+    assert ! user.contacts.include?(friend)
+    assert ! friend.contacts.include?(user)
+    
+    # - - - - - - - - - - - - - - - - - - - - - - - - - 
+    #Same testing with a requested (not accepted) friend
+    get :show, { :id => people(:requested).id, :format => 'json'}
+    assert_response :success
+    requested = assigns["person"]
+    
+    assert user.requested_contacts.include?(requested)
+    assert requested.pending_contacts.include?(user)
+    
+    # breakup friendship
+    delete :remove_friend, {:user_id => people(:valid_person), :friend_id => people(:requested).id, :format => 'json'}
+    assert_response :success
+    
+    #check that no more requested
+    assert ! user.requested_contacts.include?(requested)
+    assert ! requested.pending_contacts.include?(user)
     
   end
 end
