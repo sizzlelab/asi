@@ -90,11 +90,16 @@ class PeopleController < ApplicationController
     @friends = @person.contacts
   end
   
-  def get_requested_friends
-  
-  end
   def remove_friend
-    
+    @person = Person.find_by_id(params['user_id'])
+    if ! @person  
+      render :status => 404 and return
+    end
+    @friend = Person.find_by_id(params['friend_id'])
+    if ! @friend  
+      render :status => 404 and return
+    end
+    Connection.breakup(@person, @friend)
   end
   
   private
