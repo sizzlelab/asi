@@ -14,14 +14,14 @@ class Person < ActiveRecord::Base
   has_many :requested_contacts, 
   :through => :connections, 
   :source => :contact,
-  :conditions => "status = 'requested'", 
-  :order => :created_at
+  :conditions => "status = 'requested'"#, 
+  #:order => :created_at   #commented away for the time being, because caused SQL errors
 
   has_many :pending_contacts, 
   :through => :connections, 
   :source => :contact,
-  :conditions => "status = 'pending'", 
-  :order => :created_at
+  :conditions => "status = 'pending'"#, 
+  #:order => :created_at   #commented away for the time being, because caused SQL errors
 
   # Max & min lengths for all fields 
   USERNAME_MIN_LENGTH = 4 
