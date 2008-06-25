@@ -2,13 +2,28 @@ require 'test_helper'
 require 'json'
 
 class CollectionsTest < ActionController::IntegrationTest
-  fixtures :collections, :people, :clients
+  fixtures :collections, :people, :clients, :connections
 
-  def test_find_a_collection
+  def test_find_collection
     new_session do |ossi|
-      ossi.logs_in_with :user_id => people(:valid_person).id, :client_id => clients(:one).id
+      ossi.logs_in_with :user_id => people(:friend).id, :client_id => clients(:one).id
       collection_id = ossi.finds_collections :client_id => clients(:one).id
-      ossi.gets_collection :client_id => clients(:one).id, :id => collection_id
+      
+      ossi.gets_collection :client_id => clients(:one).id, :id => collection_id 
+      ossi.deletes_collection :client_id => clients(:one).id, :id => collection_id 
+      ossi.logs_out
+    end
+  end
+
+  def test_create_and_delete_collection
+    new_session do |ossi|
+      ossi.logs_in_with :user_id => people(:friend).id, :client_id => clients(:one).id
+      collection_id = ossi.creates_collection :client_id => clients(:one).id
+     
+      options = { :client_id => clients(:one).id, :id => collection_id }
+      
+      ossi.deletes_collection options
+      ossi.tries_to_find_deleted_collection options
       ossi.logs_out
     end
   end
@@ -34,12 +49,31 @@ class CollectionsTest < ActionController::IntegrationTest
         return json["entry"][0]["id"]
       end
 
+      def creates_collection(options)
+        post "/appdata/#{options[:client_id]}/@collections"
+        assert_response :success
+        assert_template "collections/create"
+        json = JSON.parse(response.body)
+        assert_not_nil json["id"]
+        return json["id"]
+      end
+
       def gets_collection(options)
         get "/appdata/#{options[:client_id]}/@collections/#{options[:id]}"
         assert_response :success
         json = JSON.parse(response.body)
         assert_not_nil json["id"]
         assert_not_nil json["entry"]
+      end
+
+      def deletes_collection(options)
+        delete "/appdata/#{options[:client_id]}/@collections/#{options[:id]}"
+        assert_response :success
+      end
+
+      def tries_to_find_deleted_collection(options)
+        get "/appdata/#{options[:client_id]}/@collections/#{options[:id]}"
+        assert_response :not_found
       end
 
       def logs_out

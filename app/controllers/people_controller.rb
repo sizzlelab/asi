@@ -46,12 +46,12 @@ class PeopleController < ApplicationController
   end
   
   def delete
-    if ! check_authorization
-      render :status => :forbidden and return
-    end
     @person = Person.find_by_id(params['id'])
     if ! @person  
       render :status => 404 and return
+    end
+    if ! check_authorization
+      render :status => :forbidden and return
     end
     @person.destroy
   end
@@ -106,10 +106,6 @@ class PeopleController < ApplicationController
   #TODO Should make more options for authorisation
 
   def check_authorization
-    if params['id'].to_i != session["user"]
-      return false
-    else
-      return true
-    end
+    return session_user != nil && session_user.id == params['id']
   end
 end

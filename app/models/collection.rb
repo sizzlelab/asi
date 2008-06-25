@@ -12,22 +12,22 @@ class Collection < ActiveRecord::Base
     }.to_json(*a)
   end
 
-  # Returns true if the given person, using the given client, is authorized to view this collection.
+  # Returns true if the given person, using the given client, has permission to view this collection.
   def read?(person, client)
     if owner == nil
       return self.client == client
     end
-    return (self.client == nil || self.client == client) && (owner == person || owner.contacts.include?(person))
+     return (self.client == nil || self.client == client) && (owner == person || owner.contacts.include?(person))
   end
 
-  # Returns true if the given person, using the given client, is authorized to change this collection.
+  # Returns true if the given person, using the given client, has permission to change this collection.
   def write?(person, client)
     return read?(person, client) && (owner == person || ! read_only)
   end
 
-  # Returns true if the given person, using the given client, is authorized to delete this collection.
+  # Returns true if the given person, using the given client, has permission to delete this collection.
   def delete?(person, client)
-    return write?(person, client) && (owner == person)
+    return write?(person, client) && (owner == nil || owner == person)
   end
 
 end
