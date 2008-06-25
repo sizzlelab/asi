@@ -10,6 +10,11 @@ ActionController::Routing::Routes.draw do |map|
                                                :format => 'json', 
                                                :conditions => { :method => :post }
 
+  map.connect '/appdata/:app_id/@collections/:id', :controller => 'collections',
+                                                   :action => 'show',
+                                                   :format => 'json',
+                                                   :conditions => { :method => :get }
+
   map.connect '/session', :controller => 'pseudo_authentication',
                           :action => 'login',
                           :format => 'json',
@@ -40,6 +45,16 @@ ActionController::Routing::Routes.draw do |map|
                                             :format => 'json',
                                             :conditions => { :method => :delete}
                                             
+  # XXX An easy (and insecure) login for browser-driven testing
+  map.connect '/login', :controller => 'pseudo_authentication',
+                        :action => 'easy_login',
+                        :format => 'html'
+
+  map.connect '/session', :controller => 'pseudo_authentication',
+                          :action => 'view_session',
+                          :format => 'html',
+                          :conditions => { :method => :get } 
+
   # XXX This route is fake - but without it, functional tests won't run
   map.connect '/:controller/:action'
 end

@@ -16,19 +16,11 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
 
   def session_user
-    begin
-      return Person.find(session["user"])
-    rescue ActiveRecord::RecordNotFound
-      return nil
-    end
+    return Person.find_by_id(session["user"])
   end
 
   def session_client
-    begin
-      return Client.find(session["client"])
-    rescue ActiveRecord::RecordNotFound
-      return nil
-    end
+    return Client.find_by_id(session["client"])
   end
 
 end

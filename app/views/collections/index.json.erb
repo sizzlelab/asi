@@ -1,0 +1,17 @@
+<%
+entries = Array.new
+
+@collections.each do |item|
+  entries << { 
+    :id => item.id, :link => { 
+      :rel => "self", :href=> "/appdata/#{item.client.id}/@collections/#{item.id}"
+    }
+  }
+end
+%>
+
+<%=
+{
+  :entry => entries
+}.to_json
+%>

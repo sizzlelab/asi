@@ -29,7 +29,7 @@ class CollectionsController < ApplicationController
       render :status => :not_found and return
     end
 
-    if @collection.client.id != session['client'] or ! @collection.read?(session_user, session_client)
+    if @collection.client != session_client or ! @collection.read?(session_user, session_client)
       @collection = nil
       render :status => :forbidden
     end
@@ -61,7 +61,7 @@ class CollectionsController < ApplicationController
 
   private
   def verify_client
-    if ! session["client"] or params["app_id"].to_s != session["client"].to_s
+    if session_client == nil or params["app_id"].to_s != session_client.id.to_s
       render :status => :forbidden and return
     end
   end
