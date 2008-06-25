@@ -27,3 +27,9 @@ requested:
   id: 5
   username: liimatta
   password: krutsin
+
+not_yet_friend:
+  id: 6
+  username: Kake
+  password: rullaatirallallaa
+  

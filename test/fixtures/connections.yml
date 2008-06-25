@@ -24,3 +24,8 @@ five:
   person_id: 1
   contact_id: 5
   status: 'requested'
+  
+six:
+  person_id: 5
+  contact_id: 1
+  status: 'pending'

@@ -28,14 +28,20 @@ class PeopleControllerTest < ActionController::TestCase
   end
   
   def test_get_by_username  
-    #TODO
+    #get person with valid username
+    get :get_by_username, { :username => people(:valid_person).username, :format => 'json'}
+    assert_response :success
+    #try toget person with non existing username
+    get :get_by_username, { :username => "NonExistingUser", :format => 'json'}
+    assert_response :missing
+    
+    
   end
   
   def test_create
     # create valid user
-    post :create, { :user => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov", :id => 42}, :format => 'json'}
+    post :create, { :user => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov"}, :format => 'json'}
     assert_response :success
-    
     user = assigns["person"]
     assert_not_nil user
     
@@ -43,11 +49,11 @@ class PeopleControllerTest < ActionController::TestCase
     post :create, { :user => {:username  => "secondie", :password => "newbuzz", :email => "secondie@testland.gov"}, :format => 'json'}
     assert_response :success
     
-    # TODO
     # check that the created user can be found
-    #created_user = get :get_by_username, { :username  => "newbie", :format  => 'json'}
-    #assert_response :success
-    #assert_equal created_user, user
+    get :get_by_username, { :username  => "newbie", :format  => 'json'}
+    assert_response :success
+    created_user = assigns["person"]
+    assert_equal created_user.username, user.username
   end
   
   def test_update
@@ -72,20 +78,36 @@ class PeopleControllerTest < ActionController::TestCase
   end
   
   def test_add_friend
-    #add friend to a valid person
-    post :add_friend, { :id  => people(:valid_person).id, :format  => 'json'}, {:user => people(:valid_person).id}
+    #add friend to a valid person (as a request at first)
+    post :add_friend, { :id  => people(:valid_person).id, :friend_id => people(:not_yet_friend).id, :format  => 'json'}, {:user => people(:valid_person).id}
     assert_response :success
     
-    #test that added friend ís added correctly
-      
+    # test that added friend request ís added correctly
+    #get :get_by_username, { :username => people(:valid_person).username, :format => 'json'}
+    assert  assigns["person"].pending_contacts.include?(assigns["friend"])
+    
+    # add the friendship also in other direction == accept the request
+    post :add_friend, { :id  => people(:not_yet_friend).id, :friend_id => people(:valid_person).id, :format  => 'json'}, {:user => people(:not_yet_friend).id}
+    assert_response :success
+    
+    # test that added friend ís added correctly
+    assert  assigns["person"].contacts.include?(assigns["friend"])
+    
   end
   
   def test_get_friends
-    
+    get :get_friends, {:user_id  => people(:valid_person).id, :format  => 'json'}
+    assert_response :success
+    assert_not_nil assigns["person"]
+    assert_not_nil assigns["friends"]
+    assert_equal(assigns["person"].contacts, assigns["friends"])
     
   end
   
   def test_remove_friend
+    delete :remove_friend, {:user_id => people(:valid_person), :friend_id => people(:friend).id, :format => 'json'}
+    assert_response :success
+    
     
   end
 end
