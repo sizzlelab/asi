@@ -49,5 +49,24 @@ class Person < ActiveRecord::Base
   validates_format_of :email, 
                       :with => /^[A-Z0-9._%-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i, 
                       :message => "must be a valid email address"
-
+  
+  def to_json(*a)
+    person_hash = {
+      'id' => id,
+      'username' => username,
+      'email' => email,
+      'name' => person_name
+    }
+    self.person_spec.attributes.each do |key, value|
+      unless PersonSpec::NO_JSON_FIELDS.include?(key)
+        if PersonSpec::LOCALIZED_FIELDS.include?(key)
+          person_hash.merge!({key, {"displayvalue" => value, "key" => value}})
+        else
+          person_hash.merge!({key, value})
+        end
+      end
+    end
+    return person_hash.to_json(*a)
+  end
+  
 end

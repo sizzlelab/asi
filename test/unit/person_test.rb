@@ -1,12 +1,14 @@
 require 'test_helper'
+require 'json'
 
 class PersonTest < ActiveSupport::TestCase
 
-  # Set up "valid" and "invalid" person.
   def setup 
     @error_messages = ActiveRecord::Errors.default_error_messages
     @valid_person = people(:valid_person) 
-    @invalid_person = people(:invalid_person) 
+    @invalid_person = people(:invalid_person)
+    @valid_person_spec = person_specs(:valid_person_spec) 
+    @valid_person_name = person_names(:valid_person_name)
   end
 
   # This person should be valid by construction. 
@@ -28,6 +30,13 @@ class PersonTest < ActiveSupport::TestCase
     person_repeat = Person.new(:username => @valid_person.username)
     assert !person_repeat.valid?
     assert_equal @error_messages[:taken], person_repeat.errors.on(:username)
+  end
+  
+  # Check uniqueness of email.
+  def test_uniqueness_of_email
+    person_repeat = Person.new(:email => @valid_person.email)
+    assert !person_repeat.valid?
+    assert_equal @error_messages[:taken], person_repeat.errors.on(:email)
   end
 
   # Check that username is not too long or too short.
@@ -86,6 +95,20 @@ class PersonTest < ActiveSupport::TestCase
       assert !person.valid?, "#{email} tests as valid but shouldn't be" 
       assert_equal "must be a valid email address", person.errors.on(:email) 
     end 
+  end
+
+  def test_to_json
+    person = @valid_person
+    person.person_spec = @valid_person_spec
+    person.person_name = @valid_person_name
+    json = JSON.parse(person.to_json)
+    assert_not_nil json["id"]
+    assert_not_nil json["username"]
+    assert_not_nil json["email"]
+    assert_not_nil json["name"]["unstructured"]
+    PersonSpec::ALL_FIELDS.each do |value|
+      assert_not_nil json[value]
+    end  
   end
 
 end
