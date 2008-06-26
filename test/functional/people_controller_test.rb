@@ -144,5 +144,24 @@ class PeopleControllerTest < ActionController::TestCase
     assert ! user.requested_contacts.include?(requested)
     assert ! requested.pending_contacts.include?(user)
     
+    #test routing
+   # options = {:controller => "people", :action => "remove_friend", :user_id => "hfr2kf38s7", :friend_id => "f229f"}
+   #assert_routing "people/hfr2kf38s7/@friends/f229f", options
+    
+  end
+  def test_routing
+    with_options :controller => 'people', :format => 'json'  do |test|
+      test.assert_routing({ :method => 'post', :path => '/people'}, 
+        {  :action => 'create' })
+      test.assert_routing({ :method => 'get', :path => '/people/hfr2kf38s7'}, 
+        {  :action => 'show', :user_id => "hfr2kf38s7" })
+      test.assert_routing({ :method => 'get', :path => '/people/hfr2kf38s7/@friends'}, 
+        {  :action => 'get_friends', :user_id => "hfr2kf38s7" })
+      test.assert_routing({ :method => 'post', :path => '/people/hfr2kf38s7/@friends'}, 
+        {  :action => 'add_friend', :user_id => "hfr2kf38s7" })
+      test.assert_routing({ :method => 'delete', :path => '/people/hfr2kf38s7/@friends/f229f'}, 
+        {  :action => 'remove_friend', :user_id => "hfr2kf38s7", :friend_id => "f229f" })
+     
+    end
   end
 end
