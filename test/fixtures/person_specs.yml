@@ -2,8 +2,8 @@
 
 valid_person_spec:
   id: 1
-  person_id: 1
-  status_message: "Jesse jyrää."
+  person_id: 2
+  status_message: "Valid person rocks."
   birthdate: 1940-06-01
   gender: Male
 
@@ -13,8 +13,8 @@ blank_person_spec:
   
 contact_person_spec:
   id: 3
-  person_id: 4
-  status_message: "Kaveri on."
+  person_id: 2
+  status_message: "Contact is a contact."
   birthdate: 2000-01-01
   gender: Male
   

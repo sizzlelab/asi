@@ -71,6 +71,7 @@ class CollectionsController < ApplicationController
   end
 
   private
+  
   def verify_client
     if session_client == nil or params["app_id"].to_s != session_client.id.to_s
       render :status => :forbidden and return

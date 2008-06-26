@@ -1,9 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 valid_person_name:
+  id: 1
   given_name: Juho
   family_name: Makkonen
+  person_id: 2
 
 invalid_person_name:
+  id: 2
   given_name: MyString
   family_name: MyString
+  person_id: 2
