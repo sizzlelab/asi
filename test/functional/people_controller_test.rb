@@ -31,10 +31,10 @@ class PeopleControllerTest < ActionController::TestCase
     #get person with valid username
     get :get_by_username, { :username => people(:valid_person).username, :format => 'json'}
     assert_response :success
-    #try toget person with non existing username
+    assert_equal(assigns["person"].username, people(:valid_person).username )
+    #try to get person with non existing username
     get :get_by_username, { :username => "NonExistingUser", :format => 'json'}
     assert_response :missing
-    
   end
   
   def test_create
@@ -57,9 +57,13 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_update
     # update valid user
-    put :update, { :id => people(:valid_person).id, :format => 'json' }, {:user => people(:valid_person).id}
+    testing_email = "newemail@oldserv.er"
+    put :update, { :id => people(:valid_person).id, :person => {:email => testing_email}, :format => 'json' }, {:user => people(:valid_person).id}
     assert_response :success
-    # TODO asserts for checking that the updates really stored correctly
+    # asserts for checking that the updates really stored correctly
+    assert_equal(assigns["person"].email, testing_email)
+    # assert that no changed value has not changed
+    assert_equal(assigns["person"].username, people(:valid_person).username)
   end
   
   def test_delete
@@ -82,7 +86,6 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :success
     
     # test that added friend request ís added correctly
-    #get :get_by_username, { :username => people(:valid_person).username, :format => 'json'}
     assert  assigns["person"].pending_contacts.include?(assigns["friend"])
     
     # add the friendship also in other direction == accept the request
@@ -125,7 +128,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert ! friend.contacts.include?(user)
     
     # - - - - - - - - - - - - - - - - - - - - - - - - - 
-    #Same testing with a requested (not accepted) friend
+    #Same testing with a requested (not yet accepted) friend
     get :show, { :id => people(:requested).id, :format => 'json'}
     assert_response :success
     requested = assigns["person"]
