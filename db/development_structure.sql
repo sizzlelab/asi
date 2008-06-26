@@ -37,15 +37,6 @@ CREATE TABLE `connections` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `names` (
-  `id` int(11) NOT NULL auto_increment,
-  `given_name` varchar(255) default NULL,
-  `family_name` varchar(255) default NULL,
-  `created_at` datetime default NULL,
-  `updated_at` datetime default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `ownerships` (
   `id` int(11) NOT NULL auto_increment,
   `collection_id` varchar(255) default NULL,
@@ -100,8 +91,6 @@ CREATE TABLE `text_items` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO schema_migrations (version) VALUES ('20080616073330');
-
 INSERT INTO schema_migrations (version) VALUES ('20080616101055');
 
 INSERT INTO schema_migrations (version) VALUES ('20080616120429');
@@ -116,8 +105,6 @@ INSERT INTO schema_migrations (version) VALUES ('20080617103442');
 
 INSERT INTO schema_migrations (version) VALUES ('20080617122819');
 
-INSERT INTO schema_migrations (version) VALUES ('20080618102839');
-
 INSERT INTO schema_migrations (version) VALUES ('20080619071224');
 
 INSERT INTO schema_migrations (version) VALUES ('20080619105030');
@@ -127,8 +114,6 @@ INSERT INTO schema_migrations (version) VALUES ('20080623102903');
 INSERT INTO schema_migrations (version) VALUES ('20080623110210');
 
 INSERT INTO schema_migrations (version) VALUES ('20080623120054');
-
-INSERT INTO schema_migrations (version) VALUES ('20080623140336');
 
 INSERT INTO schema_migrations (version) VALUES ('20080623141403');
 
