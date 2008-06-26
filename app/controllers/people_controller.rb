@@ -26,7 +26,6 @@ class PeopleController < ApplicationController
 
   def create
     @person = Person.new(params[:user])
-    #logger.info "Creating user: " + params[:user].inspect
     if @person.save
       render :status  => 200 and return
     else
@@ -76,8 +75,8 @@ class PeopleController < ApplicationController
     if @person.requested_contacts.include?(@friend) #accept if requested
       Connection.accept(@person, @friend)
     else
-      unless @person.pending_contacts.include?(@friend) || @person.contacts.include?(@friend)  #request if didn't exist
-        Connection.request(@person, @friend)
+      unless @person.pending_contacts.include?(@friend) || @person.contacts.include?(@friend)  
+        Connection.request(@person, @friend)        #request if didn't exist
       end
     end
   end
