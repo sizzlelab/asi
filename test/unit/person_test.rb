@@ -106,6 +106,7 @@ class PersonTest < ActiveSupport::TestCase
     assert_not_nil json["username"]
     assert_not_nil json["email"]
     assert_not_nil json["name"]["unstructured"]
+    assert_nil json["password"]
     PersonSpec::ALL_FIELDS.each do |value|
       assert_not_nil json[value]
     end  
