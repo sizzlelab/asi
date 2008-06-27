@@ -9,8 +9,11 @@ class CollectionsTest < ActionController::IntegrationTest
       ossi.logs_in_with :user_id => people(:friend).id, :client_id => clients(:one).id
       collection_id = ossi.finds_collections :client_id => clients(:one).id
       
-      ossi.gets_collection :client_id => clients(:one).id, :id => collection_id 
-      ossi.deletes_collection :client_id => clients(:one).id, :id => collection_id 
+      options = { :client_id => clients(:one).id, :id => collection_id }
+      
+      ossi.gets_collection options
+      ossi.adds_text_to_collection options
+      ossi.deletes_collection options
       ossi.logs_out
     end
   end
@@ -64,6 +67,14 @@ class CollectionsTest < ActionController::IntegrationTest
         json = JSON.parse(response.body)
         assert_not_nil json["id"]
         assert_not_nil json["entry"]
+      end
+
+      def adds_text_to_collection(options)
+        post "/appdata/#{options[:client_id]}/@collections/#{options[:id]}", 
+        { :title => "Sleep Tight", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." }
+        assert_response :success
+        json = JSON.parse(response.body)
+        assert_not_nil json["id"]
       end
 
       def deletes_collection(options)

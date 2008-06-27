@@ -20,6 +20,11 @@ ActionController::Routing::Routes.draw do |map|
                                                    :format => 'json',
                                                    :conditions => { :method => :delete } 
 
+  map.connect '/appdata/:app_id/@collections/:id', :controller => 'collections',
+                                                   :action => 'add',
+                                                   :format => 'json',
+                                                   :conditions => { :method => :post } 
+
   map.connect '/session', :controller => 'pseudo_authentication',
                           :action => 'login',
                           :format => 'json',

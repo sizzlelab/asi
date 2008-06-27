@@ -132,7 +132,33 @@ class CollectionsControllerTest < ActionController::TestCase
 
     assert people(:valid_person).contacts.include?(collections(:three).owner)
     assert_response :forbidden
-
   end
 
+  def test_add_text
+    get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
+               { :client => clients(:one).id }
+    
+    old_item_count = assigns["collection"].items.count
+
+    # Should be able to add to a collection belonging to the client
+    post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json', 
+                 :title => "The Engine", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." },
+               { :client => clients(:one).id }
+    assert_response :success
+    assert_equal(old_item_count+1, assigns["collection"].items.count)
+  end
+
+  def test_add_image
+    get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
+               { :client => clients(:one).id }
+    
+    old_item_count = assigns["collection"].items.count
+
+    # Should be able to add to a collection belonging to the client
+    post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json', 
+                 :file => fixture_file_upload("Bison_skull_pile.png","image/png") },
+               { :client => clients(:one).id }
+    assert_response :success
+    assert_equal(old_item_count+1, assigns["collection"].items.count)
+  end    
 end
