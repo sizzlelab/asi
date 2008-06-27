@@ -25,6 +25,7 @@ class CollectionsTest < ActionController::IntegrationTest
      
       options = { :client_id => clients(:one).id, :id => collection_id }
       
+      ossi.adds_text_to_collection options
       ossi.deletes_collection options
       ossi.tries_to_find_deleted_collection options
       ossi.logs_out
