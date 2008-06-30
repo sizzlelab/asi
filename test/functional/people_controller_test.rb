@@ -38,22 +38,23 @@ class PeopleControllerTest < ActionController::TestCase
   end
   
   def test_create
-    # create valid user
-    post :create, { :user => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov"}, :format => 'json'}
-    assert_response :success
-    user = assigns["person"]
-    assert_not_nil user
-    
-    # create another user
-    post :create, { :user => {:username  => "secondie", :password => "newbuzz", :email => "secondie@testland.gov"}, :format => 'json'}
-    assert_response :success
-    
-    # check that the created user can be found
-    get :get_by_username, { :username  => "newbie", :format  => 'json'}
-    assert_response :success
-    created_user = assigns["person"]
-    assert_equal created_user.username, user.username
-  end
+     # create valid user
+     post :create, { :person => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov"}, :format => 'json'}
+     assert_response :success 
+     user = assigns["person"] 
+     assert_not_nil user
+     
+     # create another user
+     post :create, { :person => {:username  => "secondie", :password => "newbuzz", :email => "secondie@testland.gov"}, :format => 'json'}
+     assert_response :success  
+     
+     # check that the created user can be found
+     get :get_by_username, { :username  => "newbie", :format  => 'json'}
+     assert_response :success
+     created_user = assigns["person"]
+     assert_equal created_user.username, user.username
+   end
+
   
   def test_update
     # update valid user
@@ -150,17 +151,18 @@ class PeopleControllerTest < ActionController::TestCase
     
   end
   def test_routing
-    with_options :controller => 'people', :format => 'json'  do |test|
+    #TODO check why format JSON can't be in every assertion..?
+    with_options :controller => 'people'  do |test|
       test.assert_routing({ :method => 'post', :path => '/people'}, 
         {  :action => 'create' })
       test.assert_routing({ :method => 'get', :path => '/people/hfr2kf38s7'}, 
-        {  :action => 'show', :user_id => "hfr2kf38s7" })
+        {  :action => 'show', :id => "hfr2kf38s7" })
       test.assert_routing({ :method => 'get', :path => '/people/hfr2kf38s7/@friends'}, 
-        {  :action => 'get_friends', :user_id => "hfr2kf38s7" })
+        {  :action => 'get_friends', :user_id => "hfr2kf38s7", :format => 'json' })
       test.assert_routing({ :method => 'post', :path => '/people/hfr2kf38s7/@friends'}, 
-        {  :action => 'add_friend', :user_id => "hfr2kf38s7" })
+        {  :action => 'add_friend', :user_id => "hfr2kf38s7", :format => 'json' })
       test.assert_routing({ :method => 'delete', :path => '/people/hfr2kf38s7/@friends/f229f'}, 
-        {  :action => 'remove_friend', :user_id => "hfr2kf38s7", :friend_id => "f229f" })
+        {  :action => 'remove_friend', :user_id => "hfr2kf38s7", :friend_id => "f229f" , :format => 'json' })
      
     end
   end

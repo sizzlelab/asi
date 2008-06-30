@@ -1,0 +1,18 @@
+<%= error_messages_for :session %>
+ 
+<fieldset>
+  <legend>Login</legend>
+ 
+  <% form_for @session do |f| %>
+ 
+    <label for="session_name">Name</label><br />
+    <%= f.text_field :name %><br />
+ 
+    <label for="session_password">Password</label><br />
+    <%= f.password_field :password %><br />
+ 
+    <%= submit_tag "login" %>
+ 
+  <% end %>
+ 
+</fieldset>

@@ -1,0 +1,5 @@
+Name: <%= @person.username %><br />
+Created: <%= @person.created_at.strftime("%B %d, %Y at %l:%M %p") %><br />
+Updated: <%= @person.updated_at.strftime("%B %d, %Y at %l:%M %p") %><br />
+<br />
+Currently logged in on <%= @person.sessions.size %> computer(s).

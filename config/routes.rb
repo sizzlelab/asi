@@ -1,4 +1,9 @@
 ActionController::Routing::Routes.draw do |map|
+  
+  #these are just for browser testing
+  map.root :controller => 'people', :action => 'index'  #FROM AUTH can be removed later 
+   map.resources :sessions   #FROM AUTH can be removed later
+   map.resources :people     #FROM AUTH can be removed later
 
   map.connect '/appdata/:app_id/@collections', :controller => 'collections', 
                                                :action => 'index', 
@@ -18,22 +23,12 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/appdata/:app_id/@collections/:id', :controller => 'collections',
                                                    :action => 'delete',
                                                    :format => 'json',
-                                                   :conditions => { :method => :delete } 
+                                                   :conditions => { :method => :delete }                          
 
   map.connect '/appdata/:app_id/@collections/:id', :controller => 'collections',
                                                    :action => 'add',
                                                    :format => 'json',
                                                    :conditions => { :method => :post } 
-
-  map.connect '/session', :controller => 'pseudo_authentication',
-                          :action => 'login',
-                          :format => 'json',
-                          :conditions => { :method => :post }
-
-  map.connect '/session', :controller => 'pseudo_authentication',
-                          :action => 'logout',
-                          :format => 'json',
-                          :conditions => { :method => :delete } 
 
   map.connect '/people',  :controller => 'people',
                           :action => 'create',
@@ -59,6 +54,18 @@ ActionController::Routing::Routes.draw do |map|
                                                       :action => 'remove_friend',
                                                       :format => 'json',
                                                       :conditions => { :method => :delete }
+  
+  
+  map.connect '/session', :controller => 'sessions',
+                          :action => 'destroy',
+                          :format => 'json',
+                          :conditions => { :method => :delete }                                          
+                     
+  
+  map.connect '/session',  :controller => 'sessions',
+                          :action => 'create',
+                          :format => 'json',
+                          :conditions => { :method => :post}                                            
 
   map.connect '/', :controller => 'application',
                    :action => 'index',

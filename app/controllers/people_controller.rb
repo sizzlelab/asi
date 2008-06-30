@@ -24,13 +24,26 @@ class PeopleController < ApplicationController
     end
   end
 
+  def new #this method is from Auth-integration, can probably be removed
+    @person = Person.new
+  end
+
   def create
-    @person = Person.new(params[:user])
+    @person = Person.new(params[:person])
     if @person.save
+      @session = @person.sessions.create
+      session[:id] = @session.id
+      flash[:notice] = "Welcome #{@person.username}, you are now registered"
+      #redirect_to(root_url) #FROM AUTH
       render :status  => 200 and return
     else
-      render :status => 500 and return
+      render(:action => 'new') #FROM AUTH
+      #render :status => 500 and return  #FROM AUTH this was the original before AUTH
     end
+  end
+
+  def edit #this method is from Auth-integration, can probably be removed
+    @person = Person.find(@user)
   end
 
   def update
@@ -41,8 +54,22 @@ class PeopleController < ApplicationController
     if ! @person  
       render :status  => 404 and return
     end
-    @person.update_attributes(params[:person])
+    if @person.update_attributes(params[:person])
+      flash[:notice] = "Your account has been updated"
+      #redirect_to(root_url) #FROM AUTH
+    else
+      #render(:action => 'edit') #FROM AUTH
+    end
   end
+  
+  def destroy # FROM AUTH 
+    Person.destroy(@user)
+    session[:id] = @user = nil
+    flash[:notice] = "You are now unregistered"
+    redirect_to(root_url)
+  end
+  
+  #TODO DECIDE WHICH TO USE ^ destroy OR v DELETE ??
   
   def delete
     @person = Person.find_by_id(params['id'])
