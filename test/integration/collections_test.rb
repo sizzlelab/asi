@@ -6,9 +6,8 @@ class CollectionsTest < ActionController::IntegrationTest
 
   def test_find_collection
     new_session do |ossi|
-      ossi.logs_in_with :user_id => people(:friend).id, :client_id => clients(:one).id
+      ossi.logs_in_with( {:session  => {:name => people(:test).username, :password => "testi"}, :client_id => clients(:one).id})
       collection_id = ossi.finds_collections :client_id => clients(:one).id
-      
       options = { :client_id => clients(:one).id, :id => collection_id }
       
       ossi.gets_collection options
@@ -20,11 +19,9 @@ class CollectionsTest < ActionController::IntegrationTest
 
   def test_create_and_delete_collection
     new_session do |ossi|
-      ossi.logs_in_with :user_id => people(:friend).id, :client_id => clients(:one).id
+      ossi.logs_in_with( {:session  => {:name => people(:test).username, :password => "testi"}, :client_id => clients(:one).id})
       collection_id = ossi.creates_collection :client_id => clients(:one).id
-     
       options = { :client_id => clients(:one).id, :id => collection_id }
-      
       ossi.adds_text_to_collection options
       ossi.deletes_collection options
       ossi.tries_to_find_deleted_collection options
@@ -38,8 +35,10 @@ class CollectionsTest < ActionController::IntegrationTest
       def logs_in_with(options)
         post "/session", options
         assert_response :success
-        assert_not_nil session["user"]
         assert_not_nil session["client"]
+        assert_not_nil session[:id]
+        #assert_not_nil session["user"]  #TODO set this in controller too?
+        
       end
       
       def finds_collections(options)

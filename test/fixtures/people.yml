@@ -1,35 +1,52 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
+
+#encrypted_password 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c is "testi" in readable form
+
 valid_person:
   id: 1
   username: kusti
-  password: aaaa
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: working@address.com
+  salt: ZB32fj38ueBG
 
 invalid_person:
   id: 2
   username: a/a
-  password: 123
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: dsfs
+  salt: ZB32fj38ueBG
   
 contact:
   id: 3
   username: contact
-  password: contact123
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: contact@address.com
+  salt: ZB32fj38ueBG
 
 friend:
   id: 4
   username: hawking
-  password: stephen
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  salt: ZB32fj38ueBG
 
 requested:
   id: 5
   username: liimatta
-  password: krutsin
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  salt: ZB32fj38ueBG
 
 not_yet_friend:
   id: 6
   username: Kake
-  password: rullaatirallallaa
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  salt: ZB32fj38ueBG
+
+test:
+  id: aeCd5wrNir3BOQab_ZvnhG
+  username: testi
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  salt: ZB32fj38ueBG
+  email: testi@tes.ti
   
+  #encrypted_password 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c is "testi" in readable form

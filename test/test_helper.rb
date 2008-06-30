@@ -77,6 +77,10 @@ class Test::Unit::TestCase
       raise ArgumentError, "boundary must be :max or :min"
     end
   end
+  
+  def login_as(person)
+    @request.session[:person_id] = people(person).id
+  end
 
 end
 

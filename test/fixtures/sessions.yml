@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+session1:
+   id: 10
+   person_id: 1
+   ip_address: 127.0.0.1
+   path: /
+
+
+session2:
+   id: 12
+   person_id: 2
+   ip_address: 127.0.0.1
+   path: /
+
