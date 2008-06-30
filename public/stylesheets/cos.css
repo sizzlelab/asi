@@ -2,7 +2,11 @@ body {
     width : 600px;
     margin : auto;
     margin-top : 4em;
-    font : medium Helvetica, Arial, sans-serif
+    font : medium Verdana, sans-serif
+}
+
+h1, h2 {
+    font-family : Helvetica, Arial, sans-serif
 }
 
 h1 {
@@ -12,4 +16,9 @@ h1 {
 
 h2 {
     margin-top : 1.5em;
+}
+
+tt {
+    background-color : #eeeeee;
+    padding : 2px;
 }

@@ -1,8 +1,12 @@
 #!/bin/sh
+# A crude Common Services build script specific to the maps.cs.hut.fi machine.
 cd /
 rm -rf /usr/local/common-services
 svn export file:///svn/common-services/trunk /usr/local/common-services
 cd /usr/local/common-services
+REV=$((`svn info file:///svn/common-services | grep "^Last Changed Rev" | perl -pi -e "s/Last Changed Rev: //"`-`svn info file:///svn/common-services/tags | grep "^Last Changed \
+Rev" | perl -pi -e "s/Last Changed Rev: //"`))
+echo $REV > app/views/layouts/_revision.html.erb
 script/server -d -e production
 sudo /etc/init.d/httpd restart
 
