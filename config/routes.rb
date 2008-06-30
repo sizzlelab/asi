@@ -40,25 +40,29 @@ ActionController::Routing::Routes.draw do |map|
                           :format => 'json',
                           :conditions => { :method => :post}
                           
-  map.connect '/people/:user_id',  :controller => 'people',
-                          :action => 'show',
-                          :format => 'json',
-                          :conditions => { :method => :get}               
+  map.connect '/people/:user_id', :controller => 'people',
+                                  :action => 'show',
+                                  :format => 'json',
+                                  :conditions => { :method => :get}               
                           
-  map.connect '/people/:user_id/@friends',  :controller => 'people',
-                                            :action => 'get_friends',
-                                            :format => 'json',
-                                            :conditions => { :method => :get}
+  map.connect '/people/:user_id/@friends', :controller => 'people',
+                                           :action => 'get_friends',
+                                           :format => 'json',
+                                           :conditions => { :method => :get }
                                             
-  map.connect '/people/:user_id/@friends',  :controller => 'people',
-                                            :action => 'add_friend',
-                                            :format => 'json',
-                                            :conditions => { :method => :post}
+  map.connect '/people/:user_id/@friends', :controller => 'people',
+                                           :action => 'add_friend',
+                                           :format => 'json',
+                                           :conditions => { :method => :post }
                                             
-  map.connect '/people/:user_id/@friends/:friend_id',  :controller => 'people',
-                                            :action => 'remove_friend',
-                                            :format => 'json',
-                                            :conditions => { :method => :delete}
+  map.connect '/people/:user_id/@friends/:friend_id', :controller => 'people',
+                                                      :action => 'remove_friend',
+                                                      :format => 'json',
+                                                      :conditions => { :method => :delete }
+
+  map.connect '/', :controller => 'application',
+                   :action => 'index',
+                   :contiditons => { :method => :get }
 
   # XXX This route is fake - but without it, functional tests won't run
   map.connect '/:controller/:action'

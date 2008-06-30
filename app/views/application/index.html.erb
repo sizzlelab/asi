@@ -1,0 +1,24 @@
+<%= stylesheet_link_tag "cos" %>
+<h1>OtaSizzle Common Services</h1>
+<p>
+  This is the HTML start page of OtaSizzle Common Services &ndash; <strong>COS</strong> for short. 
+  Currently, only JSON access to resources is supported. However, this HTML view to them acts
+  as the authoritative COS reference.
+</p>
+
+<h2>Getting Started</h2>
+<ul>
+  <li><tt>POST /session</tt> to create a new session.</li>
+  <li><tt>GET</tt> resources to view them, create new ones with <tt>POST</tt> and update them in place with <tt>PUT</tt>. 
+    <tt>DELETE</tt> is also supported.</li>
+  <li>If you're unable to <tt>PUT</tt> or <tt>DELETE</tt>, use <tt>POST</tt> with the actual method in the field 
+    <tt>_method</tt></li>
+  <li><tt>DELETE /session</tt> when finished.</li>
+</ul>
+
+<h2>Services</h2>
+<ul>
+<li><a href="/session"><tt>/session</tt></a> &ndash; logging in and out</li>
+<li><a href="/people"><tt>/people</tt></a> &ndash; social networking info</li>
+<li><a href="/appdata"><tt>/appdata</tt></a> &ndash; arbitrary application-specific data</li>
+

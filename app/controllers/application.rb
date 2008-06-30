@@ -15,6 +15,9 @@ class ApplicationController < ActionController::Base
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
 
+  def index
+  end
+
   def session_user
     return Person.find_by_id(session["user"])
   end
