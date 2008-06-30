@@ -5,6 +5,8 @@ class Collection < ActiveRecord::Base
   belongs_to :owner, :class_name => "Person"
   belongs_to :client
 
+  validates_presence_of :client
+
   def to_json(*a)
     {
       'id' => id,

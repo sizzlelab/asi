@@ -31,6 +31,7 @@ CREATE TABLE `collections` (
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   `owner_id` varchar(255) default NULL,
+  `title` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -140,3 +141,5 @@ INSERT INTO schema_migrations (version) VALUES ('20080623141403');
 INSERT INTO schema_migrations (version) VALUES ('20080624113429');
 
 INSERT INTO schema_migrations (version) VALUES ('20080624115845');
+
+INSERT INTO schema_migrations (version) VALUES ('20080630052354');

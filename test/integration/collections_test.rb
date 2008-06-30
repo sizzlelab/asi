@@ -79,7 +79,7 @@ class CollectionsTest < ActionController::IntegrationTest
       end
 
       def deletes_collection(options)
-        delete "/appdata/#{options[:client_id]}/@collections/#{options[:id]}"
+        post "/appdata/#{options[:client_id]}/@collections/#{options[:id]}", { :_method => "DELETE" }
         assert_response :success
       end
 

@@ -4,15 +4,12 @@ class CollectionTest < ActiveSupport::TestCase
   fixtures :collections, :people, :text_items, :binary_items, :clients, :connections
 
   def test_should_create_collection
-
     old_count = Collection.find(:all).length
 
     collection = Collection.new
     collection.read_only = true
  
     collection.owner = people(:valid_person)
-    assert collection.save
-
     collection.client = clients(:one)
     assert collection.save
 
@@ -31,17 +28,17 @@ class CollectionTest < ActiveSupport::TestCase
 
   def test_should_find_collection
     id = collections(:one).id
-    assert_nothing_raised { 
+    assert_nothing_raised do
       collection = Collection.find(id) 
       assert_not_nil(collection.client)
       assert_equal(collection.client, clients(:one)) 
-   }
-   end
+    end
+  end
 
   def test_should_update_collection
     collection = collections(:one)
     assert collection.update_attributes(:read_only => false)
-  end
+  end 
 
   def test_should_destroy_collection
     collection = collections(:one)
