@@ -13,6 +13,7 @@ class PeopleControllerTest < ActionController::TestCase
   # TODO more comprehensive tests
   
   def test_index
+    assert false #kaboom
     get :index, { :format => 'json' }
     assert_response :success 
     assert_not_nil assigns(:people)
