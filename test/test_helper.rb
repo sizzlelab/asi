@@ -155,6 +155,14 @@ module COSTestingDSL
     assert_equal options[:id], json["id"]
   end
 
+  def updates_person_details_with(options)
+    return
+    put "/people/#{options[:id]}/@self", options
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_not_nil json["id"]
+  end
+
   def logs_out
     delete "/session"
     assert_response :success
