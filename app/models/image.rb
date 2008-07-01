@@ -32,8 +32,8 @@ class Image < ActiveRecord::Base
     f.write(self.raw_data)
     f.close
     # Then convert the source file to a full size image and a thumbnail.
-    img   = system("#{'convert'} #{source_file} -resize #{FULL_IMAGE_SIZE} #{full_size_image_file}")
-    thumb = system("#{'convert'} #{source_file} -resize #{THUMBNAIL_SIZE} #{thumbnail_file}")
+    img   = system("#{'convert'} '#{source_file}' -resize #{FULL_IMAGE_SIZE} '#{full_size_image_file}'")
+    thumb = system("#{'convert'} '#{source_file}' -resize #{THUMBNAIL_SIZE} '#{thumbnail_file}'")
     File.delete(source_file) if File.exists?(source_file)
     # Both conversions must succeed, else it's an error.
     unless img and thumb
@@ -52,7 +52,8 @@ class Image < ActiveRecord::Base
     {
       :id => id,
       :filename => filename,
-      :data => data
+      :data => data,
+      :thumbnail => thumbnail
     }.to_json(*a)
   end
 
