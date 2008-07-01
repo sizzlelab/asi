@@ -20,9 +20,12 @@ class SessionsControllerTest < ActionController::TestCase
   end
   
   def test_destroy
-    delete :destroy #, {:format => 'json'}
-    #assert_response :success  #TODO find out why returns always 302?
-    
+    # frist create the session to destroy
+    post :create, { :session  => {:name => "testi", :password => "testi"}, :format => 'json'}
+    assert_response :success
+    # destroy
+    delete :destroy, {:format => 'json'}
+    assert_response :success
   end
   
   def test_routing

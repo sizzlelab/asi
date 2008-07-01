@@ -36,7 +36,8 @@ class ApplicationController < ActionController::Base
   def ensure_login
     unless @user
       flash[:notice] = "Please login to continue"
-      redirect_to(new_session_path)
+      #redirect_to(new_session_path)
+      #TODO better option for redirection that was used in original AUTH module
     end
   end
  
