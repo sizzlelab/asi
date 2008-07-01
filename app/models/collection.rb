@@ -34,6 +34,8 @@ class Collection < ActiveRecord::Base
 
   # Attempts to create an item and add it to this collection.
   def create_item(options)
+    #TODO Change the condition if file is not an image.
+    #This didn't seem to work:
     #if options[:file].content_type.start_with?("image")
     if options[:file]    
       image = Image.new(:content_type => options[:file].content_type,
