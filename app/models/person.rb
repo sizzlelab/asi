@@ -90,12 +90,14 @@ class Person < ActiveRecord::Base
       'email' => email,
       'name' => person_name
     }
-    self.person_spec.attributes.each do |key, value|
-      unless PersonSpec::NO_JSON_FIELDS.include?(key)
-        if PersonSpec::LOCALIZED_FIELDS.include?(key)
-          person_hash.merge!({key, {"displayvalue" => value, "key" => value}})
-        else
-          person_hash.merge!({key, value})
+    if self.person_spec
+      self.person_spec.attributes.each do |key, value|
+        unless PersonSpec::NO_JSON_FIELDS.include?(key)
+          if PersonSpec::LOCALIZED_FIELDS.include?(key)
+            person_hash.merge!({key, {"displayvalue" => value, "key" => value}})
+          else
+            person_hash.merge!({key, value})
+          end
         end
       end
     end

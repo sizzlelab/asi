@@ -19,7 +19,7 @@ class PeopleController < ApplicationController
   def get_by_username
     #TODO limit viewers to logged in users
     @person = Person.find_by_username(params['username'])
-    if ! @person  
+    if ! @person
       render :status  => 404 and return
     end
   end
