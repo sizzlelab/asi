@@ -52,8 +52,7 @@ class Image < ActiveRecord::Base
     {
       :id => id,
       :filename => filename,
-      :data => data,
-      :thumbnail => thumbnail
+      :data => data
     }.to_json(*a)
   end
 

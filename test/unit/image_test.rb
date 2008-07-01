@@ -20,9 +20,9 @@ class ImageTest < ActiveSupport::TestCase
     image = @image_jpg
     assert image.valid_file?
     assert image.successful_conversion?
-    f = File.new(thumbnail_file = File.join("#{RAILS_ROOT}/test/fixtures/testithumb"), "wb")
-    f.write(self.raw_data)
-    f.close
+    # f = File.new(thumbnail_file = File.join("#{RAILS_ROOT}/test/fixtures/testithumb"), "wb")
+    #     f.write(self.raw_data)
+    #     f.close
   end  
    
   # def test_should_update_image
