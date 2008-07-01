@@ -9,6 +9,7 @@ cd /usr/local/common-services
 REV=$((`svn info file:///svn/common-services | grep "^Last Changed Rev" | perl -pi -e "s/Last Changed Rev: //"`-`svn info file:///svn/common-services/tags | grep "^Last Changed \
 Rev" | perl -pi -e "s/Last Changed Rev: //"`))
 echo $REV > app/views/layouts/_revision.html.erb
+echo "http://maps.cs.hut.fi/cos/" > app/views/layouts/_servername.html.erb
 script/server -d -e production
 sudo /etc/init.d/httpd restart
 
