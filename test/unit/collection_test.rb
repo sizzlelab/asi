@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class CollectionTest < ActiveSupport::TestCase
-  fixtures :collections, :people, :text_items, :binary_items, :clients, :connections
+  fixtures :collections, :people, :text_items, :images, :clients, :connections
 
   def test_should_create_collection
     old_count = Collection.find(:all).length
@@ -14,12 +14,12 @@ class CollectionTest < ActiveSupport::TestCase
     assert collection.save
 
     collection.items << text_items(:one)
-    collection.items << binary_items(:jpg)
+    collection.items << images(:jpg)
     assert collection.save
 
     assert(collection.items.count, 2)
     assert(collection.text_items.count, 1)
-    assert(collection.binary_items.count, 1)
+    assert(collection.images.count, 1)
 
     assert_equal(Collection.find(:all).length, old_count+1)
 
