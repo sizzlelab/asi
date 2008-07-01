@@ -52,7 +52,8 @@ class Image < ActiveRecord::Base
     {
       :id => id,
       :filename => filename,
-      :data => data
+      :data => data,
+      :thumbnail => thumbnail
     }.to_json(*a)
   end
 
@@ -62,6 +63,14 @@ class Image < ActiveRecord::Base
 
   def raw_data
     return Base64.decode64(data)
+  end
+
+  def thumbnail
+    return Base64.encode64(super)
+  end  
+  
+  def raw_thumbnail
+    return Base64.decode64(thumbnail)
   end
 
 end
