@@ -10,10 +10,13 @@ end
 %>
 
 jpg:
+  id: 1
   content_type: "image/jpeg"
+  filename: "Australian_painted_lady.jpg"
   data: <%= fixture_data("Australian_painted_lady.jpg") %>
 
 png:
+  id: 2
   content_type: "image/png"
+  filename: "Bison_skull_pile.png"
   data: <%= fixture_data("Bison_skull_pile.png") %>
-

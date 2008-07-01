@@ -1,7 +1,7 @@
 class Collection < ActiveRecord::Base
   usesguid
 
-  has_many_polymorphs :items, :from => [:text_items, :binary_items], :through => :ownerships
+  has_many_polymorphs :items, :from => [:text_items, :images], :through => :ownerships
   belongs_to :owner, :class_name => "Person"
   belongs_to :client
 
@@ -34,12 +34,11 @@ class Collection < ActiveRecord::Base
 
   # Attempts to create an item and add it to this collection.
   def create_item(options)
-    if options[:file]
-      bin_item = BinaryItem.new(:content_type => options[:file].content_type, 
-                                :filename => options[:filename], 
-                                :data => options[:file].read)
-      bin_item.save
-      items << bin_item
+    if options[:content_type].start_with?("image")
+      image = Image.new(:filename => options[:filename], 
+                        :data => options[:file].read)
+      image.save
+      items << image
       return true
     elsif options[:content_type].start_with?("text")
       text_item = TextItem.new(:text => options[:body])
