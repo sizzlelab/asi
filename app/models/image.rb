@@ -4,25 +4,21 @@ class Image < ActiveRecord::Base
   FULL_IMAGE_SIZE = '"240x300"'
   THUMBNAIL_SIZE = '"50x64"'
 
-  def save
-    valid_file? and successful_conversion?
-  end
-  
   # Return true for a valid, nonempty image file.
   def valid_file?
     # The upload should be nonempty.
-    if filename.size.zero?
-      errors.add_to_base("Please enter an image filename")
-      return false
-    end
-    unless self.content_type =~ /^image/
-      errors.add(:content_type, "is not a recognized format")
-      return false
-    end
-    if raw_data.size > 1.megabytes
-      errors.add(:image, "can't be bigger than 10 megabytes")
-      return false    
-    end
+    # if filename.size.zero?
+    #       errors.add_to_base("Please enter an image filename")
+    #       return false
+    #     end
+    #     unless self.content_type =~ /^image/
+    #       errors.add(:content_type, "is not a recognized format")
+    #       return false
+    #     end
+    #     if raw_data.size > 1.megabytes
+    #       errors.add(:image, "can't be bigger than 10 megabytes")
+    #       return false    
+    #     end
     return true
   end
   
@@ -56,8 +52,7 @@ class Image < ActiveRecord::Base
     {
       :id => id,
       :filename => filename,
-      :data => data,
-      :thumbnail => thumbnail
+      :data => data
     }.to_json(*a)
   end
 

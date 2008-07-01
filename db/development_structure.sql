@@ -147,16 +147,14 @@ INSERT INTO schema_migrations (version) VALUES ('20080623141403');
 
 INSERT INTO schema_migrations (version) VALUES ('20080624113429');
 
-<<<<<<< .mine
-INSERT INTO schema_migrations (version) VALUES ('20080627094307');
-
-INSERT INTO schema_migrations (version) VALUES ('20080627095305');=======
-INSERT INTO schema_migrations (version) VALUES ('20080624115845');
-
 INSERT INTO schema_migrations (version) VALUES ('20080627080113');
 
 INSERT INTO schema_migrations (version) VALUES ('20080627080339');
 
+INSERT INTO schema_migrations (version) VALUES ('20080627094307');
+
+INSERT INTO schema_migrations (version) VALUES ('20080627095305');
+
 INSERT INTO schema_migrations (version) VALUES ('20080627115227');
 
-INSERT INTO schema_migrations (version) VALUES ('20080630052354');>>>>>>> .r67
+INSERT INTO schema_migrations (version) VALUES ('20080630052354');
