@@ -1,9 +1,4 @@
 ActionController::Routing::Routes.draw do |map|
-  
-  #these are just for browser testing
-  map.root :controller => 'people', :action => 'index'  #FROM AUTH can be removed later 
-   map.resources :sessions   #FROM AUTH can be removed later
-   map.resources :people     #FROM AUTH can be removed later
 
   map.connect '/appdata/:app_id/@collections', :controller => 'collections', 
                                                :action => 'index', 
@@ -67,9 +62,9 @@ ActionController::Routing::Routes.draw do |map|
                           :format => 'json',
                           :conditions => { :method => :post}                                            
 
-  map.connect '/', :controller => 'application',
-                   :action => 'index',
-                   :contiditons => { :method => :get }
+  map.root :controller => 'application',
+           :action => 'index',
+           :contiditons => { :method => :get }
 
   # XXX This route is fake - but without it, functional tests won't run
   map.connect '/:controller/:action'
