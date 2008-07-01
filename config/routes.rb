@@ -25,6 +25,11 @@ ActionController::Routing::Routes.draw do |map|
                                                    :format => 'json',
                                                    :conditions => { :method => :post } 
 
+  map.connect '/people/:id/@self', :controller => 'people', 
+                                   :action => 'show', 
+                                   :format => 'json', 
+                                   :conditions => { :method => :get}
+
   map.connect '/people',  :controller => 'people',
                           :action => 'create',
                           :format => 'json',

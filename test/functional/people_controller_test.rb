@@ -1,4 +1,6 @@
+# -*- coding: iso-8859-1 -*-
 require 'test_helper'
+require 'json'
 
 class PeopleControllerTest < ActionController::TestCase
   
@@ -11,7 +13,7 @@ class PeopleControllerTest < ActionController::TestCase
   # TODO more comprehensive tests
   
   def test_index
-    get :index
+    get :index, { :format => 'json' }
     assert_response :success 
     assert_not_nil assigns(:people)
   end
@@ -20,6 +22,10 @@ class PeopleControllerTest < ActionController::TestCase
     #show person with valid id
     get :show, { :id => people(:valid_person).id, :format => 'json'}, {:user => people(:valid_person).id}
     assert_response :success
+    assert_not_nil assigns["person"]
+    json = JSON.parse(@response.body)
+    assert_equal people(:valid_person).id, json["id"]
+    assert_nil json["password"]
     
     #try to show a person with invalid id
     get :show, { :id => -1, :format => 'json' }, {:user => -1 }
@@ -112,9 +118,12 @@ class PeopleControllerTest < ActionController::TestCase
     
     get :show, { :id => people(:valid_person).id, :format => 'json'}
     assert_response :success
+    assert_not_nil assigns["person"]
     user = assigns["person"]
+
     get :show, { :id => people(:friend).id, :format => 'json'}
     assert_response :success
+    assert_not_nil assigns["person"]
     friend = assigns["person"]
     
     assert user.contacts.include?(friend)
@@ -123,7 +132,7 @@ class PeopleControllerTest < ActionController::TestCase
     # breakup friendship
     delete :remove_friend, {:user_id => people(:valid_person), :friend_id => people(:friend).id, :format => 'json'}
     assert_response :success
-    
+   
     #check that no more friends
     assert ! user.contacts.include?(friend)
     assert ! friend.contacts.include?(user)
