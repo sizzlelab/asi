@@ -56,7 +56,6 @@ class PeopleController < ApplicationController
     end
     if @person.update_attributes(params[:person])
       flash[:notice] = "Your account has been updated"
-      #redirect_to(root_url) #FROM AUTH
     else
       #render(:action => 'edit') #FROM AUTH
     end
@@ -132,6 +131,6 @@ class PeopleController < ApplicationController
   #TODO Should make more options for authorisation
 
   def check_authorization
-    return session_user != nil && session_user.id == params['id']
+    return @user != nil && @user.id == params['id']
   end
 end

@@ -7,8 +7,13 @@ class PeopleTest < ActionController::IntegrationTest
     new_session do |ossi|
       ossi.logs_in_with({ :session => { :name => people(:test).username, :password => "testi" }, :client_id => clients(:one).id })
       ossi.gets_person_details({ :id => people(:test).id })
-      ossi.updates_person_details_with({ :id => people(:test).id, :first_name => "Pentteri" })
-      ossi.logs_out
+      ossi.updates_person_details_with({ :id => people(:test).id, 
+                                         :person => { :name => { :given_name => "Pentteri", :family_name => "Pamppunen" },
+                                         :status_message => "Testing..." } })
+
+      ossi.updates_person_details_with({ :id => people(:test).id, 
+                                         :person => { :email => "j@example.org" }})
+      ossi.deletes_account({ :id => people(:test).id })
     end
   end
 

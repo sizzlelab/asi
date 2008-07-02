@@ -9,7 +9,9 @@ class PersonName < ActiveRecord::Base
 
   def to_json(*a)
     {
-      :unstructured => self.given_name + " " + self.family_name
+      :unstructured => self.given_name + " " + self.family_name,
+      :given_name => self.given_name,
+      :family_name => self.family_name
     }.to_json(*a)
   end                
 

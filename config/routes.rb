@@ -28,7 +28,17 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/people/:id/@self', :controller => 'people', 
                                    :action => 'show', 
                                    :format => 'json', 
-                                   :conditions => { :method => :get}
+                                   :conditions => { :method => :get }
+
+  map.connect '/people/:id/@self', :controller => 'people', 
+                                   :action => 'update', 
+                                   :format => 'json', 
+                                   :conditions => { :method => :put }
+
+  map.connect 'people/:id/@self', :controller => 'people',
+                                  :action => 'delete',
+                                  :format => 'json',
+                                  :conditions => { :method => :delete }
 
   map.connect '/people',  :controller => 'people',
                           :action => 'create',
