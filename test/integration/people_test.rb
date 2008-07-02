@@ -5,7 +5,7 @@ class PeopleTest < ActionController::IntegrationTest
   
   def test_change_details
     new_session do |ossi|
-      ossi.logs_in_with({ :session => { :name => people(:test).username, :password => "testi" }, :client_id => clients(:one).id })
+      ossi.logs_in_with({ :username => people(:test).username, :password => "testi", :client_id => clients(:one).id })
       ossi.gets_person_details({ :id => people(:test).id })
       ossi.updates_person_details_with({ :id => people(:test).id, 
                                          :person => { :name => { :given_name => "Pentteri", :family_name => "Pamppunen" },

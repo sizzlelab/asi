@@ -1,5 +1,5 @@
 class Session < ActiveRecord::Base
-  attr_accessor :name, :password, :match
+  attr_accessor :username, :password, :match
  
   belongs_to :person
  
@@ -13,7 +13,9 @@ class Session < ActiveRecord::Base
   private
  
   def authenticate_person
-    self.match = Person.find_by_name_and_password(self.name, self.password) unless session_has_been_associated?
+    self.match = Person.find_by_name_and_password(self.username, self.password) unless session_has_been_associated?
+    #TODO find out find WHY the above works with "Person.find_by_name_and_password" 
+    # and not with "Person.find_by_username_and_password"  ???
   end
  
   def associate_session_to_person
