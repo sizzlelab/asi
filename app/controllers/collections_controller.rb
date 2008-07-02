@@ -21,11 +21,11 @@ class CollectionsController < ApplicationController
 
   def index
     @collections = Collection.find(:all, :conditions => { :client_id => session["client"] })
-    @collections.reject! { |item| ! item.read?(session_user, session_client) }
+    @collections.reject! { |item| ! item.read?(@user, session_client) }
   end
 
   def show
-    if @collection.client != session_client or ! @collection.read?(session_user, session_client)
+    if @collection.client != session_client or ! @collection.read?(@user, session_client)
       @collection = nil
       render :status => :forbidden
     end
@@ -34,8 +34,8 @@ class CollectionsController < ApplicationController
   def create
     @collection = Collection.new
 
-    if params['owner'] and params['owner'] = session['user']
-      @collection.owner = Person.find(session['user'])
+    if @user and params['owner'] and params['owner'] == @user.id
+      @collection.owner = @user
     end
 
     @collection.client = Client.find(session['client'])
@@ -47,14 +47,14 @@ class CollectionsController < ApplicationController
   end
 
   def delete
-    if ! @collection.delete?(session_user, session_client)
+    if ! @collection.delete?(@user, session_client)
       render :status => :forbidden and return
     end
     @collection.destroy
   end
 
   def add
-    if ! @collection.write?(session_user, session_client)
+    if ! @collection.write?(@user, session_client)
       render :status => :forbidden and return
     end
     @collection.create_item(params)
