@@ -84,21 +84,11 @@ class Test::Unit::TestCase
 
 end
 
-# Add the possibility to set a custom header in functional tests
-class ActionController::TestRequest 
-  def set_header(name, value)
-    @env[name] = value
-  end
-end
-
 module COSTestingDSL
   def logs_in_with(options)
     post "/session", options
     assert_response :success
-    assert_not_nil session["client"]
     assert_not_nil session[:id]
-    #assert_not_nil session["user"]  #TODO set this in controller too?
-    
   end
   
   def finds_collections(options)
