@@ -21,11 +21,11 @@ class CollectionsController < ApplicationController
 
   def index
     @collections = Collection.find(:all, :conditions => { :client_id => session["client"] })
-    @collections.reject! { |item| ! item.read?(@user, session_client) }
+    @collections.reject! { |item| ! item.read?(@user, @client) }
   end
 
   def show
-    if @collection.client != session_client or ! @collection.read?(@user, session_client)
+    if @collection.client != @client or ! @collection.read?(@user, @client)
       @collection = nil
       render :status => :forbidden
     end
@@ -47,14 +47,14 @@ class CollectionsController < ApplicationController
   end
 
   def delete
-    if ! @collection.delete?(@user, session_client)
+    if ! @collection.delete?(@user, @client)
       render :status => :forbidden and return
     end
     @collection.destroy
   end
 
   def add
-    if ! @collection.write?(@user, session_client)
+    if ! @collection.write?(@user, @client)
       render :status => :forbidden and return
     end
     @collection.create_item(params)
@@ -64,7 +64,7 @@ class CollectionsController < ApplicationController
   private
   
   def verify_client
-    if session_client == nil or params["app_id"].to_s != session_client.id.to_s
+    if @client == nil or params["app_id"].to_s != @client.id.to_s
       render :status => :forbidden and return
     end
   end
