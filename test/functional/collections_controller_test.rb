@@ -9,7 +9,7 @@ class CollectionsControllerTest < ActionController::TestCase
   end
 
   def test_index
-    get :index, { :app_id => clients(:one).id}, { :id => sessions(:session1).id }
+    get :index, { :app_id => clients(:one).id}, { :session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["collections"]
 
@@ -35,14 +35,14 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # Should show a collection belonging to the client
     get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
-               { :id => sessions(:session1).id }
+               { :session_id => sessions(:session1).id }
 
     assert_response :success
     assert_not_nil assigns["collection"]
 
     # Should not show a collection belonging to another client
     get :show, { :app_id => clients(:two).id, :id => collections(:one).id, :format => 'json' }, 
-               { :id => sessions(:session2).id }
+               { :session_id => sessions(:session2).id }
 
     assert_response :forbidden
     assert_nil assigns["collection"]
@@ -56,7 +56,7 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # Should show a collection belonging to a connection of the user
     get :show, { :app_id => clients(:one).id, :id => collections(:three).id, :format => 'json' }, 
-               { :client => collections(:three).client.id, :user => people(:valid_person).id, :id => sessions(:session1).id }
+               { :client => collections(:three).client.id, :user => people(:valid_person).id, :session_id => sessions(:session1).id }
 
     assert people(:valid_person).contacts.include?(collections(:three).owner)
     assert_response :success
@@ -85,7 +85,7 @@ class CollectionsControllerTest < ActionController::TestCase
   def test_create
     # With an owner and a client
     post :create, { :app_id => clients(:one).id, :format => 'json', :owner => people(:valid_person).id }, 
-                  { :id => sessions(:session1).id, :client => clients(:one).id }
+                  { :session_id => sessions(:session1).id, :client => clients(:one).id }
     assert_response :success
     assert_not_nil assigns["collection"]
     assert_equal(assigns["collection"].owner, people(:valid_person))
@@ -112,16 +112,16 @@ class CollectionsControllerTest < ActionController::TestCase
   def test_delete
     # Should delete a collection belonging to the client
     delete :delete, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
-                    { :id => sessions(:session1).id }
+                    { :session_id => sessions(:session1).id }
     assert_response :success
 
     get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
-               { :id => sessions(:session1).id }
+               { :session_id => sessions(:session1).id }
     assert_response :not_found
 
     # Should not allow POST
     post :delete, { :app_id => clients(:one).id, :id => collections(:two).id, :format => 'json' }, 
-                  { :id => sessions(:session1).id }
+                  { :session_id => sessions(:session1).id }
     assert_response :method_not_allowed
 
     # TODO: Should allow POST overridden with DELETE
@@ -136,12 +136,12 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # Should not delete a collection belonging to another client
     delete :delete, { :id => collections(:two).id, :format => 'json' }, 
-                    { :id => sessions(:session1).id }
+                    { :session_id => sessions(:session1).id }
     assert_response :forbidden
 
     # Should not delete a collection belonging to another user
     delete :delete, { :id => collections(:two).id, :user => people(:valid_person).id, :format => 'json' }, 
-                    { :id => sessions(:session2).id }
+                    { :session_id => sessions(:session2).id }
     assert_response :forbidden
 
     # Should not delete a collection belonging to a friend
@@ -154,28 +154,28 @@ class CollectionsControllerTest < ActionController::TestCase
 
   def test_add_text
     get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
-               { :id => sessions(:session1).id }
+               { :session_id => sessions(:session1).id }
     assert_response :success
     old_item_count = assigns["collection"].items.count
 
     # Should be able to add to a collection belonging to the client
     post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json', 
                  :title => "The Engine", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." },
-               { :id => sessions(:session1).id }
+               { :session_id => sessions(:session1).id }
     assert_response :success
     assert_equal(old_item_count+1, assigns["collection"].items.count)
   end
 
   def test_add_image
     get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
-               { :id => sessions(:session1).id }
+               { :session_id => sessions(:session1).id }
     assert_response :success
     old_item_count = assigns["collection"].items.count
 
     # Should be able to add to a collection belonging to the client
     post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json', 
                  :file => fixture_file_upload("Bison_skull_pile.png","image/png") },
-               { :id => sessions(:session1).id }
+               { :session_id => sessions(:session1).id }
     assert_response :success
     assert_equal(old_item_count+1, assigns["collection"].items.count)
   end    

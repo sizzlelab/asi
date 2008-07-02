@@ -10,7 +10,7 @@ class PeopleController < ApplicationController
   end
 
   def show
-    @person = Person.find_by_id(params['id'])
+    @person = Person.find_by_id(params['user_id'])
     if ! @person
       render :status => 404 and return
     end
@@ -27,7 +27,7 @@ class PeopleController < ApplicationController
     @person = Person.new(params[:person])
     if @person.save
       @session = @person.sessions.create
-      session[:id] = @session.id
+     session[:session_id] = @session.id
       #flash[:notice] = "Welcome #{@person.username}, you are now registered"
       render :status  => 200 and return
     else
@@ -55,7 +55,7 @@ class PeopleController < ApplicationController
   end
   
   def delete
-    @person = Person.find_by_id(params['id'])
+    @person = Person.find_by_id(params['user_id'])
     if ! @person  
       render :status => 404 and return
     end
@@ -63,7 +63,7 @@ class PeopleController < ApplicationController
       render :status => :forbidden and return
     end
     @person.destroy
-    session[:id] = @user = nil
+    session[:session_id] = @user = nil
   end
   
   def add_friend
@@ -76,7 +76,7 @@ class PeopleController < ApplicationController
       render :status => :forbidden and return
     end
     
-    @person = Person.find_by_id(params['id'])
+    @person = Person.find_by_id(params['user_id'])
     if ! @person  
       render :status => 404 and return
     end
@@ -121,10 +121,10 @@ class PeopleController < ApplicationController
 
   #Check that logged user is the same as the edited user
   def check_authorization
-    if session[:id] == nil
+    if session[:session_id] == nil
       return false
     end
-    stored_session = Session.find_by_id(session[:id])
+    stored_session = Session.find_by_id(session[:session_id])
     return @user != nil && session != nil && @user.id == stored_session.person_id
   end
 end

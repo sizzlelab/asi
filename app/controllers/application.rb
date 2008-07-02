@@ -43,8 +43,8 @@ class ApplicationController < ActionController::Base
   protected
  
   def maintain_session_and_user
-    if session[:id]
-      if @application_session = Session.find_by_id(session[:id])
+    if session[:session_id]
+      if @application_session = Session.find_by_id(session[:session_id])
         begin #Strange rescue-solution is because request.path_info acts strangely in tests
           path = request.path_info
         rescue NoMethodError => e
@@ -54,11 +54,11 @@ class ApplicationController < ActionController::Base
         @user = @application_session.person
         @client = @application_session.client
       else
-        session[:id] = nil
+        session[:session_id] = nil
         redirect_to(root_url)
       end
     else
-      #logger.debug "NO SESSION:" + session[:id]
+      #logger.debug "NO SESSION:" + session[:session_id]
     end
     
   end
