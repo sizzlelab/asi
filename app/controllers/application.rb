@@ -28,8 +28,8 @@ class ApplicationController < ActionController::Base
   def ensure_login
     unless @user
       flash[:notice] = "Please login to continue"
-      #redirect_to(new_session_path)
-      #TODO better option for redirection that was used in original AUTH module
+      logger.debug "NOT LOGGED IN:" + @user.inspect
+      render :status => 401 and return
     end
   end
  
@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
     end
   end
  
-  private
+  protected
  
   def maintain_session_and_user
     @client = session_client # TODO remove after implementing client authentication
@@ -53,11 +53,15 @@ class ApplicationController < ActionController::Base
         end
         @application_session.update_attributes(:ip_address => request.remote_addr, :path => path)
         @user = @application_session.person
+        #logger.debug "DEBUGZ: " + @user.inspect
       else
         session[:id] = nil
         redirect_to(root_url)
       end
+    else
+      #logger.debug "NO SESSION:" + session[:id]
     end
+    
   end
 
 # FROM PSEUDO AUTHENTICATION

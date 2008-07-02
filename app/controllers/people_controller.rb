@@ -1,5 +1,7 @@
 class PeopleController < ApplicationController
   
+  before_filter :ensure_login, :except  => :create
+  
   #TODO better checking for authorisation before making changes 
   # (also authorization for applications?)
   
@@ -8,8 +10,6 @@ class PeopleController < ApplicationController
   end
 
   def show
-   # Currently authorisation is not checked when viewing profile
-   #TODO limit viewers to logged in users
     @person = Person.find_by_id(params['id'])
     if ! @person
       render :status => 404 and return
@@ -17,15 +17,10 @@ class PeopleController < ApplicationController
   end
   
   def get_by_username
-    #TODO limit viewers to logged in users
     @person = Person.find_by_username(params['username'])
     if ! @person
       render :status  => 404 and return
     end
-  end
-
-  def new #this method is from Auth-integration, can probably be removed
-    @person = Person.new
   end
 
   def create
@@ -33,42 +28,31 @@ class PeopleController < ApplicationController
     if @person.save
       @session = @person.sessions.create
       session[:id] = @session.id
-      flash[:notice] = "Welcome #{@person.username}, you are now registered"
-      #redirect_to(root_url) #FROM AUTH
+      #flash[:notice] = "Welcome #{@person.username}, you are now registered"
       render :status  => 200 and return
     else
-      render(:action => 'new') #FROM AUTH
-      #render :status => 500 and return  #FROM AUTH this was the original before AUTH
+      render :status => 500 and return
+      # TODO Should return more informative message about what went wrong
     end
-  end
-
-  def edit #this method is from Auth-integration, can probably be removed
-    @person = Person.find(@user)
   end
 
   def update
     if ! check_authorization
       render :status => :forbidden and return
     end
-    @person = Person.find_by_id(params['id'])
+    @person = Person.find_by_id(params['user_id'])
     if ! @person  
       render :status  => 404 and return
     end
     if @person.update_attributes(params[:person])
-      flash[:notice] = "Your account has been updated"
+      #flash[:notice] = "Your account has been updated"
+      render :status  => 200 and return
     else
       #render(:action => 'edit') #FROM AUTH
+      render :status  => 500 and return
+      #TODO return more info about what went wrong
     end
   end
-  
-  def destroy # FROM AUTH 
-    Person.destroy(@user)
-    session[:id] = @user = nil
-    flash[:notice] = "You are now unregistered"
-    redirect_to(root_url)
-  end
-  
-  #TODO DECIDE WHICH TO USE ^ destroy OR v DELETE ??
   
   def delete
     @person = Person.find_by_id(params['id'])
@@ -79,6 +63,7 @@ class PeopleController < ApplicationController
       render :status => :forbidden and return
     end
     @person.destroy
+    session[:id] = @user = nil
   end
   
   def add_friend
@@ -87,7 +72,9 @@ class PeopleController < ApplicationController
     # If there is already a pending connection requested from the other direction, 
     # change friendship status to accepted.
     
-    #TODO Authorization
+    if ! check_authorization
+      render :status => :forbidden and return
+    end
     
     @person = Person.find_by_id(params['id'])
     if ! @person  
@@ -116,6 +103,9 @@ class PeopleController < ApplicationController
   end
   
   def remove_friend
+    if ! check_authorization
+      render :status => :forbidden and return
+    end
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
       render :status => 404 and return
@@ -128,9 +118,13 @@ class PeopleController < ApplicationController
   end
   
   private
-  #TODO Should make more options for authorisation
 
+  #Check that logged user is the same as the edited user
   def check_authorization
-    return @user != nil && @user.id == params['id']
+    if session[:id] == nil
+      return false
+    end
+    stored_session = Session.find_by_id(session[:id])
+    return @user != nil && session != nil && @user.id == stored_session.person_id
   end
 end

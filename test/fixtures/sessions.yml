@@ -13,3 +13,15 @@ session2:
    ip_address: 127.0.0.1
    path: /
 
+session3:
+   id: 15
+   person_id: 6
+   ip_address: 127.0.0.1
+   path:
+
+session4:
+   id: 22
+   person_id: 4
+   ip_address: 127.0.0.1
+   path:
+
