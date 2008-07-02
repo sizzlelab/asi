@@ -48,7 +48,7 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # Should show a collection belonging to a connection of the user
     get :show, { :app_id => clients(:one).id, :id => collections(:three).id, :format => 'json' }, 
-               { :client => collections(:three).client.id, :user => people(:valid_person).id }
+               { :client => collections(:three).client.id, :user => people(:valid_person).id, :id => sessions(:session1).id }
 
     assert people(:valid_person).contacts.include?(collections(:three).owner)
     assert_response :success
@@ -77,7 +77,7 @@ class CollectionsControllerTest < ActionController::TestCase
   def test_create
     # With an owner and a client
     post :create, { :app_id => clients(:one).id, :format => 'json', :owner => people(:valid_person).id }, 
-                  { :user => people(:valid_person).id, :client => clients(:one).id }
+                  { :id => sessions(:session1).id, :client => clients(:one).id }
     assert_response :success
     assert_not_nil assigns["collection"]
     assert_equal(assigns["collection"].owner, people(:valid_person))

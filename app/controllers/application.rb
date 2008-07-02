@@ -23,10 +23,6 @@ class ApplicationController < ActionController::Base
   end
 
 # FROM PSEUDO AUTHENTICATION
-  def session_user
-    return Person.find_by_id(session["user"])
-  end
-
   def session_client
     return Client.find_by_id(session["client"])
   end
