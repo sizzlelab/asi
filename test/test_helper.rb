@@ -88,7 +88,7 @@ module COSTestingDSL
   def logs_in_with(options)
     post "/session", options
     assert_response :success
-    assert_not_nil session[:id]
+    assert_not_nil session[:session_id]
   end
   
   def finds_collections(options)

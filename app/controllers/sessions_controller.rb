@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
   def create
     @session = Session.new({ :username => params[:username], :password => params[:password], :client_name => params[:client_name], :client_password => params[:client_password]})
     if @session.save
-      session[:id] = @session.id
+      session[:session_id] = @session.id
       session["client"] = params[:client_id]   # TODO FROM PSEUDO AUTH check if needed
       #redirect_to(root_url)
       render :status => :ok   #TODO decide if this should be 201 instead?
@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
  
   def destroy
     Session.destroy(@application_session)
-    session[:id] = @user = nil
+    session[:session_id] = @user = nil
     session["client"] = nil
     render :status  => 200 and return
   end
