@@ -22,10 +22,6 @@ class ApplicationController < ActionController::Base
   def index
   end
 
-# FROM PSEUDO AUTHENTICATION
-  def session_client
-    return Client.find_by_id(session["client"])
-  end
 
 # FROM AUTHENTICATION MODULE
 
@@ -47,6 +43,7 @@ class ApplicationController < ActionController::Base
   private
  
   def maintain_session_and_user
+    @client = session_client # TODO remove after implementing client authentication
     if session[:id]
       if @application_session = Session.find_by_id(session[:id])
         begin #Strange rescue-solution is because request.path_info acts strangely in tests
@@ -61,6 +58,11 @@ class ApplicationController < ActionController::Base
         redirect_to(root_url)
       end
     end
+  end
+
+# FROM PSEUDO AUTHENTICATION
+  def session_client
+    return Client.find_by_id(session["client"])
   end
 
 end

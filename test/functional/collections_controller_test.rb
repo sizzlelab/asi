@@ -161,7 +161,7 @@ class CollectionsControllerTest < ActionController::TestCase
   def test_add_image
     get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
                { :client => clients(:one).id }
-    
+
     old_item_count = assigns["collection"].items.count
 
     # Should be able to add to a collection belonging to the client
