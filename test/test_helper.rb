@@ -156,11 +156,16 @@ module COSTestingDSL
   end
 
   def updates_person_details_with(options)
-    return
     put "/people/#{options[:id]}/@self", options
     assert_response :success
     json = JSON.parse(response.body)
     assert_not_nil json["id"]
+    assert subset(options[:person], json)
+  end
+
+  def deletes_account(options)
+    delete "/people/#{options[:id]}/@self", options
+    assert_response :success
   end
 
   def logs_out
@@ -168,6 +173,26 @@ module COSTestingDSL
     assert_response :success
     assert_nil session["user"]
     assert_nil session["client"]
+  end
+
+  def subset(a, b)
+    if (a == b)
+      return true
+    end
+
+    if (b == nil)
+      return false
+    end
+
+    if (a.class.to_s == "String")
+      return false
+    end
+
+    a.each do |key, value|
+      if ! subset(value, b[key.to_s])
+        return false
+      end
+    end
   end
 
 end

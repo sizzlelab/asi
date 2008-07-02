@@ -73,7 +73,23 @@ class Person < ActiveRecord::Base
       return person
     end
   end
- 
+
+  # Bring a simple setter to each attribute of PersonSpec in order to simplify the interface
+  PersonSpec.new.attributes.each do |key, value|
+    unless Person.new.respond_to?("#{key}=") || key.end_with?("_id")
+      Person.class_eval "def #{key}=(value); "+
+        "if ! person_spec; "+
+        "create_person_spec; "+
+        "end; "+
+        "person_spec.#{key}=value; "+
+        "end;"
+    end
+  end
+
+  def name=(name)
+    create_person_name(name)
+  end
+
 ## FROM AUTH 
   def password=(password)
     @password = password
@@ -117,7 +133,4 @@ class Person < ActiveRecord::Base
   def password_is_not_being_updated?
     self.id and self.password.blank?
   end
-  
-
-  
 end

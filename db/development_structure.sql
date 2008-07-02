@@ -7,6 +7,13 @@ CREATE TABLE `clients` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `collection_items` (
+  `id` int(11) NOT NULL auto_increment,
+  `created_at` datetime default NULL,
+  `updated_at` datetime default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `collections` (
   `id` varchar(255) NOT NULL default '',
   `read_only` tinyint(1) default NULL,
@@ -34,15 +41,6 @@ CREATE TABLE `images` (
   `filename` varchar(255) default NULL,
   `data` longblob,
   `thumbnail` mediumblob,
-  `created_at` datetime default NULL,
-  `updated_at` datetime default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `names` (
-  `id` int(11) NOT NULL auto_increment,
-  `given_name` varchar(255) default NULL,
-  `family_name` varchar(255) default NULL,
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`)
@@ -113,11 +111,11 @@ CREATE TABLE `text_items` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO schema_migrations (version) VALUES ('20080616073330');
-
 INSERT INTO schema_migrations (version) VALUES ('20080616101055');
 
 INSERT INTO schema_migrations (version) VALUES ('20080616120429');
+
+INSERT INTO schema_migrations (version) VALUES ('20080617070115');
 
 INSERT INTO schema_migrations (version) VALUES ('20080617073013');
 
@@ -129,8 +127,6 @@ INSERT INTO schema_migrations (version) VALUES ('20080617103442');
 
 INSERT INTO schema_migrations (version) VALUES ('20080617122819');
 
-INSERT INTO schema_migrations (version) VALUES ('20080618102839');
-
 INSERT INTO schema_migrations (version) VALUES ('20080619071224');
 
 INSERT INTO schema_migrations (version) VALUES ('20080619105030');
@@ -141,11 +137,11 @@ INSERT INTO schema_migrations (version) VALUES ('20080623110210');
 
 INSERT INTO schema_migrations (version) VALUES ('20080623120054');
 
-INSERT INTO schema_migrations (version) VALUES ('20080623140336');
-
 INSERT INTO schema_migrations (version) VALUES ('20080623141403');
 
 INSERT INTO schema_migrations (version) VALUES ('20080624113429');
+
+INSERT INTO schema_migrations (version) VALUES ('20080624115845');
 
 INSERT INTO schema_migrations (version) VALUES ('20080627080113');
 
