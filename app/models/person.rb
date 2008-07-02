@@ -67,7 +67,7 @@ class Person < ActiveRecord::Base
   before_save :scrub_name
   after_save :flush_passwords
 
-  def self.find_by_name_and_password(username, password)
+  def self.find_by_username_and_password(username, password)
     person = self.find_by_username(username)
     if person and person.encrypted_password == ENCRYPT.hexdigest(password + person.salt)
       return person

@@ -3,6 +3,7 @@ require 'test_helper'
 require 'json'
 
 class PeopleControllerTest < ActionController::TestCase
+  fixtures :sessions
   
   def setup
     @controller = PeopleController.new
@@ -13,14 +14,14 @@ class PeopleControllerTest < ActionController::TestCase
   # TODO more comprehensive tests
   
   def test_index
-    get :index, { :format => 'json' }
+    get :index, { :format => 'json' }, { :id => sessions(:session1).id }
     assert_response :success 
     assert_not_nil assigns(:people)
   end
   
   def test_show
     #show person with valid id
-    get :show, { :id => people(:valid_person).id, :format => 'json' }, { :user => people(:valid_person).id }
+    get :show, { :id => people(:valid_person).id, :format => 'json' }, { :id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["person"]
     json = JSON.parse(@response.body)
@@ -35,7 +36,7 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_get_by_username  
     #get person with valid username
-    get :get_by_username, { :username => people(:valid_person).username, :format => 'json' }
+    get :get_by_username, { :username => people(:valid_person).username, :format => 'json' }, { :id => sessions(:session1).id }
     assert_response :success
     assert_equal(assigns["person"].username, people(:valid_person).username )
     #try to get person with non existing username
@@ -65,7 +66,7 @@ class PeopleControllerTest < ActionController::TestCase
   def test_update
     # update valid user
     testing_email = "newemail@oldserv.er"
-    put :update, { :id => people(:valid_person).id, :person => {:email => testing_email }, :format => 'json' }, 
+    put :update, { :user_id => people(:valid_person).id, :person => {:email => testing_email }, :format => 'json' }, 
                  { :id => sessions(:session1).id }
     assert_response :success
     # asserts for checking that the updates really stored correctly
@@ -80,7 +81,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :success
     
     # Check that deleted user is really removed
-    get :show, { :id => people(:valid_person).id, :format => 'json' }, { :user => people(:valid_person).id }
+    get :show, { :id => people(:valid_person).id, :format => 'json' }, { :id => sessions(:session4).id }
     assert_response :missing
     
     #try to delete person with invalid id
@@ -90,14 +91,14 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_add_friend
     #add friend to a valid person (as a request at first)
-    post :add_friend, { :id  => people(:valid_person).id, :friend_id => people(:not_yet_friend).id, :format  => 'json' }, { :user => people(:valid_person).id }
+    post :add_friend, { :id  => people(:valid_person).id, :friend_id => people(:not_yet_friend).id, :format  => 'json' }, { :id => sessions(:session1).id }
     assert_response :success
     
     # test that added friend request ís added correctly
     assert  assigns["person"].pending_contacts.include?(assigns["friend"])
     
     # add the friendship also in other direction == accept the request
-    post :add_friend, { :id  => people(:not_yet_friend).id, :friend_id => people(:valid_person).id, :format  => 'json' }, { :user => people(:not_yet_friend).id }
+    post :add_friend, { :id  => people(:not_yet_friend).id, :friend_id => people(:valid_person).id, :format  => 'json' },  { :id => sessions(:session3).id }
     assert_response :success
     
     # test that added friend ís added correctly
@@ -106,7 +107,7 @@ class PeopleControllerTest < ActionController::TestCase
   end
   
   def test_get_friends
-    get :get_friends, { :user_id  => people(:valid_person).id, :format  => 'json' }
+    get :get_friends, { :user_id  => people(:valid_person).id, :format  => 'json' }, { :id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["person"]
     assert_not_nil assigns["friends"]
@@ -117,7 +118,7 @@ class PeopleControllerTest < ActionController::TestCase
   def test_remove_friend
     #test that friendship exists both ways
     
-    get :show, { :id => people(:valid_person).id, :format => 'json' }
+    get :show, { :id => people(:valid_person).id, :format => 'json' }, { :id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["person"]
     user = assigns["person"]

@@ -30,7 +30,7 @@ ActionController::Routing::Routes.draw do |map|
                                    :format => 'json', 
                                    :conditions => { :method => :get }
 
-  map.connect '/people/:id/@self', :controller => 'people', 
+  map.connect '/people/:user_id/@self', :controller => 'people', 
                                    :action => 'update', 
                                    :format => 'json', 
                                    :conditions => { :method => :put }

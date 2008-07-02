@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
       render :status  => 200   #TODO decide if this should be 201 instead?
     else
       #render(:action => 'new')
-      logger.debug "USER: #{@session.inspect}, PASSU: #{@session}"
+      #logger.debug "Returned unauthorized for USER: #{@session.inspect}, PASSU: #{@session}"
       render :status => 401 #Unauthorized
     end
   end
@@ -31,8 +31,6 @@ class SessionsController < ApplicationController
     Session.destroy(@application_session)
     session[:id] = @user = nil
     session["client"] = nil
-    #flash[:notice] = "You are now logged out"
-    #redirect_to(root_url)
     render :status  => 200 and return
   end
 end
