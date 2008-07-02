@@ -1,7 +1,15 @@
 CREATE TABLE `clients` (
   `id` varchar(255) NOT NULL default '',
   `name` varchar(255) default NULL,
-  `api_key` varchar(255) default NULL,
+  `created_at` datetime default NULL,
+  `updated_at` datetime default NULL,
+  `encrypted_password` varchar(255) default NULL,
+  `salt` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `collection_items` (
+  `id` int(11) NOT NULL auto_increment,
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`)
@@ -93,6 +101,7 @@ CREATE TABLE `sessions` (
   `path` varchar(255) default NULL,
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
+  `client_id` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -107,6 +116,8 @@ CREATE TABLE `text_items` (
 INSERT INTO schema_migrations (version) VALUES ('20080616101055');
 
 INSERT INTO schema_migrations (version) VALUES ('20080616120429');
+
+INSERT INTO schema_migrations (version) VALUES ('20080617070115');
 
 INSERT INTO schema_migrations (version) VALUES ('20080617073013');
 
@@ -132,6 +143,8 @@ INSERT INTO schema_migrations (version) VALUES ('20080623141403');
 
 INSERT INTO schema_migrations (version) VALUES ('20080624113429');
 
+INSERT INTO schema_migrations (version) VALUES ('20080624115845');
+
 INSERT INTO schema_migrations (version) VALUES ('20080627080113');
 
 INSERT INTO schema_migrations (version) VALUES ('20080627080339');
@@ -143,3 +156,9 @@ INSERT INTO schema_migrations (version) VALUES ('20080627095305');
 INSERT INTO schema_migrations (version) VALUES ('20080627115227');
 
 INSERT INTO schema_migrations (version) VALUES ('20080630052354');
+
+INSERT INTO schema_migrations (version) VALUES ('20080702095516');
+
+INSERT INTO schema_migrations (version) VALUES ('20080702095636');
+
+INSERT INTO schema_migrations (version) VALUES ('20080702130342');

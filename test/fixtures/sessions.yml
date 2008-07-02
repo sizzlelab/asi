@@ -3,6 +3,7 @@
 session1:
    id: 10
    person_id: 1
+   client_id: 1
    ip_address: 127.0.0.1
    path: /
 
@@ -10,6 +11,7 @@ session1:
 session2:
    id: 12
    person_id: 2
+   client_id: 2
    ip_address: 127.0.0.1
    path: /
 

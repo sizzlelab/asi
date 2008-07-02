@@ -56,7 +56,7 @@ class PeopleControllerTest < ActionController::TestCase
      assert_response :success  
      
      # check that the created user can be found
-     get :get_by_username, { :username  => "newbie", :format  => 'json' }
+    get :get_by_username, { :username  => "newbie", :format  => 'json' }, { :id => sessions(:session1).id }
      assert_response :success
      created_user = assigns["person"]
      assert_equal created_user.username, user.username

@@ -20,7 +20,7 @@ class CollectionsController < ApplicationController
          :add_headers => { 'Allow' => 'PUT' }
 
   def index
-    @collections = Collection.find(:all, :conditions => { :client_id => session["client"] })
+    @collections = Collection.find(:all, :conditions => { :client_id => @client.id })
     @collections.reject! { |item| ! item.read?(@user, @client) }
   end
 
@@ -38,7 +38,7 @@ class CollectionsController < ApplicationController
       @collection.owner = @user
     end
 
-    @collection.client = Client.find(session['client'])
+    @collection.client = @client
     @collection.save
   end
 

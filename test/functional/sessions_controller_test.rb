@@ -15,13 +15,22 @@ class SessionsControllerTest < ActionController::TestCase
   end
   
   def test_create
-    post :create, { :username => "testi", :password => "testi", :format => 'json'}
+    post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "testi", :format => 'json'}
+    assert_response :success    
+
+    delete :destroy, {:format => 'json'}
     assert_response :success
+
+    post :create, { :username => "testi", :password => "testia,.u", :client_name => "ossi", :client_password => "testi", :format => 'json'}
+    assert_response :unauthorized
+
+    post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "tesaoeulcrhti", :format => 'json'}
+    assert_response :unauthorized
   end
   
   def test_destroy
     # frist create the session to destroy
-    post :create, { :username => "testi", :password => "testi", :format => 'json'}
+    post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "testi", :format => 'json'}
     assert_response :success
     # destroy
     delete :destroy, {:format => 'json'}

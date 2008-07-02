@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
     unless @user
       flash[:notice] = "Please login to continue"
       logger.debug "NOT LOGGED IN:" + @user.inspect
-      render :status => 401 and return
+      render :status => :unauthorized and return
     end
   end
  
@@ -43,7 +43,6 @@ class ApplicationController < ActionController::Base
   protected
  
   def maintain_session_and_user
-    @client = session_client # TODO remove after implementing client authentication
     if session[:id]
       if @application_session = Session.find_by_id(session[:id])
         begin #Strange rescue-solution is because request.path_info acts strangely in tests
@@ -53,7 +52,7 @@ class ApplicationController < ActionController::Base
         end
         @application_session.update_attributes(:ip_address => request.remote_addr, :path => path)
         @user = @application_session.person
-        #logger.debug "DEBUGZ: " + @user.inspect
+        @client = @application_session.client
       else
         session[:id] = nil
         redirect_to(root_url)
@@ -63,10 +62,4 @@ class ApplicationController < ActionController::Base
     end
     
   end
-
-# FROM PSEUDO AUTHENTICATION
-  def session_client
-    return Client.find_by_id(session["client"])
-  end
-
 end

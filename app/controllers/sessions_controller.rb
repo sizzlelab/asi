@@ -2,28 +2,18 @@
 class SessionsController < ApplicationController
   before_filter :ensure_login, :only => :destroy
   before_filter :ensure_logout, :only => [:new, :create]
- 
-  def index
-    redirect_to(new_session_path)
-  end
- 
- # FROM AUTH not needed in REST version
-  # def new
-  #   @session = Session.new
-  # end
- 
+   
   def create
-    @session = Session.new({:username  => params[:username], :password  => params[:password]})
+    @session = Session.new({ :username => params[:username], :password => params[:password], :client_name => params[:client_name], :client_password => params[:client_password]})
     if @session.save
       session[:id] = @session.id
       session["client"] = params[:client_id]   # TODO FROM PSEUDO AUTH check if needed
-      flash[:notice] = "Hello #{@session.person.username}, you are now logged in"
       #redirect_to(root_url)
-      render :status  => 200   #TODO decide if this should be 201 instead?
+      render :status => :ok   #TODO decide if this should be 201 instead?
     else
       #render(:action => 'new')
       #logger.debug "Returned unauthorized for USER: #{@session.inspect}, PASSU: #{@session}"
-      render :status => 401 #Unauthorized
+      render :status => :unauthorized
     end
   end
  

@@ -1,10 +1,11 @@
 require 'digest/sha2'
 
 class Person < ActiveRecord::Base
-  usesguid
-  attr_reader :password #FROM AUTH
+  include AuthenticationHelper
 
-  ENCRYPT = Digest::SHA256
+  usesguid
+
+  attr_reader :password #FROM AUTH
 
   has_one :person_name
   has_one :person_spec
@@ -68,9 +69,9 @@ class Person < ActiveRecord::Base
   after_save :flush_passwords
 
   def self.find_by_username_and_password(username, password)
-    person = self.find_by_username(username)
-    if person and person.encrypted_password == ENCRYPT.hexdigest(password + person.salt)
-      return person
+    model = self.find_by_username(username)
+    if model and model.encrypted_password == ENCRYPT.hexdigest(password + model.salt)
+      return model
     end
   end
 
@@ -91,13 +92,6 @@ class Person < ActiveRecord::Base
   end
 
 ## FROM AUTH 
-  def password=(password)
-    @password = password
-    unless password_is_not_being_updated?
-      self.salt = [Array.new(9){rand(256).chr}.join].pack('m').chomp
-      self.encrypted_password = ENCRYPT.hexdigest(password + self.salt)
-    end
-  end
       
   def to_json(*a)
     person_hash = {
@@ -118,19 +112,5 @@ class Person < ActiveRecord::Base
       end
     end
     return person_hash.to_json(*a)
-  end
- 
-  private
- 
-  def scrub_name
-    self.username.downcase!
-  end
- 
-  def flush_passwords
-    @password = @password_confirmation = nil
-  end
- 
-  def password_is_not_being_updated?
-    self.id and self.password.blank?
   end
 end
