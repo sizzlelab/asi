@@ -15,13 +15,13 @@ class SessionsControllerTest < ActionController::TestCase
   end
   
   def test_create
-    post :create, { :session  => {:name => "testi", :password => "testi"}, :format => 'json'}
+    post :create, { :username => "testi", :password => "testi", :format => 'json'}
     assert_response :success
   end
   
   def test_destroy
     # frist create the session to destroy
-    post :create, { :session  => {:name => "testi", :password => "testi"}, :format => 'json'}
+    post :create, { :username => "testi", :password => "testi", :format => 'json'}
     assert_response :success
     # destroy
     delete :destroy, {:format => 'json'}
@@ -29,11 +29,12 @@ class SessionsControllerTest < ActionController::TestCase
   end
   
   def test_routing
-     
      with_options :controller => 'sessions'  do |test|
        test.assert_routing({ :method => 'post', :path => '/session'}, 
          {  :action => 'create', :format => 'json' })
-
+       test.assert_routing({ :method => 'delete', :path => '/session'}, 
+            {  :action => 'destroy', :format => 'json' })
+         
      end
    end
 end

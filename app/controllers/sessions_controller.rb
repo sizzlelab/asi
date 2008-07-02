@@ -7,12 +7,13 @@ class SessionsController < ApplicationController
     redirect_to(new_session_path)
   end
  
-  def new
-    @session = Session.new
-  end
+ # FROM AUTH not needed in REST version
+  # def new
+  #   @session = Session.new
+  # end
  
   def create
-    @session = Session.new(params[:session])
+    @session = Session.new({:username  => params[:username], :password  => params[:password]})
     if @session.save
       session[:id] = @session.id
       session["client"] = params[:client_id]   # TODO FROM PSEUDO AUTH check if needed
