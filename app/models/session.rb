@@ -39,5 +39,4 @@ class Session < ActiveRecord::Base
   def session_has_been_associated_with_client?
     self.client_id
   end
-
 end

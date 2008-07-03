@@ -1,0 +1,25 @@
+<h1><code>/session</code></h1>
+
+<p>
+  A resource for logging in and out.
+</p>
+
+<% methods = [ { :name => "POST", 
+                 :description => "Starts a new session. If no username and password are provided, "+
+                                 "a session is started only for the client. If a session is started only for the client, "+
+                                 "a user can be added to the session with a PUT.", 
+                 :parameters => [ { :client_name => "The client's name." },
+                                  { :client_password => "The client's password." },
+                                  { :username => "The user's name (optional)." },
+                                  { :password => "The user's password (optional)." } ] },
+
+               { :name => "PUT", 
+                 :description => "Adds a user to the session.",
+                 :parameters => [ { :username => "The user's name." },
+                                  { :password => "The user's password." } ] },
+
+               { :name => "DELETE", 
+                 :description => "Ends the current session." } ]%>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+
