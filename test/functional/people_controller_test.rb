@@ -29,7 +29,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert_nil json["password"]
     
     #try to show a person with invalid id
-    get :show, { :user_id => -1, :format => 'json' }, { :user => -1 }
+    get :show, { :user_id => -1, :format => 'json' }
     assert_response :missing
     
   end
@@ -73,6 +73,12 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal(assigns["person"].email, testing_email)
     # assert that no changed value has not changed
     assert_equal(assigns["person"].username, people(:valid_person).username)
+    
+    # try to update other user than self
+    put :update, { :user_id => people(:friend).id, :person => {:email => testing_email }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :forbidden
+    
   end
  
   def test_delete
@@ -85,8 +91,13 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :missing
     
     #try to delete person with invalid id
-    delete :delete, { :user_id => -1, :format => 'json' }, { :user => -1 }
+    delete :delete, { :user_id => -1, :format => 'json' }
     assert_response :missing
+    
+    #try to delete other user than self
+    delete :delete, { :user_id => people(:contact).id, :format => 'json' },  { :session_id => sessions(:session4).id }
+    assert_response :forbidden
+    
   end
   
   def test_add_friend
@@ -132,7 +143,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert friend.contacts.include?(user)
     
     # breakup friendship
-    delete :remove_friend, { :user_id => people(:valid_person), :friend_id => people(:friend).id, :format => 'json' }
+    delete :remove_friend, { :user_id => people(:valid_person).id, :friend_id => people(:friend).id, :format => 'json' }, { :session_id => sessions(:session1).id }
     assert_response :success
    
     #check that no more friends
@@ -148,17 +159,17 @@ class PeopleControllerTest < ActionController::TestCase
     assert user.requested_contacts.include?(requested)
     assert requested.pending_contacts.include?(user)
     
+    #Try to breakup from wrong firection (unauthorized)
+    delete :remove_friend, { :user_id => people(:requested).id, :friend_id => people(:valid_person).id , :format => 'json' }
+    assert_response :forbidden
+    
     # breakup friendship
-    delete :remove_friend, { :user_id => people(:valid_person), :friend_id => people(:requested).id, :format => 'json' }
+    delete :remove_friend, { :user_id => people(:valid_person).id, :friend_id => people(:requested).id, :format => 'json' }
     assert_response :success
     
     #check that no more requested
     assert ! user.requested_contacts.include?(requested)
     assert ! requested.pending_contacts.include?(user)
-    
-    #test routing
-   # options = { :controller => "people", :action => "remove_friend", :user_id => "hfr2kf38s7", :friend_id => "f229f" }
-   #assert_routing "people/hfr2kf38s7/@friends/f229f", options
     
   end
 

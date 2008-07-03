@@ -13,6 +13,7 @@ class PeopleTest < ActionController::IntegrationTest
 
       ossi.updates_person_details_with({ :id => people(:test).id, 
                                          :person => { :email => "j@example.org" }})
+      response_json = ossi.gets_person_details({ :id => people(:test).id })  
       ossi.deletes_account({ :id => people(:test).id })
     end
   end

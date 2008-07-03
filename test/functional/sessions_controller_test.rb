@@ -10,8 +10,6 @@ class SessionsControllerTest < ActionController::TestCase
     @controller = SessionsController.new
     @request = ActionController::TestRequest.new
     @response = ActionController::TestResponse.new
-
-    @first_id = sessions(:session1).id
   end
   
   def test_create
@@ -26,6 +24,9 @@ class SessionsControllerTest < ActionController::TestCase
 
     post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "tesaoeulcrhti", :format => 'json'}
     assert_response :unauthorized
+    
+    post :create, { :username => "testi", :password => "testi2513", :client_name => "ossi", :client_password => "t23452esaoeulcrhti", :format => 'json'}
+    assert_response :unauthorized
   end
   
   def test_destroy
@@ -35,15 +36,15 @@ class SessionsControllerTest < ActionController::TestCase
     # destroy
     delete :destroy, {:format => 'json'}
     assert_response :success
+    assert_nil session[:session_id]
   end
   
   def test_routing
-     with_options :controller => 'sessions'  do |test|
-       test.assert_routing({ :method => 'post', :path => '/session'}, 
-         {  :action => 'create', :format => 'json' })
-       test.assert_routing({ :method => 'delete', :path => '/session'}, 
-            {  :action => 'destroy', :format => 'json' })
-         
-     end
-   end
+    with_options :controller => 'sessions', :format => 'json'    do |test|
+      test.assert_routing({ :method => 'post', :path => '/session'}, 
+        {  :action => 'create'})
+      test.assert_routing({ :method => 'delete', :path => '/session'}, 
+        {  :action => 'destroy' }) 
+    end
+  end
 end

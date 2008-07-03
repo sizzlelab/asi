@@ -143,6 +143,7 @@ module COSTestingDSL
     json = JSON.parse(response.body)
     assert_not_nil json["id"]
     assert_equal options[:id], json["id"]
+    return json
   end
 
   def updates_person_details_with(options)
@@ -156,12 +157,14 @@ module COSTestingDSL
   def deletes_account(options)
     delete "/people/#{options[:id]}/@self", options
     assert_response :success
+    get "/people/#{options[:id]}/@self"
+    assert_response :unauthorized
   end
 
   def logs_out
     delete "/session"
     assert_response :success
-    assert_nil session["session_id"]
+    assert_nil session[:session_id]
   end
 
   private
