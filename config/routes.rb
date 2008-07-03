@@ -1,5 +1,15 @@
 ActionController::Routing::Routes.draw do |map|
 
+  map.connect '/appdata/:user_id/@self/:app_id', :controller => 'client_data',
+                                                 :action => 'show',
+                                                 :format => 'json',
+                                                 :conditions => { :method => :get}
+
+  map.connect '/appdata/:user_id/@self/:app_id', :controller => 'client_data',
+                                                 :action => 'update',
+                                                 :format => 'json',
+                                                 :conditions => { :method => :put}
+
   map.connect '/appdata/:app_id/@collections', :controller => 'collections', 
                                                :action => 'index', 
                                                :format => 'json', 
@@ -60,14 +70,13 @@ ActionController::Routing::Routes.draw do |map|
                                                       :format => 'json',
                                                       :conditions => { :method => :delete }
   
-  
   map.connect '/session', :controller => 'sessions',
                           :action => 'destroy',
                           :format => 'json',
                           :conditions => { :method => :delete }                                          
                      
   
-  map.connect '/session',  :controller => 'sessions',
+  map.connect '/session', :controller => 'sessions',
                           :action => 'create',
                           :format => 'json',
                           :conditions => { :method => :post}                                            

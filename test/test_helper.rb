@@ -161,9 +161,10 @@ module COSTestingDSL
   def logs_out
     delete "/session"
     assert_response :success
-    assert_nil session["user"]
-    assert_nil session["client"]
+    assert_nil session["session_id"]
   end
+
+  private
 
   def subset(a, b)
     if (a == b)
