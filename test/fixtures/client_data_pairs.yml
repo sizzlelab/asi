@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  client_data_set_id: 1
+  key: MyString
+  value: MyOtherString
+
+two:
+  client_data_set_id: 1
+  key: MyAnotherString
+  value: MyYetAnotherString
