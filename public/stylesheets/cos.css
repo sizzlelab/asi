@@ -39,5 +39,6 @@ div.method {
 
 div.footer {
     font-size : x-small;
-    text-align : right
+    text-align : right;
+    margin-top : 4em;
 }
