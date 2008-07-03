@@ -6,5 +6,8 @@
   </head>
   <body>
     <%= yield %>
+    <div class="footer">
+      OtaSizzle Common Services <%= render :partial => "layouts/version" %> built <%= render :partial => "layouts/build_date" %>
+    </div>
   </body>
 </html>

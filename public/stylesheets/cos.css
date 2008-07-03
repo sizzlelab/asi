@@ -36,3 +36,8 @@ th {
 div.method {
     margin-left : 2em;
 }
+
+div.footer {
+    font-size : x-small;
+    text-align : right
+}
