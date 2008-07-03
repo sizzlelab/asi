@@ -2,7 +2,7 @@
 class SessionsController < ApplicationController
   before_filter :ensure_login, :only => :destroy
   before_filter :ensure_logout, :only => [:new, :create]
-   
+ 
   def create
     @session = Session.new({ :username => params[:username], :password => params[:password], :client_name => params[:client_name], :client_password => params[:client_password]})
     if @session.save

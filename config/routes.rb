@@ -75,11 +75,15 @@ ActionController::Routing::Routes.draw do |map|
                           :format => 'json',
                           :conditions => { :method => :delete }                                          
                      
-  
   map.connect '/session', :controller => 'sessions',
                           :action => 'create',
                           :format => 'json',
                           :conditions => { :method => :post}                                            
+
+  map.connect '/session', :controller => 'sessions',
+                          :action => 'index',
+                          :format => 'html',
+                          :conditions => { :method => :get }                                            
 
   map.root :controller => 'application',
            :action => 'index',
