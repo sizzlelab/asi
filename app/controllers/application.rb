@@ -22,21 +22,31 @@ class ApplicationController < ActionController::Base
   def index
   end
 
-
-# FROM AUTHENTICATION MODULE
-
-  def ensure_login
+  def ensure_person_login
     unless @user
-      flash[:notice] = "Please login to continue"
-      logger.debug "NOT LOGGED IN:" + @user.inspect
+      flash[:notice] = "Please login as a user to continue"
       render :status => :unauthorized and return
     end
   end
  
-  def ensure_logout
+  def ensure_person_logout
     if @user
       flash[:notice] = "You must logout before you can login or register"
-      redirect_to(root_url)
+      render :status => :conflict and return
+    end
+  end
+  
+  def ensure_client_login
+    unless @client
+      flash[:notice] = "Please login as a client to continue"
+      render :status => :unauthorized and return
+    end
+  end
+ 
+  def ensure_client_logout
+    if @client
+      flash[:notice] = "You must logout client before you can login"
+      render :status => :conflict and return
     end
   end
  

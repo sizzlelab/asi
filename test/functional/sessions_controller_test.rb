@@ -14,11 +14,25 @@ class SessionsControllerTest < ActionController::TestCase
   
   def test_create
     post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "testi", :format => 'json'}
-    assert_response :success    
-
+    assert_response :success
+    assert_not_nil session[:session_id]
+    
     delete :destroy, {:format => 'json'}
     assert_response :success
 
+    #test with user only
+    post :create, { :username => "testi", :password => "testia,.u", :format => 'json'}
+    assert_response :unauthorized
+    
+    #test with client only
+    post :create, { :client_name => "ossi", :client_password => "testi", :format => 'json'}
+    assert_response :success
+    assert_not_nil session[:session_id]
+    
+    delete :destroy, {:format => 'json'}
+    assert_response :success
+    
+    #test with erroneus login information
     post :create, { :username => "testi", :password => "testia,.u", :client_name => "ossi", :client_password => "testi", :format => 'json'}
     assert_response :unauthorized
 
@@ -33,6 +47,15 @@ class SessionsControllerTest < ActionController::TestCase
     # frist create the session to destroy
     post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "testi", :format => 'json'}
     assert_response :success
+    # destroy
+    delete :destroy, {:format => 'json'}
+    assert_response :success
+    assert_nil session[:session_id]
+    
+    # create a client only session to destroy
+    post :create, { :client_name => "ossi", :client_password => "testi", :format => 'json'}
+    assert_response :success
+    assert_not_nil session[:session_id]
     # destroy
     delete :destroy, {:format => 'json'}
     assert_response :success

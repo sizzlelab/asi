@@ -46,7 +46,7 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_create
      # create valid user
-     post :create, { :person => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov" }, :format => 'json'}
+     post :create, { :person => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov" }, :format => 'json'}, { :session_id => sessions(:client_only_session).id }
      assert_response :success 
      user = assigns["person"] 
      assert_not_nil user
