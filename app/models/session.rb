@@ -6,8 +6,8 @@ class Session < ActiveRecord::Base
   before_validation :authenticate_person
   before_validation :authenticate_client
 
-  validates_presence_of :person_match, :message => 'for your name and password could not be found',
-                                       :unless => :session_has_been_associated_with_person?
+  #validates_presence_of :person_match, :message => 'for your name and password could not be found',
+  #                                     :unless => :session_has_been_associated_with_person?
   validates_presence_of :client_match, :message => 'for your clients name and password could not be found',
                                        :unless => :session_has_been_associated_with_client?
  
@@ -17,7 +17,9 @@ class Session < ActiveRecord::Base
   private
  
   def authenticate_person
-    self.person_match = Person.find_by_username_and_password(self.username, self.password) unless session_has_been_associated_with_person?
+    if self.username
+      self.person_match = Person.find_by_username_and_password(self.username, self.password) unless session_has_been_associated_with_person?
+    end
   end
 
   def authenticate_client
@@ -25,7 +27,9 @@ class Session < ActiveRecord::Base
   end
  
   def associate_session_to_person
-    self.person_id ||= self.person_match.id
+    if self.person_match
+      self.person_id ||= self.person_match.id
+    end
   end
 
   def associate_session_to_client

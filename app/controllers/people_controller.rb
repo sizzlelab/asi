@@ -1,6 +1,9 @@
 class PeopleController < ApplicationController
   
-  before_filter :ensure_login, :except  => :create
+  before_filter :ensure_client_login 
+  before_filter :ensure_person_logout, :only  => :create
+  
+  
   
   #TODO better checking for authorisation before making changes 
   # (also authorization for applications?)

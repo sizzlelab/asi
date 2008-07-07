@@ -5,8 +5,10 @@
 </p>
 
 <% methods = [ { :name => "POST", 
+
                  :description => "Starts a new session. If no username and password are provided,
                                  a session is started only for the client.", 
+
                  :parameters => [ { :client_name => "The client's name." },
                                   { :client_password => "The client's password." },
                                   { :username => "The user's name (optional)." },

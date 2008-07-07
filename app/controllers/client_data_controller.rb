@@ -1,6 +1,6 @@
 class ClientDataController < ApplicationController
 
-  before_filter :ensure_login
+  before_filter :ensure_person_login
   before_filter :get_or_create
 
   def show

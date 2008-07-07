@@ -27,13 +27,6 @@ CREATE TABLE `clients` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `collection_items` (
-  `id` int(11) NOT NULL auto_increment,
-  `created_at` datetime default NULL,
-  `updated_at` datetime default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `collections` (
   `id` varchar(255) NOT NULL default '',
   `read_only` tinyint(1) default NULL,
@@ -136,8 +129,6 @@ INSERT INTO schema_migrations (version) VALUES ('20080616101055');
 
 INSERT INTO schema_migrations (version) VALUES ('20080616120429');
 
-INSERT INTO schema_migrations (version) VALUES ('20080617070115');
-
 INSERT INTO schema_migrations (version) VALUES ('20080617073013');
 
 INSERT INTO schema_migrations (version) VALUES ('20080617073028');
@@ -161,8 +152,6 @@ INSERT INTO schema_migrations (version) VALUES ('20080623120054');
 INSERT INTO schema_migrations (version) VALUES ('20080623141403');
 
 INSERT INTO schema_migrations (version) VALUES ('20080624113429');
-
-INSERT INTO schema_migrations (version) VALUES ('20080624115845');
 
 INSERT INTO schema_migrations (version) VALUES ('20080627080113');
 

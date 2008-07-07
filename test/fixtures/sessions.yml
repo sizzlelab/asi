@@ -18,12 +18,20 @@ session2:
 session3:
    id: 15
    person_id: 6
+   client_id: 1
    ip_address: 127.0.0.1
    path:
 
 session4:
    id: 22
    person_id: 4
+   client_id: 1   
    ip_address: 127.0.0.1
    path:
 
+client_only_session:
+   id: 23
+   client_id: 1   
+   ip_address: 127.0.0.1
+   path:
+   
