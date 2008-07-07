@@ -1,5 +1,10 @@
 ActionController::Routing::Routes.draw do |map|
 
+  map.connect '/appdata/user_id/@self/app_id', :controller => 'client_data',
+                                               :action => 'show',
+                                               :format => 'html',
+                                               :conditions => { :method => :get }
+
   map.connect '/appdata/:user_id/@self/:app_id', :controller => 'client_data',
                                                  :action => 'show',
                                                  :format => 'json',
