@@ -10,15 +10,10 @@
   <table>
   <% parameters.each do |parameter| %>
     <tr><th><%= parameter.to_a[0][0] %></th><td>
-      <% if parameter.to_a[0][1].class == Hash%>
-        The value of <code><%= parameter.to_a[0][0] %></code> should be a hash that contains:
-        <table>
-        <% parameter.to_a[0][1].each do |inner_param, desc|%>
-          <tr><th><%= inner_param %></th><td><%= desc %></td></tr>
-        <% end %>  
-        </table>
+      <% if parameter.to_a[0][1].class == Array%>
+      <%= render :partial => "doc/inner_parameters", :locals => { :parameters => parameter.to_a[0][1] } %>
       <%else%>
-        <%= parameter.to_a[0][1]%> <h3><%= parameter.to_a[0][1].class%></h3>
+        <%= parameter.to_a[0][1]%>
       <%end%>
       
     </td></tr>

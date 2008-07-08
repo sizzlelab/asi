@@ -22,17 +22,16 @@
                  :name => "PUT",
                  :description => "Update (or add) information to user's profile",
                  :parameters => [{
-                                    :person => {
-                                          :name => {
-                                            :given_name  => "Person's first name",
-                                            :family_name => "Persons's family name"
-                                          },
+                                    :person => [
+                                          {:status_message => "Person's current statusmessage"},
+                                          {:birthdate => "Person's birthdate as date"},
+                                          {:gender    => "Person's gender (Male/Female)"},
+                                          {:name => [
+                                            {:given_name  => "Person's first name"},
+                                            {:family_name => "Persons's family name"}
+                                          ]},
                                           
-                                          :status_message => "Person's current statusmessage",
-                                          :birthdate => "Person's birthdate as date",
-                                          :gender    => "Person's gender (Male/Female)",
-                                          
-                                    }
+                                    ]
                  }]
                }
                   
