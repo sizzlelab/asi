@@ -90,6 +90,7 @@ class Person < ActiveRecord::Base
   def name=(name)
     create_person_name(name)
   end
+    
 
 ## FROM AUTH 
       
