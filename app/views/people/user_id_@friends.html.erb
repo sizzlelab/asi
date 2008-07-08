@@ -1,7 +1,10 @@
 <h1><code>/people/&lt;user_id&gt;/@friends</code></h1>
 <p>
-  A resource for the accessing the friends of the user specified by <tt>user_id</tt>
+  A resource for accessing the friends of the user specified by <tt>user_id</tt>
 </p>
+
+<p>All the methods except GET require that the user with <tt>user_id</tt> is logged in &ndash; otherwise, 
+<em>403 forbidden</em> is returned.</p>
 
 <% methods = [ { :name => "POST", 
 
