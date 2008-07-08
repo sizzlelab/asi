@@ -8,7 +8,11 @@
                { :name => "POST",
                  :description => "Creates a new collection.",
                  :parameters => [ { :owner => "The id of the user owning the new collection (optional). If this is not
-                                               specified, the collection will belong only to the application." } ] } ] %>
+                                               specified, the collection will belong only to the application." },
+                                  { :read_only => "Whether the new collection is read only. Read only collections can be written
+                                                   to only by their owner; otherwise, the owner and their friends all have write
+                                                   access. An empty value, '0' or 'false' are interpreted as <code>false</code>, 
+                                                   all other values are <code>true</code>." } ] } ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
 
