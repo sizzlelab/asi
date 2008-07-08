@@ -55,11 +55,16 @@ ActionController::Routing::Routes.draw do |map|
                           :format => 'html',
                           :conditions => { :method => :get }
 
-  map.connect '/people/:user_id/@self', :controller => 'people', 
-                                   :action => 'show', 
-                                   :format => 'json', 
-                                   :conditions => { :method => :get }
+  map.connect 'people/user_id/@self', :controller => 'people',
+                                       :action => 'user_id_@self',                                 
+                                       :format => 'html',
+                                       :conditions => { :method => :get }
 
+  map.connect '/people/:user_id/@self', :controller => 'people', 
+                                        :action => 'show', 
+                                        :format => 'json', 
+                                        :conditions => { :method => :get }
+                          
   map.connect '/people/:user_id/@self', :controller => 'people', 
                                    :action => 'update', 
                                    :format => 'json', 
@@ -68,12 +73,17 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'people/:user_id/@self', :controller => 'people',
                                   :action => 'delete',
                                   :format => 'json',
-                                  :conditions => { :method => :delete }
+                                  :conditions => { :method => :delete }  
 
   map.connect '/people',  :controller => 'people',
                           :action => 'create',
                           :format => 'json',
                           :conditions => { :method => :post}
+
+  map.connect '/people/user_id/@friends', :controller => 'people',
+                                           :action => 'user_id_@friends',
+                                           :format => 'html',
+                                           :conditions => { :method => :get }                          
                                                                 
   map.connect '/people/:user_id/@friends', :controller => 'people',
                                            :action => 'get_friends',
@@ -85,6 +95,10 @@ ActionController::Routing::Routes.draw do |map|
                                            :format => 'json',
                                            :conditions => { :method => :post }
                                             
+  map.connect '/people/:user_id/@friends/:friend_id', :controller => 'people',
+                                                      :action => 'user_id_@friends_friend_id',
+                                                      :format => 'html',
+                                                      :conditions => { :method => :get }
   map.connect '/people/:user_id/@friends/:friend_id', :controller => 'people',
                                                       :action => 'remove_friend',
                                                       :format => 'json',

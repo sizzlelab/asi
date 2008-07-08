@@ -9,14 +9,19 @@
 <h4>Parameters</h4>
   <table>
   <% parameters.each do |parameter| %>
-    <tr><th><%= parameter.to_a[0][0] %></th><td>
+    <tr>
+      
       <% if parameter.to_a[0][1].class == Array%>
+      <th><%= parameter.to_a[0][0] %> &nbsp;&nbsp;--></th>
+      <td>
       <%= render :partial => "doc/inner_parameters", :locals => { :parameters => parameter.to_a[0][1] } %>
+      </td>
       <%else%>
-        <%= parameter.to_a[0][1]%>
+        <th><%= parameter.to_a[0][0] %></th>
+        <td><%= parameter.to_a[0][1]%></td>
       <%end%>
       
-    </td></tr>
+    </tr>
   <% end %>
   </table>
 <% end %>
