@@ -24,8 +24,8 @@ table {
 }
 
 table.inner_parameters {
-    border-style: solid;
-    border-left-width: thin;
+    border-style: ridge;
+    border-left-width: medium;
     border-right-width: 0;
     border-top-width: 0;
     border-bottom-width: 0;

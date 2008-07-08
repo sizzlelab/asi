@@ -38,3 +38,14 @@
                   ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+
+<h2>Subresources</h2>
+<ul>
+<li>
+  <a href="people/user_id/@self"><tt>/people/&lt;user_id&gt;/@self</tt></a> &ndash; single user
+</li>
+<li>
+  <a href="people/user_id/@friends"><tt>/people/&lt;user_id&gt;/@friends</tt></a> &ndash; 
+  friends of a specific user
+</li>
+</ul>
