@@ -1,0 +1,12 @@
+<table class="inner_parameters">
+  <% parameters.each do |inner_param|%>
+    <tr><th><%= inner_param.to_a[0][0] %></th><td>
+    
+    <% if inner_param.to_a[0][1].class == Array%>
+      <%= render :partial => "doc/inner_parameters", :locals => { :parameters => inner_param.to_a[0][1] } %>
+    <%else%>
+      <%= inner_param.to_a[0][1] %>
+    <%end%>
+    </td></tr>
+  <% end %>  
+</table>

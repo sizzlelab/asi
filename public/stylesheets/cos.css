@@ -23,6 +23,15 @@ table {
     font-size : smaller;
 }
 
+table.inner_parameters {
+    border-style: solid;
+    border-left-width: thin;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    
+}
+
 tt {
     background-color : #eeeeee;
     padding : 2px;
