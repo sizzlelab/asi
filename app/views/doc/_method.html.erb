@@ -9,7 +9,19 @@
 <h4>Parameters</h4>
   <table>
   <% parameters.each do |parameter| %>
-    <tr><th><%= parameter.to_a[0][0] %></th><td><%= parameter.to_a[0][1] %></td></tr>
+    <tr><th><%= parameter.to_a[0][0] %></th><td>
+      <% if parameter.to_a[0][1].class == Hash%>
+        The value of <code><%= parameter.to_a[0][0] %></code> should be a hash that contains:
+        <table>
+        <% parameter.to_a[0][1].each do |inner_param, desc|%>
+          <tr><th><%= inner_param %></th><td><%= desc %></td></tr>
+        <% end %>  
+        </table>
+      <%else%>
+        <%= parameter.to_a[0][1]%> <h3><%= parameter.to_a[0][1].class%></h3>
+      <%end%>
+      
+    </td></tr>
   <% end %>
   </table>
 <% end %>
