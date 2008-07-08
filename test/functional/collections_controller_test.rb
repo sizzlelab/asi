@@ -9,7 +9,7 @@ class CollectionsControllerTest < ActionController::TestCase
   end
 
   def test_index
-    get :index, { :app_id => clients(:one).id, :format => 'json'}, { :session_id => sessions(:session1).id }
+    get :index, { :app_id => clients(:one).id, :format => 'json' }, { :session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["collections"]
 
@@ -179,4 +179,23 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal(old_item_count+1, assigns["collection"].items.count)
   end    
+
+  def test_metadata
+    put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
+                   :collection => { :metadata => { :foo => "bar", :bar => "Foobar" } } },
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal("bar", json["metadata"]["foo"])
+    assert_equal("Foobar", json["metadata"]["bar"])
+
+    put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
+                   :collection => { :metadata => { :foo2 => "bar", :bar => "foo" } } },
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal("bar", json["metadata"]["foo2"])
+    assert_equal("bar", json["metadata"]["foo"])
+    assert_equal("foo", json["metadata"]["bar"])
+  end
 end
