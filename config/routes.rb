@@ -99,6 +99,7 @@ ActionController::Routing::Routes.draw do |map|
                                                       :action => 'user_id_@friends_friend_id',
                                                       :format => 'html',
                                                       :conditions => { :method => :get }
+                                                      
   map.connect '/people/:user_id/@friends/:friend_id', :controller => 'people',
                                                       :action => 'remove_friend',
                                                       :format => 'json',

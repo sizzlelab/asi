@@ -1,6 +1,6 @@
 <h1><code>/people</code></h1>
 <p>
-  A resource for the accessing the users of OtaSizzle.
+  A resource for accessing the users of OtaSizzle.
 </p>
 
 <% methods = [ { :name => "POST", 
@@ -11,29 +11,7 @@
                                   { :password => "User's password." },
                                   { :email    => "User's email address. Must be valid."} ] },
 
-               { :name => "DELETE", 
-                 :description => "Deletes the user identified by <code>user_id</code> parameter. The user must be logged in to be able to delete his/her own account.",
-                 
-                 :parameters => [ { :user_id  => "The id of the user to be removed."}]
-                 
-               },
                
-               {
-                 :name => "PUT",
-                 :description => "Update (or add) information to user's profile",
-                 :parameters => [{
-                                    :person => [
-                                          {:status_message => "Person's current statusmessage"},
-                                          {:birthdate => "Person's birthdate as date"},
-                                          {:gender    => "Person's gender (Male/Female)"},
-                                          {:name => [
-                                            {:given_name  => "Person's first name"},
-                                            {:family_name => "Persons's family name"}
-                                          ]},
-                                          
-                                    ]
-                 }]
-               }
                   
                   ] %>
 
