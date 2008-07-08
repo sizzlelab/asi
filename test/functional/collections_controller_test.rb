@@ -9,7 +9,7 @@ class CollectionsControllerTest < ActionController::TestCase
   end
 
   def test_index
-    get :index, { :app_id => clients(:one).id}, { :session_id => sessions(:session1).id }
+    get :index, { :app_id => clients(:one).id, :format => 'json'}, { :session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["collections"]
 

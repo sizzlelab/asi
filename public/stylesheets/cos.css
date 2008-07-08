@@ -30,6 +30,7 @@ tt {
 
 th {
     text-align : left;
+    vertical-align : top;
     padding-right : 2em;
 }
 

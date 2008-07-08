@@ -1,0 +1,19 @@
+<h1><code>/appdata/&lt;app_id&gt;/@collections/&lt;id&gt;</code></h1>
+
+<p>A resource for a specific collection of data.</p>
+
+<% methods = [ { :name => "POST", 
+                 :description => "Adds a new item to the collection.", 
+                 :parameters => [ { :content_type => "The content type of the new collection item. The content types currently 
+                                                      supported are <code>text/*</code> and <code>image/*</code>." },
+                                  { :file => "A file to be added to the collection (optional)." },
+                                  { :title => "The title of the item. If a file is given or content_type is not 
+                                               <code>text/*</code>, this parameter is ignored." },
+                                  { :body => "The body of the item. If a file is given or content_type is not <code>text/*</code>,
+                                              this parameter is ignored." } ] }, 
+
+               { :name => "DELETE", 
+                 :description => "Deletes the collection." } ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+
