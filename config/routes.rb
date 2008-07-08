@@ -15,6 +15,11 @@ ActionController::Routing::Routes.draw do |map|
                                                  :format => 'json',
                                                  :conditions => { :method => :put}
 
+  map.connect '/appdata/app_id/@collections', :controller => 'collections',
+                                              :action => 'index',
+                                              :format => 'html',
+                                              :conditions => { :method => :get }
+
   map.connect '/appdata/:app_id/@collections', :controller => 'collections', 
                                                :action => 'index', 
                                                :format => 'json', 
@@ -24,6 +29,11 @@ ActionController::Routing::Routes.draw do |map|
                                                :action => 'create', 
                                                :format => 'json', 
                                                :conditions => { :method => :post }
+
+  map.connect '/appdata/app_id/@collections/id', :controller => 'collections',
+                                                 :action => 'show',
+                                                 :format => 'html',
+                                                 :conditions => { :method => :get }
 
   map.connect '/appdata/:app_id/@collections/:id', :controller => 'collections',
                                                    :action => 'show',

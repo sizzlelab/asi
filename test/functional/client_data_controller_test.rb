@@ -13,9 +13,16 @@ class ClientDataControllerTest < ActionController::TestCase
     get :show, { :app_id => clients(:one).id, :user_id => people(:valid_person).id, :format => 'json' }, 
                { :session_id => sessions(:session1).id }
     assert_response :success
-    
+    assert_not_nil assigns["set"]
     json = JSON.parse(@response.body)
     client_data_pairs.each { |item| assert_equal json[item.key], item.value }
+  end
+
+  def test_authorization
+    get :show, { :app_id => clients(:two).id, :user_id => people(:valid_person).id, :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :forbidden
+    assert_nil assigns["set"]
   end
 
   def test_put

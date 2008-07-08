@@ -1,1 +1,20 @@
-<h1>Collections</h1>
+<h1><code>/appdata/&lt;app_id&gt;/@collections</code></h1>
+
+<p>A resource for application-specific collections of data.</p>
+
+<% methods = [ { :name => "GET",
+                 :description => "Retrieves a list of all collections accessible in the current session." },
+
+               { :name => "POST",
+                 :description => "Creates a new collection.",
+                 :parameters => [ { :owner => "The id of the user owning the new collection (optional). If this is not
+                                               specified, the collection will belong only to the application." } ] } ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+
+<h2>Subresources</h2>
+<li>
+  <a href="appdata/app_id/@collections/id"><tt>/appdata/&lt;app_id&gt;/@collections/&lt;id&gt;</tt></a> &ndash; 
+  a specific collection
+</li>
+
