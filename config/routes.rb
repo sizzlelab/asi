@@ -104,6 +104,22 @@ ActionController::Routing::Routes.draw do |map|
                                                       :action => 'remove_friend',
                                                       :format => 'json',
                                                       :conditions => { :method => :delete }
+
+  map.connect '/people/user_id/@location', :controller => 'locations',
+                                            :action => 'index',
+                                            :format => 'html',
+                                            :conditions => { :method => :get }                                                      
+
+  map.connect '/people/:user_id/@location', :controller => 'locations',
+                                            :action => 'get',
+                                            :format => 'json',
+                                            :conditions => { :method => :get }
+                                            
+ 
+  map.connect '/people/:user_id/@location', :controller => 'locations',
+                                            :action => 'update',
+                                            :format => 'json',
+                                            :conditions => { :method => :put }
   
   map.connect '/session', :controller => 'sessions',
                           :action => 'destroy',

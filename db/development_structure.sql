@@ -27,13 +27,6 @@ CREATE TABLE `clients` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `collection_items` (
-  `id` int(11) NOT NULL auto_increment,
-  `created_at` datetime default NULL,
-  `updated_at` datetime default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `collection_metadata_pairs` (
   `id` int(11) NOT NULL auto_increment,
   `key` varchar(255) default NULL,
@@ -76,6 +69,20 @@ CREATE TABLE `images` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `locations` (
+  `id` int(11) NOT NULL auto_increment,
+  `person_id` varchar(255) default NULL,
+  `latitude` float default NULL,
+  `longitude` float default NULL,
+  `altitude` float default NULL,
+  `vertical_accuracy` float default NULL,
+  `horizontal_accuracy` float default NULL,
+  `label` varchar(255) default NULL,
+  `created_at` datetime default NULL,
+  `updated_at` datetime default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `ownerships` (
   `id` int(11) NOT NULL auto_increment,
   `collection_id` varchar(255) default NULL,
@@ -105,7 +112,7 @@ CREATE TABLE `person_names` (
   `updated_at` datetime default NULL,
   `person_id` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `person_specs` (
   `id` int(11) NOT NULL auto_increment,
@@ -146,8 +153,6 @@ INSERT INTO schema_migrations (version) VALUES ('20080616101055');
 
 INSERT INTO schema_migrations (version) VALUES ('20080616120429');
 
-INSERT INTO schema_migrations (version) VALUES ('20080617070115');
-
 INSERT INTO schema_migrations (version) VALUES ('20080617073013');
 
 INSERT INTO schema_migrations (version) VALUES ('20080617073028');
@@ -172,8 +177,6 @@ INSERT INTO schema_migrations (version) VALUES ('20080623141403');
 
 INSERT INTO schema_migrations (version) VALUES ('20080624113429');
 
-INSERT INTO schema_migrations (version) VALUES ('20080624115845');
-
 INSERT INTO schema_migrations (version) VALUES ('20080627080113');
 
 INSERT INTO schema_migrations (version) VALUES ('20080627080339');
@@ -197,3 +200,5 @@ INSERT INTO schema_migrations (version) VALUES ('20080703053432');
 INSERT INTO schema_migrations (version) VALUES ('20080703053611');
 
 INSERT INTO schema_migrations (version) VALUES ('20080708122536');
+
+INSERT INTO schema_migrations (version) VALUES ('20080709123150');

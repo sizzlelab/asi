@@ -49,6 +49,11 @@ class ApplicationController < ActionController::Base
       render :status => :conflict and return
     end
   end
+  
+  def ensure_same_as_logged_person(target_person_id)
+    stored_session = Session.find_by_id(session[:session_id])
+    return @user != nil && stored_session != nil && target_person_id == stored_session.person_id
+  end
  
   protected
  
