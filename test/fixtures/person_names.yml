@@ -11,3 +11,9 @@ invalid_person_name:
   given_name: MyString
   family_name: MyString
   person_id: 2
+
+three:
+  id: 3
+  given_name: matti
+  family_name: k
+  person_id: 3
