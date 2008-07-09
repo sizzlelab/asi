@@ -41,7 +41,7 @@ class PeopleController < ApplicationController
   end
 
   def update
-    if ! check_authorization(params['user_id'])
+    if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
     @person = Person.find_by_id(params['user_id'])
@@ -63,7 +63,7 @@ class PeopleController < ApplicationController
     if ! @person  
       render :status => 404 and return
     end
-    if ! check_authorization(params['user_id'])
+    if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
     @person.destroy
@@ -76,7 +76,7 @@ class PeopleController < ApplicationController
     # If there is already a pending connection requested from the other direction, 
     # change friendship status to accepted.
     
-    if ! check_authorization(params['user_id'])
+    if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
     
@@ -107,7 +107,7 @@ class PeopleController < ApplicationController
   end
   
   def remove_friend
-    if ! check_authorization(params['user_id'])
+    if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
     @person = Person.find_by_id(params['user_id'])
@@ -123,12 +123,4 @@ class PeopleController < ApplicationController
   
   private
 
-  #Check that logged user is the same as the edited user
-  def check_authorization(target_person_id)
-    # if session[:session_id] == nil
-    #   return false
-    # end
-    stored_session = Session.find_by_id(session[:session_id])
-    return @user != nil && stored_session != nil && target_person_id == stored_session.person_id
-  end
 end

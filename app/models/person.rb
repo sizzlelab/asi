@@ -9,6 +9,7 @@ class Person < ActiveRecord::Base
 
   has_one :person_name
   has_one :person_spec
+  has_one :location
   
   has_many :sessions, :dependent => :destroy
 

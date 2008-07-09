@@ -1,0 +1,27 @@
+<h1><code>/people/&lt;user_id&gt;/@location</code></h1>
+<p>
+  A resource for accessing the location of the user specified by <tt>user_id</tt>. 
+</p>
+
+<% methods = [ { :name => "PUT", 
+
+                 :description => "Sets the location of the user. Only the submitted fields will be updated. The modified user must be logged in.", 
+
+                 :parameters => [ { :latitude  => "Latitude coordinates in Decimal Degree format" },
+                                  { :longitude => "Longitude coordinate sin Decimal Degree format" },
+                                  { :altitude  => "Altitude in meters"},
+                                  { :label     => "Text label given to current location" },
+                                  { :horizontal_accuracy => "Accuray of horizontal location" },
+                                  { :vertical_accuracy   => "Accuracy of altitude"},
+                                  
+                                ] },
+              {
+                :name => "GET",
+                :description => "Gets the location of the user. The returned structure is similar to PUT-methods parameter structure",
+                
+              },
+               
+                  
+                  ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>

@@ -1,0 +1,16 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+full:
+  latitude: 60.163389841749
+  longitude: 24.857125767506
+  altitude: 38.0
+  vertical_accuracy: 58.0
+  horizontal_accuracy: 115.657775878906
+  label: Otaniemen Alepa
+
+coordinates_only:
+  latitude: 60.187689305125
+  longitude: -124.804007068817
+  
+label_only:
+  label: Töissä
