@@ -12,7 +12,8 @@
                                   { :read_only => "Whether the new collection is read only. Read only collections can be written
                                                    to only by their owner; otherwise, the owner and their friends all have write
                                                    access. An empty value, '0' or 'false' are interpreted as <code>false</code>, 
-                                                   all other values are <code>true</code>." } ] } ] %>
+                                                   all other values are <code>true</code>." },
+                                  { :metadata => [{ :any_key => "Any string" }, { :another_key => "Another string" } ] } ] } ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
 
