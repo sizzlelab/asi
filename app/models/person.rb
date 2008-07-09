@@ -114,4 +114,11 @@ class Person < ActiveRecord::Base
     end
     return person_hash.to_json(*a)
   end
+
+  def self.find_with_ferret(query)
+    names = PersonName.find_with_ferret(query)
+    people = []
+    names.each { |name| people << name.person }
+    return people
+  end
 end

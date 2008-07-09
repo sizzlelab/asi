@@ -9,6 +9,7 @@ class PeopleControllerTest < ActionController::TestCase
     @controller = PeopleController.new
     @request = ActionController::TestRequest.new
     @response = ActionController::TestResponse.new
+    PersonName.rebuild_index
   end
   
   # TODO more comprehensive tests
@@ -45,24 +46,23 @@ class PeopleControllerTest < ActionController::TestCase
   end
   
   def test_create
-     # create valid user
-     post :create, { :person => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov" }, :format => 'json'}, { :session_id => sessions(:client_only_session).id }
-     assert_response :success 
-     user = assigns["person"] 
-     assert_not_nil user
-     
-     # create another user
-     post :create, { :person => {:username  => "secondie", :password => "newbuzz", :email => "secondie@testland.gov" }, :format => 'json'}
-     assert_response :success  
-     
-     # check that the created user can be found
+    # create valid user
+    post :create, { :person => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov" }, :format => 'json'}, { :session_id => sessions(:client_only_session).id }
+    assert_response :success 
+    user = assigns["person"] 
+    assert_not_nil user
+    
+    # create another user
+    post :create, { :person => {:username  => "secondie", :password => "newbuzz", :email => "secondie@testland.gov" }, :format => 'json'}
+    assert_response :success  
+    
+    # check that the created user can be found
     get :get_by_username, { :username  => "newbie", :format  => 'json' }, { :session_id => sessions(:session1).id }
-     assert_response :success
-     created_user = assigns["person"]
-     assert_equal created_user.username, user.username
-   end
+    assert_response :success
+    created_user = assigns["person"]
+    assert_equal created_user.username, user.username
+  end
 
-  
   def test_update
     # update valid user
     testing_email = "newemail@oldserv.er"
@@ -173,8 +173,25 @@ class PeopleControllerTest < ActionController::TestCase
     
   end
 
+  def test_search
+    search_string = 'matti'
+    get :index, { :format => 'json', :search => search_string }, { :session_id => sessions(:session1) }
+    assert_response :success
+    assert_not_nil assigns["people"]
+    json = JSON.parse(@response.body)
+
+    assert_not_equal 0, json["entries"].length
+
+    reg = Regexp.new('matti')
+
+    json["entries"].each do |person|
+      assert_not_nil person["name"]
+      assert person["name"]["given_name"] =~ reg || person["name"]["family_name"] =~ reg 
+    end
+  end
+
   def test_routing
-    with_options :controller => 'people', :format => 'json'   do |test|
+    with_options :controller => 'people', :format => 'json' do |test|
       test.assert_routing({ :method => 'post', :path => '/people' }, 
         { :action => 'create' })
       test.assert_routing({ :method => 'get', :path => '/people/hfr2kf38s7/@self' }, 
@@ -189,7 +206,6 @@ class PeopleControllerTest < ActionController::TestCase
         { :action => 'add_friend', :user_id => "hfr2kf38s7" })
       test.assert_routing({ :method => 'delete', :path => '/people/hfr2kf38s7/@friends/f229f' }, 
         { :action => 'remove_friend', :user_id => "hfr2kf38s7", :friend_id => "f229f" })
-     
     end
   end
 end

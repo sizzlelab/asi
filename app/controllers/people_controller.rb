@@ -2,14 +2,15 @@ class PeopleController < ApplicationController
   
   before_filter :ensure_client_login 
   before_filter :ensure_person_logout, :only  => :create
-  
-  
-  
+    
   #TODO better checking for authorisation before making changes 
   # (also authorization for applications?)
-  
   def index
-     @people = Person.find(:all)
+    if params[:search]
+      @people = Person.find_with_ferret(params[:search])
+    else
+      @people = Person.find(:all)
+    end
   end
 
   def show
@@ -32,7 +33,7 @@ class PeopleController < ApplicationController
       @session = @person.sessions.create
      session[:session_id] = @session.id
       #flash[:notice] = "Welcome #{@person.username}, you are now registered"
-      render :status  => 200 and return
+      render :status => 200 and return
     else
       render :status => 500 and return
       # TODO Should return more informative message about what went wrong

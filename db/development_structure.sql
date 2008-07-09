@@ -105,7 +105,7 @@ CREATE TABLE `person_names` (
   `updated_at` datetime default NULL,
   `person_id` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `person_specs` (
   `id` int(11) NOT NULL auto_increment,

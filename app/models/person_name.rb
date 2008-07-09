@@ -1,5 +1,5 @@
 class PersonName < ActiveRecord::Base
-
+  acts_as_ferret :fields => [ :given_name ]
   belongs_to :person
 
   STRING_FIELDS = %w(given_name family_name)
