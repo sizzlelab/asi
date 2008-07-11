@@ -1,8 +1,6 @@
 class Image < ActiveRecord::Base
 
-  # Image sizes
-  FULL_IMAGE_SIZE = '"240x300"'
-  THUMBNAIL_SIZE = '"50x64"'
+  attr_accessor :full_image_size, :thumbnail_size
 
   # Return true for a valid, nonempty image file.
   def valid_file?
@@ -36,8 +34,8 @@ class Image < ActiveRecord::Base
     f.close
 
     # Then convert the source file to a full size image and a thumbnail.
-    img   = system("#{'convert'} '#{source_file}' -resize #{FULL_IMAGE_SIZE} '#{full_size_image_file}'")
-    thumb = system("#{'convert'} '#{source_file}' -resize #{THUMBNAIL_SIZE} '#{thumbnail_file}'")
+    img   = system("#{'convert'} '#{source_file}' -resize #{full_image_size} '#{full_size_image_file}'")
+    thumb = system("#{'convert'} '#{source_file}' -resize #{thumbnail_size} '#{thumbnail_file}'")
     File.delete(source_file) if File.exists?(source_file)
 
     # Both conversions must succeed, else it's an error.

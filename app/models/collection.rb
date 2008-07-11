@@ -55,6 +55,8 @@ class Collection < ActiveRecord::Base
       image = Image.new(:content_type => options[:file].content_type,
                         :filename => options[:file].original_filename, 
                         :data => options[:file].read)
+      image.full_image_size = options[:full_image_size]
+      image.thumbnail_size = options[:thumbnail_size]                  
       if image.valid_file? and image.successful_conversion?
         image.save
         items << image
