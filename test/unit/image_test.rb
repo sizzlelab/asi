@@ -19,10 +19,9 @@ class ImageTest < ActiveSupport::TestCase
   def test_should_resize_image
     image = @image_jpg
     assert image.valid_file?
+    image.full_image_size = '"240x300"'
+    image.thumbnail_size = '"50x64"'
     assert image.successful_conversion?
-    f = File.new("#{RAILS_ROOT}/test/fixtures/testithumb.jpg", "wb")
-    f.write(image.raw_thumbnail)
-    f.close
   end  
    
   def test_should_update_image
