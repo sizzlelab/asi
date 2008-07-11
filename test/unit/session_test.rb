@@ -15,7 +15,4 @@ class SessionTest < ActiveSupport::TestCase
     session_repeat = Session.new(:id => sessions(:session1).id)
     assert ! session_repeat.valid?
   end
-
-
-
 end

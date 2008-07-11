@@ -11,9 +11,7 @@ class PeopleControllerTest < ActionController::TestCase
     @response = ActionController::TestResponse.new
     PersonName.rebuild_index
   end
-  
-  # TODO more comprehensive tests
-  
+    
   def test_index
     # Should find nothing
     get :index, { :format => 'json' }, { :session_id => sessions(:session1).id }
@@ -33,12 +31,12 @@ class PeopleControllerTest < ActionController::TestCase
     #try to show a person with invalid id
     get :show, { :user_id => -1, :format => 'json' }
     assert_response :missing
-    
   end
   
   def test_get_by_username  
     #get person with valid username
-    get :get_by_username, { :username => people(:valid_person).username, :format => 'json' }, { :session_id => sessions(:session1).id }
+    get :get_by_username, { :username => people(:valid_person).username, :format => 'json' }, 
+                          { :session_id => sessions(:session1).id }
     assert_response :success
     assert_equal(assigns["person"].username, people(:valid_person).username )
     #try to get person with non existing username
@@ -48,15 +46,13 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_create
     # create valid user
-    post :create, { :person => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov" }, :format => 'json'}, { :session_id => sessions(:client_only_session).id }
+    post :create, { :person => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov" }, 
+                    :format => 'json'}, 
+                  { :session_id => sessions(:client_only_session).id }
     assert_response :success 
     user = assigns["person"] 
     assert_not_nil user
-    
-    # create another user
-    post :create, { :person => {:username  => "secondie", :password => "newbuzz", :email => "secondie@testland.gov" }, :format => 'json'}
-    assert_response :success  
-    
+        
     # check that the created user can be found
     get :get_by_username, { :username  => "newbie", :format  => 'json' }, { :session_id => sessions(:session1).id }
     assert_response :success
@@ -185,21 +181,22 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_routing
-    with_options :controller => 'people', :format => 'json' do |test|
-      test.assert_routing({ :method => 'post', :path => '/people' }, 
-        { :action => 'create' })
-      test.assert_routing({ :method => 'get', :path => '/people/hfr2kf38s7/@self' }, 
-        { :action => 'show', :user_id => "hfr2kf38s7" })
-      test.assert_routing({ :method => 'put', :path => '/people/hfr2kf38s7/@self' }, 
-        { :action => 'update', :user_id => "hfr2kf38s7" })
-      test.assert_routing({ :method => 'delete', :path => '/people/hfr2kf38s7/@self' }, 
-        { :action => 'delete', :user_id => "hfr2kf38s7" })  
-      test.assert_routing({ :method => 'get', :path => '/people/hfr2kf38s7/@friends' }, 
-        { :action => 'get_friends', :user_id => "hfr2kf38s7" })
-      test.assert_routing({ :method => 'post', :path => '/people/hfr2kf38s7/@friends' }, 
-        { :action => 'add_friend', :user_id => "hfr2kf38s7" })
-      test.assert_routing({ :method => 'delete', :path => '/people/hfr2kf38s7/@friends/f229f' }, 
-        { :action => 'remove_friend', :user_id => "hfr2kf38s7", :friend_id => "f229f" })
+    user_id = "hfr2kf38s7"
+    with_options :controller => "people", :format => "json" do |test|
+      test.assert_routing({ :method => "post", :path => "/people" }, 
+        { :action => "create" })
+      test.assert_routing({ :method => "get", :path => "/people/#{user_id}/@self" }, 
+        { :action => "show", :user_id => user_id })
+      test.assert_routing({ :method => "put", :path => "/people/#{user_id}/@self" }, 
+        { :action => "update", :user_id => user_id })
+      test.assert_routing({ :method => "delete", :path => "/people/#{user_id}/@self" }, 
+        { :action => "delete", :user_id => user_id })  
+      test.assert_routing({ :method => "get", :path => "/people/#{user_id}/@friends" }, 
+        { :action => "get_friends", :user_id => user_id })
+      test.assert_routing({ :method => "post", :path => "/people/#{user_id}/@friends" }, 
+        { :action => "add_friend", :user_id => user_id })
+      test.assert_routing({ :method => "delete", :path => "/people/#{user_id}/@friends/f229f" }, 
+        { :action => "remove_friend", :user_id => user_id, :friend_id => "f229f" })
     end
   end
 
