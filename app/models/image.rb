@@ -1,5 +1,7 @@
 class Image < ActiveRecord::Base
 
+  usesguid
+
   attr_accessor :full_image_size, :thumbnail_size
 
   # Return true for a valid, nonempty image file.

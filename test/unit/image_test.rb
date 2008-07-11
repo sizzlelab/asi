@@ -9,6 +9,7 @@ class ImageTest < ActiveSupport::TestCase
   
   def should_create_image
     image = Image.new
+    assert image.exists?
   end
 
   def test_should_find_image
