@@ -27,19 +27,23 @@ class Image < ActiveRecord::Base
     source_file = File.join("#{RAILS_ROOT}/test/fixtures/", "temp_#{filename}")
     full_size_image_file = File.join("#{RAILS_ROOT}/test/fixtures/", "full_#{filename}")
     thumbnail_file = File.join("#{RAILS_ROOT}/test/fixtures/", "thumb_#{filename}")
+
     # Write the source file to directory.
     f = File.new(source_file, "wb")
     f.write(self.raw_data)
     f.close
+
     # Then convert the source file to a full size image and a thumbnail.
     img   = system("#{'convert'} '#{source_file}' -resize #{FULL_IMAGE_SIZE} '#{full_size_image_file}'")
     thumb = system("#{'convert'} '#{source_file}' -resize #{THUMBNAIL_SIZE} '#{thumbnail_file}'")
     File.delete(source_file) if File.exists?(source_file)
+
     # Both conversions must succeed, else it's an error.
     unless img and thumb
       errors.add_to_base("File upload failed.  Try a different image?")
       return false
     end
+
     # Write new images to database and then delete image files.
     self.data = File.open(full_size_image_file,'rb').read
     File.delete(full_size_image_file) if File.exists?(full_size_image_file)
@@ -72,5 +76,4 @@ class Image < ActiveRecord::Base
   def raw_thumbnail
     return Base64.decode64(thumbnail)
   end
-
 end

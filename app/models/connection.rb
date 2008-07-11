@@ -22,9 +22,8 @@ class Connection < ActiveRecord::Base
   # Accept a connection request.
   def self.accept(person, contact)
     transaction do
-      updated_at = Time.now
-      accept_one_side(person, contact, updated_at)
-      accept_one_side(contact, person, updated_at)
+      accept_one_side(person, contact)
+      accept_one_side(contact, person)
     end
   end
   
@@ -39,10 +38,9 @@ class Connection < ActiveRecord::Base
   private
   
   # Update the db with one side of an accepted connection request.
-  def self.accept_one_side(person, contact, updated_at)
+  def self.accept_one_side(person, contact)
     request = find_by_person_id_and_contact_id(person, contact)
     request.status = 'accepted'
-    request.updated_at = updated_at
     request.save!
   end
   

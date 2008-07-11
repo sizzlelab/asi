@@ -5,5 +5,4 @@ class ClientDataPair < ActiveRecord::Base
   def to_json(*a)
     { key => value }.to_json
   end
-
 end

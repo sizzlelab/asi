@@ -28,6 +28,5 @@ class ClientDataSet < ActiveRecord::Base
   
   def get_pair(key)
     ClientDataPair.find_by_key(key, :conditions => { :client_data_set_id => id })
-  end
-    
+  end    
 end

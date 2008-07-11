@@ -76,5 +76,4 @@ class CollectionsController < ApplicationController
       render :status => :not_found and return
     end
   end
-
 end

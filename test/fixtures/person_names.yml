@@ -17,3 +17,13 @@ three:
   given_name: matti
   family_name: k
   person_id: 3
+
+<% 20.times do |n| %>
+<%="#{n}:
+  id: #{n + 4}
+  person_id: #{n}aa
+  given_name: Pekka
+  family_name: Kuusinen#{n}
+"
+%>
+<% end %>
