@@ -10,6 +10,7 @@ class Person < ActiveRecord::Base
   has_one :name, :class_name => "PersonName"
   has_one :person_spec
   has_one :location
+  has_one :avatar, :class_name => "Image"
   
   has_many :sessions, :dependent => :destroy
 
@@ -117,4 +118,16 @@ class Person < ActiveRecord::Base
     names = PersonName.find_with_ferret(query, options, search_options)
     return names.collect{|name| name.person}.compact
   end
+  
+  def save_avatar?(options)
+    if options[:file] && options[:file].content_type.start_with?("image")
+      image = Image.new
+      if (image.save_to_db?(options))
+        self.avatar = image
+        return true
+      end
+    end
+    return false  
+  end
+  
 end

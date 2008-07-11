@@ -42,18 +42,25 @@ class Collection < ActiveRecord::Base
   # Attempts to create an item and add it to this collection.
   def create_item(options)
     if options[:file] && options[:file].content_type.start_with?("image")
-      image = Image.new(:content_type => options[:file].content_type,
-                        :filename => options[:file].original_filename, 
-                        :data => options[:file].read)
-      image.full_image_size = options[:full_image_size]
-      image.thumbnail_size = options[:thumbnail_size]                  
-      if image.valid_file? and image.successful_conversion?
-        image.save
+      image = Image.new
+      if (image.save_to_db?(options))
         items << image
         return true
       else 
         return false
-      end    
+      end
+      # image = Image.new(:content_type => options[:file].content_type,
+      #                         :filename => options[:file].original_filename, 
+      #                         :data => options[:file].read)
+      #       image.full_image_size = options[:full_image_size]
+      #       image.thumbnail_size = options[:thumbnail_size]                  
+      #       if image.valid_file? and image.successful_conversion?
+      #         image.save
+      #         items << image
+      #         return true
+      #       else 
+      #         return false
+      #       end    
     elsif options[:content_type].start_with?("text")
       text_item = TextItem.new(:text => options[:body])
       text_item.save

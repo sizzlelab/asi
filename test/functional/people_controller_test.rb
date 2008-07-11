@@ -90,7 +90,16 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal("Joe", assigns["person"].name.given_name)
     assert_equal("Doe", assigns["person"].name.family_name)
     
+    # try to upload an avatar
+    put :update, { :user_id => people(:valid_person).id, :person => {:email => testing_email }, :format => 'json',
+                   :file => fixture_file_upload("Bison_skull_pile.png","image/png"), 
+                   :full_image_size => '"240x300"', :thumbnail_size => '"50x64"'}, 
+                 { :session_id => sessions(:session1).id }                 
+    assert_response :success
   end
+ 
+ 
+  
  
   def test_delete
     #delete person with valid id
