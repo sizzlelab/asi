@@ -53,7 +53,7 @@ class Collection < ActiveRecord::Base
   def create_item(options)
     if options[:file] && options[:file].content_type.start_with?("image")
       image = Image.new(:content_type => options[:file].content_type,
-                        :filename => options[:filename], 
+                        :filename => options[:file].original_filename, 
                         :data => options[:file].read)
       if image.valid_file? and image.successful_conversion?
         image.save
