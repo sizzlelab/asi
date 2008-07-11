@@ -66,6 +66,7 @@ class PeopleControllerTest < ActionController::TestCase
     put :update, { :user_id => people(:valid_person).id, :person => {:email => testing_email }, :format => 'json' }, 
                  { :session_id => sessions(:session1).id }
     assert_response :success
+
     # asserts for checking that the updates really stored correctly
     assert_equal(assigns["person"].email, testing_email)
     # assert that no changed value has not changed
@@ -75,6 +76,19 @@ class PeopleControllerTest < ActionController::TestCase
     put :update, { :user_id => people(:friend).id, :person => {:email => testing_email }, :format => 'json' }, 
                  { :session_id => sessions(:session1).id }
     assert_response :forbidden
+
+    # update name
+    put :update, { :user_id => people(:valid_person).id, :person => { :name => { :given_name => "Joe" } }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    assert_equal("Joe", assigns["person"].name.given_name)
+
+    # Check that updating the name doesn't delete old values
+    put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Doe" } }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    assert_equal("Joe", assigns["person"].name.given_name)
+    assert_equal("Doe", assigns["person"].name.family_name)
     
   end
  
