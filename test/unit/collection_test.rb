@@ -116,4 +116,23 @@ class CollectionTest < ActiveSupport::TestCase
     assert ! collection.delete?(person, client)
   end
 
+  def test_metadata
+    collection = Collection.new(:metadata => { :foo => "bar" })
+    assert_equal "bar", collection.metadata[:foo]
+
+    # Sanity check
+    collection.metadata[:foo] = "foobar"
+    assert_equal "foobar", collection.metadata[:foo]
+    assert_equal 1, collection.metadata.length
+
+    collection.client = clients(:one)
+
+    assert collection.save
+    id = collection.id
+
+    # DB serialization sanity check
+    collection = Collection.find_by_id(id)
+    assert_equal "foobar", collection.metadata[:foo]
+    assert_equal 1, collection.metadata.length
+  end
 end

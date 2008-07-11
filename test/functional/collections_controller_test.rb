@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'json'
 
 class CollectionsControllerTest < ActionController::TestCase
 
@@ -186,7 +187,7 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :success
     json = JSON.parse(@response.body)
     assert_equal("bar", json["metadata"]["foo2"])
-    assert_equal("bar", json["metadata"]["foo"])
+    assert_equal("bar", json["metadata"]["foo"], "Old metadata key was lost while updating")
     assert_equal("foo", json["metadata"]["bar"])
   end
 end

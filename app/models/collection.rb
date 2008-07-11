@@ -2,9 +2,9 @@ class Collection < ActiveRecord::Base
   usesguid
 
   has_many_polymorphs :items, :from => [:text_items, :images], :through => :ownerships
-  has_many :metadata, :class_name => "CollectionMetadataPair"
   belongs_to :owner, :class_name => "Person"
   belongs_to :client
+  serialize :metadata, Hash
 
   validates_presence_of :client
 
@@ -12,23 +12,13 @@ class Collection < ActiveRecord::Base
     {
       'id' => id,
       'entry' => items,
-      'metadata' => metadata_hash
+      'metadata' => metadata
     }.to_json(*a)
   end
 
-  def metadata_hash
-    hash = Hash.new
-    metadata.each do |pair|
-      hash[pair.key] = pair.value
-    end
-    return hash
-  end
-
   def metadata=(data)
-    # XXX Does not delete overwritten keys (but this is not [functionally] a problem as the last one is always shown)
-    data.each do |key, value|
-      metadata << CollectionMetadataPair.new(:key => key, :value => value)
-    end
+    old = read_attribute(:metadata) || Hash.new
+    write_attribute(:metadata, old.merge(data))
   end
 
   # Returns true if the given person, using the given client, has permission to view this collection.
@@ -36,7 +26,7 @@ class Collection < ActiveRecord::Base
     if owner == nil
       return self.client == client
     end
-     return (self.client == nil || self.client == client) && (owner == person || owner.contacts.include?(person))
+    return (self.client == nil || self.client == client) && (owner == person || owner.contacts.include?(person))
   end
 
   # Returns true if the given person, using the given client, has permission to change this collection.
