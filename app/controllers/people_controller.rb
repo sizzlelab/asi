@@ -41,8 +41,14 @@ class PeopleController < ApplicationController
     if ! @person  
       render :status  => 404 and return
     end
+    if params[:file]
+      if (@person.save_avatar?(params))
+      else
+        render :status  => 500 and return
+      end  
+    end
     if @person.update_attributes(params[:person])
-      render :status  => 200 and return
+      render :status  => 200 and return  
     else
       render :status  => 500 and return
       #TODO return more info about what went wrong

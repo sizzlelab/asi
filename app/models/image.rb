@@ -1,27 +1,45 @@
 class Image < ActiveRecord::Base
 
   usesguid
+  
+  belongs_to :person
 
   attr_accessor :full_image_size, :thumbnail_size
 
+  def save_to_db?(options)
+    self.content_type = options[:file].content_type
+    self.filename = options[:file].original_filename 
+    self.data = options[:file].read
+    self.full_image_size = options[:full_image_size]
+    self.thumbnail_size = options[:thumbnail_size]                  
+    if valid_file? and successful_conversion?
+      self.save
+      return true
+    end 
+    return false    
+  end
+
   # Return true for a valid, nonempty image file.
   def valid_file?
+    
     #The upload should be nonempty.
     if self.filename == nil
       errors.add_to_base("Please enter an image filename")
       return false
     end
+    
     #The file should be an image file.
     unless self.content_type =~ /^image/
       errors.add(:content_type, "is not a recognized format")
       return false
     end
+    
     #The file shouldn't be bigger than 10 megabytes.
     if raw_data.size > 10.megabytes
       errors.add("Image can't be bigger than 10 megabytes")  
       return false
     end
-   return true
+    return true
   end
   
   # Returns true if conversion of image is successful.
@@ -48,9 +66,9 @@ class Image < ActiveRecord::Base
 
     # Write new images to database and then delete image files.
     self.data = File.open(full_size_image_file,'rb').read
-    #File.delete(full_size_image_file) if File.exists?(full_size_image_file)
+    File.delete(full_size_image_file) if File.exists?(full_size_image_file)
     self.thumbnail = File.open(thumbnail_file,'rb').read
-    #File.delete(thumbnail_file) if File.exists?(thumbnail_file)
+    File.delete(thumbnail_file) if File.exists?(thumbnail_file)
     return true
   end
 
