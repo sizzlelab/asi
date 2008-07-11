@@ -25,13 +25,12 @@ class ImageTest < ActiveSupport::TestCase
     f.close
   end  
    
-  # def test_should_update_image
-  #   image = images(:jpg)
-  #   data = images(:png).raw_data
-  #   assert image.update_attributes(:data => data, :filename => "Foo.bin")
-  # 
-  #   assert_equal(image.data, images(:png).data)
-  # end
+  def test_should_update_image
+    image = images(:jpg)
+    data = images(:png).raw_data
+    assert image.update_attributes(:data => data, :filename => "Foo.bin") 
+    assert_equal(image.data, images(:png).data)
+  end
 
   def test_should_destroy_image
     image = images(:jpg)
