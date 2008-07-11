@@ -16,12 +16,12 @@
                  :description => "Update (or add) information to user's profile. The <em>person</em>-parameter needs to contain only the attributes that need to be changed.",
                  :parameters => [{
                                     :person => [
-                                          {:status_message => "Person's current statusmessage"},
-                                          {:birthdate => "Person's birthdate as date"},
-                                          {:gender    => "Person's gender (Male/Female)"},
+                                          {:status_message => "Person's current status message."},
+                                          {:birthdate => "Person's birthdate as date."},
+                                          {:gender    => "Person's gender, either MALE or FEMALE."},
                                           {:name => [
-                                            {:given_name  => "Person's first name"},
-                                            {:family_name => "Persons's family name"}
+                                            {:given_name  => "Person's given name."},
+                                            {:family_name => "Person's family name."}
                                           ]},
                                           
                                     ]
@@ -29,10 +29,6 @@
                },
                
                { :name => "DELETE", 
-                  :description => "Deletes the user identified by <tt>user_id</tt>.",
-
-                },
-                  
-                  ] %>
+                  :description => "Deletes the user identified by <tt>user_id</tt>." } ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>

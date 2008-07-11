@@ -1,10 +1,13 @@
 
 class SessionsController < ApplicationController
   before_filter :ensure_client_login, :only => :destroy
-  before_filter :ensure_client_logout, :only =>  :create
+  before_filter :ensure_client_logout, :only => :create
  
   def create
-    @session = Session.new({ :username => params[:username], :password => params[:password], :client_name => params[:client_name], :client_password => params[:client_password]})
+    @session = Session.new({ :username => params[:username], 
+                             :password => params[:password], 
+                             :client_name => params[:client_name], 
+                             :client_password => params[:client_password] })
     
     if @session.save
       if (! @session.person_match) && (params[:username] || params[:password])
@@ -24,6 +27,5 @@ class SessionsController < ApplicationController
   def destroy
     Session.destroy(@application_session)
     session[:session_id] = @user = @client = nil
-    render :status  => 200 and return
   end
 end

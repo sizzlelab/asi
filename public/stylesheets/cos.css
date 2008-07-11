@@ -19,17 +19,19 @@ h2, h3 {
 }
 
 table {
-
-    font-size : smaller;
+    font-size : small
 }
 
-table.inner_parameters {
-    border-style: ridge;
-    border-left-width: medium;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
-    
+th.inner_parameters {
+    border-right : 1px solid black;
+    width : 20%;
+    padding : 0;
+
+}
+
+div.inner_parameters {
+    border-bottom : 1px solid black;
+    width : 100%
 }
 
 tt {

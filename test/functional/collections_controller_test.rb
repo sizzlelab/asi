@@ -20,7 +20,7 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # Should not crash on a nonexistent client
     get :index, { :app_id => -1, :format => 'json' }
-    assert_response 403
+    assert_response :forbidden
     assert_nil assigns["collection"]
   end
 
@@ -123,16 +123,6 @@ class CollectionsControllerTest < ActionController::TestCase
     post :delete, { :app_id => clients(:one).id, :id => collections(:two).id, :format => 'json' }, 
                   { :session_id => sessions(:session1).id }
     assert_response :method_not_allowed
-
-    # TODO: Should allow POST overridden with DELETE
-#     @request.set_header "X-HTTP-Method-Override", "DELETE"
-#     post :delete, { :app_id => clients(:one).id, :id => collections(:two).id, :format => 'json', :_method => "DELETE" }, 
-#                   { :client => clients(:one).id }
-#     assert_response :success
-    
-#     get :show, { :app_id => clients(:one).id, :id => collections(:two).id, :format => 'json' }, 
-#                { :client => clients(:one).id }
-#     assert_response :not_found
 
     # Should not delete a collection belonging to another client
     delete :delete, { :id => collections(:two).id, :format => 'json' }, 

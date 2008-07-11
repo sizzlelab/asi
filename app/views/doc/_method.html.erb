@@ -12,7 +12,7 @@
     <tr>
       
       <% if parameter.to_a[0][1].class == Array%>
-      <th><%= parameter.to_a[0][0] %> &nbsp;&nbsp;--></th>
+      <th class="inner_parameters"><div class="inner_parameters"><%= parameter.to_a[0][0] %></div></th>
       <td>
       <%= render :partial => "doc/inner_parameters", :locals => { :parameters => parameter.to_a[0][1] } %>
       </td>

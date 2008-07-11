@@ -1,8 +1,6 @@
 require 'test_helper'
 require 'sessions_controller'
 
-class SessionsController; def rescue_action(e) raise e end; end
-
 class SessionsControllerTest < ActionController::TestCase
   fixtures :people
 
@@ -22,6 +20,9 @@ class SessionsControllerTest < ActionController::TestCase
 
     #test with user only
     post :create, { :username => "testi", :password => "testia,.u", :format => 'json'}
+    assert_response :unauthorized
+
+    post :create, { :username => "testi", :password => "testi", :format => 'json'}
     assert_response :unauthorized
     
     #test with client only

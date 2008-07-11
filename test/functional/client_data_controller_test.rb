@@ -23,6 +23,7 @@ class ClientDataControllerTest < ActionController::TestCase
                { :session_id => sessions(:session1).id }
     assert_response :forbidden
     assert_nil assigns["set"]
+    json = JSON.parse(@response.body)
   end
 
   def test_put
