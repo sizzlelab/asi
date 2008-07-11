@@ -6,8 +6,6 @@ class Session < ActiveRecord::Base
   before_validation :authenticate_person
   before_validation :authenticate_client
 
-  #validates_presence_of :person_match, :message => 'for your name and password could not be found',
-  #                                     :unless => :session_has_been_associated_with_person?
   validates_presence_of :client_match, :message => 'for your clients name and password could not be found',
                                        :unless => :session_has_been_associated_with_client?
  

@@ -5,7 +5,7 @@ class Person < ActiveRecord::Base
 
   usesguid
 
-  attr_reader :password #FROM AUTH
+  attr_reader :password
 
   has_one :person_name
   has_one :person_spec
@@ -23,31 +23,24 @@ class Person < ActiveRecord::Base
   has_many :requested_contacts, 
   :through => :connections, 
   :source => :contact,
-  :conditions => "status = 'requested'"#, 
-  #:order => :created_at   #commented away for the time being, because caused SQL errors
+  :conditions => "status = 'requested'" 
 
   has_many :pending_contacts, 
   :through => :connections, 
   :source => :contact,
-  :conditions => "status = 'pending'"#, 
-  #:order => :created_at   #commented away for the time being, because caused SQL errors
+  :conditions => "status = 'pending'"
 
   # Max & min lengths for all fields 
   USERNAME_MIN_LENGTH = 4 
   USERNAME_MAX_LENGTH = 20 
-  #PASSWORD_MIN_LENGTH = 4   # removed because now using encryption FROM AUTH
-  #PASSWORD_MAX_LENGTH = 40
   USERNAME_RANGE = USERNAME_MIN_LENGTH..USERNAME_MAX_LENGTH 
-  #PASSWORD_RANGE = PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH
   EMAIL_MAX_LENGTH = 50 
 
   # Text box sizes for display in the views 
   USERNAME_SIZE = 20 
-  #PASSWORD_SIZE = 10
 
   validates_uniqueness_of :username, :email
   validates_length_of :username, :within => USERNAME_RANGE
-  #validates_length_of :password, :within => PASSWORD_RANGE
   validates_length_of :email, :maximum => EMAIL_MAX_LENGTH
   
   validates_format_of :username, 
@@ -55,7 +48,6 @@ class Person < ActiveRecord::Base
                       :message => "must contain only letters, " + 
                       "numbers, and underscores"
   
-  # FROM AUTH
   validates_format_of :password, :with => /^([\x20-\x7E]){4,16}$/,
                           :message => "must be 4 to 16 characters",
                           :unless => :password_is_not_being_updated?                    
@@ -80,10 +72,10 @@ class Person < ActiveRecord::Base
   PersonSpec.new.attributes.each do |key, value|
     unless Person.new.respond_to?("#{key}=") || key.end_with?("_id")
       Person.class_eval "def #{key}=(value); "+
-        "if ! person_spec; "+
-        "create_person_spec; "+
-        "end; "+
-        "person_spec.#{key}=value; "+
+          "if ! person_spec; "+
+            "create_person_spec; "+
+          "end; "+
+          "person_spec.#{key}=value; "+
         "end;"
     end
   end
@@ -91,9 +83,6 @@ class Person < ActiveRecord::Base
   def name=(name)
     create_person_name(name)
   end
-    
-
-## FROM AUTH 
       
   def to_json(*a)
     person_hash = {
@@ -116,10 +105,13 @@ class Person < ActiveRecord::Base
     return person_hash.to_json(*a)
   end
 
-  def self.find_with_ferret(query)
-    names = PersonName.find_with_ferret(query)
-    people = []
-    names.each { |name| people << name.person }
-    return people
+  def self.find_with_ferret(query, options={ :limit => :all }, search_options={})
+    if query && query.length > 0
+      query = "*#{query.downcase}*"
+    else
+      query = ""
+    end
+    names = PersonName.find_with_ferret(query, options, search_options)
+    return names.collect{|name| name.person}.compact
   end
 end

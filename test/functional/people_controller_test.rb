@@ -15,6 +15,7 @@ class PeopleControllerTest < ActionController::TestCase
   # TODO more comprehensive tests
   
   def test_index
+    # Should find nothing
     get :index, { :format => 'json' }, { :session_id => sessions(:session1).id }
     assert_response :success 
     assert_not_nil assigns(:people)
@@ -170,24 +171,17 @@ class PeopleControllerTest < ActionController::TestCase
     #check that no more requested
     assert ! user.requested_contacts.include?(requested)
     assert ! requested.pending_contacts.include?(user)
-    
   end
 
   def test_search
-    search_string = 'matti'
-    get :index, { :format => 'json', :search => search_string }, { :session_id => sessions(:session1) }
-    assert_response :success
-    assert_not_nil assigns["people"]
-    json = JSON.parse(@response.body)
-
-    assert_not_equal 0, json["entries"].length
-
-    reg = Regexp.new('matti')
-
-    json["entries"].each do |person|
-      assert_not_nil person["name"]
-      assert person["name"]["given_name"] =~ reg || person["name"]["family_name"] =~ reg 
-    end
+    search("Matti")
+    search("matti")
+    search("Kuusinen")
+    search("tti")
+    search("Juho Makkonen")
+    search("a")
+    search("Juho.*onen", false)
+    search("", false)
   end
 
   def test_routing
@@ -208,4 +202,27 @@ class PeopleControllerTest < ActionController::TestCase
         { :action => 'remove_friend', :user_id => "hfr2kf38s7", :friend_id => "f229f" })
     end
   end
+
+  private 
+  def search(search, should_find=true)
+    get :index, { :format => 'json', :search => search }, { :session_id => sessions(:session1) }
+    assert_response :success
+    assert_not_nil assigns["people"]
+    json = JSON.parse(@response.body)
+
+    if not should_find
+      assert_equal 0, json["entries"].length
+      return
+    end
+
+    assert_not_equal 0, json["entries"].length, "Found nothing with '#{search}'"
+
+    reg = Regexp.new(search.downcase.tr("*", ""))
+
+    json["entries"].each do |person|
+      assert_not_nil person["name"]
+      assert person["name"]["unstructured"].downcase =~ reg
+    end    
+  end
+
 end

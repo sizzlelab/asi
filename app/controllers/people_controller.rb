@@ -2,15 +2,9 @@ class PeopleController < ApplicationController
   
   before_filter :ensure_client_login 
   before_filter :ensure_person_logout, :only  => :create
-    
-  #TODO better checking for authorisation before making changes 
-  # (also authorization for applications?)
+
   def index
-    if params[:search]
-      @people = Person.find_with_ferret(params[:search])
-    else
-      @people = Person.find(:all)
-    end
+    @people = Person.find_with_ferret(params[:search])
   end
 
   def show
@@ -32,7 +26,6 @@ class PeopleController < ApplicationController
     if @person.save
       @session = @person.sessions.create
      session[:session_id] = @session.id
-      #flash[:notice] = "Welcome #{@person.username}, you are now registered"
       render :status => 200 and return
     else
       render :status => 500 and return
@@ -49,10 +42,8 @@ class PeopleController < ApplicationController
       render :status  => 404 and return
     end
     if @person.update_attributes(params[:person])
-      #flash[:notice] = "Your account has been updated"
       render :status  => 200 and return
     else
-      #render(:action => 'edit') #FROM AUTH
       render :status  => 500 and return
       #TODO return more info about what went wrong
     end
@@ -120,7 +111,4 @@ class PeopleController < ApplicationController
     end
     Connection.breakup(@person, @friend)
   end
-  
-  private
-
 end

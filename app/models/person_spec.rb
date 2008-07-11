@@ -8,7 +8,7 @@ class PersonSpec < ActiveRecord::Base
   NO_JSON_FIELDS = %w(id person_id created_at updated_at)
   # Fields that need to be translated if the language is changed.
   LOCALIZED_FIELDS = %w(gender)
-  VALID_GENDERS = ["Male", "Female"]
+  VALID_GENDERS = ["MALE", "FEMALE"]
   START_YEAR = 1900
   VALID_DATES = DateTime.new(START_YEAR)..DateTime.now
 
@@ -17,7 +17,7 @@ class PersonSpec < ActiveRecord::Base
   validates_inclusion_of :gender,
   :in => VALID_GENDERS,
   :allow_nil => true,
-  :message => "must be male or female"
+  :message => "must be MALE or FEMALE"
 
   validates_inclusion_of :birthdate,
   :in => VALID_DATES,

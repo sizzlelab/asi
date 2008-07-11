@@ -51,8 +51,7 @@ class ApplicationController < ActionController::Base
   end
   
   def ensure_same_as_logged_person(target_person_id)
-    stored_session = Session.find_by_id(session[:session_id])
-    return @user != nil && stored_session != nil && target_person_id == stored_session.person_id
+    return @user && target_person_id == @user.id
   end
  
   protected
@@ -60,7 +59,7 @@ class ApplicationController < ActionController::Base
   def maintain_session_and_user
     if session[:session_id]
       if @application_session = Session.find_by_id(session[:session_id])
-        begin #Strange rescue-solution is because request.path_info acts strangely in tests
+        begin #Strange rescue solution is because request.path_info acts strangely in tests
           path = request.path_info
         rescue NoMethodError => e
           path = "running/tests/no/path/available"

@@ -5,7 +5,7 @@ valid_person_spec:
   person_id: 2
   status_message: "Valid person rocks."
   birthdate: 1940-06-01
-  gender: Male
+  gender: MALE
 
 blank_person_spec:
   id: 2
@@ -16,6 +16,6 @@ contact_person_spec:
   person_id: 2
   status_message: "Contact is a contact."
   birthdate: 2000-01-01
-  gender: Male
+  gender: MALE
   
   
