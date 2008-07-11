@@ -7,7 +7,7 @@ class Person < ActiveRecord::Base
 
   attr_reader :password
 
-  has_one :person_name
+  has_one :name, :class_name => "PersonName"
   has_one :person_spec
   has_one :location
   
@@ -59,6 +59,15 @@ class Person < ActiveRecord::Base
   before_save :scrub_name
   after_save :flush_passwords
 
+  def update_attributes(hash)
+    if name
+      name.update_attributes(hash[:name])
+    else
+      create_name(hash[:name])
+    end
+    super(hash.except(:name))
+  end
+
   def self.find_by_username_and_password(username, password)
     model = self.find_by_username(username)
     if model and model.encrypted_password == ENCRYPT.hexdigest(password + model.salt)
@@ -78,16 +87,12 @@ class Person < ActiveRecord::Base
     end
   end
 
-  def name=(name)
-    create_person_name(name)
-  end
-      
   def to_json(*a)
     person_hash = {
       'id' => id,
       'username' => username,
       'email' => email,
-      'name' => person_name
+      'name' => name
     }
     if self.person_spec
       self.person_spec.attributes.each do |key, value|

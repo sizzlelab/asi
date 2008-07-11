@@ -102,16 +102,24 @@ class PersonTest < ActiveSupport::TestCase
   def test_to_json
     person = @valid_person
     person.person_spec = @valid_person_spec
-    person.person_name = @valid_person_name
+    person.name = @valid_person_name
     json = JSON.parse(person.to_json)
     assert_not_nil json["id"]
     assert_not_nil json["username"]
     assert_not_nil json["email"]
+    assert_not_nil json["name"]
     assert_not_nil json["name"]["unstructured"]
     assert_nil json["password"]
     PersonSpec::ALL_FIELDS.each do |value|
       assert_not_nil json[value]
     end  
+  end
+
+  def test_name_update
+    p = Person.new
+    p.create_name(:given_name => "Mikko")
+    p.name.update_attributes({ :family_name => "Virtanen" })
+    assert_equal "Mikko", p.name.given_name
   end
 
 end
