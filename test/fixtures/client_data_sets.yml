@@ -4,6 +4,10 @@
    id: 1
    client_id: 1
    person_id: 1
+   data:
+     foo: bar
+     foobar: bar3
+     pokes: 993
 #
 # two:
 #   column: value

@@ -15,16 +15,16 @@ class ClientDataSetTest < ActiveSupport::TestCase
 
     assert set.save
 
-    set.put("foo", "bar")
+    set["foo"] = "bar"
     assert set.save
 
     40.times do |n|
-      set.put("foo", String(n))
+      set["foo"] = String(n)
     end
     assert set.save
 
     40.times do |n|
-      set.put(String(n), String(n^2))
+      set[String(n)] = String(n^2)
     end
     assert set.save
   end
@@ -32,14 +32,19 @@ class ClientDataSetTest < ActiveSupport::TestCase
   def test_get_and_put
     set = client_data_sets(:one)
     
-    set.put("foo", "1")
-    set.put("foo", "2")
+    set["foo"] = "1"
+    set["foo"] = "2"
     
-    assert_equal "2", set.get("foo")
+    assert_equal "2", set["foo"]
 
-    set.put(nil, "foo")
-    assert_nil set.get(nil)
-
-    assert_nil set.get("oeusrcoeusrca.rsch")
+    assert_nil set["oeusrcoeusrca.rsch"]
   end
+
+  def test_set
+    set = ClientDataSet.new
+    set.data = { :foo => "bar", :bar => "foo" }
+    assert_equal "foo", set.data[:bar]
+    assert_equal "bar", set.data[:foo]
+  end
+    
 end

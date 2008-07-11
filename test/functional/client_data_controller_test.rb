@@ -15,7 +15,7 @@ class ClientDataControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns["set"]
     json = JSON.parse(@response.body)
-    client_data_pairs.each { |item| assert_equal json[item.key], item.value }
+    client_data_sets(:one).data.each { |key, value| assert_equal json[key], value }
   end
 
   def test_authorization
@@ -35,8 +35,8 @@ class ClientDataControllerTest < ActionController::TestCase
     assert_response :success
     
     json = JSON.parse(@response.body)
-    assert_equal json["foo"], "bar"
-    assert_equal json["bar"], "foo"
+    assert_equal "bar", json["foo"]
+    assert_equal "foo", json["bar"]
   end
 
   def test_routing

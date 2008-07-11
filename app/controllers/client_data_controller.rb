@@ -9,7 +9,7 @@ class ClientDataController < ApplicationController
   end
 
   def update
-    params[:data].each { |key, value| @set.put(key,value) }
+    @set.update_attributes({ :data => params[:data] })
   end
 
   private
