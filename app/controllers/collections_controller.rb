@@ -43,6 +43,7 @@ class CollectionsController < ApplicationController
   end
 
   def update
+    render :status => :forbidden and return unless @collection.write?(@user, @client)
     @collection.update_attributes(params[:collection])
   end
 
