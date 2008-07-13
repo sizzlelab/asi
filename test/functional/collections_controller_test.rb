@@ -13,6 +13,8 @@ class CollectionsControllerTest < ActionController::TestCase
     get :index, { :app_id => clients(:one).id, :format => 'json' }, { :session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["collections"]
+    json = JSON.parse(@response.body)
+    assert_not_nil json["entry"]
 
     # Should only return collections relevant to this client
     for collection in assigns["collections"]
@@ -40,6 +42,8 @@ class CollectionsControllerTest < ActionController::TestCase
 
     assert_response :success
     assert_not_nil assigns["collection"]
+    json = JSON.parse(@response.body)
+    assert_not_nil json["id"]
 
     # Should not show a collection belonging to another client
     get :show, { :app_id => clients(:two).id, :id => collections(:one).id, :format => 'json' }, 
@@ -62,6 +66,8 @@ class CollectionsControllerTest < ActionController::TestCase
     assert people(:valid_person).contacts.include?(collections(:three).owner)
     assert_response :success
     assert_not_nil assigns["collection"]
+    json = JSON.parse(@response.body)
+    assert_not_nil json["id"]
 
     # Should not show a collection beloning to a requested connection
     get :show, { :app_id => clients(:one).id, :id => collections(:four).id, :format => 'json' }, 
@@ -91,6 +97,8 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_not_nil assigns["collection"]
     assert_equal(assigns["collection"].owner, people(:valid_person))
     assert_equal(assigns["collection"].client, clients(:one))
+    json = JSON.parse(@response.body)
+    assert_not_nil json["id"]
 
     # With only a client
     post :create, { :app_id => clients(:one).id, :format => 'json'}, 
@@ -99,6 +107,8 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_not_nil assigns["collection"]
     assert_nil assigns["collection"].owner
     assert_equal(assigns["collection"].client, clients(:one))
+    json = JSON.parse(@response.body)
+    assert_not_nil json["id"]
 
     # With only an owner
     post :create, { :format => 'json' }, 
@@ -115,6 +125,7 @@ class CollectionsControllerTest < ActionController::TestCase
     delete :delete, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
                     { :session_id => sessions(:session1).id }
     assert_response :success
+    json = JSON.parse(@response.body)
 
     get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
                { :session_id => sessions(:session1).id }
@@ -148,13 +159,15 @@ class CollectionsControllerTest < ActionController::TestCase
                { :session_id => sessions(:session1).id }
     assert_response :success
     old_item_count = assigns["collection"].items.count
-
+    json = JSON.parse(@response.body)
+    
     # Should be able to add to a collection belonging to the client
     post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json', 
                  :title => "The Engine", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." },
                { :session_id => sessions(:session1).id }
     assert_response :success
     assert_equal(old_item_count+1, assigns["collection"].items.count)
+    json = JSON.parse(@response.body)
   end
 
   def test_add_image
@@ -162,6 +175,7 @@ class CollectionsControllerTest < ActionController::TestCase
                { :session_id => sessions(:session1).id }
     assert_response :success
     old_item_count = assigns["collection"].items.count
+    json = JSON.parse(@response.body)
 
     # Should be able to add to a collection belonging to the client
     post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json', 
@@ -170,6 +184,7 @@ class CollectionsControllerTest < ActionController::TestCase
                { :session_id => sessions(:session1).id }
     assert_response :success
     assert_equal(old_item_count+1, assigns["collection"].items.count)
+    json = JSON.parse(@response.body)
   end    
 
   def test_metadata

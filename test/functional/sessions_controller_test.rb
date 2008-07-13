@@ -14,9 +14,11 @@ class SessionsControllerTest < ActionController::TestCase
     post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "testi", :format => 'json'}
     assert_response :success
     assert_not_nil session[:session_id]
-    
+    json = JSON.parse(@response.body)
+
     delete :destroy, {:format => 'json'}
     assert_response :success
+    json = JSON.parse(@response.body)
 
     #test with user only
     post :create, { :username => "testi", :password => "testia,.u", :format => 'json'}
@@ -29,9 +31,11 @@ class SessionsControllerTest < ActionController::TestCase
     post :create, { :client_name => "ossi", :client_password => "testi", :format => 'json'}
     assert_response :success
     assert_not_nil session[:session_id]
+    json = JSON.parse(@response.body)
     
     delete :destroy, {:format => 'json'}
     assert_response :success
+    json = JSON.parse(@response.body)
     
     #test with erroneus login information
     post :create, { :username => "testi", :password => "testia,.u", :client_name => "ossi", :client_password => "testi", :format => 'json'}
@@ -48,6 +52,8 @@ class SessionsControllerTest < ActionController::TestCase
     # frist create the session to destroy
     post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "testi", :format => 'json'}
     assert_response :success
+    json = JSON.parse(@response.body)
+
     # destroy
     delete :destroy, {:format => 'json'}
     assert_response :success
@@ -57,9 +63,12 @@ class SessionsControllerTest < ActionController::TestCase
     post :create, { :client_name => "ossi", :client_password => "testi", :format => 'json'}
     assert_response :success
     assert_not_nil session[:session_id]
+    json = JSON.parse(@response.body)
+
     # destroy
     delete :destroy, {:format => 'json'}
     assert_response :success
+    json = JSON.parse(@response.body)
     assert_nil session[:session_id]
   end
   
