@@ -47,11 +47,13 @@ class PeopleController < ApplicationController
         render :status  => 500 and return
       end  
     end
-    if @person.update_attributes(params[:person])
-      render :status  => 200 and return  
-    else
-      render :status  => 500 and return
-      #TODO return more info about what went wrong
+    if params[:person]
+      if @person.update_attributes(params[:person])
+        render :status  => 200 and return  
+      else
+        render :status  => 500 and return
+        #TODO return more info about what went wrong
+      end
     end
   end
   

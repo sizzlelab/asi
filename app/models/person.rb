@@ -61,10 +61,12 @@ class Person < ActiveRecord::Base
   after_save :flush_passwords
 
   def update_attributes(hash)
-    if name
-      name.update_attributes(hash[:name])
-    else
-      create_name(hash[:name])
+    if hash[:name]
+      if name
+        name.update_attributes(hash[:name])
+      else
+        create_name(hash[:name])
+      end
     end
     super(hash.except(:name))
   end
