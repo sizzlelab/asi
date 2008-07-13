@@ -189,5 +189,13 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_equal("bar", json["metadata"]["foo2"])
     assert_equal("bar", json["metadata"]["foo"], "Old metadata key was lost while updating")
     assert_equal("foo", json["metadata"]["bar"])
+
+    # Try to update metadata for a collection belonging to another user
+    put :update, { :app_id => clients(:one).id, 
+                   :id => collections(:two).id, 
+                   :format => 'json',
+                   :collection => { :metadata => { :foo2 => "bar", :bar => "foo" } } },
+                 { :session_id => sessions(:session1).id }
+    assert_response :forbidden
   end
 end
