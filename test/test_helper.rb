@@ -90,7 +90,7 @@ module COSTestingDSL
     assert_response :success
     assert_not_nil session[:session_id]
   end
-  
+
   def finds_collections(options)
     get "/appdata/#{options[:client_id]}/@collections"
     assert_response :success
@@ -154,6 +154,13 @@ module COSTestingDSL
     assert subset(options[:person], json)
   end
 
+  def changes_password_of_person(options)
+    put "/people/#{options[:id]}/@self", {:person => { :password => options[:password] } }
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_not_nil json["id"]
+  end
+
   def deletes_account(options)
     delete "/people/#{options[:id]}/@self", options
     assert_response :success
@@ -165,6 +172,25 @@ module COSTestingDSL
     delete "/session"
     assert_response :success
     assert_nil session[:session_id]
+  end
+
+  def updates_location_with(options)
+    put "/people/#{options[:id]}/@location", options[:location]
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_not_nil json
+  end
+
+  def gets_location(options)
+    get "/people/#{options[:id]}/@location", options
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_not_nil json
+  end
+
+  def updates_avatar(options)
+    put "/people/#{options[:id]}/@self", options
+    assert_response :success
   end
 
   private
