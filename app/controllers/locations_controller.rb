@@ -28,6 +28,7 @@ class LocationsController < ApplicationController
     end  
     
     if ! @location.update_attributes(new_values)
+      puts @location.errors.inspect
       render :status  => 406 and return
       #TODO return more info about which parameter went wrong
     end
