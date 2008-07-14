@@ -49,7 +49,7 @@ class PeopleController < ApplicationController
         #TODO return more info about what went wrong
       end
     else
-      #TODO status code
+      render :status  => 400 and return
     end 
   end
   
@@ -138,8 +138,24 @@ class PeopleController < ApplicationController
       else
         render :status  => 500 and return
       end  
+    else
+      render :status  => 400 and return
     end
-    #TODO status code
+  end
+  
+  def delete_avatar
+    @person = Person.find_by_id(params['user_id'])
+    if ! @person  
+      render :status => 404 and return
+    end
+    @person.avatar = Image.new
+    if ! @person.avatar  
+      render :status => 404 and return
+    end
+    if ! ensure_same_as_logged_person(params['user_id'])
+      render :status => :forbidden and return
+    end
+    @person.avatar.destroy
   end
   
 end

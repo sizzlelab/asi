@@ -99,15 +99,6 @@ class PeopleControllerTest < ActionController::TestCase
     
   end
   
-  def test_update_avatar
-    # try to upload an avatar
-    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("Bison_skull_pile.png","image/png"),
-                          :format => 'json', :full_image_size => '"240x300"', :thumbnail_size => '"50x64"'}, 
-                        { :session_id => sessions(:session1).id }                 
-    assert_response :success
-    json = JSON.parse(@response.body)
-  end  
- 
   def test_delete
     #delete person with valid id
     delete :delete, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
@@ -126,6 +117,22 @@ class PeopleControllerTest < ActionController::TestCase
     delete :delete, { :user_id => people(:contact).id, :format => 'json' },  { :session_id => sessions(:session4).id }
     assert_response :forbidden
     
+  end
+  
+  def test_update_avatar
+    # try to upload an avatar
+    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("Bison_skull_pile.png","image/png"),
+                          :format => 'json', :full_image_size => '"240x300"', :thumbnail_size => '"50x64"'}, 
+                        { :session_id => sessions(:session1).id }                 
+    assert_response :success
+    json = JSON.parse(@response.body)
+  end
+  
+  def test_delete_avatar
+    #delete person with valid id
+    delete :delete_avatar, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)  
   end
   
   def test_add_friend

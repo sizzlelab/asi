@@ -40,8 +40,10 @@ ActionController::Routing::Routes.draw do |map|
                                          :delete => 'delete'
 
   map.resource '/people/:user_id/@avatar', :controller => 'people',
+                                           :post => 'update_avatar',
                                            :get => 'get_avatar', 
-                                           :put => 'update_avatar'                                         
+                                           :put => 'update_avatar',
+                                           :delete => 'delete_avatar'                                         
 
   map.resource '/people', :controller => 'people',
                           :post => 'create',
