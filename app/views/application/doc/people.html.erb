@@ -8,7 +8,9 @@
                  :parameters => [ { :search => "The search term. Every user whose name matches the regular expression
                                                 <code>/.*search.*/</code> will be returned. However, all characters in the
                                                 search term are interpreted as literals rather than special regexp 
-                                                characters." } ] },
+                                                characters." } ], 
+								
+								 :returns => { "404" => "Person with the given username doesn't exist." } },	
 
                { :name => "POST", 
 
@@ -16,10 +18,11 @@
 
                  :parameters => [ { :username => "The desired username. Must be unique in the system. Length 4-20 characters." },
                                   { :password => "User's password." },
-                                  { :email    => "User's email address. Must be valid."} ] },
+                                  { :email    => "User's email address. Must be valid."} ], 
 
-               
-                  
+               	 :returns => { "201" => "Ok.",
+															 "500" => "Unable to save the person in the database." } },
+			
                   ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>

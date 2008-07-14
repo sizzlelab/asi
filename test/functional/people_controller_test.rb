@@ -51,7 +51,7 @@ class PeopleControllerTest < ActionController::TestCase
     post :create, { :person => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov" }, 
                     :format => 'json'}, 
                   { :session_id => sessions(:client_only_session).id }
-    assert_response :success 
+    assert_response :created 
     user = assigns["person"] 
     assert_not_nil user
     json = JSON.parse(@response.body)
@@ -244,6 +244,10 @@ class PeopleControllerTest < ActionController::TestCase
       test.assert_routing({ :method => "delete", :path => "/people/#{user_id}/@friends/f229f" }, 
         { :action => "remove_friend", :user_id => user_id, :friend_id => "f229f" })
     end
+  end
+
+  def test_error_reporting
+    
   end
 
   private 
