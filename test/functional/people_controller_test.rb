@@ -97,14 +97,16 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal("Doe", assigns["person"].name.family_name)
     json = JSON.parse(@response.body)
     
+  end
+  
+  def test_update_avatar
     # try to upload an avatar
-    put :update, { :user_id => people(:valid_person).id, :person => {:email => testing_email }, :format => 'json',
-                   :file => fixture_file_upload("Bison_skull_pile.png","image/png"), 
-                   :full_image_size => '"240x300"', :thumbnail_size => '"50x64"'}, 
-                 { :session_id => sessions(:session1).id }                 
+    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("Bison_skull_pile.png","image/png"),
+                          :format => 'json', :full_image_size => '"240x300"', :thumbnail_size => '"50x64"'}, 
+                        { :session_id => sessions(:session1).id }                 
     assert_response :success
     json = JSON.parse(@response.body)
-  end
+  end  
  
   def test_delete
     #delete person with valid id

@@ -58,14 +58,23 @@ ActionController::Routing::Routes.draw do |map|
                                          :get => 'show', 
                                          :put => 'update', 
                                          :delete => 'delete'
+                                         
+  map.connect '/people/user_id/@avatar', :controller => 'people',
+                                         :action => 'user_id_@avatar',                                 
+                                         :format => 'html',
+                                         :conditions => { :method => :get }
+
+  map.resource '/people/:user_id/@avatar', :controller => 'people',
+                                           :get => 'get_avatar', 
+                                           :put => 'update_avatar'                                         
 
   map.resource '/people', :controller => 'people',
                           :post => 'create'
 
   map.connect '/people/user_id/@friends', :controller => 'people',
-                                           :action => 'user_id_@friends',
-                                           :format => 'html',
-                                           :conditions => { :method => :get }                          
+                                          :action => 'user_id_@friends',
+                                          :format => 'html',
+                                          :conditions => { :method => :get }                          
 
   map.resource '/people/:user_id/@friends', :controller => 'people',
                                             :get => 'get_friends',
