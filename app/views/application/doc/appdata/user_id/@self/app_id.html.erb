@@ -1,0 +1,17 @@
+<h1><code>/appdata/&lt;user_id&gt;/@self/&lt;app_id&gt;</code></h1>
+
+<p>A resource for application-specific key-value data concerning a single user. This resource always exists implicitly &ndash; 
+therefore, <tt>POST</tt> is not allowed.</p>
+
+<p>The user with <tt>user_id</tt> and the application with <tt>app_id</tt> must be logged in &ndash; otherwise, 
+<em>403 forbidden</em> is returned.</p> 
+
+<% methods = [ { :name => "GET", 
+                 :description => "Gets every key-value pair that has been saved for this user by this application." },
+
+               { :name => "PUT", 
+                 :description => "Adds new key-value pairs about this user. If previous data with the same key (or keys)
+                                  exists, the previous data is overwritten with the data provided.", 
+                 :parameters => [ { :data => "Key-value pairs to be saved." } ] } ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>

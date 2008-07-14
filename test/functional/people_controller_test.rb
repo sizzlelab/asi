@@ -220,6 +220,7 @@ class PeopleControllerTest < ActionController::TestCase
 
   def test_routing
     user_id = "hfr2kf38s7"
+
     with_options :controller => "people", :format => "json" do |test|
       test.assert_routing({ :method => "post", :path => "/people" }, 
         { :action => "create" })

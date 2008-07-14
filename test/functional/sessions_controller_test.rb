@@ -73,7 +73,7 @@ class SessionsControllerTest < ActionController::TestCase
   end
   
   def test_routing
-    with_options :controller => 'sessions', :format => 'json'    do |test|
+    with_options :controller => 'sessions', :format => 'json' do |test|
       test.assert_routing({ :method => 'post', :path => '/session'}, 
         {  :action => 'create'})
       test.assert_routing({ :method => 'delete', :path => '/session'}, 
