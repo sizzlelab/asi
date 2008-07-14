@@ -87,7 +87,7 @@ end
 module COSTestingDSL
   def logs_in_with(options)
     post "/session", options
-    assert_response :success
+    assert_response :created
     assert_not_nil session[:session_id]
   end
 

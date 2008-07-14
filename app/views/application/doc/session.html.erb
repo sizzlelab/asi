@@ -12,10 +12,15 @@
                  :parameters => [ { :client_name => "The client's name." },
                                   { :client_password => "The client's password." },
                                   { :username => "The user's name (optional)." },
-                                  { :password => "The user's password (optional)." } ] },
+                                  { :password => "The user's password (optional)." } ],
+                 :returns => { "201" => "Ok.",
+                               "401" => "Erroneous or missing authentication token(s).",
+                               "409" => "A session already exists." }  },
 
                { :name => "DELETE", 
-                 :description => "Ends the current session." } ] %>
+                 :description => "Ends the current session.",
+                 :returns => { "200" => "Ok.", 
+                               "404" => "There is no session." } } ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
 

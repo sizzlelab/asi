@@ -1,9 +1,9 @@
+
 <h3><%= name %></h3>
 <div class="method">
 <p>
   <%= description %>
 </p>
-
 
 <% if parameters && parameters.size > 0 %>
 <h4>Parameters</h4>
@@ -14,7 +14,7 @@
       <% if parameter.to_a[0][1].class == Array%>
       <th class="inner_parameters"><div class="inner_parameters"><%= parameter.to_a[0][0] %></div></th>
       <td>
-      <%= render :partial => "doc/inner_parameters", :locals => { :parameters => parameter.to_a[0][1] } %>
+	<%= render :partial => "doc/inner_parameters", :locals => { :parameters => parameter.to_a[0][1] } %>
       </td>
       <%else%>
         <th><%= parameter.to_a[0][0] %></th>
@@ -25,5 +25,19 @@
   <% end %>
   </table>
 <% end %>
+
+<% if returns && returns.size > 0 %>
+
+<h4>Returns</h4>
+<table>
+  <% returns.sort.each do |code, description| %>
+  <tr>
+    <th><%= code %> <span class="status-code"><%=http_status(code)%></span></th>
+    <td><%= description %></td>
+  </tr>
+  <% end %>
+</table>
+<% end %>
+
 </div>
 

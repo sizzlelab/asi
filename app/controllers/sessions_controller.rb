@@ -1,6 +1,6 @@
 
 class SessionsController < ApplicationController
-  before_filter :ensure_client_login, :only => :destroy
+
   before_filter :ensure_client_logout, :only => :create
  
   def create
@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
         #TODO return more information about that user part was wrong
       end
       session[:session_id] = @session.id
-      render :status => :ok #TODO decide if this should be 201 instead?
+      render :status => :created
     else
       render :status => :unauthorized and return
       #TODO return more information about what failed? user or client or both?
@@ -25,7 +25,8 @@ class SessionsController < ApplicationController
   end
  
   def destroy
-    Session.destroy(@application_session)
+    render :status => :not_found and return unless @application_session
+    @application_session.destroy
     session[:session_id] = @user = @client = nil
   end
 end
