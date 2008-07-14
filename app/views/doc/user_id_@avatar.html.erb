@@ -1,0 +1,31 @@
+<h1><code>/people/&lt;user_id&gt;/@avatar</code></h1>
+<p>
+  A resource for accessing a user's avatar image.
+</p>
+
+<p>PUT method requires that the user with <tt>user_id</tt> is logged in &ndash; otherwise, 
+<em>403 forbidden</em> is returned.</p>
+
+<% methods = [ 
+                { :name => "GET", 
+
+                 :description => "Gets the avatar of the user."},                
+               
+               {
+                 :name => "PUT",
+                 :description => "Update (or add) an avatar to a user specified by <tt>user_id</tt>. All parameters are required.",
+                 :parameters => [{
+                                    :avatar => [
+																		  {:file => [
+                                            		  {:content_type  => "Content type of the user's avatar image."},
+                                            	    {:filename => "Filename of the user's avatar image file."}
+                                      					]
+																			},
+                                      {:full_image_size => "The maximum size that the image will be converted into. Format: [MAX_WIDTH]x[MAX_HEIGHT], e.g. 300x240. " +
+																								"Note that image aspect ratio will not be changed. "},
+																		  {:thumbnail_size => "The maximum size that the thumbnail of the image will be converted into."}
+																		]
+                                }]
+               } ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>

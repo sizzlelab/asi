@@ -189,7 +189,7 @@ module COSTestingDSL
   end
 
   def updates_avatar(options)
-    put "/people/#{options[:id]}/@self", options
+    put "/people/#{options[:id]}/@avatar", options
     assert_response :success
   end
 

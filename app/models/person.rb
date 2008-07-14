@@ -95,7 +95,8 @@ class Person < ActiveRecord::Base
       'id' => id,
       'username' => username,
       'email' => email,
-      'name' => name
+      'name' => name,
+      'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" } }
     }
     if self.person_spec
       self.person_spec.attributes.each do |key, value|
