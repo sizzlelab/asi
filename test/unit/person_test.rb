@@ -9,6 +9,7 @@ class PersonTest < ActiveSupport::TestCase
     @invalid_person = people(:invalid_person)
     @valid_person_spec = person_specs(:valid_person_spec) 
     @valid_person_name = person_names(:valid_person_name)
+    @valid_avatar = images(:jpg)
   end
 
   # This person should be valid by construction. 
@@ -103,6 +104,12 @@ class PersonTest < ActiveSupport::TestCase
     person = @valid_person
     person.person_spec = @valid_person_spec
     person.name = @valid_person_name
+    avatar = @valid_avatar
+    assert avatar.valid_file?
+    avatar.full_image_size = '"240x300"'
+    avatar.thumbnail_size = '"50x64"'
+    assert avatar.successful_conversion?
+    person.avatar = @valid_avatar
     json = JSON.parse(person.to_json)
     assert_not_nil json["id"]
     assert_not_nil json["username"]

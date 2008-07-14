@@ -41,12 +41,6 @@ class PeopleController < ApplicationController
     if ! @person  
       render :status  => 404 and return
     end
-    if params[:file]
-      if (@person.save_avatar?(params))
-      else
-        render :status  => 500 and return
-      end  
-    end
     if params[:person]
       if @person.update_attributes(params[:person])
         render :status  => 200 and return  
@@ -54,7 +48,9 @@ class PeopleController < ApplicationController
         render :status  => 500 and return
         #TODO return more info about what went wrong
       end
-    end
+    else
+      #TODO status code
+    end 
   end
   
   def delete
@@ -119,4 +115,31 @@ class PeopleController < ApplicationController
     end
     Connection.breakup(@person, @friend)
   end
+  
+  def get_avatar
+    @person = Person.find_by_id(params['user_id'])
+    if ! @person  
+      render :status => 404 and return
+    end
+    @avatar = @person.avatar
+  end
+  
+  def update_avatar
+    if ! ensure_same_as_logged_person(params['user_id'])
+      render :status => :forbidden and return
+    end
+    @person = Person.find_by_id(params['user_id'])
+    if ! @person  
+      render :status  => 404 and return
+    end
+    if params[:file]
+      if (@person.save_avatar?(params))
+        render :status  => 200 and return
+      else
+        render :status  => 500 and return
+      end  
+    end
+    #TODO status code
+  end
+  
 end
