@@ -29,21 +29,21 @@ class ApplicationController < ActionController::Base
   def ensure_person_login
     unless @user
       flash[:notice] = "Please login as a user to continue"
-      render :status => :unauthorized and return
+      head :status => :unauthorized and return
     end
   end
  
   def ensure_person_logout
     if @user
       flash[:notice] = "You must logout before you can login or register"
-      render :status => :conflict and return
+      head :status => :conflict and return
     end
   end
   
   def ensure_client_login
     unless @client
       flash[:notice] = "Please login as a client to continue"
-      render :status => :unauthorized and return
+      head :status => :unauthorized and return
     end
   end
  

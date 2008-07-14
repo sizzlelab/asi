@@ -12,7 +12,7 @@ class SessionsControllerTest < ActionController::TestCase
   
   def test_create
     post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "testi", :format => 'json'}
-    assert_response :success
+    assert_response :created
     assert_not_nil session[:session_id]
     json = JSON.parse(@response.body)
 
@@ -29,7 +29,7 @@ class SessionsControllerTest < ActionController::TestCase
     
     #test with client only
     post :create, { :client_name => "ossi", :client_password => "testi", :format => 'json'}
-    assert_response :success
+    assert_response :created
     assert_not_nil session[:session_id]
     json = JSON.parse(@response.body)
     
@@ -51,7 +51,7 @@ class SessionsControllerTest < ActionController::TestCase
   def test_destroy
     # frist create the session to destroy
     post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "testi", :format => 'json'}
-    assert_response :success
+    assert_response :created
     json = JSON.parse(@response.body)
 
     # destroy
@@ -61,7 +61,7 @@ class SessionsControllerTest < ActionController::TestCase
     
     # create a client only session to destroy
     post :create, { :client_name => "ossi", :client_password => "testi", :format => 'json'}
-    assert_response :success
+    assert_response :created
     assert_not_nil session[:session_id]
     json = JSON.parse(@response.body)
 
@@ -79,5 +79,19 @@ class SessionsControllerTest < ActionController::TestCase
       test.assert_routing({ :method => 'delete', :path => '/session'}, 
         {  :action => 'destroy' }) 
     end
+  end
+
+  def test_error_reporting
+
+    delete :destroy, { :format => 'json' }
+    assert_response :not_found
+
+    post :create, { :format => 'json' }
+    assert_response :unauthorized
+
+    post :create, { :username => "testi", :password => "testi", 
+                    :client_name => "ossi", :client_password => "testi", :format => 'json' },
+                  { :session_id => sessions(:session1).id } 
+    assert_response :conflict
   end
 end

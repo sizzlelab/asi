@@ -2,8 +2,8 @@ module COSRoutes
 
   def documentation(route)
     connect "doc" + route, :controller => 'application',
-                   :format => 'html',
-                   :action => 'doc'
+                           :format => 'html',
+                           :action => 'doc'
   end
 
   def resource(route, options)
@@ -66,12 +66,12 @@ ActionController::Routing::Routes.draw do |map|
 
   map.documentation '/appdata'
 
-  map.documentation '/doc'
+  map.connect '/doc', :controller => 'application', :action => 'index'
 
   map.root :controller => 'application',
            :action => 'index',
            :conditions => { :method => :get }
 
-  # XXX This route is fake - but without it, functional tests won't run
-   map.connect '/:controller/:action'
+  # XXX This is a fake route for functional tests
+  map.connect '/:controller/:action', :format => 'json'
 end
