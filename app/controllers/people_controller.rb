@@ -10,14 +10,14 @@ class PeopleController < ApplicationController
   def show
     @person = Person.find_by_id(params['user_id'])
     if ! @person
-      render :status => 404 and return
+      render :status => :not_found and return
     end
   end
   
   def get_by_username
     @person = Person.find_by_username(params['username'])
     if ! @person
-      render :status  => 404 and return
+      render :status  => :not_found and return
     end
   end
 
@@ -25,10 +25,10 @@ class PeopleController < ApplicationController
     @person = Person.new(params[:person])
     if @person.save
       @session = @person.sessions.create
-     session[:session_id] = @session.id
-      render :status => 200 and return
+      session[:session_id] = @session.id
+      render :status => :created and return
     else
-      render :status => 500 and return
+      render :status => :internal_server_error and return
       # TODO Should return more informative message about what went wrong
     end
   end
@@ -39,24 +39,24 @@ class PeopleController < ApplicationController
     end
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
-      render :status  => 404 and return
+      render :status  => :not_found and return
     end
     if params[:person]
       if @person.update_attributes(params[:person])
-        render :status  => 200 and return  
+        render :status  => :ok and return  
       else
-        render :status  => 500 and return
+        render :status  => :internal_server_error and return
         #TODO return more info about what went wrong
       end
     else
-      render :status  => 400 and return
+      render :status  => :bad_request and return
     end 
   end
   
   def delete
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
-      render :status => 404 and return
+      render :status => :not_found and return
     end
     if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
@@ -77,11 +77,11 @@ class PeopleController < ApplicationController
     
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
-      render :status => 404 and return
+      render :status => :not_found and return
     end
     @friend = Person.find_by_id(params['friend_id'])
     if ! @friend  
-      render :status => 404 and return
+      render :status => :not_found and return
     end
         
     if @person.requested_contacts.include?(@friend) #accept if requested
@@ -96,7 +96,7 @@ class PeopleController < ApplicationController
   def get_friends
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
-      render :status => 404 and return
+      render :status => :not_found and return
     end
     @friends = @person.contacts
   end
@@ -107,11 +107,11 @@ class PeopleController < ApplicationController
     end
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
-      render :status => 404 and return
+      render :status => :not_found and return
     end
     @friend = Person.find_by_id(params['friend_id'])
     if ! @friend  
-      render :status => 404 and return
+      render :status => :not_found and return
     end
     Connection.breakup(@person, @friend)
   end
@@ -119,7 +119,7 @@ class PeopleController < ApplicationController
   def get_avatar
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
-      render :status => 404 and return
+      render :status => :not_found and return
     end
     @avatar = @person.avatar
   end
@@ -130,27 +130,27 @@ class PeopleController < ApplicationController
     end
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
-      render :status  => 404 and return
+      render :status  => :not_found and return
     end
     if params[:file]
       if (@person.save_avatar?(params))
-        render :status  => 200 and return
+        render :status  => :ok and return
       else
-        render :status  => 500 and return
+        render :status  => :internal_server_error and return
       end  
     else
-      render :status  => 400 and return
+      render :status  => :bad_request and return
     end
   end
   
   def delete_avatar
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
-      render :status => 404 and return
+      render :status => :not_found and return
     end
     @person.avatar = Image.new
     if ! @person.avatar  
-      render :status => 404 and return
+      render :status => :not_found and return
     end
     if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
