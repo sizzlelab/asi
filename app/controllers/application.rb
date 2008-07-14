@@ -22,6 +22,10 @@ class ApplicationController < ActionController::Base
   def index
   end
 
+  def doc
+    render :action => request.path[1..-1]
+  end
+
   def ensure_person_login
     unless @user
       flash[:notice] = "Please login as a user to continue"
