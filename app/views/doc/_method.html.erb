@@ -32,7 +32,7 @@
 <table>
   <% returns.sort.each do |code, description| %>
   <tr>
-    <th><%= code %> <span class="status-code"><%=http_status(code)%></span></th>
+    <th><%= code %>&nbsp;<span class="status-code"><%=http_status(code)%></span></th>
     <td><%= description %></td>
   </tr>
   <% end %>

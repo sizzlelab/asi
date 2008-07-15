@@ -11,7 +11,7 @@ class SessionsControllerTest < ActionController::TestCase
   end
   
   def test_create
-    post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "testi", :format => 'json'}
+    post :create, { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :created
     assert_not_nil session[:session_id]
     json = JSON.parse(@response.body)
@@ -28,7 +28,7 @@ class SessionsControllerTest < ActionController::TestCase
     assert_response :unauthorized
     
     #test with client only
-    post :create, { :client_name => "ossi", :client_password => "testi", :format => 'json'}
+    post :create, { :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :created
     assert_not_nil session[:session_id]
     json = JSON.parse(@response.body)
@@ -38,19 +38,19 @@ class SessionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     
     #test with erroneus login information
-    post :create, { :username => "testi", :password => "testia,.u", :client_name => "ossi", :client_password => "testi", :format => 'json'}
+    post :create, { :username => "testi", :password => "testia,.u", :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :unauthorized
 
-    post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "tesaoeulcrhti", :format => 'json'}
+    post :create, { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "tesaoeulcrhti", :format => 'json'}
     assert_response :unauthorized
     
-    post :create, { :username => "testi", :password => "testi2513", :client_name => "ossi", :client_password => "t23452esaoeulcrhti", :format => 'json'}
+    post :create, { :username => "testi", :password => "testi2513", :app_name => "ossi", :app_password => "t23452esaoeulcrhti", :format => 'json'}
     assert_response :unauthorized
   end
   
   def test_destroy
     # frist create the session to destroy
-    post :create, { :username => "testi", :password => "testi", :client_name => "ossi", :client_password => "testi", :format => 'json'}
+    post :create, { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :created
     json = JSON.parse(@response.body)
 
@@ -60,7 +60,7 @@ class SessionsControllerTest < ActionController::TestCase
     assert_nil session[:session_id]
     
     # create a client only session to destroy
-    post :create, { :client_name => "ossi", :client_password => "testi", :format => 'json'}
+    post :create, { :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :created
     assert_not_nil session[:session_id]
     json = JSON.parse(@response.body)
@@ -90,7 +90,7 @@ class SessionsControllerTest < ActionController::TestCase
     assert_response :unauthorized
 
     post :create, { :username => "testi", :password => "testi", 
-                    :client_name => "ossi", :client_password => "testi", :format => 'json' },
+                    :app_name => "ossi", :app_password => "testi", :format => 'json' },
                   { :session_id => sessions(:session1).id } 
     assert_response :conflict
   end
