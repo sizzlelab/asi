@@ -58,7 +58,7 @@ class CollectionsController < ApplicationController
     if ! @collection.write?(@user, @client)
       render :status => :forbidden and return
     end
-    @collection.create_item(params)
+    head :status => :bad_request and return unless @collection.create_item(params)
     @item = @collection.items[-1]
   end
   
@@ -74,7 +74,7 @@ class CollectionsController < ApplicationController
     begin
       @collection = Collection.find(params['id'])
     rescue ActiveRecord::RecordNotFound
-      render :status => :not_found and return
+      head :status => :not_found and return
     end
   end
 end

@@ -2,7 +2,15 @@
  
  <p>A resource for a specific collection of data.</p>
  
- <% methods = [ { :name => "POST",
+ <% returns = { "200" => "",
+                "403" => "The current combination of application and user is not allowed to change this collection.",
+                "404" => "The collection with the specified id does not exist." }
+
+    methods = [ { :name => "GET",
+                  :description => "Returns this collection.",
+                  :returns => returns.merge({ "403" => returns["403"].gsub("change", "see") }) },
+
+                { :name => "POST",
                   :description => "Adds a new item to the collection.",
                   :parameters => [ { :content_type => "The content type of the new collection item. The content types currently
                                                        supported are <code>text/*</code> and <code>image/*</code>." },
@@ -10,15 +18,20 @@
                                    { :title => "The title of the item. If a file is given or content_type is not
                                                 <code>text/*</code>, this parameter is ignored." },
                                    { :body => "The body of the item. If a file is given or content_type is not <code>text/*</code>,
-                                               this parameter is ignored." } ] },
+                                               this parameter is ignored." } ],
+                  :returns => returns.merge({ "400" => "A malformed or unsupported image type was uploaded." }) },
+
                 { :name => "PUT",
                   :description => "Updates the attributes of the collection.",
                   :parameters => [ { :read_only => "Whether the new collection is read only. Read only collections can be written
                                                     to only by their owner; otherwise, the owner and their friends all have write
-                                                    access. An empty value, '0' or 'false' are interpreted as <code>false</code>,
-                                                    all other values are <code>true</code>." },
-                                   { :metadata => [{ :any_key => "Any string" }, { :another_key => "Another string" } ] } ] },
+                                                    access. An empty value, '0' or 'false' are interpreted as <code>false</code>.
+                                                    All other values are <code>true</code>." },
+                                   { :metadata => [{ :any_key => "Any string" }, { :another_key => "Another string" } ] } ],
+                  :returns => returns },
+
                 { :name => "DELETE",
-                  :description => "Deletes the collection." } ] %>
+                  :description => "Deletes the collection.",
+                  :returns => returns.merge({ "403" => returns["403"].gsub("change", "delete") }) } ] %>
  
  <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
