@@ -1,13 +1,13 @@
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
-
-
+require 'logging_helper'
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   layout 'default'
 
   before_filter :maintain_session_and_user
+  before_filter :log
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
@@ -57,7 +57,13 @@ class ApplicationController < ActionController::Base
   def ensure_same_as_logged_person(target_person_id)
     return @user && target_person_id == @user.id
   end
- 
+  
+  def log
+    request.extend(LoggingHelper)
+    logger.info(request.to_json({ :params => params, 
+                                  :session => @application_session }))
+  end
+
   protected
  
   def maintain_session_and_user

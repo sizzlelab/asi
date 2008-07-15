@@ -6,8 +6,8 @@ class SessionsController < ApplicationController
   def create
     @session = Session.new({ :username => params[:username], 
                              :password => params[:password], 
-                             :client_name => params[:client_name], 
-                             :client_password => params[:client_password] })
+                             :client_name => params[:app_name], 
+                             :client_password => params[:app_password] })
     
     if @session.save
       if (! @session.person_match) && (params[:username] || params[:password])

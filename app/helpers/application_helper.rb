@@ -9,6 +9,6 @@ module ApplicationHelper
              "404" => "Not Found",
              "409" => "Conflict",
              "500" => "Internal Server Error" }
-    return codes[code]
+    return codes[code].gsub(" ", "&nbsp;")
   end
 end

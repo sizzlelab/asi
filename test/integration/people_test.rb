@@ -6,7 +6,7 @@ class PeopleTest < ActionController::IntegrationTest
   def test_change_details
     new_session do |ossi|
       ossi.logs_in_with({ :username => people(:test).username, :password => "testi", 
-                          :client_name => clients(:one).name, :client_password => "testi"})
+                          :app_name => clients(:one).name, :app_password => "testi"})
       ossi.gets_person_details({ :id => people(:test).id })
       ossi.updates_person_details_with({ :id => people(:test).id, 
                                          :person => { :name => 
@@ -23,7 +23,7 @@ class PeopleTest < ActionController::IntegrationTest
   def test_change_password_and_use_location
     new_session do |ossi|
       ossi.logs_in_with({ :username => people(:test).username, :password => "testi", 
-                          :client_name => clients(:one).name, :client_password => "testi"})
+                          :app_name => clients(:one).name, :app_password => "testi"})
 
       new_password = "myNEWpass42"
       ossi.changes_password_of_person({ :id => people(:test).id, 
@@ -32,11 +32,11 @@ class PeopleTest < ActionController::IntegrationTest
                                          :person => { :name => 
                                            { :given_name => "Pentteri", 
                                              :family_name => "Pamppunen" },
-                                         :status_message => "Testing..." } })
+                                           :status_message => "Testing..." } })
 
       ossi.logs_out
       ossi.logs_in_with({ :username => people(:test).username, :password => new_password, 
-                          :client_name => clients(:one).name, :client_password => "testi"})
+                          :app_name => clients(:one).name, :app_password => "testi"})
 
       ossi.gets_location({ :id => people(:test).id })
       ossi.updates_location_with({ :id => people(:test).id,

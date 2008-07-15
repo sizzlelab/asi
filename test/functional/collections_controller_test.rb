@@ -54,14 +54,14 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # Should not show a collection belonging to another user
     get :show, { :id => collections(:one).id, :format => 'json' }, 
-               { :client => clients(:two).id, :user => people(:contact) }
+               { :session_id => sessions(:session2).id }
 
     assert_response :forbidden
     assert_nil assigns["collection"]
 
     # Should show a collection belonging to a connection of the user
     get :show, { :app_id => clients(:one).id, :id => collections(:three).id, :format => 'json' }, 
-               { :client => collections(:three).client.id, :user => people(:valid_person).id, :session_id => sessions(:session1).id }
+               { :session_id => sessions(:session1).id }
 
     assert people(:valid_person).contacts.include?(collections(:three).owner)
     assert_response :success
