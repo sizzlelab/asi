@@ -28,8 +28,7 @@ class PeopleController < ApplicationController
       session[:session_id] = @session.id
       render :status => :created and return
     else
-      render :status => :internal_server_error and return
-      # TODO Should return more informative message about what went wrong
+      render :status => :bad_request, :errors => @person.errors.full_messages.to_json and return
     end
   end
 
@@ -44,13 +43,9 @@ class PeopleController < ApplicationController
     if params[:person]
       if @person.update_attributes(params[:person])
         render :status  => :ok and return  
-      else
-        render :status  => :internal_server_error and return
-        #TODO return more info about what went wrong
       end
-    else
-      render :status  => :bad_request and return
-    end 
+    end
+    render :status  => :bad_request, :errors => @person.errors.full_messages.to_json and return 
   end
   
   def delete

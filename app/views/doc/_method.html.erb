@@ -39,5 +39,18 @@
 </table>
 <% end %>
 
+<% if error_messages && error_messages.size > 0 %>
+
+<h4>Error messages</h4>
+<table>
+  <% error_messages.sort.each do |message, description| %>
+  <tr>
+    <th><%= message %></th>
+    <td><%= description %></td>
+  </tr>
+  <% end %>
+</table>
+<% end %>
+
 </div>
 
