@@ -54,8 +54,9 @@ class Image < ActiveRecord::Base
     f.close
 
     # Then convert the source file to a full size image and a thumbnail.
-    img   = system("#{'convert'} '#{source_file}' -resize #{full_image_size} '#{full_size_image_file}'")
-    thumb = system("#{'convert'} '#{source_file}' -resize #{thumbnail_size} '#{thumbnail_file}'")
+    # The command will be absolutely silent (as the output would discarded anyway)
+    img   = system("convert '#{source_file}' -resize #{full_image_size} '#{full_size_image_file}' &> /dev/null")
+    thumb = system("convert '#{source_file}' -resize #{thumbnail_size} '#{thumbnail_file}' &> /dev/null")
     File.delete(source_file) if File.exists?(source_file)
 
     # Both conversions must succeed, else it's an error.
@@ -66,7 +67,7 @@ class Image < ActiveRecord::Base
 
     # Write new images to database and then delete image files.
     self.data = File.open(full_size_image_file,'rb').read
-    File.delete(full_size_image_file) if File.exists?(full_size_image_file)
+    File.delete(full_size_image_file) if File.exists?(full_size_image_file) 
     self.thumbnail = File.open(thumbnail_file,'rb').read
     File.delete(thumbnail_file) if File.exists?(thumbnail_file)
     return true

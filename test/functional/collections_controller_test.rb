@@ -213,4 +213,17 @@ class CollectionsControllerTest < ActionController::TestCase
                  { :session_id => sessions(:session1).id }
     assert_response :forbidden
   end
+  
+  def test_error_reporting
+    post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json', 
+                 :file => fixture_file_upload("collections.yml","image/png"), 
+                 :full_image_size => '"240x300"', :thumbnail_size => '"50x64"'},
+               { :session_id => sessions(:session1).id }
+    assert_response :bad_request
+
+    get :show, { :app_id => clients(:one).id, :id => collections(:one).id + "eoscrh", :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :not_found
+  end
+
 end
