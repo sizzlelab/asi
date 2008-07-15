@@ -96,8 +96,8 @@ class PersonTest < ActiveSupport::TestCase
     invalid_emails.each do |email| 
       person.email = email 
       assert !person.valid?, "#{email} tests as valid but shouldn't be" 
-      assert_equal "must be a valid email address", person.errors.on(:email) 
-    end 
+      assert_equal "is invalid", person.errors.on(:email) 
+    end
   end
 
   def test_to_json

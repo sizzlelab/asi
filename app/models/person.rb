@@ -46,16 +46,15 @@ class Person < ActiveRecord::Base
   
   validates_format_of :username, 
                       :with => /^[A-Z0-9_]*$/i, 
-                      :message => "must contain only letters, " + 
-                      "numbers, and underscores"
+                      :message => "is invalid"
   
   validates_format_of :password, :with => /^([\x20-\x7E]){4,16}$/,
-                          :message => "must be 4 to 16 characters",
-                          :unless => :password_is_not_being_updated?                    
+                      :message => "is_invalid",
+                      :unless => :password_is_not_being_updated?                    
 
   validates_format_of :email, 
                       :with => /^[A-Z0-9._%-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i, 
-                      :message => "must be a valid email address"               
+                      :message => "is invalid"               
 
   before_save :scrub_name
   after_save :flush_passwords
@@ -122,6 +121,7 @@ class Person < ActiveRecord::Base
     return names.collect{|name| name.person}.compact
   end
   
+  # Create a new avatar image to a person
   def save_avatar?(options)
     if options[:file] && options[:file].content_type.start_with?("image")
       image = Image.new

@@ -8,9 +8,7 @@
                  :parameters => [ { :search => "The search term. Every user whose name matches the regular expression
                                                 <code>/.*search.*/</code> will be returned. However, all characters in the
                                                 search term are interpreted as literals rather than special regexp 
-                                                characters." } ], 
-								
-								 :returns => { "404" => "Person with the given username doesn't exist." } },	
+                                                characters." } ] },	
 
                { :name => "POST", 
 
@@ -21,7 +19,13 @@
                                   { :email    => "User's email address. Must be valid."} ], 
 
                	 :returns => { "201" => "Ok.",
-															 "500" => "Unable to save the person in the database." } },
+															 "400" => "Unable to save the person in the database because of inadequate request. " +
+															 "If an error occurs, both status code and an array of error messages are returned." },
+															
+								 :error_messages => { "Username is invalid" => "Username must contain only letters, numbers and underscores.",
+															 				"Email is invalid" => "Email must be a valid email address.",
+															 				"Username has already been taken" => "Username is already in use in OtaSizzle.",
+															 				"Email has already been taken" => "Username is already in use in OtaSizzle." }},						
 			
                   ] %>
 
