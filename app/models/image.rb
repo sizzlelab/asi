@@ -12,7 +12,7 @@ class Image < ActiveRecord::Base
     self.data = options[:file].read
     self.full_image_size = options[:full_image_size]
     self.thumbnail_size = options[:thumbnail_size]                  
-    if valid_file? and successful_conversion?
+    if valid_file? and convert
       self.save
       return true
     end 
@@ -43,7 +43,7 @@ class Image < ActiveRecord::Base
   end
   
   # Returns true if conversion of image is successful.
-  def successful_conversion?
+  def convert
     source_file = File.join("#{RAILS_ROOT}/test/fixtures/", "temp_#{filename}")
     full_size_image_file = File.join("#{RAILS_ROOT}/test/fixtures/", "full_#{filename}")
     thumbnail_file = File.join("#{RAILS_ROOT}/test/fixtures/", "thumb_#{filename}")
@@ -54,9 +54,8 @@ class Image < ActiveRecord::Base
     f.close
 
     # Then convert the source file to a full size image and a thumbnail.
-    # The command will be absolutely silent (as the output would discarded anyway)
-    img   = system("convert '#{source_file}' -resize #{full_image_size} '#{full_size_image_file}' &> /dev/null")
-    thumb = system("convert '#{source_file}' -resize #{thumbnail_size} '#{thumbnail_file}' &> /dev/null")
+    img   = system("#{'convert'} '#{source_file}' -resize #{full_image_size} '#{full_size_image_file}'")
+    thumb = system("#{'convert'} '#{source_file}' -resize #{thumbnail_size} '#{thumbnail_file}'")
     File.delete(source_file) if File.exists?(source_file)
 
     # Both conversions must succeed, else it's an error.
@@ -67,7 +66,7 @@ class Image < ActiveRecord::Base
 
     # Write new images to database and then delete image files.
     self.data = File.open(full_size_image_file,'rb').read
-    File.delete(full_size_image_file) if File.exists?(full_size_image_file) 
+    File.delete(full_size_image_file) if File.exists?(full_size_image_file)
     self.thumbnail = File.open(thumbnail_file,'rb').read
     File.delete(thumbnail_file) if File.exists?(thumbnail_file)
     return true

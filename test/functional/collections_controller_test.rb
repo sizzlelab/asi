@@ -205,6 +205,13 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_equal("bar", json["metadata"]["foo"], "Old metadata key was lost while updating")
     assert_equal("foo", json["metadata"]["bar"])
 
+    # Try to update the collection's id and owner
+    put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
+                   :collection => { :id => "9999", :owner_id => "9999" } },
+                 { :session_id => sessions(:session1).id }
+    assert_not_equal("9999", json["id"])
+
+
     # Try to update metadata for a collection belonging to another user
     put :update, { :app_id => clients(:one).id, 
                    :id => collections(:two).id, 

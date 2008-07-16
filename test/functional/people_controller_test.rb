@@ -72,6 +72,14 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :success
     json = JSON.parse(@response.body)
 
+    # try to update the id
+    put :update, { :user_id => people(:valid_person).id, :person => {:id => "9999" }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    puts json.inspect
+    assert_not_equal json["id"], "9999"
+
     # asserts for checking that the updates really stored correctly
     assert_equal(assigns["person"].email, testing_email)
     # assert that no changed value has not changed
