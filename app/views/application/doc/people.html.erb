@@ -9,7 +9,7 @@
                                                 <code>/.*search.*/</code> will be returned. However, all characters in the
                                                 search term are interpreted as literals rather than special regexp 
                                                 characters." } ] },	
-
+                                                
                { :name => "POST", 
 
                  :description => "Creates a new user.", 
@@ -25,7 +25,10 @@
 								 :error_messages => { "Username is invalid" => "Username must contain only letters, numbers and underscores.",
 															 				"Email is invalid" => "Email must be a valid email address.",
 															 				"Username has already been taken" => "Username is already in use in OtaSizzle.",
-															 				"Email has already been taken" => "Username is already in use in OtaSizzle." }},						
+															 				"Email has already been taken" => "Username is already in use in OtaSizzle.",
+															 				"Username is too short" => "Username must be at least 4 characters long.",
+															 				"Username is too long" => "Username must be no more than 20 characters long.",
+															 				"[Attribute] is too long" => "Given name, family name and status message can't be longer than 255 characters."}}						
 			
                   ] %>
 
@@ -33,7 +36,7 @@
 
 <h2>Subresources</h2>
 <ul>
-  <li>
+  <li>  
     <a href="doc/people/user_id/@self"><tt>/people/&lt;user_id&gt;/@self</tt></a> &ndash; a user's profile
   </li>
   <li>
