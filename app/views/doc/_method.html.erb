@@ -5,7 +5,7 @@
   <%= description %>
 </p>
 
-<% if defined?(parameters) && parameters.size > 0 %>
+<% if usable?(parameters) %>
 <h4>Parameters</h4>
   <table>
   <% parameters.each do |parameter| %>
@@ -26,7 +26,7 @@
   </table>
 <% end %>
 
-<% if defined?(returns) && returns.size > 0 %>
+<% if defined?(returns) && returns && returns.size > 0 %>
 
 <h4>Return Codes</h4>
 <table>
@@ -39,7 +39,7 @@
 </table>
 <% end %>
 
-<% if defined?(error_messages) && error_messages.size > 0 %>
+<% if defined?(error_messages) && error_messages && error_messages.size > 0 %>
 
 <h4>Error messages</h4>
 <table>
