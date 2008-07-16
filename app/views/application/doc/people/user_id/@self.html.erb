@@ -13,7 +13,8 @@
                
                {
                  :name => "PUT",
-                 :description => "Update (or add) information to user's profile. The <em>person</em>-parameter needs to contain only the attributes that need to be changed.",
+                 :description => "Update (or add) information to user's profile. The <em>person</em>-parameter needs to contain only the attributes that need to be changed." +
+									 " If an error occurs, both status code and an array of error messages are returned.",
                  :parameters => [{
                                     :person => [
                                           {:password => "The user's password."},
@@ -26,7 +27,11 @@
                                           ]},
                                           
                                     ]
-                                }]
+                                }],
+                              
+                  :error_messages => { "[Attribute] is too long" => "Given name, family name and status message can't be longer than 255 characters.",
+                                       "Gender must be MALE or FEMALE" => "If gender is given, it must be male or female.",
+                                       "Birthdate is invalid" => "Birthdate must be of correct form."}              
                },
                
                { :name => "DELETE", 

@@ -41,7 +41,9 @@ class Person < ActiveRecord::Base
   USERNAME_SIZE = 20 
 
   validates_uniqueness_of :username, :email
-  validates_length_of :username, :within => USERNAME_RANGE
+  #validates_length_of :username, :within => USERNAME_RANGE
+  validates_length_of :username, :minimum => USERNAME_MIN_LENGTH, :message => "is too short"
+  validates_length_of :username, :maximum => USERNAME_MAX_LENGTH, :message => "is too long"
   validates_length_of :email, :maximum => EMAIL_MAX_LENGTH
   
   validates_format_of :username, 
@@ -49,7 +51,7 @@ class Person < ActiveRecord::Base
                       :message => "is invalid"
   
   validates_format_of :password, :with => /^([\x20-\x7E]){4,16}$/,
-                      :message => "is_invalid",
+                      :message => "is invalid",
                       :unless => :password_is_not_being_updated?                    
 
   validates_format_of :email, 
