@@ -108,7 +108,7 @@ class PersonTest < ActiveSupport::TestCase
     assert avatar.valid_file?
     avatar.full_image_size = '"240x300"'
     avatar.thumbnail_size = '"50x64"'
-    assert avatar.successful_conversion?
+    assert avatar.convert
     person.avatar = @valid_avatar
     json = JSON.parse(person.to_json)
     assert_not_nil json["id"]

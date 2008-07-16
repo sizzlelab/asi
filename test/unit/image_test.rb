@@ -22,7 +22,7 @@ class ImageTest < ActiveSupport::TestCase
     assert image.valid_file?
     image.full_image_size = '"240x300"'
     image.thumbnail_size = '"50x64"'
-    assert image.successful_conversion?
+    assert image.convert
   end  
    
   def test_should_update_image
