@@ -11,4 +11,8 @@ module ApplicationHelper
              "500" => "Internal Server Error" }
     return codes[code].gsub(" ", "&nbsp;")
   end
+
+  def usable?(array)
+    defined?(array) && array && array.size > 0
+  end
 end
