@@ -2,6 +2,7 @@ class PeopleController < ApplicationController
   
   before_filter :ensure_client_login 
   before_filter :ensure_person_logout, :only  => :create
+  #around_filter :catch_exceptions
 
   def index
     @people = Person.find_with_ferret(params[:search])
@@ -21,7 +22,7 @@ class PeopleController < ApplicationController
     end
   end
 
-  def create_
+  def create
     @person = Person.new(params[:person])
     if @person.save
       @session = @person.sessions.create
@@ -153,5 +154,15 @@ class PeopleController < ApplicationController
     end
     @person.avatar.destroy
   end
+  
+  private
+  
+  # Catch NoMethodError
+  # def catch_exceptions
+  #   yield
+  # rescue => NoSuchMethodException
+  #   render :status  => :bad_request, :errors => @person.errors.full_messages.to_json and return
+  # end
+  
   
 end
