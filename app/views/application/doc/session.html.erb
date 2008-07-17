@@ -7,20 +7,17 @@
 <% methods = [ { :name => "POST", 
 
                  :description => "Starts a new session. If no username and password are provided,
-                                  a session is started only for the application.", 
+                                  a session is started only for the client.", 
 
-                 :parameters => [ { :app_name => "The application's name." },
-                                  { :app_password => "The application's password." },
+                 :parameters => [ { :client_name => "The client's name." },
+                                  { :client_password => "The client's password." },
                                   { :username => "The user's name (optional)." },
                                   { :password => "The user's password (optional)." } ],
-                 :returns => { "201" => "",
-                               "401" => "Erroneous or missing authentication token(s).",
+                 :returns => { "401" => "Erroneuous authentication token(s).",
                                "409" => "A session already exists." }  },
 
                { :name => "DELETE", 
-                 :description => "Ends the current session.",
-                 :returns => { "200" => "", 
-                               "404" => "There is no session." } } ] %>
+                 :description => "Ends the current session." } ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
 

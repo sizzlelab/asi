@@ -54,3 +54,8 @@ div.footer {
     text-align : right;
     margin-top : 4em;
 }
+
+.response {
+    font-size : small;
+    margin-top : 1em;
+}
