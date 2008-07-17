@@ -253,8 +253,16 @@ class PeopleControllerTest < ActionController::TestCase
     end
   end
 
-  def test_error_reporting
-    
+  def test_pending_contacts
+    person = people(:requested)
+    get :pending_friend_requests, { :user_id => person.id, :format => 'json' }, { :session_id => sessions(:session5) }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert json.size > 0
+    json.each do |p|
+      contact = Person.find_by_id(p["id"])
+      assert person.pending_contacts.include?(contact)
+    end
   end
 
   private 

@@ -22,6 +22,13 @@ class PeopleController < ApplicationController
     end
   end
 
+  def pending_friend_requests
+    if ! ensure_same_as_logged_person(params['user_id'])
+      render :status => :forbidden and return
+    end
+    render :json => @user.pending_contacts.to_json
+  end
+
   def create
     @person = Person.new(params[:person])
     if @person.save
@@ -29,7 +36,7 @@ class PeopleController < ApplicationController
       session[:session_id] = @session.id
       render :status => :created and return
     else
-      render :status => :bad_request, :errors => @person.errors.full_messages.to_json and return
+      render :status => :bad_request, :json => @person.errors.full_messages.to_json and return
     end
   end
 
@@ -47,7 +54,7 @@ class PeopleController < ApplicationController
       end
     end
     @person = nil
-    render :status  => :bad_request, :errors => @person.errors.full_messages.to_json and return 
+    render :status  => :bad_request, :json => @person.errors.full_messages.to_json
   end
   
   def delete

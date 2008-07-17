@@ -6,17 +6,17 @@
   </head>
   <body>
     <h1>COS tester</h1>
+    <p>The URL must be absolute and start with a slash, e.g. <code>/cos/session</code>.</p>
     <select id="method">
       <option>GET</option>
       <option>POST</option>
       <option>PUT</option>
       <option>DELETE</option>
     </select>
-    <% render :partial => "layouts/servername" %>
-    <input type="text" id="url" size="41"/>
+    <input type="text" id="url" size="69"/>
     <br/>with params<br/>
     <textarea cols="70" rows="10" id="params"></textarea>
-    <input type="button" onClick="test('<%= form_authenticity_token %>')" value="Execute"/><br/>
+    <input type="button" style="margin-top:1em" onClick="test('<%= form_authenticity_token %>')" value="Execute"/><br/>
     <div id="responses">
       <div></div>
     </div>

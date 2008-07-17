@@ -28,7 +28,7 @@
                                        "Email has already been taken" => "Username is already in use in OtaSizzle.",
                                        "Username is too short" => "Username must be at least 4 characters long.",
                                        "Username is too long" => "Username must be no more than 20 characters long.",
-                                       "[Attribute] is too long" => "Given name, family name and status message can't be longer than 255 characters."}}            
+                                       "[Attribute] is too long" => "Given name, family name and status message can't be longer than 255 characters."} } ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
 
@@ -44,6 +44,10 @@
   <li>
     <a href="doc/people/user_id/@friends"><tt>/people/&lt;user_id&gt;/@friends</tt></a> &ndash; 
     a user's friend list
+  </li>
+  <li>
+    <a href="doc/people/user_id/@pending_friend_requests"><tt>/people/&lt;user_id&gt;/@pending_friend_requests</tt></a> &ndash; 
+    a user's pending friend requests
   </li>
   <li>
     <a href="doc/people/user_id/@location"><tt>/people/&lt;user_id&gt;/@location</tt></a> &ndash; 

@@ -2,7 +2,7 @@ require 'test_helper'
 
 class PeopleTest < ActionController::IntegrationTest
   fixtures :people, :clients
-  
+
   def test_change_details
     new_session do |ossi|
       ossi.logs_in_with({ :username => people(:test).username, :password => "testi", 
@@ -11,7 +11,7 @@ class PeopleTest < ActionController::IntegrationTest
       ossi.updates_person_details_with({ :id => people(:test).id, 
                                          :person => { :name => 
                                            { :given_name => "Pentteri", :family_name => "Pamppunen" },
-                                         :status_message => "Testing..." } })
+                                         :status_message => "Tesqting..." } })
 
       ossi.updates_person_details_with({ :id => people(:test).id, 
                                          :person => { :email => "j@example.org" }})

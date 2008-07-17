@@ -11,6 +11,7 @@ class ClientDataSet < ActiveRecord::Base
     data.to_json(*a)
   end
 
+  # Merges the parameter hash with the current metadata
   def data=(d)
     old = read_attribute(:data) || Hash.new
     write_attribute(:data, old.merge(d))
