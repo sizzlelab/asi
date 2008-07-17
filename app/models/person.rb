@@ -39,12 +39,13 @@ class Person < ActiveRecord::Base
 
   # Text box sizes for display in the views 
   USERNAME_SIZE = 20 
-
+  
+  validates_presence_of :username, :password
   validates_uniqueness_of :username, :email
   #validates_length_of :username, :within => USERNAME_RANGE
   validates_length_of :username, :minimum => USERNAME_MIN_LENGTH, :message => "is too short"
   validates_length_of :username, :maximum => USERNAME_MAX_LENGTH, :message => "is too long"
-  validates_length_of :email, :maximum => EMAIL_MAX_LENGTH
+  validates_length_of :email, :maximum => EMAIL_MAX_LENGTH, :message => "is too long"
   
   validates_format_of :username, 
                       :with => /^[A-Z0-9_]*$/i, 
