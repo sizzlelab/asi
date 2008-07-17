@@ -4,7 +4,7 @@
 
 SERVERNAME="http://alpha.sizl.org/cos"
 
-REV=$((`svn info svn+ssh://maps.cs.hut.fi/svn/common-services | \
+REV=$((`svn info svn+ssh://kusti@maps.cs.hut.fi/svn/common-services | \
 grep "^Last Changed Rev" | \
 perl -pi -e "s/Last Changed Rev: //"`-`svn info svn+ssh://kusti@maps.cs.hut.fi/svn/common-services/tags | \
 grep "^Last Changed Rev" | \
