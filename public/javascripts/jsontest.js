@@ -1,12 +1,11 @@
 http = new XMLHttpRequest();
 
-function test(token) {
+function test(token, base) {
     var url = document.getElementById('url').value;
     var method = document.getElementById('method').value;
     var params = "authenticity_token=" + token + "&" + document.getElementById('params').value;
     http.open(method, url, true);
 
-    //Send the proper header information along with the request
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.setRequestHeader("Content-length", params.length);
     http.setRequestHeader("Connection", "close");

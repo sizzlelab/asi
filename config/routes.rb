@@ -52,6 +52,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/:user_id/@friends', :controller => 'people',
                                             :get => 'get_friends',
                                             :post => 'add_friend'
+
+  map.resource '/people/:user_id/@pending_friend_requests', :controller => 'people',
+                                                            :get => 'pending_friend_requests'
                                             
   map.resource '/people/:user_id/@friends/:friend_id', :controller => 'people',
                                                        :delete => 'remove_friend'

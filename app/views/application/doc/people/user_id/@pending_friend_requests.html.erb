@@ -1,0 +1,11 @@
+<h1><code>/people/&lt;user_id&gt;/@pending_friend_requests</code></h1>
+<p>
+  A resource for accessing the pending friends of the user specified by <tt>user_id</tt>.
+</p>
+
+<% methods = [ { :name => "GET", 
+                 :description => "Gets the list of the users who have made a friend request to the current user.",
+                 :returns => { "200" => "" } } ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+
