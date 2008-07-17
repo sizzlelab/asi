@@ -8,29 +8,27 @@
                  :parameters => [ { :search => "The search term. Every user whose name matches the regular expression
                                                 <code>/.*search.*/</code> will be returned. However, all characters in the
                                                 search term are interpreted as literals rather than special regexp 
-                                                characters." } ] },	
+                                                characters." } ] },  
                                                 
                { :name => "POST", 
 
                  :description => "Creates a new user.", 
 
-                 :parameters => [ { :username => "The desired username. Must be unique in the system. Length 4-20 characters." },
+                 :parameters => [ :person => [ { :username => "The desired username. Must be unique in the system. Length 4-20 characters." },
                                   { :password => "User's password." },
-                                  { :email    => "User's email address. Must be valid."} ], 
+                                  { :email    => "User's email address. Must be valid."} ] ], 
 
-               	 :returns => { "201" => "Ok.",
-															 "400" => "Unable to save the person in the database because of inadequate request. " +
-															 "If an error occurs, both status code and an array of error messages are returned." },
-															
-								 :error_messages => { "Username is invalid" => "Username must contain only letters, numbers and underscores.",
-															 				"Email is invalid" => "Email must be a valid email address.",
-															 				"Username has already been taken" => "Username is already in use in OtaSizzle.",
-															 				"Email has already been taken" => "Username is already in use in OtaSizzle.",
-															 				"Username is too short" => "Username must be at least 4 characters long.",
-															 				"Username is too long" => "Username must be no more than 20 characters long.",
-															 				"[Attribute] is too long" => "Given name, family name and status message can't be longer than 255 characters."}}						
-			
-                  ] %>
+                  :returns => { "201" => "Ok.",
+                   "400" => "Unable to save the person in the database because of inadequate request.
+                            All error messages are returned in an array in the response body." },
+                              
+                 :error_messages => { "Username is invalid" => "Username must contain only letters, numbers and underscores.",
+                                       "Email is invalid" => "Email must be a valid email address.",
+                                       "Username has already been taken" => "Username is already in use in OtaSizzle.",
+                                       "Email has already been taken" => "Username is already in use in OtaSizzle.",
+                                       "Username is too short" => "Username must be at least 4 characters long.",
+                                       "Username is too long" => "Username must be no more than 20 characters long.",
+                                       "[Attribute] is too long" => "Given name, family name and status message can't be longer than 255 characters."}}            
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
 

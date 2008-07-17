@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>COS tester</title>
+    <script type="text/javascript" src="javascripts/jsontest.js"></script>
+    <link rel="stylesheet" href="stylesheets/cos.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <h1>COS tester</h1>
+    <select id="method">
+      <option>GET</option>
+      <option>POST</option>
+      <option>PUT</option>
+      <option>DELETE</option>
+    </select>
+    <% render :partial => "layouts/servername" %>
+    <input type="text" id="url" size="41"/>
+    <br/>with params<br/>
+    <textarea cols="70" rows="10" id="params"></textarea>
+    <input type="button" onClick="test('<%= form_authenticity_token %>')" value="Execute"/><br/>
+    <div id="responses">
+      <div></div>
+    </div>
+  </body>
+</html>

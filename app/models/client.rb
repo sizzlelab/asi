@@ -2,6 +2,8 @@ class Client < ActiveRecord::Base
   include AuthenticationHelper
   usesguid
 
+  attr_reader :password
+
   validates_presence_of [:name, :encrypted_password]
 
   def self.find_by_name_and_password(username, password)

@@ -68,6 +68,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect '/doc', :controller => 'application', :action => 'index'
 
+  map.connect '/test', :controller => 'application', :action => 'test'
+
   map.root :controller => 'application',
            :action => 'index',
            :conditions => { :method => :get }

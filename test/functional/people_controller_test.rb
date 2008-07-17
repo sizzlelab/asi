@@ -77,7 +77,6 @@ class PeopleControllerTest < ActionController::TestCase
                  { :session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    puts json.inspect
     assert_not_equal json["id"], "9999"
 
     # asserts for checking that the updates really stored correctly

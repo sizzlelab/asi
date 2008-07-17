@@ -17,7 +17,8 @@ class SessionsController < ApplicationController
         #TODO return more information about that user part was wrong
       end
       session[:session_id] = @session.id
-      render :status => :created
+      render :status => :created, :json => { :user_id => @session.person_id,
+                                             :app_id => @session.client_id }
     else
       render :status => :unauthorized and return
       #TODO return more information about what failed? user or client or both?

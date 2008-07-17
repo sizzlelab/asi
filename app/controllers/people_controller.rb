@@ -21,7 +21,7 @@ class PeopleController < ApplicationController
     end
   end
 
-  def create
+  def create_
     @person = Person.new(params[:person])
     if @person.save
       @session = @person.sessions.create
@@ -42,9 +42,10 @@ class PeopleController < ApplicationController
     end
     if params[:person]
       if @person.update_attributes(params[:person])
-        render :status  => :ok and return  
+        render :status => :ok and return  
       end
     end
+    @person = nil
     render :status  => :bad_request, :errors => @person.errors.full_messages.to_json and return 
   end
   
