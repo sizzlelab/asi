@@ -1,3 +1,5 @@
+require 'digest/sha2'
+
 module AuthenticationHelper
 
   ENCRYPT = Digest::SHA256
