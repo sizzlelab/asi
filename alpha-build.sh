@@ -3,7 +3,7 @@
 # Note that you must run this script twice until changes to this file take effect;
 # changes to finish.sh take effect immediately.
 
-COS_PATH=/var/datat/cos
+COS_PATH=/var/datat/cos/common-services
 
 killall mongrel_rails
 cd /
