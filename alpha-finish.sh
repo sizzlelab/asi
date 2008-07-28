@@ -2,7 +2,7 @@
 # The last part of the Common Services build script. This is in a separate file so that the newest version from the repository
 # is always run. 
 
-SERVERNAME="http://alpha.sizl.org/cos"
+SERVERNAME="http://cos.sizl.org/"
 
 REV=$((`svn info svn+ssh://maps.cs.hut.fi/svn/common-services | \
 grep "^Last Changed Rev" | \
