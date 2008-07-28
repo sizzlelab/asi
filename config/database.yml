@@ -23,3 +23,4 @@ production:
   username: cos
   password: a,.srdg330
   host: localhost
+  socket: /var/run/mysqld/mysqld.sock
