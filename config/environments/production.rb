@@ -20,3 +20,6 @@ config.action_view.cache_template_loading            = true
 
 # Disable delivery errors, bad email addresses will be ignored
 # config.action_mailer.raise_delivery_errors = false
+
+#This should correct the URL:s in links in production site
+ActionController::AbstractRequest.relative_url_root = "http://cos.sizl.org"
