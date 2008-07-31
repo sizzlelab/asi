@@ -7,10 +7,10 @@
 <% methods = [ { :name => "POST", 
 
                  :description => "Starts a new session. If no username and password are provided,
-                                  a session is started only for the client.", 
+                                  a session is started only for the application.", 
 
-                 :parameters => [ { :client_name => "The client's name." },
-                                  { :client_password => "The client's password." },
+                 :parameters => [ { :app_name => "The application's name." },
+                                  { :app_password => "The application's password." },
                                   { :username => "The user's name (optional)." },
                                   { :password => "The user's password (optional)." } ],
                  :returns => { "401" => "Erroneuous authentication token(s).",
