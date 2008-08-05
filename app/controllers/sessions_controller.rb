@@ -1,7 +1,12 @@
-
 class SessionsController < ApplicationController
 
   before_filter :ensure_client_logout, :only => :create
+  
+  def get
+    @session = @application_session
+    
+    #nothing to do just return
+  end
  
   def create
     @session = Session.new({ :username => params[:username], 

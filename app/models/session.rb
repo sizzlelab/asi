@@ -12,6 +12,15 @@ class Session < ActiveRecord::Base
   before_save :associate_session_to_person
   before_save :associate_session_to_client
  
+   def to_json(*a)
+     session_hash = {
+       'app_id' => self.client_id,
+       'user_id' =>  self.person_id
+       
+     }
+     return session_hash.to_json(*a)
+   end
+ 
   private
  
   def authenticate_person
@@ -41,4 +50,5 @@ class Session < ActiveRecord::Base
   def session_has_been_associated_with_client?
     self.client_id
   end
+  
 end
