@@ -4,8 +4,9 @@ class SessionsController < ApplicationController
   
   def get
     @session = @application_session
-    
-    #nothing to do just return
+    if !@session
+      render :status => :not_found and return
+    end
   end
  
   def create
