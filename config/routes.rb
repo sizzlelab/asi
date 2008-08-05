@@ -64,6 +64,7 @@ ActionController::Routing::Routes.draw do |map|
                                              :put => 'update'
 
   map.resource '/session', :controller => 'sessions',
+                           :get => 'get',
                            :delete => 'destroy',
                            :post => 'create'
 
