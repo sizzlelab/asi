@@ -11,4 +11,4 @@ echo $REV > app/views/layouts/_revision.html.erb
 echo "http://maps.cs.hut.fi/cos/" > app/views/layouts/_servername.html.erb
 date > app/views/layouts/_build_date.html.erb
 script/server -d -e production
-/etc/init.d/httpd restart
+sudo /etc/init.d/httpd restart

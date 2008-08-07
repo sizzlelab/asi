@@ -3,10 +3,12 @@
 # Note that you must run this script twice until changes to this file take effect;
 # changes to finish.sh take effect immediately.
 
+COS_PATH=/usr/local/cos/common-services
+
 killall mongrel_rails
 cd /
-rm -rf /usr/local/common-services
-svn export svn+ssh://cos.sizl.org/svn/common-services/trunk /usr/local/common-services
-cd /usr/local/common-services
+rm -rf $COS_PATH
+svn export svn+ssh://cos.sizl.org/svn/common-services/trunk $COS_PATH
+cd $COS_PATH
 chmod a+x finish.sh
 ./finish.sh
