@@ -10,5 +10,11 @@ perl -pi -e "s/Last Changed Rev: //"`))
 echo $REV > app/views/layouts/_revision.html.erb
 echo "http://maps.cs.hut.fi/cos/" > app/views/layouts/_servername.html.erb
 date > app/views/layouts/_build_date.html.erb
+
+#stripe the socket lines out from database.yml
+grep -v socket config/database.yml > config/database.yml_mod
+mv config/database.yml_mod config/database.yml
+
+#restart the servers
 script/server -d -e production
 sudo /etc/init.d/httpd restart
