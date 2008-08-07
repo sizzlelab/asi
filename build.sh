@@ -6,7 +6,7 @@
 killall mongrel_rails
 cd /
 rm -rf /usr/local/common-services
-svn export file:///svn/common-services/trunk /usr/local/common-services
+svn export svn+ssh://cos.sizl.org/svn/common-services/trunk /usr/local/common-services
 cd /usr/local/common-services
 chmod a+x finish.sh
 ./finish.sh
