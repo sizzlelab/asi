@@ -264,6 +264,12 @@ class PeopleControllerTest < ActionController::TestCase
       assert person.pending_contacts.include?(contact)
     end
   end
+  
+  def test_response_content_type
+      get :index, {:format => 'json', :search => "test"}, { :session_id => sessions(:session1) }
+      assert_equal 'application/json', @response.content_type
+      
+  end
 
   private 
   def search(search, should_find=true)

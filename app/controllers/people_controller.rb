@@ -3,9 +3,10 @@ class PeopleController < ApplicationController
   before_filter :ensure_client_login 
   before_filter :ensure_person_logout, :only  => :create
   #around_filter :catch_exceptions
-
+  
   def index
     @people = Person.find_with_ferret(params[:search])
+    
   end
 
   def show
