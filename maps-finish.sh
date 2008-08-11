@@ -16,5 +16,5 @@ grep -v socket config/database.yml > config/database.yml_mod
 mv config/database.yml_mod config/database.yml
 
 #restart the servers
-script/server -d -e production
+script/server -d -p 3001 -e production
 sudo /etc/init.d/httpd restart
