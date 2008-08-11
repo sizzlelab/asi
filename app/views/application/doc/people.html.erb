@@ -12,7 +12,7 @@
                                                 
                { :name => "POST", 
 
-                 :description => "Creates a new user.", 
+                 :description => "Creates a new user. If creation is succesful current (app only) session is automatically destroyed.", 
 
                  :parameters => [ :person => [ { :username => "The desired username. Must be unique in the system. Length 4-20 characters." },
                                   { :password => "User's password." },
