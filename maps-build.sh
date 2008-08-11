@@ -10,5 +10,5 @@ cd /
 rm -rf $COS_PATH
 svn export svn+ssh://cos.sizl.org/svn/common-services/trunk $COS_PATH
 cd $COS_PATH
-chmod a+x finish.sh
-./finish.sh
+chmod a+x maps-finish.sh
+./maps-finish.sh
