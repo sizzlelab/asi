@@ -12,17 +12,17 @@ class Session < ActiveRecord::Base
   before_save :associate_session_to_person
   before_save :associate_session_to_client
  
-   def to_json(*a)
-     session_hash = {
-       'app_id' => self.client_id,
-       'user_id' =>  self.person_id
-       
-     }
-     return session_hash.to_json(*a)
-   end
- 
+  def to_json(*a)
+    session_hash = {
+      'app_id' => self.client_id,
+      'user_id' =>  self.person_id
+
+    }
+    return session_hash.to_json(*a)
+  end
+
   private
- 
+
   def authenticate_person
     if self.username
       self.person_match = Person.find_by_username_and_password(self.username, self.password) unless session_has_been_associated_with_person?
