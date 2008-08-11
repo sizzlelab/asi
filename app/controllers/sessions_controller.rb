@@ -36,4 +36,5 @@ class SessionsController < ApplicationController
     @application_session.destroy
     session[:session_id] = @user = @client = nil
   end
+  
 end

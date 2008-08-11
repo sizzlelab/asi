@@ -15,6 +15,15 @@
                                   { :password => "The user's password (optional)." } ],
                  :returns => { "401" => "Erroneuous authentication token(s).",
                                "409" => "A session already exists." }  },
+              
+              { :name => "GET",
+                :description => "Checks if session exists.",
+                :returns => { "200" => "Session exists. Returns <code>app_id</code> and  <code>user_id</code> for the session.
+                              The  <code>user_id</code> will be nil if the session is opened just for the application.",
+                              "404" => "No session was found."},   
+                
+              },
+
 
                { :name => "DELETE", 
                  :description => "Ends the current session." } ] %>

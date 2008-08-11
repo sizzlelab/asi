@@ -48,6 +48,7 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_create
     # create valid user
+    assert_nil(Session.find(sessions(:client_only_session).id).person_id)
     post :create, { :person => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov" }, 
                     :format => 'json'}, 
                   { :session_id => sessions(:client_only_session).id }
@@ -55,6 +56,7 @@ class PeopleControllerTest < ActionController::TestCase
     user = assigns["person"] 
     assert_not_nil user
     json = JSON.parse(@response.body)
+    assert_not_nil(Session.find(sessions(:client_only_session).id).person_id)
         
     # check that the created user can be found
     get :get_by_username, { :username  => "newbie", :format  => 'json' }, { :session_id => sessions(:session1).id }

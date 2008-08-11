@@ -12,15 +12,17 @@
                                                 
                { :name => "POST", 
 
-                 :description => "Creates a new user. If creation is succesful current (app only) session is automatically destroyed.", 
+                 :description => "Creates a new user. If creation is succesful the current app-only session is changed to be
+                                  associated also to the user that was just created.", 
 
                  :parameters => [ :person => [ { :username => "The desired username. Must be unique in the system. Length 4-20 characters." },
                                   { :password => "User's password." },
                                   { :email    => "User's email address. Must be valid."} ] ], 
 
-                  :returns => { "201" => "Ok.",
-                   "400" => "Unable to save the person in the database because of inadequate request.
-                            All error messages are returned in an array in the response body." },
+                  :returns => { "201" => "Ok. The response includes also the information for the user, for example the user GUID as <code>id</code>.",
+                            "400" => "Unable to save the person in the database because of inadequate request.
+                            All error messages are returned in an array in the response body.",
+                            "409" => "Session already exists for some users. Creation of new users is only possible with app-only session." },
                               
                  :error_messages => { "Username is invalid" => "Username must contain only letters, numbers and underscores.",
                                        "Email is invalid" => "Email must be a valid email address.",

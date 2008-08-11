@@ -33,8 +33,8 @@ class PeopleController < ApplicationController
   def create
     @person = Person.new(params[:person])
     if @person.save
-      @session = @person.sessions.create
-      session[:session_id] = @session.id
+      @application_session.person_id = @person.id
+      @application_session.save
       render :status => :created and return
     else
       render :status => :bad_request, :json => @person.errors.full_messages.to_json and return
