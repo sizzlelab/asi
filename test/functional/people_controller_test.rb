@@ -97,6 +97,20 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal("Joe", assigns["person"].name.given_name)
     json = JSON.parse(@response.body)
+    
+    # update status_message
+    test_status = "Testing hard..."
+    put :update, { :user_id => people(:valid_person).id, :person => { :status_message =>  test_status  }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    assert_equal(test_status, assigns["person"].person_spec.status_message)
+    json = JSON.parse(@response.body)
+    
+    # check that same status message is returned with show
+    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal test_status, json["status_message"]
 
     # Check that updating the name doesn't delete old values
     put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Doe" } }, :format => 'json' }, 
