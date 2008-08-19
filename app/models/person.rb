@@ -81,6 +81,7 @@ class Person < ActiveRecord::Base
   end
 
   # Bring a simple setter to each attribute of PersonSpec in order to simplify the interface
+  # Person_spec is also saved after each of these modifications, because it won't be saved automatically
   PersonSpec.new.attributes.each do |key, value|
     unless Person.new.respond_to?("#{key}=") || key.end_with?("_id")
       Person.class_eval "def #{key}=(value); "+
@@ -88,9 +89,17 @@ class Person < ActiveRecord::Base
             "create_person_spec; "+
           "end; "+
           "person_spec.#{key}=value; "+
+          "person_spec.save; " +
         "end;"
     end
   end
+  
+  #test if helps
+  # def status_message=(message)
+  #   person_spec.status_message = message
+  #   save
+  #   puts "LOLOLOLO"
+  # end
 
   def to_json(*a)
     person_hash = {
