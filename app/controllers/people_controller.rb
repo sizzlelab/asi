@@ -42,6 +42,7 @@ class PeopleController < ApplicationController
   end
 
   def update
+    errors = {}
     if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
@@ -50,12 +51,23 @@ class PeopleController < ApplicationController
       render :status  => :not_found and return
     end
     if params[:person]
-      if @person.update_attributes(params[:person])
-        render :status => :ok and return  
+      begin
+        if @person.update_attributes(params[:person])
+          render :status => :ok and return
+        end
+      rescue NoMethodError  => e
+        errors = e.to_s
       end
     end
+   
+    if @person.errors.full_messages.to_s == "Person spec is invalid"
+      errors = @person.person_spec.errors.full_messages.to_json
+    elsif ! @person.errors.full_messages.blank?
+      errors = @person.errors.full_messages
+    end
+    
+    render :status  => :bad_request, :json => errors.to_json
     @person = nil
-    render :status  => :bad_request, :json => @person.errors.full_messages.to_json
   end
   
   def delete

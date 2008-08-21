@@ -23,7 +23,7 @@ class PersonSpec < ActiveRecord::Base
   :in => VALID_DATES,
   :allow_nil => true,
   :message => "is invalid"
-
+    
   def to_json(*a)
     {
       :gender => {"displayname" => self.gender, "key" => self.gender}
