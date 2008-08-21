@@ -2,7 +2,7 @@ require 'test_helper'
 require 'sessions_controller'
 
 class SessionsControllerTest < ActionController::TestCase
-  fixtures :people
+  fixtures :people, :sessions
 
   def setup
     @controller = SessionsController.new
@@ -48,6 +48,13 @@ class SessionsControllerTest < ActionController::TestCase
     assert_response :unauthorized
   end
   
+  def test_get
+    get :get, { :format => 'json'}, { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal json["user_id"], sessions(:session1).person_id  
+  end
+  
   def test_destroy
     # frist create the session to destroy
     post :create, { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "testi", :format => 'json'}
@@ -76,8 +83,10 @@ class SessionsControllerTest < ActionController::TestCase
     with_options :controller => 'sessions', :format => 'json' do |test|
       test.assert_routing({ :method => 'post', :path => '/session'}, 
         {  :action => 'create'})
+      test.assert_routing({ :method => 'get', :path => '/session'}, 
+        {  :action => 'get' }) 
       test.assert_routing({ :method => 'delete', :path => '/session'}, 
-        {  :action => 'destroy' }) 
+        {  :action => 'destroy' })
     end
   end
 

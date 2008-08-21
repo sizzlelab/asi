@@ -105,12 +105,36 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal(test_status, assigns["person"].person_spec.status_message)
     json = JSON.parse(@response.body)
-    
     # check that same status message is returned with show
     get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
     assert_equal test_status, json["status_message"]
+    
+    # update birthdate
+    valid_date = "1945-12-24"
+    invalid_dates = ["asdasdasdasdfasf", "19999-11-11", "1999-31-31"]
+    put :update, { :user_id => people(:valid_person).id, :person => { :birthdate =>  valid_date  }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal valid_date, json["birthdate"]
+    #try invalid dates
+    invalid_dates.each do |birthdate|
+      put :update, { :user_id => people(:valid_person).id, :person => { :birthdate =>  birthdate  }, :format => 'json' }, 
+                   { :session_id => sessions(:session1).id }
+      assert_response :bad_request
+      #check that stored date didn't change
+      get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+      assert_response :success
+      json = JSON.parse(@response.body)
+      assert_equal valid_date, json["birthdate"]                  
+    end
+    
+    
+
 
     # Check that updating the name doesn't delete old values
     put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Doe" } }, :format => 'json' }, 

@@ -70,6 +70,15 @@ class Person < ActiveRecord::Base
         create_name(hash[:name])
       end
     end
+    if hash[:birthdate] && ! hash[:birthdate].blank? 
+      #Check the format of the birthday parameter
+      begin
+        Date.parse(hash[:birthdate])
+      rescue ArgumentError => e
+        errors.add :birthdate, "is not a valid date or has wrong format, use yyyy-mm-dd"
+        return false
+      end
+    end
     super(hash.except(:name))
   end
 
