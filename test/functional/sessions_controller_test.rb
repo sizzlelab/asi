@@ -54,7 +54,7 @@ class SessionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_equal json["user_id"], sessions(:session1).person_id  
   end
-  
+
   def test_destroy
     # frist create the session to destroy
     post :create, { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "testi", :format => 'json'}
