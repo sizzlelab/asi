@@ -11,8 +11,11 @@ class Collection < ActiveRecord::Base
   def to_json(*a)
     {
       'id' => id,
+      'owner'  => owner_id,
       'entry' => items,
-      'metadata' => metadata
+      'metadata' => metadata,
+      'read_only' => read_only,
+      'indestructible' => indestructible
     }.to_json(*a)
   end
 
@@ -36,7 +39,7 @@ class Collection < ActiveRecord::Base
 
   # Returns true if the given person, using the given client, has permission to delete this collection.
   def delete?(person, client)
-    return write?(person, client) && (owner == nil || owner == person)
+    return write?(person, client) && (owner == nil || owner == person) && ! indestructible
   end
 
   # Attempts to create an item and add it to this collection.

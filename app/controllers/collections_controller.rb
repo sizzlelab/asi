@@ -32,14 +32,22 @@ class CollectionsController < ApplicationController
   end
 
   def create
-    @collection = Collection.new
+    @collection = Collection.new(:read_only => params["read_only"],
+                                 :indestructible => params["indestructible"])
 
-    if @user and params['owner'] and params['owner'] == @user.id
-      @collection.owner = @user
+    if @user and params['owner']
+      if @collection.indestructible
+        render :status => :bad_request, :json => "Cannot set both: owner and indestructible" and return
+      elsif params['owner'] != @user.id
+        render :status => :bad_request, :json => "Owner cannot be different than logged in user." and return
+      else
+        @collection.owner = @user
+      end
     end
-
+    
     @collection.client = @client
     @collection.save
+    render :status => :created
   end
 
   def update
@@ -48,7 +56,7 @@ class CollectionsController < ApplicationController
   end
 
   def delete
-    if ! @collection.delete?(@user, @client)
+    if ! @collection.delete?(@user, @client)      
       render :status => :forbidden and return
     end
     @collection.destroy

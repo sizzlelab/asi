@@ -105,7 +105,7 @@ module COSTestingDSL
 
   def creates_collection(options)
     post "/appdata/#{options[:client_id]}/@collections"
-    assert_response :success
+    assert_response :created
     assert_template "collections/create"
     json = JSON.parse(response.body)
     assert_not_nil json["id"]

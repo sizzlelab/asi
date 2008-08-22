@@ -13,8 +13,15 @@
                                                specified, the collection will belong only to the application." },
                                   { :read_only => "Whether the new collection is read only. Read only collections can be written
                                                    to only by their owner; otherwise, the owner and their friends all have write
-                                                   access. An empty value, '0' or 'false' are interpreted as <code>false</code>, 
-                                                   all other values are <code>true</code>." },
+                                                   access. Values 'true', 't' and '1' or are interpreted as <code>true</code>, 
+                                                   all other values are <code>false</code>." },
+                                  { :indestructible => "This (optional) parameter can be set <code>true</code> only for collections
+                                                        without owner. When set <code>true</code>,  the collection cannot be
+                                                        destroyed with normal DELETE method.
+                                                        This is meant to be used only for the main collections of the application.
+                                                        If this parameter is not submitted, the default is <code>false</code>.
+                                                        If submitted, an values 'true', 't' and '1' or are interpreted as <code>true</code>, 
+                                                         all other values are <code>false</code>.."},
                                   { :metadata => [{ :any_key => "Any string" }, { :another_key => "Another string" } ] } ],
                  :returns => { "201" => "Ok." } } ] %>
 

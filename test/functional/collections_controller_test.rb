@@ -93,7 +93,7 @@ class CollectionsControllerTest < ActionController::TestCase
     # With an owner and a client
     post :create, { :app_id => clients(:one).id, :format => 'json', :owner => people(:valid_person).id }, 
                   { :session_id => sessions(:session1).id, :client => clients(:one).id }
-    assert_response :success
+    assert_response :created
     assert_not_nil assigns["collection"]
     assert_equal(assigns["collection"].owner, people(:valid_person))
     assert_equal(assigns["collection"].client, clients(:one))
@@ -103,7 +103,7 @@ class CollectionsControllerTest < ActionController::TestCase
     # With only a client
     post :create, { :app_id => clients(:one).id, :format => 'json'}, 
                   { :client => clients(:one).id }
-    assert_response :success
+    assert_response :created
     assert_not_nil assigns["collection"]
     assert_nil assigns["collection"].owner
     assert_equal(assigns["collection"].client, clients(:one))
@@ -112,7 +112,7 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # With only an owner
     post :create, { :format => 'json' }, 
-                  { :user => people(:valid_person).id }
+                  { :owner => people(:valid_person).id }
     assert_response :forbidden
 
     # With neither
@@ -219,6 +219,45 @@ class CollectionsControllerTest < ActionController::TestCase
                    :collection => { :metadata => { :foo2 => "bar", :bar => "foo" } } },
                  { :session_id => sessions(:session1).id }
     assert_response :forbidden
+  end
+  
+  def test_indestructible
+    #create indfestructible and try to delete
+    post :create, { :app_id => clients(:one).id, :indestructible => "true", :format => 'json'}, 
+                  { :session_id => sessions(:session1).id, :client => clients(:one).id }
+    assert_response :created
+    assert_not_nil assigns["collection"]
+    json = JSON.parse(@response.body)
+    assert_not_nil json["id"]
+    
+    delete :delete, { :app_id => clients(:one).id, :id => json["id"], :format => 'json' }, 
+                    { :session_id => sessions(:session1).id }
+    assert_response :forbidden
+    
+    #try to create indestructible with an owner
+    post :create, { :app_id => clients(:one).id, :indestructible => "true", :format => 'json', :owner => people(:valid_person).id }, 
+                  { :session_id => sessions(:session1).id, :client => clients(:one).id }
+    assert_response :bad_request
+  end
+  
+  def test_read_only
+    get :show, { :app_id => clients(:one).id, :id => collections(:read_only).id, :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :success
+    old_item_count = assigns["collection"].items.count
+    json = JSON.parse(@response.body)
+    
+    # Should not be able to add to a read_only collection belonging to other (non-friend)  user
+    post :add, { :app_id => clients(:one).id, :id => collections(:read_only).id, :format => 'json', 
+                 :title => "The Engine", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." },
+               { :session_id => sessions(:session3).id }
+    assert_response :forbidden
+    
+    #check that item count didn't change
+    get :show, { :app_id => clients(:one).id, :id => collections(:read_only).id, :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :success
+    assert_equal(old_item_count, assigns["collection"].items.count)
   end
   
   def test_error_reporting
