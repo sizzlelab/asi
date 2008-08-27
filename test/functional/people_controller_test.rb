@@ -189,7 +189,7 @@ class PeopleControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     
     # test that added friend request ís added correctly
-    assert  assigns["person"].pending_contacts.include?(assigns["friend"])
+    assert  assigns["person"].requested_contacts.include?(assigns["friend"])
     
     # add the friendship also in other direction == accept the request
     post :add_friend, { :user_id  => people(:not_yet_friend).id, :friend_id => people(:valid_person).id, :format  => 'json' },  { :session_id => sessions(:session3).id }
@@ -197,7 +197,7 @@ class PeopleControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     
     # test that added friend ís added correctly
-    assert  assigns["person"].contacts.include?(assigns["friend"])
+    assert assigns["person"].contacts.include?(assigns["friend"])
     
   end
   
@@ -257,8 +257,8 @@ class PeopleControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     
     #check that no more requested
-    assert ! user.requested_contacts.include?(requested)
-    assert ! requested.pending_contacts.include?(user)
+    assert ! user.pending_contacts.include?(requested)
+    assert ! requested.requested_contacts.include?(user)
   end
 
   def test_search
@@ -319,15 +319,15 @@ class PeopleControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
 
     if not should_find
-      assert_equal 0, json["entries"].length
+      assert_equal 0, json["entry"].length
       return
     end
 
-    assert_not_equal 0, json["entries"].length, "Found nothing with '#{search}'"
+    assert_not_equal 0, json["entry"].length, "Found nothing with '#{search}'"
 
     reg = Regexp.new(search.downcase.tr("*", ""))
 
-    json["entries"].each do |person|
+    json["entry"].each do |person|
       assert_not_nil person["name"]
       assert person["name"]["unstructured"].downcase =~ reg
     end    

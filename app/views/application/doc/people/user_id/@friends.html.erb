@@ -16,7 +16,9 @@
                                 ] },
 
                { :name => "GET", 
-                 :description => "Gets the list of the user's friends",
+                 :description => "Gets the list of the user's friends.",
+                 :returns => { "200" => "The returned JSON contains always an 'entry' slot, which contains a list of friends
+                                         or an empty list if user has no confirmed friends."}
                  
                },
                            

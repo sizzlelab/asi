@@ -8,7 +8,10 @@
                  :parameters => [ { :search => "The search term. Every user whose name matches the regular expression
                                                 <code>/.*search.*/</code> will be returned. However, all characters in the
                                                 search term are interpreted as literals rather than special regexp 
-                                                characters." } ] },  
+                                                characters." } ], 
+                 :returns => { "200" => "The returned JSON contains always an 'entry' slot, which contains a list of found
+                                          people or an empty list if no user was found."}
+                                                },  
                                                 
                { :name => "POST", 
 

@@ -8,10 +8,10 @@
                  :returns => { "200" => "Ok." } },
 
                { :name => "POST",
-                 :description => "Creates a new collection.",
+                 :description => "Creates a new collection. All the parameters below are optional.",
                  :parameters => [ { :owner => "The id of the user owning the new collection (optional). If this is not
                                                specified, the collection will belong only to the application." },
-                                  { :read_only => "Whether the new collection is read only. Read only collections can be written
+                                  { :read_only => "Whether the new collection is read only (optional). Read only collections can be written
                                                    to only by their owner; otherwise, the owner and their friends all have write
                                                    access. Values 'true', 't' and '1' or are interpreted as <code>true</code>, 
                                                    all other values are <code>false</code>." },

@@ -5,8 +5,7 @@ class PeopleController < ApplicationController
   #around_filter :catch_exceptions
   
   def index
-    @people = Person.find_with_ferret(params[:search])
-    
+    @people = Person.find_with_ferret(params['search'])
   end
 
   def show
@@ -91,7 +90,7 @@ class PeopleController < ApplicationController
     if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
-    
+        
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
       render :status => :not_found and return
@@ -101,10 +100,10 @@ class PeopleController < ApplicationController
       render :status => :not_found and return
     end
         
-    if @person.requested_contacts.include?(@friend) #accept if requested
+    if @person.pending_contacts.include?(@friend) #accept if pending
       Connection.accept(@person, @friend)
     else
-      unless @person.pending_contacts.include?(@friend) || @person.contacts.include?(@friend)  
+      unless @person.requested_contacts.include?(@friend) || @person.contacts.include?(@friend)  
         Connection.request(@person, @friend)        #request if didn't exist
       end
     end
