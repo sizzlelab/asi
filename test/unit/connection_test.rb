@@ -10,8 +10,8 @@ class ConnectionTest < ActiveSupport::TestCase
   def test_request
     Connection.request(@person, @contact)
     assert Connection.exists?(@person, @contact)
-    assert_status @person, @contact, 'pending'
-    assert_status @contact, @person, 'requested'
+    assert_status @person, @contact, 'requested'
+    assert_status @contact, @person, 'pending'
   end
   
   def test_accept

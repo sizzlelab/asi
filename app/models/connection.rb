@@ -13,8 +13,8 @@ class Connection < ActiveRecord::Base
   def self.request(person, contact)
     unless person == contact or Connection.exists?(person, contact)
       transaction do
-        create(:person => person, :contact => contact, :status => 'pending')
-        create(:person => contact, :contact => person, :status => 'requested')
+        create(:person => person, :contact => contact, :status => 'requested')
+        create(:person => contact, :contact => person, :status => 'pending')
       end
     end
   end
