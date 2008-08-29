@@ -117,8 +117,15 @@ class PersonTest < ActiveSupport::TestCase
     assert_not_nil json["name"]
     assert_not_nil json["name"]["unstructured"]
     assert_nil json["password"]
-    PersonSpec::ALL_FIELDS.each do |value|
-      assert_not_nil json[value]
+    spec_fields = PersonSpec::ALL_FIELDS
+    #special check for status, because response json is different from model structure
+    spec_fields.delete("status_message")
+    assert_not_nil json["status"]["message"]
+    spec_fields.delete("status_message_changed")
+    assert_not_nil json["status"]["changed"]
+    
+    spec_fields.each do |value|
+        assert_not_nil json[value] , "#{value} was nil."
     end  
   end
 

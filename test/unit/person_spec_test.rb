@@ -49,4 +49,15 @@ class PersonSpecTest < ActiveSupport::TestCase
     end
   end
   
+  def test_should_update_status_message_timestamp
+      person_spec = @valid_person_spec
+      old_timestamp = person_spec.status_message_changed
+      assert_equal ( -1 ,old_timestamp.compare_with_coercion(DateTime.now - 1.seconds), "Old timestamp was not old enough for this test." )
+      person_spec.status_message = "new test message"
+      new_timestamp = person_spec.status_message_changed
+      assert_not_equal(old_timestamp, new_timestamp)
+      assert_equal ( 1 ,new_timestamp.compare_with_coercion(DateTime.now - 1.seconds) , "Timestamp for changed status_message not at current time. Might be just a delay in the processing")
+      
+  end
+  
 end

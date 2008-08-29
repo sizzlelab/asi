@@ -152,6 +152,11 @@ module COSTestingDSL
     assert_response :success
     json = JSON.parse(response.body)
     assert_not_nil json["id"]
+    #special handling for status_message
+    if (options[:person][:status_message])
+      options[:person][:status] = {:message => options[:person][:status_message]}
+      options[:person].delete(:status_message)
+    end
     assert subset(options[:person], json)
   end
 

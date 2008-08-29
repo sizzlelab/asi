@@ -119,7 +119,7 @@ class Person < ActiveRecord::Base
       'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" } }
     }
     if self.person_spec
-      self.person_spec.attributes.each do |key, value|
+      self.person_spec.attributes.except('status_message', 'status_message_changed').each do |key, value|
         unless PersonSpec::NO_JSON_FIELDS.include?(key)
           if PersonSpec::LOCALIZED_FIELDS.include?(key)
             person_hash.merge!({key, {"displayvalue" => value, "key" => value}})
@@ -128,6 +128,7 @@ class Person < ActiveRecord::Base
           end
         end
       end
+      person_hash.merge!({'status' => { :message => person_spec.status_message, :changed => person_spec.status_message_changed}})
     end
     return person_hash.to_json(*a)
   end

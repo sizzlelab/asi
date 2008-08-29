@@ -1,0 +1,18 @@
+<h1><code>/people/&lt;user_id&gt;/@pending_friend_requests/&lt;friend_id&gt;</code></h1>
+<p>
+  A resource for the accessing a single request made by user specified by <tt>friend_id</tt> 
+  to user specified by <tt>user_id</tt>.
+</p>
+
+<p>The method requires that the user with <tt>user_id</tt> is logged in &ndash; otherwise, 
+<em>403 forbidden</em> is returned.</p>
+
+<% methods = [ { :name => "DELETE", 
+
+                 :description => "Removes the request made by person specified by <tt>friend_id</tt>
+                  from the pending requests of user specified by <tt>user_id</tt>.", 
+                }  
+              ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+</ul>
