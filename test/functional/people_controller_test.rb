@@ -109,7 +109,7 @@ class PeopleControllerTest < ActionController::TestCase
     get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal test_status, json["status_message"]
+    assert_equal test_status, json["status"]["message"]
     
     # update birthdate
     valid_date = "1945-12-24"
@@ -299,10 +299,20 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :success
     json = JSON.parse(@response.body)
     assert json.size > 0
-    json.each do |p|
+    json["entry"].each do |p|
       contact = Person.find_by_id(p["id"])
       assert person.pending_contacts.include?(contact)
     end
+  end
+  
+  def test_reject_pending_contact
+    person = people(:requested)
+    assert !person.pending_contacts.empty?
+    delete :reject_friend_request, { :user_id => person.id, :friend_id => people(:valid_person).id,  :format => 'json' }, 
+                                   { :session_id => sessions(:session5) }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert person.pending_contacts.empty?
   end
   
   def test_response_content_type

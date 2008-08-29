@@ -23,6 +23,15 @@ class PersonSpec < ActiveRecord::Base
   :in => VALID_DATES,
   :allow_nil => true,
   :message => "is invalid"
+  
+  def status_message=(new_message)
+    self[:status_message] = new_message
+    self[:status_message_changed] = DateTime.now
+  end
+  
+  def status_message_changed=(new_date)
+    #Status message time stamp cannot be changed by other means than changing the message text
+  end
     
   def to_json(*a)
     {

@@ -22,13 +22,6 @@ class PeopleController < ApplicationController
     end
   end
 
-  def pending_friend_requests
-    if ! ensure_same_as_logged_person(params['user_id'])
-      render :status => :forbidden and return
-    end
-    render :json => @user.pending_contacts.to_json
-  end
-
   def create
     @person = Person.new(params[:person])
     if @person.save
@@ -87,6 +80,10 @@ class PeopleController < ApplicationController
     # If there is already a pending connection requested from the other direction, 
     # change friendship status to accepted.
     
+    if (params['user_id'] == params['friend_id'])
+      render :json => "Cannot add yourself to your friend.".to_json, :status => :bad_request
+    end
+    
     if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
@@ -118,18 +115,19 @@ class PeopleController < ApplicationController
   end
   
   def remove_friend
+    remove_any_connection_between(params['user_id'], params['friend_id'])
+  end
+  
+  def pending_friend_requests
     if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
-    @person = Person.find_by_id(params['user_id'])
-    if ! @person  
-      render :status => :not_found and return
-    end
-    @friend = Person.find_by_id(params['friend_id'])
-    if ! @friend  
-      render :status => :not_found and return
-    end
-    Connection.breakup(@person, @friend)
+    render :json => { :entry => @user.pending_contacts}.to_json
+  end
+  
+  def reject_friend_request
+    remove_any_connection_between(params['user_id'], params['friend_id'])
+    render :json => {}.to_json
   end
   
   def get_avatar
@@ -175,6 +173,21 @@ class PeopleController < ApplicationController
   end
   
   private
+  
+  def remove_any_connection_between(user_id, contact_id)
+    if ! ensure_same_as_logged_person(user_id)
+      render :status => :forbidden and return
+    end
+    @person = Person.find_by_id(user_id)
+    if ! @person  
+      render :status => :not_found and return
+    end
+    @contact = Person.find_by_id(contact_id)
+    if ! @contact  
+      render :status => :not_found and return
+    end
+    Connection.breakup(@person, @contact)
+  end
   
   # Catch NoMethodError
   # def catch_exceptions

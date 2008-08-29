@@ -1,6 +1,8 @@
 <h1><code>/people/&lt;user_id&gt;/@pending_friend_requests</code></h1>
 <p>
-  A resource for accessing the pending friends of the user specified by <tt>user_id</tt>.
+  A resource for accessing the pending friends of the user specified by <tt>user_id</tt>. A request can be accepted
+  by making the connection in the other direction (add the person who made the request to friends of current user).
+  To reject a request delete the request by using the specific url with the <tt>friend_id</tt> as described in subresources.
 </p>
 
 <% methods = [ { :name => "GET", 
@@ -9,3 +11,10 @@
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
 
+<h2>Subresources</h2>
+<ul>
+  <li>
+    <a href="doc/people/user_id/@pending_friend_requests/friend_id"><tt>/people/&lt;user_id&gt;/@pending_friend_requests/&lt;friend_id&gt;</tt></a> &ndash; 
+    Single friend request coming form &lt;friend_id&gt; to &lt;user_id&gt;
+  </li>
+</ul>

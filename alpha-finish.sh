@@ -14,3 +14,4 @@ echo $SERVERNAME > app/views/layouts/_servername.html.erb
 date > app/views/layouts/_build_date.html.erb
 script/server -d -e production
 sudo /etc/init.d/apache2 restart
+rake test
