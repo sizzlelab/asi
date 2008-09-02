@@ -26,7 +26,7 @@ class PersonSpec < ActiveRecord::Base
   
   def status_message=(new_message)
     self[:status_message] = new_message
-    self[:status_message_changed] = DateTime.now
+    self[:status_message_changed] = DateTime.now.utc
   end
   
   def status_message_changed=(new_date)
