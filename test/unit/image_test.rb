@@ -21,7 +21,6 @@ class ImageTest < ActiveSupport::TestCase
     image = @image_jpg
     assert image.valid_file?
     image.full_image_size = '"240x300"'
-    image.thumbnail_size = '"50x64"'
     assert image.convert
   end  
    

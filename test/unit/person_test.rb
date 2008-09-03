@@ -96,7 +96,7 @@ class PersonTest < ActiveSupport::TestCase
     invalid_emails.each do |email| 
       person.email = email 
       assert !person.valid?, "#{email} tests as valid but shouldn't be" 
-      assert_equal "is invalid", person.errors.on(:email) 
+      assert_equal "is invalid", person.errors.on(:email)
     end
   end
 
@@ -107,7 +107,6 @@ class PersonTest < ActiveSupport::TestCase
     avatar = @valid_avatar
     assert avatar.valid_file?
     avatar.full_image_size = '"240x300"'
-    avatar.thumbnail_size = '"50x64"'
     assert avatar.convert
     person.avatar = @valid_avatar
     json = JSON.parse(person.to_json)

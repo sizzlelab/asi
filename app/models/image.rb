@@ -4,14 +4,15 @@ class Image < ActiveRecord::Base
   
   belongs_to :person
 
-  attr_accessor :full_image_size, :thumbnail_size
+  THUMBNAIL_SIZE = "50x50!"
+
+  attr_accessor :full_image_size
 
   def save_to_db?(options)
     self.content_type = options[:file].content_type
     self.filename = options[:file].original_filename 
     self.data = options[:file].read
-    self.full_image_size = options[:full_image_size]
-    self.thumbnail_size = options[:thumbnail_size]                  
+    self.full_image_size = options[:full_image_size]                  
     if valid_file? and convert
       self.save
       return true
@@ -55,7 +56,7 @@ class Image < ActiveRecord::Base
 
     # Then convert the source file to a full size image and a thumbnail.
     img   = system("#{'convert'} '#{source_file}' -resize #{full_image_size} '#{full_size_image_file}'")
-    thumb = system("#{'convert'} '#{source_file}' -resize #{thumbnail_size} '#{thumbnail_file}'")
+    thumb = system("#{'convert'} '#{source_file}' -resize #{THUMBNAIL_SIZE} '#{thumbnail_file}'")
     File.delete(source_file) if File.exists?(source_file)
 
     # Both conversions must succeed, else it's an error.
