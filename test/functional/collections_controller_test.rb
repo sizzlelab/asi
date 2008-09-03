@@ -263,7 +263,7 @@ class CollectionsControllerTest < ActionController::TestCase
   def test_error_reporting
     post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json', 
                  :file => fixture_file_upload("collections.yml","image/png"), 
-                 :full_image_size => '"240x300"', :thumbnail_size => '"50x64"'},
+                 :full_image_size => '240x300'},
                { :session_id => sessions(:session1).id }
     assert_response :bad_request
 
