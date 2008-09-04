@@ -143,7 +143,7 @@ class PeopleController < ApplicationController
       format.jpg
       # if @avatar.content_type.include?("gif")
       #   format.gif
-      # elsif @avatar.content_type.include?("jpg")
+      # elsif @avatar.content_type.include?("jpeg")
       #   format.jpg
       # elsif @avatar.content_type.include?("png")
       #   format.png
