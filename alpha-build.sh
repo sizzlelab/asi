@@ -8,7 +8,7 @@ COS_PATH=/var/datat/cos/common-services
 killall mongrel_rails
 cd /
 rm -rf $COS_PATH
-svn export file:///svn/common-services/trunk $COS_PATH
+svn export --force file:///svn/common-services/trunk $COS_PATH
 cd $COS_PATH
 chmod a+x alpha-finish.sh
 chgrp -R adm .
