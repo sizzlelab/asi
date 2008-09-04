@@ -13,5 +13,5 @@ cd $COS_PATH
 chmod a+x alpha-finish.sh
 chgrp -R adm .
 chmod -R 2770 . 
-umask 770
+umask 007
 ./alpha-finish.sh
