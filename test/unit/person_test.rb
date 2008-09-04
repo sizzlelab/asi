@@ -112,7 +112,7 @@ class PersonTest < ActiveSupport::TestCase
     json = JSON.parse(person.to_json)
     assert_not_nil json["id"]
     assert_not_nil json["username"]
-    assert_not_nil json["email"]
+    assert_nil json["email"]
     assert_not_nil json["name"]
     assert_not_nil json["name"]["unstructured"]
     assert_nil json["password"]

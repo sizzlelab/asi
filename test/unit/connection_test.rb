@@ -27,6 +27,18 @@ class ConnectionTest < ActiveSupport::TestCase
     Connection.breakup(@person, @contact)
     assert !Connection.exists?(@person, @contact)
   end
+  
+  def test_type
+    assert_equal("none", Connection.type(@person, @contact))
+    Connection.request(@person, @contact)
+    assert_equal("requested", Connection.type(@person, @contact))
+    assert_equal("pending", Connection.type(@contact, @person))
+    Connection.accept(@person, @contact)
+    assert_equal("accepted", Connection.type(@contact, @person))
+    assert_equal("accepted", Connection.type(@person, @contact))
+    assert_equal("you", Connection.type(@person, @person))
+    
+  end
 
   private
 

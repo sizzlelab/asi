@@ -9,6 +9,13 @@ class Connection < ActiveRecord::Base
     not find_by_person_id_and_contact_id(person, contact).nil?
   end
   
+  #return the connection between person and contact as string 
+  def self.type(person, contact)
+    return "you" if person == contact
+    return "none" if !Connection.exists?(person, contact)
+    return find_by_person_id_and_contact_id(person, contact).status
+  end
+  
   # Record a pending connection request.
   def self.request(person, contact)
     unless person == contact or Connection.exists?(person, contact)

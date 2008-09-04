@@ -157,6 +157,8 @@ module COSTestingDSL
       options[:person][:status] = {:message => options[:person][:status_message]}
       options[:person].delete(:status_message)
     end
+    #Don't expect email to be returned
+    options[:person].delete(:email)
     assert subset(options[:person], json)
   end
 

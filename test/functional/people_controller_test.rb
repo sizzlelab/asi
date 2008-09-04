@@ -270,8 +270,10 @@ class PeopleControllerTest < ActionController::TestCase
     search("a")
     search("Juho.*onen", false)
     search("", false)
+    search("stephen")
+    search("Liimatta")
   end
-
+  
   def test_routing
     user_id = "hfr2kf38s7"
 
@@ -340,7 +342,18 @@ class PeopleControllerTest < ActionController::TestCase
     json["entry"].each do |person|
       assert_not_nil person["name"]
       assert person["name"]["unstructured"].downcase =~ reg
+      assert_not_nil(person["connection"])
+      if (Person.find(sessions(:session1).person_id).contacts.include?(Person.find(person["id"])))
+        assert_equal("friend", person["connection"]  )
+      elsif (Person.find(sessions(:session1).person_id).pending_contacts.include?(Person.find(person["id"])))
+        assert_equal("pending", person["connection"]  )
+      elsif (Person.find(sessions(:session1).person_id).requested_contacts.include?(Person.find(person["id"])))
+        assert_equal("requested", person["connection"]  )
+      elsif (sessions(:session1).person_id == person["id"])
+        assert_equal("you", person["connection"]  )
+      else
+        assert_equal("none", person["connection"]  )
+      end
     end    
   end
-
 end
