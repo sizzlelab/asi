@@ -140,7 +140,7 @@ class PeopleController < ApplicationController
     end
     @avatar = @person.avatar
     respond_to do |format|
-      format.png
+      format.jpg
       # if @avatar.content_type.include?("gif")
       #   format.gif
       # elsif @avatar.content_type.include?("jpeg")
