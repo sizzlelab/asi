@@ -20,11 +20,6 @@ class ApplicationController < ActionController::Base
   # from your application log (in this case, all fields with names like "password"). 
   filter_parameter_logging :password
 
-  # Register MIME types for images.
-  Mime::Type.register "image/png", :png
-  Mime::Type.register "image/jpeg", :jpg
-  Mime::Type.register "image/gif", :gif
-
   def doc
     render :action => request.path[1..-1]
   end

@@ -7,7 +7,8 @@ function test(token, base) {
     http.open(method, url, true);
 
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http.setRequestHeader("Content-length", params.length);
+    http.setRequestHeader("Accept", "application/json, image/*");
+		http.setRequestHeader("Content-length", params.length);
     http.setRequestHeader("Connection", "close");
 
     http.onreadystatechange = useHttpResponse;
