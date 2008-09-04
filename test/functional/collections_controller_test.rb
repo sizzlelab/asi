@@ -241,7 +241,7 @@ class CollectionsControllerTest < ActionController::TestCase
   end
   
   def test_read_only
-    get :show, { :app_id => clients(:one).id, :id => collections(:read_only).id, :format => 'json' }, 
+    get :show, { :app_id => clients(:one).id, :id => collections(:read_only).id, :format => 'json' },
                { :session_id => sessions(:session1).id }
     assert_response :success
     old_item_count = assigns["collection"].items.count

@@ -67,9 +67,9 @@ class Image < ActiveRecord::Base
 
     # Write new images to database and then delete image files.
     self.data = File.open(full_size_image_file,'rb').read
-    File.delete(full_size_image_file) if File.exists?(full_size_image_file)
+    #File.delete(full_size_image_file) if File.exists?(full_size_image_file)
     self.thumbnail = File.open(thumbnail_file,'rb').read
-    File.delete(thumbnail_file) if File.exists?(thumbnail_file)
+    #File.delete(thumbnail_file) if File.exists?(thumbnail_file)
     return true
   end
 

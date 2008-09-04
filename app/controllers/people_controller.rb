@@ -139,6 +139,15 @@ class PeopleController < ApplicationController
       render :status => :not_found and return
     end
     @avatar = @person.avatar
+    respond_to do |format|
+      if @avatar.content_type.include?("gif")
+        format.gif
+      elsif @avatar.content_type.include?("jpg")
+        format.jpg
+      elsif @avatar.content_type.include?("png")
+        format.png
+      end     
+    end
   end
   
   def update_avatar
