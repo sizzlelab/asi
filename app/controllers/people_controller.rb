@@ -6,6 +6,9 @@ class PeopleController < ApplicationController
   
   def index
     @people = Person.find_with_ferret(params['search'])
+    @people_hash = @people.collect do |person|
+      person.get_person_hash(@user)
+    end
   end
 
   def show

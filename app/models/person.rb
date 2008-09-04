@@ -102,19 +102,14 @@ class Person < ActiveRecord::Base
         "end;"
     end
   end
-  
-  #test if helps
-  # def status_message=(message)
-  #   person_spec.status_message = message
-  #   save
-  #   puts "LOLOLOLO"
-  # end
 
-  def to_json(*a)
+  #creates a hash of person attributes. If connection_person is not nil, adds connection attribute to hash
+  def get_person_hash(connection_person=nil)
     person_hash = {
       'id' => id,
-      'username' => username,
-      'email' => email,
+      'username' => username, 
+     #email is not shown in normal person hash for spam prevention reasons
+     #'email' => email,
       'name' => name,
       'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" } }
     }
@@ -130,6 +125,15 @@ class Person < ActiveRecord::Base
       end
       person_hash.merge!({'status' => { :message => person_spec.status_message, :changed => person_spec.status_message_changed}})
     end
+    
+    if connection_person
+      person_hash.merge!({'connection' => get_connection_string(connection_person)})
+    end
+    return person_hash
+  end
+  
+  def to_json(*a)
+    person_hash = get_person_hash
     return person_hash.to_json(*a)
   end
 
@@ -153,6 +157,17 @@ class Person < ActiveRecord::Base
       end
     end
     return false  
+  end
+  
+  private
+  
+  #returns a string representing the connection between the user and the asker
+  def get_connection_string(asker)
+    type = Connection.type(asker, self)
+    if type == "accepted"
+      type = "friend"
+    end
+    return type
   end
   
 end

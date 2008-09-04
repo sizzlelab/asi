@@ -4,7 +4,7 @@ valid_person_name:
   id: 1
   given_name: Juho
   family_name: Makkonen
-  person_id: 2
+  person_id: 1
 
 invalid_person_name:
   id: 2
@@ -17,6 +17,18 @@ three:
   given_name: matti
   family_name: k
   person_id: 3
+
+four:
+  id: 444
+  given_name: Stephen
+  family_name: Hawking
+  person_id: 4
+
+five:
+  id: 555
+  given_name: Tommi
+  family_name: Liimatta
+  person_id: 5
 
 <% 20.times do |n| %>
 <%="#{n}:
