@@ -12,6 +12,6 @@ svn export file:///svn/common-services/trunk $COS_PATH
 cd $COS_PATH
 chmod a+x alpha-finish.sh
 chgrp -R adm .
-chmod -R g+ws . 
-umask u=rwx,g=rwx,o=
+chmod -R 2770 . 
+umask 770
 ./alpha-finish.sh
