@@ -5,6 +5,6 @@
 # Mime::Type.register_alias "text/html", :iphone
 
 # Mime types for images.
-Mime::Type.register "image/png", :png
-Mime::Type.register "image/jpeg", :jpg
-Mime::Type.register "image/gif", :gif
+Mime::Type.register_alias "image/png", :png
+Mime::Type.register_alias "image/jpeg", :jpg
+Mime::Type.register_alias "image/gif", :gif
