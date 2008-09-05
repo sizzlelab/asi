@@ -46,8 +46,8 @@ class Image < ActiveRecord::Base
   # Returns true if conversion of image is successful.
   def convert
     source_file = File.join("#{RAILS_ROOT}/test/fixtures/", "temp_#{filename}")
-    full_size_image_file = File.join("#{RAILS_ROOT}/test/fixtures/", "full_#{filename}")
-    thumbnail_file = File.join("#{RAILS_ROOT}/test/fixtures/", "thumb_#{filename}")
+    full_size_image_file = File.join("#{RAILS_ROOT}/test/fixtures/", "full_image.jpg")
+    thumbnail_file = File.join("#{RAILS_ROOT}/test/fixtures/", "thumb_image.jpg")
 
     # Write the source file to directory.
     f = File.new(source_file, "wb")
