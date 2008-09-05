@@ -45,7 +45,11 @@ ActionController::Routing::Routes.draw do |map|
                                            :get => 'get_avatar', 
                                            :put => 'update_avatar',
                                            :delete => 'delete_avatar',
-                                           :format => 'jpg'                                         
+                                           :format => 'jpg'
+                                           
+  map.resource '/people/:user_id/@avatar/thumbnail', :controller => 'people',
+                                                     :get => 'get_thumbnail', 
+                                                     :format => 'jpg'                                                                                    
 
   map.resource '/people', :controller => 'people',
                           :post => 'create',
