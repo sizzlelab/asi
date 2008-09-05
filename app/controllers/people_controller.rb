@@ -134,22 +134,12 @@ class PeopleController < ApplicationController
   end
   
   def get_avatar
-    @person = Person.find_by_id(params['user_id'])
-    if ! @person  
-      render :status => :not_found and return
-    end
-    @avatar = @person.avatar
-    respond_to do |format|
-      format.jpg
-      # if @avatar.content_type.include?("gif")
-      #   format.gif
-      # elsif @avatar.content_type.include?("jpeg")
-      #   format.jpg
-      # elsif @avatar.content_type.include?("png")
-      #   format.png
-      # end     
-    end
+    fetch_avatar
   end
+  
+  def get_thumbnail
+    fetch_avatar
+  end  
   
   def update_avatar
     if ! ensure_same_as_logged_person(params['user_id'])
@@ -200,6 +190,17 @@ class PeopleController < ApplicationController
       render :status => :not_found and return
     end
     Connection.breakup(@person, @contact)
+  end
+  
+  def fetch_avatar
+    @person = Person.find_by_id(params['user_id'])
+    if ! @person  
+      render :status => :not_found and return
+    end
+    @avatar = @person.avatar
+    respond_to do |format|
+      format.jpg
+    end
   end
   
   # Catch NoMethodError
