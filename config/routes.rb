@@ -8,9 +8,10 @@ module COSRoutes
 
   def resource(route, options)
     documentation route.gsub(":", "")
-    options.except(:controller).each do |method, action|
+    options.except(:controller, :format).each do |method, action|
+      format = method.eql?("get") ? options[:format] || 'json' : 'json'
       connect route, :controller => options[:controller],
-                     :format => 'json',
+                     :format => format,
                      :action => action,
                      :conditions => { :method => method }
     end
@@ -43,7 +44,8 @@ ActionController::Routing::Routes.draw do |map|
                                            :post => 'update_avatar',
                                            :get => 'get_avatar', 
                                            :put => 'update_avatar',
-                                           :delete => 'delete_avatar'                                         
+                                           :delete => 'delete_avatar',
+                                           :format => 'jpg'                                         
 
   map.resource '/people', :controller => 'people',
                           :post => 'create',
