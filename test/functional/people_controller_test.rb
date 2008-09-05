@@ -49,7 +49,10 @@ class PeopleControllerTest < ActionController::TestCase
   def test_create
     # create valid user
     assert_nil(Session.find(sessions(:client_only_session).id).person_id)
-    post :create, { :person => {:username  => "newbie", :password => "newbass", :email => "newbie@testland.gov" }, 
+    post :create, { :person => {:username  => "newbie", 
+                    :password => "newbass",
+                    :email => "newbie@testland.gov",
+                    :consent => "FI1" }, 
                     :format => 'json'}, 
                   { :session_id => sessions(:client_only_session).id }
     assert_response :created 
@@ -63,6 +66,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :success
     created_user = assigns["person"]
     assert_equal created_user.username, user.username
+    assert_equal created_user.consent, user.consent
     json = JSON.parse(@response.body)
   end
 
@@ -110,6 +114,14 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :success
     json = JSON.parse(@response.body)
     assert_equal test_status, json["status"]["message"]
+  
+    # Check that updating the name doesn't delete old values
+    put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Doe" } }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    assert_equal("Joe", assigns["person"].name.given_name)
+    assert_equal("Doe", assigns["person"].name.family_name)
+    json = JSON.parse(@response.body)
     
     # update birthdate
     valid_date = "1945-12-24"
@@ -131,19 +143,7 @@ class PeopleControllerTest < ActionController::TestCase
       assert_response :success
       json = JSON.parse(@response.body)
       assert_equal valid_date, json["birthdate"]                  
-    end
-    
-    
-
-
-    # Check that updating the name doesn't delete old values
-    put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Doe" } }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
-    assert_response :success
-    assert_equal("Joe", assigns["person"].name.given_name)
-    assert_equal("Doe", assigns["person"].name.family_name)
-    json = JSON.parse(@response.body)
-    
+    end  
   end
   
   def test_delete
