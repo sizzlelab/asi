@@ -159,6 +159,10 @@ class Person < ActiveRecord::Base
     return false  
   end
   
+  def consent=(value)
+    puts "using temporary method for consent, got: #{value} as parameter "
+  end 
+  
   private
   
   #returns a string representing the connection between the user and the asker
