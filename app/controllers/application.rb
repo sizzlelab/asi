@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
   
   def log
     request.extend(LoggingHelper)
-    logger.info(request.to_json({ :params => params.except("file"),
+    logger.info(request.to_json({ :params => params.except("file", "password", "app_password"),
                                   :session => @application_session }))
   end
   
