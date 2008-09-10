@@ -7,14 +7,14 @@ class Person < ActiveRecord::Base
 
   attr_reader :password
 
-  has_one :name, :class_name => "PersonName"
-  has_one :person_spec
-  has_one :location
-  has_one :avatar, :class_name => "Image"
+  has_one :name, :class_name => "PersonName", :dependent => :destroy
+  has_one :person_spec, :dependent => :destroy
+  has_one :location, :dependent => :destroy
+  has_one :avatar, :class_name => "Image", :dependent => :destroy
   
   has_many :sessions, :dependent => :destroy
 
-  has_many :connections
+  has_many :connections, :dependent => :destroy
 
   has_many :contacts, 
   :through => :connections,

@@ -146,7 +146,7 @@ class PeopleControllerTest < ActionController::TestCase
     end  
   end
   
-  def test_delete
+  def test_delete    
     #delete person with valid id
     delete :delete, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
     assert_response :success
@@ -155,6 +155,13 @@ class PeopleControllerTest < ActionController::TestCase
     # Check that deleted user is really removed
     get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session4).id }
     assert_response :missing
+    
+    # Check that related objects are removed also
+    assert Connection.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
+    assert PersonSpec.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
+    assert PersonName.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
+    assert Location.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
+    
     
     #try to delete person with invalid id
     delete :delete, { :user_id => -1, :format => 'json' }
