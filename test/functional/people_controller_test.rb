@@ -68,6 +68,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal created_user.username, user.username
     assert_equal created_user.consent, user.consent
     json = JSON.parse(@response.body)
+    assert_equal("not_set", json["avatar"]["status"]) #check that avatar is initially 'not_set'
   end
 
   def test_update
@@ -180,6 +181,12 @@ class PeopleControllerTest < ActionController::TestCase
                         { :session_id => sessions(:session1).id }                 
     assert_response :success
     json = JSON.parse(@response.body)
+    
+    # check that avatar info is changed to 'set'
+    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal("set", json["avatar"]["status"])
   end
   
   def test_delete_avatar

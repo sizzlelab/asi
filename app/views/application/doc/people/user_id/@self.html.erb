@@ -10,7 +10,10 @@
                 { :name => "GET", 
 
                  :description => "Gets the information of the user specified by <tt>user_id</tt>.
-                                  Note that the timestamp for status_messages latest update is always in UTC time."},                
+                                  Note that the timestamp for status_messages latest update is always in UTC time.
+                                  The 'avatar' slot in the returned JSON contains the link to the avatar image and also
+                                  the status of the avatar, which is 'set' or 'not_set' depending on if the user has 
+                                  uploaded an image or not." },                
                
                {
                  :name => "PUT",
