@@ -111,7 +111,8 @@ class Person < ActiveRecord::Base
      #email is not shown in normal person hash for spam prevention reasons
      #'email' => email,
       'name' => name,
-      'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" } }
+      'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" },
+                    :status => ( avatar ? "set" : "not_set" ) }
     }
     if self.person_spec
       self.person_spec.attributes.except('status_message', 'status_message_changed').each do |key, value|
