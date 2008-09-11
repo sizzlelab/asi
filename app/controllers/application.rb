@@ -58,8 +58,8 @@ class ApplicationController < ActionController::Base
   
   def log
     request.extend(LoggingHelper)
-    logger.info(request.to_json({ :params => params.except("file", "password", "app_password"),
-                                  :session => @application_session }))
+    logger.info("  Session: " + request.to_json({ :session => @application_session }))
+    logger.info("  Headers: " + request.headers.to_json)
   end
   
   def set_correct_content_type
