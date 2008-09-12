@@ -19,14 +19,15 @@ class ImageTest < ActiveSupport::TestCase
 
   def test_should_resize_image
     image = @image_jpg
-    assert image.valid_file?
-    image.full_image_size = '"240x300"'
+    image.person_id = people(:valid_person).id
+    assert image.valid_file?("image/jpeg", "test.jpg")
     assert image.convert
   end  
    
   def test_should_update_image
     image = images(:jpg)
     data = images(:png).raw_data
+    image.person_id = people(:valid_person).id
     assert image.update_attributes(:data => data, :filename => "Foo.bin") 
     assert_equal(image.data, images(:png).data)
   end

@@ -9,18 +9,16 @@
 <% methods = [ 
                 { :name => "GET", 
 
-                 :description => "Gets the avatar of the user."},                
+                 :description => "Gets the full sized avatar image of the user. Maximum width is 600px and maximum height 800px."},                
                
                {
                  :name => "PUT",
-                 :description => "Update (or add) an avatar to a user specified by <tt>user_id</tt>. All parameters are required.",
+                 :description => "Update (or add) an avatar to a user specified by <tt>user_id</tt>.",
                  :parameters => [{
                                     :file => [
                                             	{:content_type  => "Content type of user's avatar image."},
                                             	{:filename => "Filename of user's avatar image file."}
-                                          	 ],
-                                    :full_image_size => "The maximum size that the image will be converted into. Format: [MAX_WIDTH]x[MAX_HEIGHT], e.g. 300x240. " +
-																								"Note that image aspect ratio will not be changed. "
+                                          	 ]
                                 }]
                } ] %>
 

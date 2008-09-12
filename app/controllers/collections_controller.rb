@@ -66,7 +66,7 @@ class CollectionsController < ApplicationController
     if ! @collection.write?(@user, @client)
       render :status => :forbidden and return
     end
-    head :status => :bad_request and return unless @collection.create_item(params)
+    head :status => :bad_request and return unless @collection.create_item(params, @user)
     @item = @collection.items[-1]
   end
   

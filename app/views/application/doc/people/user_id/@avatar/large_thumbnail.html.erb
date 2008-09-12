@@ -1,0 +1,13 @@
+<h1><code>/people/&lt;user_id&gt;/@avatar/large_thumbnail</code></h1>
+<p>
+  A resource for accessing a user's avatar image's larger thumbnail file.
+</p>
+
+<% methods = [ 
+                { :name => "GET", 
+
+                  :description => "Gets a thumbnail of the avatar of the user. Maximum width is 200px and maximum height 350px."}                
+               
+             ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>

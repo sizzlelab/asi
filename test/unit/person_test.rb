@@ -105,8 +105,8 @@ class PersonTest < ActiveSupport::TestCase
     person.person_spec = @valid_person_spec
     person.name = @valid_person_name
     avatar = @valid_avatar
-    assert avatar.valid_file?
-    avatar.full_image_size = '"240x300"'
+    avatar.person_id = person.id
+    assert avatar.valid_file?("image/jpeg", "testfile.jpg")
     assert avatar.convert
     person.avatar = @valid_avatar
     json = JSON.parse(person.to_json)

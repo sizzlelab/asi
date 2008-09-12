@@ -1,19 +1,24 @@
+require 'rubygems'
+require 'RMagick'
+
 class Image < ActiveRecord::Base
 
   usesguid
   
   belongs_to :person
+  
+  FULL_IMAGE_SIZE = '"600x800>"'
+  LARGE_THUMB_SIZE = '"200x350>"'
+  SMALL_THUMB_WIDTH = 50
+  SMALL_THUMB_HEIGHT = 50
+  DIRECTORY = "tmp/images"
 
-  THUMBNAIL_SIZE = "50x50!"
+  validates_presence_of :person_id
 
-  attr_accessor :full_image_size
-
-  def save_to_db?(options)
-    self.content_type = options[:file].content_type
-    self.filename = options[:file].original_filename 
+  def save_to_db?(options, person)
     self.data = options[:file].read
-    self.full_image_size = options[:full_image_size]                  
-    if valid_file? and convert
+    self.person_id = person.id                  
+    if valid_file?(options[:file].content_type, options[:file].original_filename) and convert
       self.save
       return true
     end 
@@ -21,55 +26,75 @@ class Image < ActiveRecord::Base
   end
 
   # Return true for a valid, nonempty image file.
-  def valid_file?
+  def valid_file?(content_type, filename)
     
     #The upload should be nonempty.
-    if self.filename == nil
+    if filename == nil
       errors.add_to_base("Please enter an image filename")
+      puts errors.full_messages
       return false
     end
     
     #The file should be an image file.
-    unless self.content_type =~ /^image/
+    unless content_type =~ /^image/
       errors.add(:content_type, "is not a recognized format")
+      puts errors.full_messages
       return false
     end
     
     #The file shouldn't be bigger than 10 megabytes.
     if raw_data.size > 10.megabytes
-      errors.add("Image can't be bigger than 10 megabytes")  
+      errors.add("Image can't be bigger than 10 megabytes")
+      puts errors.full_messages  
       return false
     end
+    
     return true
   end
   
   # Returns true if conversion of image is successful.
   def convert
-    source_file = File.join("#{RAILS_ROOT}/test/fixtures/", "temp_#{filename}")
-    full_size_image_file = File.join("#{RAILS_ROOT}/test/fixtures/", "full_image.jpg")
-    thumbnail_file = File.join("#{RAILS_ROOT}/test/fixtures/", "thumb_image.jpg")
+    source_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "temp_#{filename}")
+    full_size_image_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "full_image.jpg")
+    large_thumbnail_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "large_thumb_image.jpg")
+    small_thumbnail_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "small_thumb_image.jpg")
 
     # Write the source file to directory.
     f = File.new(source_file, "wb")
     f.write(self.raw_data)
     f.close
 
-    # Then convert the source file to a full size image and a thumbnail.
-    img   = system("#{'convert'} '#{source_file}' -resize #{full_image_size} '#{full_size_image_file}'")
-    thumb = system("#{'convert'} '#{source_file}' -resize #{THUMBNAIL_SIZE} '#{thumbnail_file}'")
+    # Then resize the source file to the size defined by full_image_size parameter
+    # and convert it to .jpg file. Resize uses ImageMagick directly from command line.
+    img = system("#{'convert'} '#{source_file}' -resize #{FULL_IMAGE_SIZE} '#{full_size_image_file}'")
+    large_thumb = system("#{'convert'} '#{source_file}' -resize #{LARGE_THUMB_SIZE} '#{large_thumbnail_file}'")
+    
+    # If new file exists, it means that the original file is a valid image file. If so,
+    # make a thumbnail using RMagick. Thumbnail is created by cutting as big as possible 
+    # square-shaped piece from the center of the image and then resizing it to 50x50px.
+    if img
+      small_thumb = Magick::Image.read(source_file).first
+      small_thumb.crop_resized!(SMALL_THUMB_WIDTH, SMALL_THUMB_HEIGHT, Magick::NorthGravity)
+      small_thumb.write(small_thumbnail_file)
+    end
+   
+    # Delete source file if it exists.
     File.delete(source_file) if File.exists?(source_file)
-
-    # Both conversions must succeed, else it's an error.
-    unless img and thumb
-      errors.add_to_base("File upload failed.  Try a different image?")
+   
+    # Both conversions must succeed, else it's an error, probably because image file
+    # is somehow corrupted.
+    unless img and large_thumb and small_thumb
+      errors.add_to_base("File upload failed. Image file is probably corrupted.")
       return false
     end
 
     # Write new images to database and then delete image files.
     self.data = File.open(full_size_image_file,'rb').read
-    #File.delete(full_size_image_file) if File.exists?(full_size_image_file)
-    self.thumbnail = File.open(thumbnail_file,'rb').read
-    #File.delete(thumbnail_file) if File.exists?(thumbnail_file)
+    File.delete(full_size_image_file) if File.exists?(full_size_image_file)
+    self.large_thumb = File.open(large_thumbnail_file,'rb').read
+    File.delete(large_thumbnail_file) if File.exists?(large_thumbnail_file)
+    self.small_thumb = File.open(small_thumbnail_file,'rb').read
+    File.delete(small_thumbnail_file) if File.exists?(small_thumbnail_file)
     return true
   end
 
@@ -78,7 +103,8 @@ class Image < ActiveRecord::Base
       :id => id,
       :filename => filename,
       :data => data,
-      :thumbnail => thumbnail
+      :small_thumb => small_thumb,
+      :large_thumb => large_thumb
     }.to_json(*a)
   end
 
@@ -90,11 +116,20 @@ class Image < ActiveRecord::Base
     return Base64.decode64(data)
   end
 
-  def thumbnail
+  def small_thumb
     return Base64.encode64(super)
   end  
   
-  def raw_thumbnail
-    return Base64.decode64(thumbnail)
+  def raw_small_thumb
+    return Base64.decode64(small_thumb)
   end
+  
+  def large_thumb
+    return Base64.encode64(super)
+  end  
+  
+  def raw_large_thumb
+    return Base64.decode64(large_thumb)
+  end
+  
 end

@@ -179,8 +179,7 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # Should be able to add to a collection belonging to the client
     post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json', 
-                 :file => fixture_file_upload("Bison_skull_pile.png","image/png"), 
-                 :full_image_size => '"240x300"', :thumbnail_size => '"50x64"'},
+                 :file => fixture_file_upload("Bison_skull_pile.png","image/png") },
                { :session_id => sessions(:session1).id }
     assert_response :success
     assert_equal(old_item_count+1, assigns["collection"].items.count)

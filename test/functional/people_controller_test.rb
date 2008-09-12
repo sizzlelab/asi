@@ -174,19 +174,40 @@ class PeopleControllerTest < ActionController::TestCase
     
   end
   
-  def test_update_avatar
+  def test_update_and_get_avatar
+    # try to show the default large thumbnail
+    get :get_large_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }
+    assert_response :success
+    
+    # try to show the default small thumbnail
+    get :get_small_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }
+    assert_response :success
+    
     # try to upload an avatar
-    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("Bison_skull_pile.png","image/png"),
-                          :format => 'json', :full_image_size => '240x300'}, 
+    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("Australian_painted_lady.jpg","image/jpeg"),
+                          :format => 'json' }, 
                         { :session_id => sessions(:session1).id }                 
     assert_response :success
     json = JSON.parse(@response.body)
+    
+    # try to show the uploaded avatar
+    get :get_avatar, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }
+    assert_response :success
+    
+    # try to show the large thumbnail of the avatar
+    get :get_large_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }
+    assert_response :success
+    
+    # try to show the small thumbnail of the avatar
+    get :get_small_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }
+    assert_response :success
     
     # check that avatar info is changed to 'set'
     get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert_equal("set", json["avatar"]["status"])
+
   end
   
   def test_delete_avatar
@@ -338,6 +359,7 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   private 
+  
   def search(search, should_find=true)
     get :index, { :format => 'json', :search => search }, { :session_id => sessions(:session1) }
     assert_response :success

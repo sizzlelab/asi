@@ -20,6 +20,19 @@ class ApplicationController < ActionController::Base
   # from your application log (in this case, all fields with names like "password"). 
   filter_parameter_logging :password
 
+  DEFAULT_AVATAR_IMAGES = {
+    "ossi" => {
+      "full" => "cos_avatar_80_80.jpg",
+      "large_thumb" => "cos_avatar_80_80.jpg",
+      "small_thumb" => "cos_avatar_50_50.jpg"
+    },
+    "kassi" => {
+      "full" => "cos_avatar_80_80.jpg",
+      "large_thumb" => "cos_avatar_80_80.jpg",
+      "small_thumb" => "cos_avatar_50_50.jpg"
+    }
+  }
+
   def doc
     render :action => request.path[1..-1]
   end

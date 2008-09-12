@@ -152,7 +152,7 @@ class Person < ActiveRecord::Base
   def save_avatar?(options)
     if options[:file] && options[:file].content_type.start_with?("image")
       image = Image.new
-      if (image.save_to_db?(options))
+      if (image.save_to_db?(options, self))
         self.avatar = image
         return true
       end
