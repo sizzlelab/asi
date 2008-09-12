@@ -33,7 +33,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/appdata/:app_id/@collections/:id', :controller => 'collections',
                                                     :get => 'show',
                                                     :delete => 'delete',
-                                                    :post => 'add'
+                                                    :post => 'add',
+                                                    :put => 'update'
 
   map.resource '/people/:user_id/@self', :controller => 'people',
                                          :get => 'show', 

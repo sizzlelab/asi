@@ -187,8 +187,17 @@ class CollectionsControllerTest < ActionController::TestCase
   end    
 
   def test_metadata
+    post :create, { :app_id => clients(:one).id, :format => 'json', 
+                    :metadata => { :created => "right now", :is_nice => "truly" } }, 
+                  { :session_id => sessions(:session1).id, :client => clients(:one).id }
+    assert_response :created
+    json = JSON.parse(@response.body)
+    assert_not_nil json["metadata"]
+    assert_equal("right now", json["metadata"]["created"])
+    assert_equal("truly", json["metadata"]["is_nice"])
+    
     put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
-                   :collection => { :metadata => { :foo => "bar", :bar => "Foobar" } } },
+                   :metadata => { :foo => "bar", :bar => "Foobar" } },
                  { :session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
@@ -196,7 +205,7 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_equal("Foobar", json["metadata"]["bar"])
 
     put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
-                   :collection => { :metadata => { :foo2 => "bar", :bar => "foo" } } },
+                   :metadata => { :foo2 => "bar", :bar => "foo" } },
                  { :session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
@@ -208,6 +217,8 @@ class CollectionsControllerTest < ActionController::TestCase
     put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
                    :collection => { :id => "9999", :owner_id => "9999" } },
                  { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body #succeeds but doesn't change anything
+    json = JSON.parse(@response.body)
     assert_not_equal("9999", json["id"])
 
 
@@ -215,7 +226,7 @@ class CollectionsControllerTest < ActionController::TestCase
     put :update, { :app_id => clients(:one).id, 
                    :id => collections(:two).id, 
                    :format => 'json',
-                   :collection => { :metadata => { :foo2 => "bar", :bar => "foo" } } },
+                    :metadata => { :foo2 => "bar", :bar => "foo" } },
                  { :session_id => sessions(:session1).id }
     assert_response :forbidden
   end
@@ -257,6 +268,21 @@ class CollectionsControllerTest < ActionController::TestCase
                { :session_id => sessions(:session1).id }
     assert_response :success
     assert_equal(old_item_count, assigns["collection"].items.count)
+    
+    #test changing read_only
+    put :update, { :app_id => clients(:one).id, :id => collections(:read_only).id, :format => 'json',
+                   :read_only => "false"},
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal(false, json["read_only"] )
+    put :update, { :app_id => clients(:one).id, :id => collections(:read_only).id, :format => 'json',
+                   :read_only => "true"},
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal(true, json["read_only"] )
+    
   end
   
   def test_error_reporting

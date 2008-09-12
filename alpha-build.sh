@@ -5,7 +5,7 @@
 
 COS_PATH=/var/datat/cos/common-services
 
-killall mongrel_rails
+mongrel_rails stop -P $COS_PATH/tmp/pids/mongrel.pid
 cd /
 rm -rf $COS_PATH
 svn export --force file:///svn/common-services/trunk $COS_PATH

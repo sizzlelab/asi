@@ -21,7 +21,7 @@ class Collection < ActiveRecord::Base
 
   def metadata=(data)
     old = read_attribute(:metadata) || Hash.new
-    write_attribute(:metadata, old.merge(data))
+    write_attribute(:metadata, old.merge(data)) unless data.nil?
   end
 
   # Returns true if the given person, using the given client, has permission to view this collection.
