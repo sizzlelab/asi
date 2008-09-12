@@ -43,10 +43,10 @@ class Collection < ActiveRecord::Base
   end
 
   # Attempts to create an item and add it to this collection.
-  def create_item(options)
+  def create_item(options, person)
     if options[:file] && options[:file].content_type.start_with?("image")
       image = Image.new
-      if (image.save_to_db?(options))
+      if (image.save_to_db?(options, person))
         items << image
         return true
       else 

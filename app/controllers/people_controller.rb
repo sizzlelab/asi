@@ -2,7 +2,6 @@ class PeopleController < ApplicationController
   
   before_filter :ensure_client_login 
   before_filter :ensure_person_logout, :only  => :create
-  #around_filter :catch_exceptions
   
   def index
     @people = Person.find_with_ferret(params['search'])
@@ -134,12 +133,16 @@ class PeopleController < ApplicationController
   end
   
   def get_avatar
-    fetch_avatar
+    fetch_avatar("full")
   end
   
-  def get_thumbnail
-    fetch_avatar
-  end  
+  def get_small_thumbnail
+    fetch_avatar("small_thumb")
+  end
+  
+  def get_large_thumbnail
+    fetch_avatar("large_thumb")
+  end
   
   def update_avatar
     if ! ensure_same_as_logged_person(params['user_id'])
@@ -192,23 +195,31 @@ class PeopleController < ApplicationController
     Connection.breakup(@person, @contact)
   end
   
-  def fetch_avatar
+  def fetch_avatar(image_type)
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
       render :status => :not_found and return
     end
-    @avatar = @person.avatar
+    if @person.avatar
+      case image_type
+      when "full"
+        @data = @person.avatar.raw_data
+      when "large_thumb"
+        @data = @person.avatar.raw_large_thumb
+      when "small_thumb"
+        @data = @person.avatar.raw_small_thumb   
+      end
+    else 
+      get_default_avatar(@client.name, image_type)
+    end           
     respond_to do |format|
       format.jpg
     end
   end
   
-  # Catch NoMethodError
-  # def catch_exceptions
-  #   yield
-  # rescue => NoSuchMethodException
-  #   render :status  => :bad_request, :errors => @person.errors.full_messages.to_json and return
-  # end
-  
+  def get_default_avatar(service, image_type)
+    full_filename = "#{RAILS_ROOT}/public/images/#{DEFAULT_AVATAR_IMAGES[service][image_type]}"
+    @data = File.open(full_filename,'rb').read
+  end  
   
 end

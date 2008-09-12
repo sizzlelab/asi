@@ -49,7 +49,7 @@ class PeopleTest < ActionController::IntegrationTest
       
       ossi.updates_avatar({ :id => people(:test).id, 
                             :file => 
-                            ActionController::TestUploadedFile.new("#{RAILS_ROOT}/test/fixtures/Bison_skull_pile.png", "image/png", true), :full_image_size => '"240x300"', :thumbnail_size => '"50x64"' })
+                            ActionController::TestUploadedFile.new("#{RAILS_ROOT}/test/fixtures/Bison_skull_pile.png", "image/png", true) })
 
       ossi.logs_out
     end
