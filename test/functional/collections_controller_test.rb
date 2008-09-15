@@ -101,7 +101,7 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_not_nil json["id"]
 
     # With only a client
-    post :create, { :app_id => clients(:one).id, :format => 'json'}, 
+    post :create, { :app_id => clients(:one).id, :format => 'json', :title => "test-collection"}, 
                   { :client => clients(:one).id }
     assert_response :created
     assert_not_nil assigns["collection"]
@@ -109,6 +109,8 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_equal(assigns["collection"].client, clients(:one))
     json = JSON.parse(@response.body)
     assert_not_nil json["id"]
+    assert_not_nil(json["title"])
+    assert_equal("test-collection", json["title"])
 
     # With only an owner
     post :create, { :format => 'json' }, 
@@ -297,4 +299,27 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :not_found
   end
 
+  def test_update_title
+    testcollection = collections(:one)
+    assert_nil(testcollection.title)
+    put :update, { :app_id => clients(:one).id, :id => testcollection.id, :format => 'json',
+                   :title => "first" },
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal("first", json["title"])               
+    
+    put :update, { :app_id => clients(:one).id, :id => testcollection.id, :format => 'json',
+                   :title => "second" },
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal("second", json["title"])              
+
+    put :update, { :app_id => clients(:one).id, :id => testcollection.id, :format => 'json',
+                   :title => "" }, { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal("", json["title"])                 
+  end
 end

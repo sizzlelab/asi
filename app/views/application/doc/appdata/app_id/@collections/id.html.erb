@@ -23,7 +23,8 @@
 
                 { :name => "PUT",
                   :description => "Updates the attributes of the collection.",
-                  :parameters => [ { :read_only => "Whether the new collection is read only. Read only collections can be written
+                  :parameters => [ { :title => "The title describing the collection.", },
+                                   { :read_only => "Whether the new collection is read only. Read only collections can be written
                                                     to only by their owner; otherwise, the owner and their friends all have write
                                                     access. An empty value, '0' or 'false' are interpreted as <code>false</code>.
                                                     All other values are <code>true</code>." },
