@@ -34,7 +34,8 @@ class CollectionsController < ApplicationController
   def create
     @collection = Collection.new(:read_only => params["read_only"],
                                  :indestructible => params["indestructible"],
-                                 :metadata => params[:metadata])
+                                 :metadata => params[:metadata],
+                                 :title => params["title"] )
 
     if @user and params['owner']
       if @collection.indestructible
@@ -55,6 +56,7 @@ class CollectionsController < ApplicationController
     render :status => :forbidden and return unless @collection.write?(@user, @client)
     @collection.update_attributes({:metadata  => params[:metadata ]})
     @collection.update_attributes({:read_only => params[:read_only]}) if params[:read_only]
+    @collection.update_attributes({:title => params[:title]}) if params[:title]
   end
 
   def delete

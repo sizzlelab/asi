@@ -9,7 +9,8 @@
 
                { :name => "POST",
                  :description => "Creates a new collection. All the parameters below are optional.",
-                 :parameters => [ { :owner => "The id of the user owning the new collection (optional). If this is not
+                 :parameters => [ { :title => "The title describing the collection. (optional)", },
+                                  { :owner => "The id of the user owning the new collection (optional). If this is not
                                                specified, the collection will belong only to the application." },
                                   { :read_only => "Whether the new collection is read only (optional). Read only collections can be written
                                                    to only by their owner; otherwise, the owner and their friends all have write

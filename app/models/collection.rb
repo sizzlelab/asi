@@ -11,6 +11,7 @@ class Collection < ActiveRecord::Base
   def to_json(*a)
     {
       'id' => id,
+      'title' => title,
       'owner'  => owner_id,
       'entry' => items,
       'metadata' => metadata,
