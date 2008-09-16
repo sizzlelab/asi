@@ -8,7 +8,9 @@ COS_PATH=/usr/local/cos/common-services
 mongrel_rails stop -P $COS_PATH/tmp/pids/mongrel.pid
 cd /
 rm -rf $COS_PATH
-svn export svn+ssh://cos.sizl.org/svn/common-services/trunk $COS_PATH
+svn export svn+ssh://alpha.sizl.org/svn/common-services/trunk $COS_PATH
 cd $COS_PATH
 chmod a+x maps-finish.sh
+chmod -R 2770 . 
+umask 007
 ./maps-finish.sh
