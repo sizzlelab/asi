@@ -5,7 +5,7 @@
 
 COS_PATH=/usr/local/cos/common-services
 
-mongrel_rails stop -P $COS_PATH/tmp/pids/mongrel.pid
+sudo mongrel_rails stop -P $COS_PATH/tmp/pids/mongrel.pid
 cd /
 rm -rf $COS_PATH
 svn export svn+ssh://alpha.sizl.org/svn/common-services/trunk $COS_PATH
