@@ -31,21 +31,18 @@ class Image < ActiveRecord::Base
     #The upload should be nonempty.
     if filename == nil
       errors.add_to_base("Please enter an image filename")
-      puts errors.full_messages
       return false
     end
     
     #The file should be an image file.
     unless content_type =~ /^image/
       errors.add(:content_type, "is not a recognized format")
-      puts errors.full_messages
       return false
     end
     
     #The file shouldn't be bigger than 10 megabytes.
     if raw_data.size > 10.megabytes
-      errors.add("Image can't be bigger than 10 megabytes")
-      puts errors.full_messages  
+      errors.add("Image can't be bigger than 10 megabytes") 
       return false
     end
     
