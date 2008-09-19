@@ -185,10 +185,9 @@ class PeopleControllerTest < ActionController::TestCase
     
     # try to upload an avatar
     put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("Australian_painted_lady.jpg","image/jpeg"),
-                          :format => 'json' }, 
+                          :format => 'html' }, 
                         { :session_id => sessions(:session1).id }                 
     assert_response :success
-    json = JSON.parse(@response.body)
     
     # try to show the uploaded avatar
     get :get_avatar, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }

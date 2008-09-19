@@ -8,8 +8,14 @@ module COSRoutes
 
   def resource(route, options)
     documentation route.gsub(":", "")
-    options.except(:controller, :format).each do |method, action|
-      format = method.to_s.eql?("get") ? options[:format] || 'json' : 'json'
+    options.except(:controller, :format_put, :format_post).each do |method, action|
+      if method.to_s.eql?("get")
+        format = options[:format_get] || 'json'
+      elsif method.to_s.eql?("post") || method.to_s.eql?("put")  
+        format = options[:format_post] || 'json'
+      else
+        format = 'json'
+      end    
       connect route, :controller => options[:controller],
                      :format => format,
                      :action => action,
@@ -46,15 +52,16 @@ ActionController::Routing::Routes.draw do |map|
                                            :get => 'get_avatar', 
                                            :put => 'update_avatar',
                                            :delete => 'delete_avatar',
-                                           :format => 'jpg'
+                                           :format_get => 'jpg',
+                                           :format_post => 'html'
                                            
   map.resource '/people/:user_id/@avatar/large_thumbnail', :controller => 'people',
                                                            :get => 'get_large_thumbnail', 
-                                                           :format => 'jpg'
+                                                           :format_get => 'jpg'
                                                                                                                                          
   map.resource '/people/:user_id/@avatar/small_thumbnail', :controller => 'people',
                                                            :get => 'get_small_thumbnail', 
-                                                           :format => 'jpg'
+                                                           :format_get => 'jpg'
                                                      
   map.resource '/people', :controller => 'people',
                           :post => 'create',
