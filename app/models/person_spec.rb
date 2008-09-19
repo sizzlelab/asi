@@ -2,8 +2,8 @@ class PersonSpec < ActiveRecord::Base
 
   belongs_to :person
 
-  ALL_FIELDS = %w(status_message gender birthdate)
-  STRING_FIELDS = %w(status_message)
+  ALL_FIELDS = %w(status_message gender birthdate unstructured_address irc_nick msn_nick phone_number)
+  STRING_FIELDS = %w(status_message unstructured_address irc_nick msn_nick)
   # Fields that are not included in json
   NO_JSON_FIELDS = %w(id person_id created_at updated_at)
   # Fields that need to be translated if the language is changed.
@@ -12,7 +12,8 @@ class PersonSpec < ActiveRecord::Base
   START_YEAR = 1900
   VALID_DATES = DateTime.new(START_YEAR)..DateTime.now
 
-  validates_length_of STRING_FIELDS, :maximum => DB_STRING_MAX_LENGTH
+  validates_length_of STRING_FIELDS, :maximum => DB_STRING_MAX_LENGTH, :allow_nil => true, :allow_blank => true
+  validates_length_of :phone_number, :maximum => 25, :allow_nil => true, :allow_blank => true
 
   validates_inclusion_of :gender,
   :in => VALID_GENDERS,

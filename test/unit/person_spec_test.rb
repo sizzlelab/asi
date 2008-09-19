@@ -9,8 +9,14 @@ class PersonSpecTest < ActiveSupport::TestCase
   
   def test_max_lengths
     PersonSpec::STRING_FIELDS.each do |field|
-      assert_length :max, @valid_person_spec, field, DB_STRING_MAX_LENGTH
+      assert_length :max, @valid_person_spec, field, DB_STRING_MAX_LENGTH\
     end
+  end
+  
+  def test_phone_number_length
+    person_spec = @valid_person_spec
+    person_spec.phone_number = "more than 25 digits in this string"
+    assert !person_spec.valid?
   end
 
   # Test saving a blank person_spec.

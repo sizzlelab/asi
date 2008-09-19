@@ -7,6 +7,10 @@ valid_person_spec:
   status_message_changed: 2008-08-28T10:58:12+03:00
   birthdate: 1940-06-01
   gender: MALE
+  unstructured_address: "Jämeräntaival 10 H 134, 02150 Espoo"
+  irc_nick: "pelle"
+  msn_nick: "maison"
+  phone_number: "+358 40 834 7176"
 
 blank_person_spec:
   id: 2
