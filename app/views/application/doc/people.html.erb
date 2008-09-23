@@ -23,7 +23,8 @@
 
                  :parameters => [ :person => [ { :username => "The desired username. Must be unique in the system. Length 4-20 characters." },
                                   { :password => "User's password." },
-                                  { :email    => "User's email address. Must be valid."} ] ], 
+                                  { :email    => "User's email address. Must be valid."},
+                                  { :consent  => "The version of the consent that the user has agreed to. For example: 'FI1'/'EN1.5'/'SE4'" } ] ], 
 
                   :returns => { "201" => "Ok. The response includes also the information for the user, for example the user GUID as <code>id</code>.",
                             "400" => "Unable to save the person in the database because of inadequate request.
