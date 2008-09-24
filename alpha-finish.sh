@@ -12,8 +12,8 @@ perl -pi -e "s/Last Changed Rev: //"`))
 echo $REV > app/views/layouts/_revision.html.erb
 echo $SERVERNAME > app/views/layouts/_servername.html.erb
 date > app/views/layouts/_build_date.html.erb
-script/server -d -e production
-sudo /etc/init.d/apache2 restart
 rake db:migrate
 rake test
 rake db:migrate RAILS_ENV=production
+script/server -d -e production
+sudo /etc/init.d/apache2 restart

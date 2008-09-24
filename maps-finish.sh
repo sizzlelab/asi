@@ -15,9 +15,10 @@ date > app/views/layouts/_build_date.html.erb
 grep -v socket config/database.yml > config/database.yml_mod
 mv config/database.yml_mod config/database.yml
 
+rake db:migrate RAILS_ENV=production
+
 #restart the servers
 script/server -d -p 3001 -e production
 sudo /etc/init.d/httpd restart
 #rake db:migrate
 #rake test
-rake db:migrate RAILS_ENV=production
