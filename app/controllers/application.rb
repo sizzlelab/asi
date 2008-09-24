@@ -96,7 +96,7 @@ class ApplicationController < ActionController::Base
         @client = @application_session.client
       else
         session[:session_id] = nil
-        redirect_to(root_url)
+        render :status => :unauthorized and return
       end
     else
       #logger.debug "NO SESSION:" + session[:session_id]
