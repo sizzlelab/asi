@@ -1,0 +1,19 @@
+<h1><code>/appdata/&lt;app_id&gt;/@collections/&lt;id&gt;/@items/&lt;item_id&gt;</code></h1>
+
+<p>A resource for a single item {item_id} in a collection {id}.</p>
+
+<% returns = { "200" => "",
+               "403" => "The current combination of application and user is not allowed to change this item.",
+               "404" => "The item with the specified id does not exist." }
+
+   methods = [ 
+                #{ :name => "GET",
+                # :description => "Returns this item.",
+                # :returns => returns.merge({ "403" => returns["403"].gsub("change", "see") }) },
+
+
+               { :name => "DELETE",
+                 :description => "Deletes the item.",
+                 :returns => returns.merge({ "403" => returns["403"].gsub("change", "delete") }) } ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
