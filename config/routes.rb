@@ -41,6 +41,10 @@ ActionController::Routing::Routes.draw do |map|
                                                     :delete => 'delete',
                                                     :post => 'add',
                                                     :put => 'update'
+                                                    
+  map.resource '/appdata/:app_id/@collections/:id/@items/:item_id', :controller => 'collections',
+                                                   # :get => 'show_item',
+                                                    :delete => 'delete_item'
 
   map.resource '/people/:user_id/@self', :controller => 'people',
                                          :get => 'show', 
