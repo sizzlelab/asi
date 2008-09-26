@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
   def log
     request.extend(LoggingHelper)
     logger.info("  Session: " + request.to_json({ :session => @application_session }))
-    logger.info("  Headers: " + request.headers.to_json)
+    logger.info("  Headers: " + request.headers.except("RAW_POST_DATA").to_json)
   end
   
   def set_correct_content_type
