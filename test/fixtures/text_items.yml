@@ -1,7 +1,17 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
- one:
-   text: Tässä on tekstiä, paljon tekstiä.
-#
-# two:
-#   column: value
+one:
+  id: asdertni
+  text: Here some text, is nice
+
+two:
+  id: naotnstsoidt
+  text: testing texting
+
+three:
+  id: hasderueireru
+  text: holloti holloti
+
+four:
+  id: utotuot
+  text: no sense in anything

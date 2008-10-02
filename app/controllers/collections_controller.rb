@@ -2,7 +2,7 @@ class CollectionsController < ApplicationController
 
   before_filter :verify_client
 
-  before_filter :get_or_not_found, :except => [ :create, :index ]
+  before_filter :get_or_not_found, :except => [ :create, :index, :delete_item ]
 
   verify :method => :post, 
          :only => :create, 
@@ -75,8 +75,21 @@ class CollectionsController < ApplicationController
   end
   
   def delete_item
+    id = params["item_id"]
     
+    item = TextItem.find_by_id(id)
+    item = Image.find_by_id(id) if item.nil?
+    render :status => :not_found, :json  => {}.to_json and return if item.nil?
+    
+    collection = Ownership.find_by_item_id(id).collection
+    render :status => :not_found, :json  => {}.to_json and return if (collection.nil?)
+    render :status => :forbidden, :json  => {}.to_json and return if (!collection.delete?(@user, @client))
+    
+    collection.delete_item(id)
+    render :json => {}.to_json
   end
+  
+  
   private
   
   def verify_client

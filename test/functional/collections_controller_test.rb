@@ -233,6 +233,19 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :forbidden
   end
   
+  def test_delete_item
+    # should delete in own collection
+    try_to_delete_item(text_items(:one).id, sessions(:session4).id, true)
+    
+    # should not delete item without write access (readonly)
+    try_to_delete_item(text_items(:three).id, sessions(:session4).id, false)
+    
+    # should not delete in a collection with write access but not owned
+    try_to_delete_item(text_items(:four).id, sessions(:session4).id, false)
+    
+  end
+  
+  
   def test_indestructible
     #create indfestructible and try to delete
     post :create, { :app_id => clients(:one).id, :indestructible => "true", :format => 'json'}, 
@@ -333,4 +346,41 @@ class CollectionsControllerTest < ActionController::TestCase
         { :action => "delete_item", :app_id => app_id, :item_id => item_id, :id => "asdf" })    
     end
   end
+  
+  def try_to_delete_item(item_id, session_id, should_success=true)
+    
+    collection_id = Ownership.find_by_item_id(item_id).collection.id
+    # first get original item count
+    get :show, { :app_id => clients(:one).id, :id => collection_id, :format => 'json' }, 
+               { :session_id => session_id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    old_item_count = assigns["collection"].items.count
+    assert(old_item_count > 0 , "The test collection doesn't contain any item to delete.")
+    
+    delete :delete_item, { :app_id => clients(:one).id, :item_id => item_id, :format => 'json' },
+                         { :session_id => session_id }
+                         
+    if should_success
+      assert_response :success
+    else
+      assert_response :forbidden
+    end
+    json = JSON.parse(@response.body)
+    
+    # check item count after
+    get :show, { :app_id => clients(:one).id, :id => collection_id, :format => 'json' }, 
+               { :session_id => session_id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    new_item_count = assigns["collection"].items.count
+    if should_success
+      assert_equal (old_item_count - 1, new_item_count , "The item count in collection was not 1 less after delete")
+      assert_nil(TextItem.find_by_id(item_id))
+    else
+      assert_equal (old_item_count , new_item_count , "The item count in collection was change although delete was forbidden")
+      assert_not_nil(TextItem.find_by_id(item_id))
+    end      
+  end
+  
 end

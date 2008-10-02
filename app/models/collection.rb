@@ -61,4 +61,13 @@ class Collection < ActiveRecord::Base
     end
     return false
   end
+  
+  def delete_item(item_id)
+    items.each do |item|
+      if item.id = item_id
+        item.destroy
+        items.delete(item)
+      end
+    end
+  end
 end
