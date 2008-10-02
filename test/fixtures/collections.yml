@@ -5,11 +5,13 @@ one:
   client_id: 1
 
 two:
+  id: 2
   read_only: true
   client_id: 2
   owner_id: 3
 
-three:  
+three:
+  id: 3  
   read_only: false
   client_id: 1
   owner_id: 4
@@ -20,7 +22,14 @@ four:
   owner_id: 5
 
 read_only:
+  id: 5
   read_only: true
+  client_id: 1
+  owner_id: 1
+
+six:
+  id: 6
+  read_only: false
   client_id: 1
   owner_id: 1
 
