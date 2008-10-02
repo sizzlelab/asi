@@ -1,9 +1,9 @@
-<h1><code>/appdata/&lt;app_id&gt;/@collections/&lt;id&gt;/@items/&lt;item_id&gt;</code></h1>
+<h1><code>/appdata/&lt;app_id&gt;/@collection_items/&lt;item_id&gt;</code></h1>
 
-<p>A resource for a single item {item_id} in a collection {id}. There is also a shorcut for this in
-  <a href="doc/appdata/app_id/@collection_items/item_id">
-    <tt>/appdata/&lt;app_id&gt;/@collection_items/&lt;item_id&gt;</tt></a>
-    which can be used without the collection id.</p>
+<p>A shortcut for ( <a href="doc/appdata/app_id/@collections/id/@items/item_id">
+  <tt>/appdata/&lt;app_id&gt;/@collections/&lt;id&gt;/@items/&lt;item_id&gt;</tt></a>),
+   a single item {item_id} in some collection. Since the item_id is unique, there is no
+  need to know the collection id.</p>
 
 <% returns = { "200" => "",
                "403" => "The current combination of application and user is not allowed to change this item.",

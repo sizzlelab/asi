@@ -322,4 +322,15 @@ class CollectionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_equal("", json["title"])                 
   end
+  
+  def test_routing
+    app_id = "Aajfalhr3q3DSF"
+    item_id = "asdaltbgsuif"
+    with_options :controller => "collections", :format => "json" do |test|
+      test.assert_routing({ :method => "delete", :path => "/appdata/#{app_id}/@collection_items/#{item_id}" }, 
+        { :action => "delete_item", :app_id => app_id, :item_id => item_id })
+      test.assert_routing({ :method => "delete", :path => "/appdata/#{app_id}/@collections/asdf/@items/#{item_id}" }, 
+        { :action => "delete_item", :app_id => app_id, :item_id => item_id, :id => "asdf" })    
+    end
+  end
 end

@@ -74,6 +74,9 @@ class CollectionsController < ApplicationController
     @item = @collection.items[-1]
   end
   
+  def delete_item
+    
+  end
   private
   
   def verify_client
