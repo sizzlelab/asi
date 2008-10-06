@@ -188,6 +188,10 @@ class CollectionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
   end    
 
+  def test_add_collection_reference
+    #TODO: do the test
+  end
+
   def test_metadata
     post :create, { :app_id => clients(:one).id, :format => 'json', 
                     :metadata => { :created => "right now", :is_nice => "truly" } }, 
@@ -243,6 +247,8 @@ class CollectionsControllerTest < ActionController::TestCase
     # should not delete in a collection with write access but not owned
     try_to_delete_item(text_items(:four).id, sessions(:session4).id, false)
     
+    # when deleting collection reference, don't destroy the target object
+        #TODO: do the test
   end
   
   
@@ -349,7 +355,7 @@ class CollectionsControllerTest < ActionController::TestCase
   
   def try_to_delete_item(item_id, session_id, should_success=true)
     
-    collection_id = Ownership.find_by_item_id(item_id).collection.id
+    collection_id = Ownership.find_by_item_id(item_id).parent.id
     # first get original item count
     get :show, { :app_id => clients(:one).id, :id => collection_id, :format => 'json' }, 
                { :session_id => session_id }
@@ -375,10 +381,10 @@ class CollectionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     new_item_count = assigns["collection"].items.count
     if should_success
-      assert_equal (old_item_count - 1, new_item_count , "The item count in collection was not 1 less after delete")
+      assert_equal(old_item_count - 1, new_item_count , "The item count in collection was not 1 less after delete")
       assert_nil(TextItem.find_by_id(item_id))
     else
-      assert_equal (old_item_count , new_item_count , "The item count in collection was change although delete was forbidden")
+      assert_equal(old_item_count , new_item_count , "The item count in collection was change although delete was forbidden")
       assert_not_nil(TextItem.find_by_id(item_id))
     end      
   end

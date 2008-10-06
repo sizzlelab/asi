@@ -45,10 +45,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/appdata/:app_id/@collections/:id/@items/:item_id', :controller => 'collections',
                                                    # :get => 'show_item',
                                                     :delete => 'delete_item'
-                                                    
+
+  #shortcut for the longer url above (without collection id)
   map.resource '/appdata/:app_id/@collection_items/:item_id', :controller => 'collections',
                                                    # :get => 'show_item',
-                                                    :delete => 'delete_item'                                                    
+                                                    :delete => 'delete_item'
 
   map.resource '/people/:user_id/@self', :controller => 'people',
                                          :get => 'show', 

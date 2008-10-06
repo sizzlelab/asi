@@ -2,11 +2,7 @@
 entries = Array.new
 
 @collections.each do |item|
-  entries << { 
-    :id => item.id, :title => item.title, :link => { 
-      :rel => "self", :href=> "/appdata/#{item.client.id}/@collections/#{item.id}"
-    }
-  }
+  entries << item.link_hash
 end
 %>
 

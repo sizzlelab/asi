@@ -1,22 +1,22 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  collection_id: 3
+  parent_id: 3
   item_id: asdertni
   item_type: TextItem
 
 two:
-  collection_id: 3
+  parent_id: 3
   item_id: naotnstsoidt
   item_type: TextItem
 
 three:
-  collection_id: 5
+  parent_id: 5
   item_id: hasderueireru
   item_type: TextItem
 
 four:
-  collection_id: 6
+  parent_id: 6
   item_id: utotuot
   item_type: TextItem
   
