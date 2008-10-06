@@ -75,17 +75,28 @@ class CollectionsController < ApplicationController
   end
   
   def delete_item
-    id = params["item_id"]
+    item_id = params["item_id"]
     
-    item = TextItem.find_by_id(id)
-    item = Image.find_by_id(id) if item.nil?
-    render :status => :not_found, :json  => {}.to_json and return if item.nil?
+    item = TextItem.find_by_id(item_id)
+    item = Image.find_by_id(item_id) if item.nil?
+    item = Collection.find_by_id(item_id) if item.nil?
+    render :status => :not_found, :json  => {:error => "Could not find the item with id #{item_id}"}.to_json and return if item.nil?
     
-    collection = Ownership.find_by_item_id(id).collection
-    render :status => :not_found, :json  => {}.to_json and return if (collection.nil?)
-    render :status => :forbidden, :json  => {}.to_json and return if (!collection.delete?(@user, @client))
+    if item.class == Collection 
+      if params["id"].nil?
+        render :status => :bad_request, :json => {:error => "Can't delete a collection reference without " +
+                                                  "providing the parent collection id. Please use " +
+                                                  "the longer url for item deletion."}.to_json and return
+      end
+      collection = Collection.find_by_id(params["id"])
+    else
+      collection = Ownership.find_by_item_id(item_id).parent
+    end
     
-    collection.delete_item(id)
+    render :status => :not_found, :json  => {:error => "Could not find parent collection for the item"}.to_json and return if (collection.nil?)
+    render :status => :forbidden, :json  => {:error => "The user is not allowed to delete from this collection!"}.to_json and return if (!collection.delete?(@user, @client))
+    
+    collection.delete_item(item_id)
     render :json => {}.to_json
   end
   

@@ -1,5 +1,5 @@
 <% if @collection %>
-  <%= @collection.to_json %>
+  <%= @collection.to_json(@user, @client) %>
 <% else %>
   <%= {}.to_json %>
 <% end %>

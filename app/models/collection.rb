@@ -1,19 +1,20 @@
 class Collection < ActiveRecord::Base
   usesguid
 
-  has_many_polymorphs :items, :from => [:text_items, :images], :through => :ownerships
+  has_many_polymorphs :items, :from => [:text_items, :images, :collections], :through => :ownerships, :as => :parent
   belongs_to :owner, :class_name => "Person"
   belongs_to :client
   serialize :metadata, Hash
 
   validates_presence_of :client
 
-  def to_json(*a)
+  def to_json(user=nil,client=nil,*a)
+    return {}.to_json if client.nil?
     {
       'id' => id,
       'title' => title,
       'owner'  => owner_id,
-      'entry' => items,
+      'entry' => get_items_array(user,client),
       'metadata' => metadata,
       'read_only' => read_only,
       'indestructible' => indestructible
@@ -58,16 +59,50 @@ class Collection < ActiveRecord::Base
       text_item.save
       items << text_item
       return true
+    elsif options[:content_type].start_with?("collection")
+      if options[:collection_id].nil? || ! collection = Collection.find_by_id(options[:collection_id])
+        return false
+      end
+      items << collection
+      return true
     end
     return false
   end
   
   def delete_item(item_id)
     items.each do |item|
-      if item.id = item_id
-        item.destroy
+      if item.id == item_id
+        item.destroy unless item.class == Collection
         items.delete(item)
       end
     end
+  end
+  
+  def destroy
+    items.each do |item|
+      item.destroy unless item.class == Collection
+    end
+    super
+  end
+  
+  # Returns a hash containing only the id, title and link to the collection
+  def link_hash
+    { :id => id, :title => title, 
+      :link => {   :rel => "self", :href=> "/appdata/#{client.id}/@collections/#{id}"} 
+    }
+  end
+  
+  private
+  
+  def get_items_array(user, client)
+    items_array = []
+    items.each do |item|
+      if item.class == Collection
+        items_array.push item.link_hash.merge({:type => "collection"}) if item.read?(user, client)
+      else
+        items_array.push item
+      end
+    end
+    return items_array
   end
 end
