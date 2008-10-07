@@ -27,7 +27,7 @@ class CollectionsController < ApplicationController
     
     @collections = Collection.find(:all, :conditions => conditions )
     @collections.reject! { |item| ! item.read?(@user, @client) }
-  endA
+  end
 
   def show
     if @collection.client != @client or ! @collection.read?(@user, @client)
