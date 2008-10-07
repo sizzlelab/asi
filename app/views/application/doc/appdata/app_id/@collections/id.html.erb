@@ -7,7 +7,8 @@
                 "404" => "The collection with the specified id does not exist." }
 
     methods = [ { :name => "GET",
-                  :description => "Returns this collection.",
+                  :description => "Returns this collection. If this collection contains references to other collections,
+                                    those without read-access for the current user are hidden automatically from the results.",
                   :returns => returns.merge({ "403" => returns["403"].gsub("change", "see") }) },
 
                 { :name => "POST",
@@ -32,11 +33,13 @@
                                                     to only by their owner; otherwise, the owner and their friends all have write
                                                     access. An empty value, '0' or 'false' are interpreted as <code>false</code>.
                                                     All other values are <code>true</code>." },
+                                    { :tags => "Describing keywords for the collection. Can be a comma-separated list (,), although the search
+                                              currently supports only exact string matching, so use of only one tag is currently recommended." },
                                    { :metadata => [{ :any_key => "Any string" }, { :another_key => "Another string" } ] } ],
                   :returns => returns },
 
                 { :name => "DELETE",
-                  :description => "Deletes the collection.",
+                  :description => "Deletes the collection. The non-reference items in the collection are also deleted.",
                   :returns => returns.merge({ "403" => returns["403"].gsub("change", "delete") }) } ] %>
  
  <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
