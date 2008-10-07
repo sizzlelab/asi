@@ -13,12 +13,16 @@
                 { :name => "POST",
                   :description => "Adds a new item to the collection.",
                   :parameters => [ { :content_type => "The content type of the new collection item. The content types currently
-                                                       supported are <code>text/*</code> and <code>image/*</code>." },
+                                                       supported are <code>text/*</code>, <code>image/*</code> 
+                                                       and <code>collection</code> (a reference to an other collection)." },
                                    { :file => "A file to be added to the collection (optional)." },
                                #    { :title => "The title of the item. If a file is given or content_type is not
                                #                <code>text/*</code>, this parameter is ignored." },
                                    { :body => "The body of the item. If a file is given or content_type is not <code>text/*</code>,
-                                               this parameter is ignored." } ],
+                                               this parameter is ignored." },
+                                   { :collection_id => "Id of an existing collection where the reference will point to. If content_type
+                                                        is not <code>collection</code> this parameter is ignored.", }           
+                                 ],
                   :returns => returns.merge({ "400" => "A malformed or unsupported image type was uploaded." }) },
 
                 { :name => "PUT",

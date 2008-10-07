@@ -20,9 +20,14 @@ class CollectionsController < ApplicationController
          :add_headers => { 'Allow' => 'PUT' }
 
   def index
-    @collections = Collection.find(:all, :conditions => { :client_id => @client.id })
+    conditions = { :client_id => @client.id }
+    if params["tags"]
+      conditions.merge!({:tags => params["tags"]})
+    end
+    
+    @collections = Collection.find(:all, :conditions => conditions )
     @collections.reject! { |item| ! item.read?(@user, @client) }
-  end
+  endA
 
   def show
     if @collection.client != @client or ! @collection.read?(@user, @client)
@@ -34,6 +39,7 @@ class CollectionsController < ApplicationController
   def create
     @collection = Collection.new(:read_only => params["read_only"],
                                  :indestructible => params["indestructible"],
+                                 :tags => params["tags"],
                                  :metadata => params[:metadata],
                                  :title => params["title"] )
 
@@ -57,6 +63,7 @@ class CollectionsController < ApplicationController
     @collection.update_attributes({:metadata  => params[:metadata ]})
     @collection.update_attributes({:read_only => params[:read_only]}) if params[:read_only]
     @collection.update_attributes({:title => params[:title]}) if params[:title]
+    @collection.update_attributes({:tags => params[:tags]}) if params[:tags]
   end
 
   def delete
@@ -70,7 +77,7 @@ class CollectionsController < ApplicationController
     if ! @collection.write?(@user, @client)
       render :status => :forbidden and return
     end
-    head :status => :bad_request and return unless @collection.create_item(params, @user)
+    head :status => :bad_request and return unless @collection.create_item(params, @user, @client)
     @item = @collection.items[-1]
   end
   
