@@ -16,7 +16,8 @@
 
 
                { :name => "DELETE",
-                 :description => "Deletes the item.",
+                 :description => "Deletes the item. If the item is a reference to a collection, only the reference is
+                                  deleted, not the referenced collection.",
                  :returns => returns.merge({ "403" => returns["403"].gsub("change", "delete") }) } ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>

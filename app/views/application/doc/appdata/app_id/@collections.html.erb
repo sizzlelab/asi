@@ -5,6 +5,9 @@
 <% methods = [ { :name => "GET",
                  :description => "Retrieves a list of all collections accessible in the current session. 
                                   The list may be empty.",
+                 :parameters => [ { :tags => "Show only collections whose tags-attribute is an exact match with the provided string.
+                                              A better search supporting multiple tags may be implemented in the future if needed."
+                   }], 
                  :returns => { "200" => "Ok." } },
 
                { :name => "POST",
@@ -23,6 +26,8 @@
                                                         If this parameter is not submitted, the default is <code>false</code>.
                                                         If submitted, an values 'true', 't' and '1' or are interpreted as <code>true</code>, 
                                                          all other values are <code>false</code>.."},
+                                  { :tags => "Describing keywords for the collection. Can be a comma-separated list (,), although the search
+                                              currently supports only exact string matching, so use of only one tag is currently recommended." },
                                   { :metadata => [{ :any_key => "Any string" }, { :another_key => "Another string" } ] } ],
                  :returns => { "201" => "Created successfully. The return body includes the created collection." } } ] %>
 
