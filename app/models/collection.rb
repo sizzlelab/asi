@@ -13,6 +13,7 @@ class Collection < ActiveRecord::Base
     {
       'id' => id,
       'title' => title,
+      'tags' => tags,
       'owner'  => owner_id,
       'entry' => get_items_array(user,client),
       'metadata' => metadata,
@@ -45,7 +46,7 @@ class Collection < ActiveRecord::Base
   end
 
   # Attempts to create an item and add it to this collection.
-  def create_item(options, person)
+  def create_item(options, person, client)
     if options[:file] && options[:file].content_type.start_with?("image")
       image = Image.new
       if (image.save_to_db?(options, person))
@@ -60,9 +61,12 @@ class Collection < ActiveRecord::Base
       items << text_item
       return true
     elsif options[:content_type].start_with?("collection")
-      if options[:collection_id].nil? || ! collection = Collection.find_by_id(options[:collection_id])
+      if options[:collection_id].nil? ||
+          ! collection = Collection.find_by_id(options[:collection_id]) ||
+          ! collectioin.read?(user,client)
         return false
       end
+      
       items << collection
       return true
     end
