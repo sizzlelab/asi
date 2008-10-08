@@ -189,7 +189,36 @@ class CollectionsControllerTest < ActionController::TestCase
   end    
 
   def test_add_collection_reference
-    #TODO: do the test
+    # add
+    post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json', 
+                 :content_type => "collection", :collection_id => collections(:three).id },
+               { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    
+    #check
+    get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal(collections(:three).id, json["entry"][0]["id"])
+    
+    #delete
+    try_to_delete_item(collections(:three).id, sessions(:session1).id, true, collections(:one).id)
+    
+    #check
+    get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert_nil json["entry"][0]
+    
+    # when deleting collection reference, don't destroy the target object
+    get :show, { :app_id => clients(:one).id, :id => collections(:three).id, :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+        
   end
 
   def test_metadata
@@ -247,10 +276,7 @@ class CollectionsControllerTest < ActionController::TestCase
     # should not delete in a collection with write access but not owned
     try_to_delete_item(text_items(:four).id, sessions(:session4).id, false)
     
-    # when deleting collection reference, don't destroy the target object
-        #TODO: do the test
   end
-  
   
   def test_indestructible
     #create indfestructible and try to delete
@@ -353,9 +379,12 @@ class CollectionsControllerTest < ActionController::TestCase
     end
   end
   
-  def try_to_delete_item(item_id, session_id, should_success=true)
+  def try_to_delete_item(item_id, session_id, should_success=true, collection_id=nil)
     
-    collection_id = Ownership.find_by_item_id(item_id).parent.id
+    delete_parameters = {}  # add colle
+    delete_parameters.merge!({:id => collection_id }) if collection_id
+    
+    collection_id = Ownership.find_by_item_id(item_id).parent.id if collection_id.nil?
     # first get original item count
     get :show, { :app_id => clients(:one).id, :id => collection_id, :format => 'json' }, 
                { :session_id => session_id }
@@ -364,8 +393,9 @@ class CollectionsControllerTest < ActionController::TestCase
     old_item_count = assigns["collection"].items.count
     assert(old_item_count > 0 , "The test collection doesn't contain any item to delete.")
     
-    delete :delete_item, { :app_id => clients(:one).id, :item_id => item_id, :format => 'json' },
-                         { :session_id => session_id }
+    delete_parameters.merge!({ :app_id => clients(:one).id, :item_id => item_id, :format => 'json' })
+    
+    delete :delete_item, delete_parameters, { :session_id => session_id }
                          
     if should_success
       assert_response :success
