@@ -37,8 +37,18 @@ class CollectionTest < ActiveSupport::TestCase
 
   def test_should_update_collection
     collection = collections(:one)
-    assert collection.update_attributes(:read_only => false)
+    assert !collection.read_only
+    assert collection.update_attributes(:read_only => true)
+    assert collection.read_only
   end 
+
+  def test_tags
+    collection = Collection.new(:tags => "testtag")
+    assert_equal("testtag", collection.tags)
+    collection.tags = ""
+    assert_equal("", collection.tags)
+    
+  end
 
   def test_should_destroy_collection
     collection = collections(:one)
