@@ -89,9 +89,9 @@ class Collection < ActiveRecord::Base
     super
   end
   
-  # Returns a hash containing only the id, title and link to the collection
+  # Returns a hash containing only the id, title, tags and link to the collection
   def link_hash
-    { :id => id, :title => title, 
+    { :id => id, :title => title, :tags  => tags,
       :link => {   :rel => "self", :href=> "/appdata/#{client.id}/@collections/#{id}"} 
     }
   end
