@@ -130,11 +130,10 @@ class CollectionsController < ApplicationController
   def update_updated_at_and_by
     #logger.info { "FILTTERISSÄ: #{response.headers["Status"]}" }
     if response.headers["Status"] =~ /^20/
-      @collection.updated_at = DateTime.now
-      @collection.updated_by = @user ? @user.id : @client.id
-      @collection.save
-      logger.info { "UPDATED: #{ @collection.updated_at}" }
-      logger.info { "UPDATED: #{ @collection.updated_by}" }
+      @collection.set_update_info(DateTime.now, (@user ? @user.id : @client.id))
+      # @collection.updated_at = DateTime.now
+      # @collection.updated_by = @user ? @user.id : @client.id
+      # @collection.save
       
     end
   end
