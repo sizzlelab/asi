@@ -3,6 +3,8 @@ class CollectionsController < ApplicationController
   before_filter :verify_client
 
   before_filter :get_or_not_found, :except => [ :create, :index, :delete_item ]
+  
+  after_filter :update_updated_at_and_by, :except => [ :create, :index, :show, :delete ]
 
   verify :method => :post, 
          :only => :create, 
@@ -54,6 +56,7 @@ class CollectionsController < ApplicationController
     end
     
     @collection.client = @client
+    @collection.updated_by = @user ? @user.id : @client.id
     @collection.save
     render :status => :created
   end
@@ -121,6 +124,18 @@ class CollectionsController < ApplicationController
       @collection = Collection.find(params['id'])
     rescue ActiveRecord::RecordNotFound
       head :status => :not_found and return
+    end
+  end
+  
+  def update_updated_at_and_by
+    #logger.info { "FILTTERISSÄ: #{response.headers["Status"]}" }
+    if response.headers["Status"] =~ /^20/
+      @collection.updated_at = DateTime.now
+      @collection.updated_by = @user ? @user.id : @client.id
+      @collection.save
+      logger.info { "UPDATED: #{ @collection.updated_at}" }
+      logger.info { "UPDATED: #{ @collection.updated_by}" }
+      
     end
   end
 end
