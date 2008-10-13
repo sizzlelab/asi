@@ -18,6 +18,7 @@ class Collection < ActiveRecord::Base
       'entry' => get_items_array(user,client),
       'metadata' => metadata,
       'updated_at' => updated_at.utc,
+      'updated_by' => updated_by,
       'read_only' => read_only,
       'indestructible' => indestructible
     }.to_json(*a)
@@ -91,9 +92,10 @@ class Collection < ActiveRecord::Base
     super
   end
   
-  # Returns a hash containing only the id, title, tags and link to the collection
+  # Returns a hash containing only the info about the collection, not the contents
   def link_hash
-    { :id => id, :title => title, :tags  => tags, :updated_at => updated_at.utc, 
+    { :id => id, :title => title, :tags  => tags, :updated_at => updated_at.utc,
+      :updated_by => updated_by,
       :link => {   :rel => "self", :href=> "/appdata/#{client.id}/@collections/#{id}"} 
     }
   end
