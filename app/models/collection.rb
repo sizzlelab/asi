@@ -64,8 +64,8 @@ class Collection < ActiveRecord::Base
       return true
     elsif options[:content_type].start_with?("collection")
       if options[:collection_id].nil? ||
-          ! collection = Collection.find_by_id(options[:collection_id]) ||
-          ! collectioin.read?(user,client)
+          (collection = Collection.find_by_id(options[:collection_id])) == nil ||
+          ! collection.read?(person,client)
         return false
       end
       old_size = items.size
@@ -95,9 +95,25 @@ class Collection < ActiveRecord::Base
   # Returns a hash containing only the info about the collection, not the contents
   def link_hash
     { :id => id, :title => title, :tags  => tags, :updated_at => updated_at.utc,
-      :updated_by => updated_by,
+      :updated_by => updated_by, :metadata => metadata,
       :link => {   :rel => "self", :href=> "/appdata/#{client.id}/@collections/#{id}"} 
     }
+  end
+  
+  def set_update_info(time, updater)
+    update_attributes({:updated_at => time, :updated_by => updater})
+    
+    #Check for parent collections and update them too
+    parent_relations = Ownership.find :all, :conditions => ['item_id = ?', id]
+    parent_relations.each do |parent_ref|
+      parent = parent_ref.parent
+      if parent.updated_at.utc + 2.seconds < time.utc
+        puts "COMPARED #{parent.updated_at.utc + 2.seconds} AND #{time.utc}" 
+        parent.set_update_info(time, updater)
+      end
+    end
+    
+    
   end
   
   private
