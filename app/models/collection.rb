@@ -17,6 +17,7 @@ class Collection < ActiveRecord::Base
       'owner'  => owner_id,
       'entry' => get_items_array(user,client),
       'metadata' => metadata,
+      'updated_at' => updated_at.utc,
       'read_only' => read_only,
       'indestructible' => indestructible
     }.to_json(*a)
@@ -66,8 +67,9 @@ class Collection < ActiveRecord::Base
           ! collectioin.read?(user,client)
         return false
       end
-      
+      old_size = items.size
       items << collection
+      return false if old_size == items.size #not add (probably because a duplicate)
       return true
     end
     return false
@@ -91,7 +93,7 @@ class Collection < ActiveRecord::Base
   
   # Returns a hash containing only the id, title, tags and link to the collection
   def link_hash
-    { :id => id, :title => title, :tags  => tags,
+    { :id => id, :title => title, :tags  => tags, :updated_at => updated_at.utc, 
       :link => {   :rel => "self", :href=> "/appdata/#{client.id}/@collections/#{id}"} 
     }
   end
@@ -107,6 +109,22 @@ class Collection < ActiveRecord::Base
         items_array.push item
       end
     end
+    # Sort items by updated_at
+    items_array.sort! {|a,b| sort_items(a,b)}
     return items_array
   end
+  
+  def sort_items(a,b)
+    #logger.info { "type" + a[:type]+ "<--" }
+    if a[:type] == "collection"
+      if b[:type] == "collection"
+        return -(DateTime.parse(a[:updated_at].to_s) <=> DateTime.parse(b[:updated_at].to_s)) 
+      else
+        return -1
+      end
+    else
+      return 1
+    end
+  end
+  
 end

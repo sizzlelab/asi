@@ -25,7 +25,7 @@ class CollectionsController < ApplicationController
       conditions.merge!({:tags => params["tags"]})
     end
     
-    @collections = Collection.find(:all, :conditions => conditions )
+    @collections = Collection.find(:all, :conditions => conditions, :order => 'updated_at DESC' )
     @collections.reject! { |item| ! item.read?(@user, @client) }
   end
 
