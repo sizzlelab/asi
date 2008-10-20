@@ -41,4 +41,12 @@ client_only_session:
    client_id: 1   
    ip_address: 127.0.0.1
    path:
+
+session6:
+  id: 21
+  person_id: 2
+  client_id: 1
+  ip_address: 127.0.0.1
+  path: /
+
    

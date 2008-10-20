@@ -53,7 +53,7 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_nil assigns["collection"]
 
     # Should not show a collection belonging to another user
-    get :show, { :id => collections(:one).id, :format => 'json' }, 
+    get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
                { :session_id => sessions(:session2).id }
 
     assert_response :forbidden
@@ -87,6 +87,32 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response 403
     assert_nil assigns["collection"]
    
+  end
+
+  def test_showing_collection_references
+    # should not show reference to a non-readable collection
+    get :show, { :app_id => clients(:one).id, :id => collections(:six).id, :format => 'json' }, 
+               { :session_id => sessions(:session6).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    entry = json["entry"]
+    assert_equal(json["totalResults"], entry.size)
+    entry.each do |item|
+      assert_not_equal(collections(:three).id, item["id"])
+    end
+    
+    # should show reference to a readable collection
+    get :show, { :app_id => clients(:one).id, :id => collections(:six).id, :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    entry = json["entry"]
+    assert_equal(json["totalResults"], entry.size)
+    found_ref = false
+    entry.each do |item|
+      found_ref = true if item["id"] == collections(:three).id 
+    end
+    assert(found_ref, "Existing collection reference was not shown.")    
   end
 
   def test_create
@@ -154,6 +180,27 @@ class CollectionsControllerTest < ActionController::TestCase
 
     assert people(:valid_person).contacts.include?(collections(:three).owner)
     assert_response :forbidden
+    
+    # Should remove reference to a deleted collection, textitems that were in deleted collection and references to those items
+    # but a referenced collection should not be deleted
+    
+    # check situation before delete
+    assert_not_equal( [], Ownership.find(:all, :conditions => {:parent_id => collections(:six).id, :item_id => collections(:three).id }))
+    assert_equal(2, Ownership.find(:all, :conditions => {:parent_id => collections(:three).id, :item_type => "TextItem" }).size)
+    assert_not_nil(TextItem.find_by_id(text_items(:one).id))
+    assert_not_nil(Collection.find_by_id(collections(:four).id))
+    assert_not_nil(Ownership.find(:first, :conditions => {:parent_id => collections(:three).id, :item_id => collections(:four).id}))
+    
+    delete :delete, { :app_id => clients(:one).id, :id => collections(:three).id, :format => 'json' }, 
+                    { :session_id => sessions(:session4).id  }
+    assert_response :success, @response.body
+    
+    # check situation after delete
+    assert_equal( [], Ownership.find(:all, :conditions => {:parent_id => collections(:six).id, :item_id => collections(:three).id }))
+    assert_equal(0, Ownership.find(:all, :conditions => {:parent_id => collections(:three).id, :item_type => "TextItem" }).size)
+    assert_nil TextItem.find_by_id(text_items(:one).id)
+    assert_not_nil(Collection.find_by_id(collections(:four).id))
+    assert_nil(Ownership.find(:first, :conditions => {:parent_id => collections(:three).id, :item_id => collections(:four).id}))    
   end
 
   def test_add_text

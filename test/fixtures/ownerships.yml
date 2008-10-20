@@ -19,5 +19,13 @@ four:
   parent_id: 6
   item_id: utotuot
   item_type: TextItem
-  
 
+five:
+  parent_id: 6
+  item_id: 3
+  item_type: Collection
+
+six:
+  parent_id: 3
+  item_id: 4
+  item_type: Collection
