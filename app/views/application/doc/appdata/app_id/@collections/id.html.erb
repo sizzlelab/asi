@@ -9,7 +9,15 @@
     methods = [ { :name => "GET",
                   :description => "Returns this collection. If this collection contains references to other collections,
                                     those without read-access for the current user are hidden automatically from the results.",
-                  :returns => returns.merge({ "403" => returns["403"].gsub("change", "see") }) },
+                  :parameters => [{  :count => "The number of items per page wanted to results. If this parameter is not
+                                                submitted, results will include all the items."},
+                                  {  :startIndex => "Index of the first element that is wanted to results. The parameter <code>
+                                                    count</code> will define how many items will be returned onwards from <code>startIndex</code>." }
+                                                    
+                                  ],
+                  :returns => returns.merge({ "403" => returns["403"].gsub("change", "see"), "200" => "The result contains fields
+                                            <code>startIndex</code>, <code>itemsPerPage</code> and <code>totalResults</code> specifying 'what page'
+                                            of the results is returned."}) },
 
                 { :name => "POST",
                   :description => "Adds a new item to the collection.",
