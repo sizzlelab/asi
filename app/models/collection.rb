@@ -15,14 +15,13 @@ class Collection < ActiveRecord::Base
       'title' => title,
       'tags' => tags,
       'owner'  => owner_id,
-      'entry' => get_items_array(user, client, count, start_index),
-      'totalResults' => items.count,
       'metadata' => metadata,
       'updated_at' => updated_at.utc,
       'updated_by' => updated_by,
       'read_only' => read_only,
       'indestructible' => indestructible
     }
+    collection_data.merge!(get_items_array(user, client, count, start_index))
     if !count.nil?
       collection_data.merge!({'itemsPerPage' => count })      
     end
@@ -137,6 +136,7 @@ class Collection < ActiveRecord::Base
     end
     # Sort items by updated_at
     items_array.sort! {|a,b| sort_items(a,b)}
+    total_results = items_array.size
     
     # paginate results if requested
     if count
@@ -150,7 +150,7 @@ class Collection < ActiveRecord::Base
       items_array = items_array[start_index..(start_index + count - 1)]
     end
     
-    return items_array
+    return {'entry' => items_array, 'totalResults' => total_results}
   end
   
   def sort_items(a,b)
