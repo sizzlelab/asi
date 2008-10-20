@@ -8,20 +8,30 @@ class Collection < ActiveRecord::Base
 
   validates_presence_of :client
 
-  def to_json(user=nil,client=nil,*a)
+  def to_json(user=nil,client=nil, count=nil, start_index=nil, *a)
     return {}.to_json if client.nil?
-    {
+    collection_data = {
       'id' => id,
       'title' => title,
       'tags' => tags,
       'owner'  => owner_id,
-      'entry' => get_items_array(user,client),
+      'entry' => get_items_array(user, client, count, start_index),
+      'totalResults' => items.count,
       'metadata' => metadata,
       'updated_at' => updated_at.utc,
       'updated_by' => updated_by,
       'read_only' => read_only,
       'indestructible' => indestructible
-    }.to_json(*a)
+    }
+    if !count.nil?
+      collection_data.merge!({'itemsPerPage' => count })      
+    end
+    if !start_index.nil?
+      collection_data.merge!({'startIndex' => start_index})
+      else
+      collection_data.merge!({'startIndex' => 0})
+    end
+    return collection_data.to_json(*a)
   end
 
   def metadata=(data)
@@ -107,18 +117,16 @@ class Collection < ActiveRecord::Base
     parent_relations = Ownership.find :all, :conditions => ['item_id = ?', id]
     parent_relations.each do |parent_ref|
       parent = parent_ref.parent
+      #check that not already updated to avoind loops
       if parent.updated_at.utc + 2.seconds < time.utc
-        puts "COMPARED #{parent.updated_at.utc + 2.seconds} AND #{time.utc}" 
         parent.set_update_info(time, updater)
       end
     end
-    
-    
   end
   
   private
   
-  def get_items_array(user, client)
+  def get_items_array(user, client, count, start_index)
     items_array = []
     items.each do |item|
       if item.class == Collection
@@ -129,6 +137,19 @@ class Collection < ActiveRecord::Base
     end
     # Sort items by updated_at
     items_array.sort! {|a,b| sort_items(a,b)}
+    
+    # paginate results if requested
+    if count
+      count = count.to_i
+      start_index ||= 1
+      start_index = start_index.to_i
+      start_index -= 1 #make indexing start from 0 (the first element)
+      if count > items_array.size - start_index
+        count = items_array.size - start_index
+      end
+      items_array = items_array[start_index..(start_index + count - 1)]
+    end
+    
     return items_array
   end
   

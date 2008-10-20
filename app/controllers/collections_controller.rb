@@ -127,6 +127,7 @@ class CollectionsController < ApplicationController
     end
   end
   
+  #update the fields "updated_at" and "updated_by"
   def update_updated_at_and_by
     #logger.info { "FILTTERISSÄ: #{response.headers["Status"]}" }
     if response.headers["Status"] =~ /^20/
