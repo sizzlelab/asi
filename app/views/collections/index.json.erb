@@ -2,7 +2,7 @@
 entries = Array.new
 
 @collections.each do |item|
-  entries << item.link_hash
+  entries << item.info_hash(@user, @client)
 end
 %>
 
