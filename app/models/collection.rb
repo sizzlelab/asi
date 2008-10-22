@@ -101,10 +101,14 @@ class Collection < ActiveRecord::Base
     super
   end
   
+  def readable_items_count(user, client)
+    items.select{|item| item.class != Collection || item.read?(user, client) }.size
+  end
+  
   # Returns a hash containing only the info about the collection, not the contents
-  def link_hash
+  def info_hash(user, client)
     { :id => id, :title => title, :tags  => tags, :updated_at => updated_at.utc,
-      :updated_by => updated_by, :metadata => metadata,
+      :updated_by => updated_by, :metadata => metadata, :totalResults => readable_items_count(user, client), 
       :link => {   :rel => "self", :href=> "/appdata/#{client.id}/@collections/#{id}"} 
     }
   end
@@ -129,7 +133,7 @@ class Collection < ActiveRecord::Base
     items_array = []
     items.each do |item|
       if item.class == Collection
-        items_array.push item.link_hash.merge({:type => "collection"}) if item.read?(user, client)
+        items_array.push item.info_hash(user, client).merge({:type => "collection"}) if item.read?(user, client)
       else
         items_array.push item
       end
@@ -154,7 +158,6 @@ class Collection < ActiveRecord::Base
   end
   
   def sort_items(a,b)
-    #logger.info { "type" + a[:type]+ "<--" }
     if a[:type] == "collection"
       if b[:type] == "collection"
         return -(DateTime.parse(a[:updated_at].to_s) <=> DateTime.parse(b[:updated_at].to_s)) 
