@@ -13,7 +13,8 @@
                                   { :app_password => "The application's password." },
                                   { :username => "The user's name (optional)." },
                                   { :password => "The user's password (optional)." } ],
-                 :returns => { "401" => "Erroneuous authentication token(s).",
+                 :returns => { "201" => "Session created.",
+                               "401" => "Erroneuous authentication token(s).",
                                "409" => "A session already exists." }  },
               
               { :name => "GET",
