@@ -113,7 +113,15 @@ class PeopleController < ApplicationController
     if ! @person  
       render :status => :not_found and return
     end
-    @friends = @person.contacts
+   
+    if params['sortBy'] == "status_changed"
+      params['sortOrder'] ||= "ascending"
+      @friends = @person.contacts.find(:all, :include => "person_spec")
+      @friends.sort!{|a,b| sort_by_status_message_changed(a, b, params['sortOrder']) }
+      puts @friends.inspect
+    else
+      @friends = @person.contacts
+    end
   end
   
   def remove_friend
@@ -222,4 +230,22 @@ class PeopleController < ApplicationController
     @data = File.open(full_filename,'rb').read
   end  
   
+  def sort_by_status_message_changed(a, b, sort_order)
+    if a.person_spec.nil? || a.person_spec.status_message_changed.nil?
+      order = -1
+      puts "A OLI NIL"
+    elsif b.person_spec.nil? || b.person_spec.status_message_changed.nil?
+      order = 1
+            puts "B OLI NIL"
+    else
+      order = a.person_spec.status_message_changed <=> b.person_spec.status_message_changed
+    end
+    if sort_order == "descending" #turn the order
+      puts "RETURNING #{order * -1}"
+      return order * -1
+    else
+      puts "RETURNING #{order}"
+      return order    #the default is "ascending"
+    end
+  end
 end
