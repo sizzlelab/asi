@@ -233,18 +233,14 @@ class PeopleController < ApplicationController
   def sort_by_status_message_changed(a, b, sort_order)
     if a.person_spec.nil? || a.person_spec.status_message_changed.nil?
       order = -1
-      puts "A OLI NIL"
     elsif b.person_spec.nil? || b.person_spec.status_message_changed.nil?
       order = 1
-            puts "B OLI NIL"
     else
       order = a.person_spec.status_message_changed <=> b.person_spec.status_message_changed
     end
     if sort_order == "descending" #turn the order
-      puts "RETURNING #{order * -1}"
       return order * -1
     else
-      puts "RETURNING #{order}"
       return order    #the default is "ascending"
     end
   end

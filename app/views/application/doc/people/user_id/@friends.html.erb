@@ -17,6 +17,11 @@
 
                { :name => "GET", 
                  :description => "Gets the list of the user's friends.",
+                 :parameters => [{ :sortBy => "(Optional) A field according to which the results should be sorted. Currently only supported is
+                                                <code>status_changed</code> that will sort the results based on the date of last
+                                                status message change."},
+                                   { :sortOrder => "(Optional) Valid values are <code>ascending</code> (default) and <code>descending</code>." }
+                                   ], 
                  :returns => { "200" => "The returned JSON contains always an 'entry' slot, which contains a list of friends
                                          or an empty list if user has no confirmed friends."}
                  
