@@ -303,7 +303,6 @@ class CollectionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_not_equal("9999", json["id"])
 
-
     # Try to update metadata for a collection belonging to another user
     put :update, { :app_id => clients(:one).id, 
                    :id => collections(:two).id, 
@@ -311,6 +310,23 @@ class CollectionsControllerTest < ActionController::TestCase
                     :metadata => { :foo2 => "bar", :bar => "foo" } },
                  { :session_id => sessions(:session1).id }
     assert_response :forbidden
+  end
+  
+  def test_tags
+    post :create, { :app_id => clients(:one).id, :format => 'json', 
+                    :tags => "nice, test"}, 
+                  { :session_id => sessions(:session1).id, :client => clients(:one).id }
+    assert_response :created
+    json = JSON.parse(@response.body)
+    assert_not_nil json["tags"]
+    assert_equal("nice, test", json["tags"])
+    
+    put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
+                   :tags => "important" },
+                 { :session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal("important", json["tags"])
   end
   
   def test_delete_item
@@ -413,6 +429,10 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :success
     json = JSON.parse(@response.body)
     assert_equal("", json["title"])                 
+  end
+
+  def test_pagination
+    
   end
   
   def test_routing

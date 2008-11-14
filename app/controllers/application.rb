@@ -39,29 +39,25 @@ class ApplicationController < ActionController::Base
 
   def ensure_person_login
     unless @user
-      flash[:notice] = "Please login as a user to continue"
-      head :status => :unauthorized and return
+      head :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
     end
   end
  
   def ensure_person_logout
     if @user
-      flash[:notice] = "You must logout before you can login or register"
-      head :status => :conflict and return
+      head :status => :conflict, :json => "You must logout before you can login or register".to_json and return
     end
   end
   
   def ensure_client_login
     unless @client
-      flash[:notice] = "Please login as a client to continue"
-      head :status => :unauthorized and return
+      head :status => :unauthorized, :json => "Please login as a client to continue".to_json and return
     end
   end
  
   def ensure_client_logout
     if @client
-      flash[:notice] = "You must logout client before you can login"
-      render :status => :conflict and return
+      render :status => :conflict, :json => "You must logout client before you can login".to_json and return
     end
   end
   

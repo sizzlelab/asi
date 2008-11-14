@@ -235,13 +235,31 @@ class PeopleControllerTest < ActionController::TestCase
     
   end
   
-  def test_get_friends
+  def test_get_friends_in_order
+    # check that statusmessage change dates exist and are in right order
+    assert people(:friend).person_spec.status_message_changed > people(:invalid_person).person_spec.status_message_changed,
+                  "Statusmessages in fixtures are not in the order that the test would expect."
+    
     get :get_friends, { :user_id  => people(:valid_person).id, :format  => 'json' }, { :session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["person"]
     assert_not_nil assigns["friends"]
     assert_equal(assigns["person"].contacts, assigns["friends"])
-    json = JSON.parse(@response.body)    
+    json = JSON.parse(@response.body)
+    assert_equal people(:invalid_person).username, json["entry"][0]["username"]
+    assert_equal people(:friend).username, json["entry"][1]["username"]
+    
+    # Check that the order is reversed because of the sorting parameters.
+    get :get_friends, { :user_id  => people(:valid_person).id, :sortBy => "status_changed",
+                        :sortOrder => "descending", :format  => 'json' }, 
+                        { :session_id => sessions(:session1).id }
+    assert_response :success
+    assert_not_nil assigns["person"]
+    assert_not_nil assigns["friends"]
+    #assert_equal(assigns["person"].contacts, assigns["friends"])
+    json = JSON.parse(@response.body)  
+    assert_equal people(:friend).username, json["entry"][0]["username"]
+    assert_equal people(:invalid_person).username, json["entry"][1]["username"]    
   end
   
   def test_remove_friend

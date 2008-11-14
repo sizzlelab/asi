@@ -118,7 +118,6 @@ class PeopleController < ApplicationController
       params['sortOrder'] ||= "ascending"
       @friends = @person.contacts.find(:all, :include => "person_spec")
       @friends.sort!{|a,b| sort_by_status_message_changed(a, b, params['sortOrder']) }
-      puts @friends.inspect
     else
       @friends = @person.contacts
     end
