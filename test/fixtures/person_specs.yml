@@ -24,4 +24,8 @@ contact_person_spec:
   birthdate: 2000-01-01
   gender: MALE
   
-  
+friends_spec:
+  id: 4
+  person_id: 4
+  status_message: "On a friendly mood"
+  status_message_changed: 2008-10-28T11:58:12+03:00
