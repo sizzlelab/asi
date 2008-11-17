@@ -23,10 +23,10 @@ class Collection < ActiveRecord::Base
     }
     collection_data.merge!(get_items_array(user, client, count, start_index))
     if !count.nil?
-      collection_data.merge!({'itemsPerPage' => count })      
+      collection_data.merge!({'itemsPerPage' => count })      # .to_i
     end
     if !start_index.nil?
-      collection_data.merge!({'startIndex' => start_index})
+      collection_data.merge!({'startIndex' => start_index})   # .to_i
       else
       collection_data.merge!({'startIndex' => 0})
     end

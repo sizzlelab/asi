@@ -17,7 +17,7 @@
                                                     
                                   ],
                   :returns => returns.merge({ "403" => returns["403"].gsub("change", "see"), "200" => "The result contains fields
-                                            <code>startIndex</code>, <code>itemsPerPage</code> and <code>totalResults</code> specifying 'what page'
+                                            <code>startIndex</code> (0 means it was not set by the request), <code>itemsPerPage</code> and <code>totalResults</code> specifying 'what page'
                                             of the results is returned."}) },
 
                 { :name => "POST",
