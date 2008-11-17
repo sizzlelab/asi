@@ -34,7 +34,11 @@ class CollectionsController < ApplicationController
   def show
     if @collection.client != @client or ! @collection.read?(@user, @client)
       @collection = nil
-      render :status => :forbidden
+      render :status => :forbidden and return
+    end
+    if params[:startIndex] == "0"
+      @collection = nil
+      render :status => :bad_request, :json => "The startIndex can't be set to 0. Indexing starts from 1.".to_json and return
     end
   end
 

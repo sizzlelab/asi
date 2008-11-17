@@ -29,3 +29,8 @@ six:
   parent_id: 3
   item_id: 4
   item_type: Collection
+  
+seven:
+  parent_id: 3
+  item_id: somsetsetext
+  item_type: TextItem

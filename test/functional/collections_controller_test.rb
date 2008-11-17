@@ -147,7 +147,7 @@ class CollectionsControllerTest < ActionController::TestCase
     post :create, { :format => 'json' }
     assert_response :forbidden
   end
-
+    
   def test_delete
     # Should delete a collection belonging to the client
     delete :delete, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
@@ -186,7 +186,7 @@ class CollectionsControllerTest < ActionController::TestCase
     
     # check situation before delete
     assert_not_equal( [], Ownership.find(:all, :conditions => {:parent_id => collections(:six).id, :item_id => collections(:three).id }))
-    assert_equal(2, Ownership.find(:all, :conditions => {:parent_id => collections(:three).id, :item_type => "TextItem" }).size)
+    assert_equal(3, Ownership.find(:all, :conditions => {:parent_id => collections(:three).id, :item_type => "TextItem" }).size)
     assert_not_nil(TextItem.find_by_id(text_items(:one).id))
     assert_not_nil(Collection.find_by_id(collections(:four).id))
     assert_not_nil(Ownership.find(:first, :conditions => {:parent_id => collections(:three).id, :item_id => collections(:four).id}))
@@ -431,7 +431,43 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_equal("", json["title"])                 
   end
 
-  def test_pagination
+  def test_pagination_and_visibility
+    
+    #test without pagination, check that one friends-only collection ref is not shown
+    get :show, { :app_id => clients(:one).id, :id => collections(:three).id, :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :success
+    assert_not_nil assigns["collection"]
+    json = JSON.parse(@response.body)
+    assert_not_nil json["id"]
+    assert_equal(Collection.find_by_id(collections(:three).id).items.count - 1, json["entry"].size)
+    assert_nil(json["itemsPerPage"])
+    assert_equal(0, json["startIndex"])
+    assert_equal(3, json["totalResults"])    
+   
+    #test with pagination
+    get :show, { :app_id => clients(:one).id, :id => collections(:three).id, :count => 2,  :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :success
+    assert_not_nil assigns["collection"]
+    json = JSON.parse(@response.body)
+    assert_not_nil json["id"]
+    assert_equal(2, json["entry"].size)
+    assert_equal("2", json["itemsPerPage"])
+    assert_equal(0, json["startIndex"])
+    assert_equal(3, json["totalResults"])
+    
+    #get the remaining "page"
+    get :show, { :app_id => clients(:one).id, :id => collections(:three).id, :count => 2, :startIndex => 3,  :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :success
+    assert_not_nil assigns["collection"]
+    json = JSON.parse(@response.body)
+    assert_not_nil json["id"]
+    assert_equal(1, json["entry"].size)
+    assert_equal("2", json["itemsPerPage"])
+    assert_equal("3", json["startIndex"])
+    assert_equal(3, json["totalResults"])
     
   end
   
