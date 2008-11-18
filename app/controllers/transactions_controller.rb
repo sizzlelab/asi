@@ -5,7 +5,7 @@ class TransactionsController < ApplicationController
       params[:transaction][:receiver_id] = Person.find_by_username(params[:transaction][:receiver_username]).id
       params[:transaction].delete(:receiver_username)
     end
-     @sender = Person.find(params[:transaction][:sender_id])
+     @sender = Person.find(params[:user_id])
      @receiver = Person.find(params[:transaction][:receiver_id])
      if(@sender.coin_amount - params[:transaction][:amount].to_i >= PURSE_LIMIT)
         Transaction.transaction do
