@@ -95,17 +95,17 @@ ActionController::Routing::Routes.draw do |map|
                                              :put => 'update'
   
   map.resource '/people/:user_id/@transactions/transactions.xml', :controller => 'transactions',
-                                             :get => 'get',
-                                             :post => 'create'
+                                              :get => 'get',
+                                              :post => 'create'
 
   map.resource '/session', :controller => 'sessions',
                            :get => 'get',
                            :delete => 'destroy',
                            :post => 'create'
   
- # map.resource '/transactions', :controller => 'transactions',
- #                               :get => 'get',
- #                               :post => 'create'
+ map.resource '/transactions', :controller => 'transactions',
+                               :get => 'get',
+                               :post => 'create'
 
 
   map.documentation '/appdata'

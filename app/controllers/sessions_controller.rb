@@ -14,6 +14,7 @@ class SessionsController < ApplicationController
                              :password => params[:password], 
                              :client_name => params[:app_name], 
                              :client_password => params[:app_password] })
+
     
     if (params[:username] || params[:password])
         # If other is present, both need to be
@@ -25,15 +26,19 @@ class SessionsController < ApplicationController
     
     if @session.save
       if (! @session.person_match) && (params[:username] || params[:password])
-        # Person did not match, but tried logging in a person
+        # inserted username, password -pair is not found in database
         @session.destroy
+
         render :status => :unauthorized, :json => "Password and username didn't match for any person.".to_json and return
+
       end
       session[:session_id] = @session.id
       render :status => :created, :json => { :user_id => @session.person_id,
                                              :app_id => @session.client_id }
     else
+
       render :status => :unauthorized, :json => @session.errors.full_messages.to_json and return
+
     end
   end
  

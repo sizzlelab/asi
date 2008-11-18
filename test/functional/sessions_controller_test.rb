@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'sessions_controller'
+require 'json'
 
 class SessionsControllerTest < ActionController::TestCase
   fixtures :people, :sessions
