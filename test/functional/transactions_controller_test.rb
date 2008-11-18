@@ -12,9 +12,8 @@ class TransactionsControllerTest < ActionController::TestCase
   end
   
   def test_create_valid_transactions
-    post :create, {:transaction => {:sender_id => @sender.id,
-                  :receiver_id => @receiver.id,
-                  :amount => 3}, :format => 'json'}
+    post :create, {:transaction => {:receiver_id => @receiver.id,
+                  :amount => 3}, :user_id => @sender.id, :format => 'json'}
      
     assert_response :created
      
@@ -23,9 +22,9 @@ class TransactionsControllerTest < ActionController::TestCase
   end
   
   def test_try_to_create_too_big_transaction
-    post(:create, {:transaction => {:sender_id => @sender.id,
+    post(:create, {:transaction => {
                   :receiver_id => @receiver.id,
-                  :amount => 11}, :format => 'json'})
+                  :amount => 11}, :user_id => @sender.id, :format => 'json'})
     
     assert_response(406)
      
@@ -34,9 +33,9 @@ class TransactionsControllerTest < ActionController::TestCase
    end
    
    def test_with_receiver_username
-     post :create, {:transaction => {:sender_id => @sender.id,
+     post :create, {:transaction => {
                    :receiver_username => @receiver.username,
-                   :amount => 3}, :format => 'json'}
+                   :amount => 3}, :user_id => @sender.id,:format => 'json'}
                    
      assert_response :created
 
