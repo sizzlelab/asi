@@ -67,5 +67,6 @@ Rails::Initializer.run do |config|
   
   # Environment variable part for Common Services begins here
   DB_STRING_MAX_LENGTH = 255
+  PURSE_LIMIT = -10
   
 end
