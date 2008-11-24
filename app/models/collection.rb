@@ -18,15 +18,16 @@ class Collection < ActiveRecord::Base
       'metadata' => metadata,
       'updated_at' => updated_at.utc,
       'updated_by' => updated_by,
+      'updated_by_name' => (updated_by.nil? ? nil : Person.find_by_id(updated_by).name_or_username),
       'read_only' => read_only,
       'indestructible' => indestructible
     }
     collection_data.merge!(get_items_array(user, client, count, start_index))
     if !count.nil?
-      collection_data.merge!({'itemsPerPage' => count })      # .to_i
+      collection_data.merge!({'itemsPerPage' => count.to_i }) 
     end
     if !start_index.nil?
-      collection_data.merge!({'startIndex' => start_index})   # .to_i
+      collection_data.merge!({'startIndex' => start_index.to_i})   
       else
       collection_data.merge!({'startIndex' => 0})
     end
@@ -43,17 +44,20 @@ class Collection < ActiveRecord::Base
     if owner == nil
       return self.client == client
     end
-    return (self.client == nil || self.client == client) && (owner == person || owner.contacts.include?(person))
+    return (self.client == nil || self.client == client) && 
+            (owner == person || owner.contacts.include?(person) || person.moderator?(client))
   end
 
   # Returns true if the given person, using the given client, has permission to change this collection.
   def write?(person, client)
-    return read?(person, client) && (owner == person || ! read_only)
+    return read?(person, client) && (owner == person || ! read_only || person.moderator?(client))
   end
 
   # Returns true if the given person, using the given client, has permission to delete this collection.
   def delete?(person, client)
-    return write?(person, client) && (owner == nil || owner == person) && ! indestructible
+    return write?(person, client) && 
+            (owner == nil || owner == person || person.moderator?(client)) && 
+            ! indestructible
   end
 
   # Attempts to create an item and add it to this collection.
@@ -107,8 +111,13 @@ class Collection < ActiveRecord::Base
   
   # Returns a hash containing only the info about the collection, not the contents
   def info_hash(user, client)
-    { :id => id, :title => title, :tags  => tags, :updated_at => updated_at.utc,
-      :updated_by => updated_by, :metadata => metadata, :totalResults => readable_items_count(user, client), 
+    { :id => id, :title => title, 
+      :tags  => tags, 
+      :updated_at => updated_at.utc,
+      :updated_by => updated_by,
+      :updated_by_name => (updated_by.nil? ? nil : Person.find_by_id(updated_by).name_or_username),
+      :metadata => metadata, 
+      :totalResults => readable_items_count(user, client), 
       :link => {   :rel => "self", :href=> "/appdata/#{client.id}/@collections/#{id}"} 
     }
   end

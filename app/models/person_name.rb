@@ -9,13 +9,17 @@ class PersonName < ActiveRecord::Base
 
   def to_json(*a)
     {
-      :unstructured => "#{self.given_name} #{self.family_name}",
+      :unstructured => self.unstructured,
       :given_name => self.given_name,
       :family_name => self.family_name
     }.to_json(*a)
   end                
 
   def unstructured_lowercase
-    return "#{given_name} #{family_name}".downcase
+    return self.unstructured.downcase
+  end
+  
+  def unstructured
+    "#{given_name} #{family_name}"
   end
 end
