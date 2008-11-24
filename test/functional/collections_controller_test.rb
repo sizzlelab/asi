@@ -453,7 +453,7 @@ class CollectionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_not_nil json["id"]
     assert_equal(2, json["entry"].size)
-    assert_equal("2", json["itemsPerPage"])
+    assert_equal(2, json["itemsPerPage"])
     assert_equal(0, json["startIndex"])
     assert_equal(3, json["totalResults"])
     
@@ -465,8 +465,8 @@ class CollectionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_not_nil json["id"]
     assert_equal(1, json["entry"].size)
-    assert_equal("2", json["itemsPerPage"])
-    assert_equal("3", json["startIndex"])
+    assert_equal(2, json["itemsPerPage"])
+    assert_equal(3, json["startIndex"])
     assert_equal(3, json["totalResults"])
     
   end

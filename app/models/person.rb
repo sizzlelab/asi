@@ -11,6 +11,7 @@ class Person < ActiveRecord::Base
   has_one :person_spec, :dependent => :destroy
   has_one :location, :dependent => :destroy
   has_one :avatar, :class_name => "Image", :dependent => :destroy
+  has_many :roles, :dependent => :destroy
   
   has_many :sessions, :dependent => :destroy
 
@@ -104,7 +105,7 @@ class Person < ActiveRecord::Base
   end
 
   #creates a hash of person attributes. If connection_person is not nil, adds connection attribute to hash
-  def get_person_hash(connection_person=nil)
+  def get_person_hash(connection_person=nil, client_id=nil)
     person_hash = {
       'id' => id,
       'username' => username, 
@@ -130,11 +131,15 @@ class Person < ActiveRecord::Base
     if connection_person
       person_hash.merge!({'connection' => get_connection_string(connection_person)})
     end
+    
+    if !client_id.nil?
+      person_hash.merge!({'role' => role_title(client_id)})
+    end
     return person_hash
   end
   
-  def to_json(*a)
-    person_hash = get_person_hash
+  def to_json(client_id=nil, *a)
+    person_hash = get_person_hash(nil, client_id)
     return person_hash.to_json(*a)
   end
 
@@ -148,6 +153,28 @@ class Person < ActiveRecord::Base
     return names.collect{|name| name.person}.compact
   end
   
+  def moderator?(client)
+    return false if client.nil?
+    
+    self.roles.each do |role|
+      if role.client_id == client.id && role.title == Role::MODERATOR
+        return true
+      end
+    end
+    return false #no moderator role found
+  end
+  
+  def role_title(client_id)
+    return nil if client_id.nil?
+    
+    self.roles.each do |role|
+      if role.client_id == client_id
+        return role.title
+      end
+    end
+    return Role::USER # no match so normal user
+  end
+  
   # Create a new avatar image to a person
   def save_avatar?(options)
     if options[:file] && options[:file].content_type.start_with?("image")
@@ -158,6 +185,14 @@ class Person < ActiveRecord::Base
       end
     end
     return false  
+  end
+  
+  def name_or_username
+    if !name.nil?
+      name.unstructured
+    else
+      username
+    end
   end
   
   private
