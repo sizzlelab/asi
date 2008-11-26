@@ -102,7 +102,7 @@ class CollectionTest < ActiveSupport::TestCase
     assert ! collection.write?(person, client)
     assert ! collection.delete?(person, client)
     
-    # Should not be able to do anything to a collection belonging to another person
+    # Should not be able to do anything to a private collection belonging to another person
     collection = collections(:three)
     client = collection.client
     person = people(:contact)

@@ -52,14 +52,14 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :forbidden
     assert_nil assigns["collection"]
 
-    # Should not show a collection belonging to another user
+    # Should not show a private collection belonging to another user
     get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
                { :session_id => sessions(:session2).id }
 
     assert_response :forbidden
     assert_nil assigns["collection"]
 
-    # Should show a collection belonging to a connection of the user
+    # Should show a private collection belonging to a connection of the user
     get :show, { :app_id => clients(:one).id, :id => collections(:three).id, :format => 'json' }, 
                { :session_id => sessions(:session1).id }
 
@@ -69,7 +69,7 @@ class CollectionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_not_nil json["id"]
 
-    # Should not show a collection beloning to a requested connection
+    # Should not show a private collection beloning to a requested connection
     get :show, { :app_id => clients(:one).id, :id => collections(:four).id, :format => 'json' }, 
                { :client => clients(:one).id, :user => people(:valid_person) }
 
