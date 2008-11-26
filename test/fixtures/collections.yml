@@ -10,28 +10,33 @@ two:
   read_only: true
   client_id: 2
   owner_id: 3
+  private: true
 
 three:
   id: 3  
   read_only: false
   client_id: 1
   owner_id: 4
+  private: true
 
 four:
   id: 4
   read_only: false
   client_id: 1
   owner_id: 5
+  private: true
 
 read_only:
   id: 5
   read_only: true
   client_id: 1
   owner_id: 1
+  private: true
 
 six:
   id: 6
   read_only: false
   client_id: 1
   owner_id: 1
+  private: true
 

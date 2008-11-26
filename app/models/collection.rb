@@ -10,18 +10,8 @@ class Collection < ActiveRecord::Base
 
   def to_json(user=nil,client=nil, count=nil, start_index=nil, *a)
     return {}.to_json if client.nil?
-    collection_data = {
-      'id' => id,
-      'title' => title,
-      'tags' => tags,
-      'owner'  => owner_id,
-      'metadata' => metadata,
-      'updated_at' => updated_at.utc,
-      'updated_by' => updated_by,
-      'updated_by_name' => (updated_by.nil? ? nil : Person.find_by_id(updated_by).name_or_username),
-      'read_only' => read_only,
-      'indestructible' => indestructible
-    }
+    collection_data = basic_hash(user, client)
+    
     collection_data.merge!(get_items_array(user, client, count, start_index))
     if !count.nil?
       collection_data.merge!({'itemsPerPage' => count.to_i }) 
@@ -34,6 +24,32 @@ class Collection < ActiveRecord::Base
     return collection_data.to_json(*a)
   end
 
+  # Returns a hash containing only the info about the collection, not the contents
+  def info_hash(user, client)
+    basic_info = basic_hash(user, client)
+    basic_info.merge!({'totalResults' => readable_items_count(user, client), 
+                       'link' => {   'rel' => "self", 'href' => "/appdata/#{client.id}/@collections/#{id}"}
+                       })
+    return basic_info
+  end
+  
+  # Returns a hash containing the basic info of the collection. Used for info_hash and coplete JSON
+  def basic_hash(user, client)
+    {
+      'id' => id,
+      'title' => title,
+      'tags' => tags,
+      'owner'  => owner_id,
+      'private' => private,
+      'metadata' => metadata,
+      'updated_at' => updated_at.utc,
+      'updated_by' => updated_by,
+      'updated_by_name' => (updated_by.nil? ? nil : Person.find_by_id(updated_by).name_or_username),
+      'read_only' => read_only,
+      'indestructible' => indestructible
+    }
+  end
+
   def metadata=(data)
     old = read_attribute(:metadata) || Hash.new
     write_attribute(:metadata, old.merge(data)) unless data.nil?
@@ -41,7 +57,7 @@ class Collection < ActiveRecord::Base
 
   # Returns true if the given person, using the given client, has permission to view this collection.
   def read?(person, client)
-    if owner == nil
+    if ! private
       return self.client == client
     end
     return (self.client == nil || self.client == client) && 
@@ -107,19 +123,6 @@ class Collection < ActiveRecord::Base
   
   def readable_items_count(user, client)
     items.select{|item| item.class != Collection || item.read?(user, client) }.size
-  end
-  
-  # Returns a hash containing only the info about the collection, not the contents
-  def info_hash(user, client)
-    { :id => id, :title => title, 
-      :tags  => tags, 
-      :updated_at => updated_at.utc,
-      :updated_by => updated_by,
-      :updated_by_name => (updated_by.nil? ? nil : Person.find_by_id(updated_by).name_or_username),
-      :metadata => metadata, 
-      :totalResults => readable_items_count(user, client), 
-      :link => {   :rel => "self", :href=> "/appdata/#{client.id}/@collections/#{id}"} 
-    }
   end
   
   def set_update_info(time, updater)

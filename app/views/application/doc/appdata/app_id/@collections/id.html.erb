@@ -36,10 +36,13 @@
                   :returns => returns.merge({ "400" => "A malformed or unsupported image type was uploaded." }) },
 
                 { :name => "PUT",
-                  :description => "Updates the attributes of the collection.",
+                  :description => "Updates the submitted attributes of the collection.",
                   :parameters => [ { :title => "The title describing the collection.", },
+                                   { :private => "If collection is set to private only the owner and his friends are able to see it.
+                                                  An empty value, '0' or 'false' are interpreted as <code>false</code>.
+                                                  All other values are <code>true</code>." },             
                                    { :read_only => "Whether the new collection is read only. Read only collections can be written
-                                                    to only by their owner; otherwise, the owner and their friends all have write
+                                                    to only by their owner; otherwise, all who can read the collection, also have write
                                                     access. An empty value, '0' or 'false' are interpreted as <code>false</code>.
                                                     All other values are <code>true</code>." },
                                     { :tags => "Describing keywords for the collection. Can be a comma-separated list (,), although the search

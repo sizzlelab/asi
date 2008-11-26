@@ -15,8 +15,9 @@
                  :parameters => [ { :title => "The title describing the collection. (optional)", },
                                   { :owner => "The id of the user owning the new collection (optional). If this is not
                                                specified, the collection will belong only to the application." },
+                                  { :private => "If collection is set to private (optional) only the owner and his friends are able to see it." },             
                                   { :read_only => "Whether the new collection is read only (optional). Read only collections can be written
-                                                   to only by their owner; otherwise, the owner and their friends all have write
+                                                   to only by their owner; otherwise, all who can read the collection, also have write
                                                    access. Values 'true', 't' and '1' or are interpreted as <code>true</code>, 
                                                    all other values are <code>false</code>." },
                                   { :indestructible => "This (optional) parameter can be set <code>true</code> only for collections
