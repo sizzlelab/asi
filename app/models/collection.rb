@@ -57,22 +57,22 @@ class Collection < ActiveRecord::Base
 
   # Returns true if the given person, using the given client, has permission to view this collection.
   def read?(person, client)
-    if ! private
+    if (! self.private)
       return self.client == client
     end
     return (self.client == nil || self.client == client) && 
-            (owner == person || owner.contacts.include?(person) || person.moderator?(client))
+            (owner == person || owner.contacts.include?(person) || (!person.nil? && person.moderator?(client)))
   end
 
   # Returns true if the given person, using the given client, has permission to change this collection.
   def write?(person, client)
-    return read?(person, client) && (owner == person || ! read_only || person.moderator?(client))
+    return read?(person, client) && (owner == person || ! read_only || (!person.nil? && person.moderator?(client)))
   end
 
   # Returns true if the given person, using the given client, has permission to delete this collection.
   def delete?(person, client)
     return write?(person, client) && 
-            (owner == nil || owner == person || person.moderator?(client)) && 
+            (owner == nil || owner == person || (!person.nil? && person.moderator?(client))) && 
             ! indestructible
   end
 
