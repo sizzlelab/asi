@@ -14,12 +14,12 @@ class Collection < ActiveRecord::Base
     
     collection_data.merge!(get_items_array(user, client, count, start_index))
     if !count.nil?
-      collection_data.merge!({'itemsPerPage' => count.to_i }) 
+      collection_data.merge!({:itemsPerPage => count.to_i }) 
     end
     if !start_index.nil?
-      collection_data.merge!({'startIndex' => start_index.to_i})   
+      collection_data.merge!({:startIndex => start_index.to_i})   
       else
-      collection_data.merge!({'startIndex' => 0})
+      collection_data.merge!({:startIndex => 0})
     end
     return collection_data.to_json(*a)
   end
@@ -27,8 +27,8 @@ class Collection < ActiveRecord::Base
   # Returns a hash containing only the info about the collection, not the contents
   def info_hash(user, client)
     basic_info = basic_hash(user, client)
-    basic_info.merge!({'totalResults' => readable_items_count(user, client), 
-                       'link' => {   'rel' => "self", 'href' => "/appdata/#{client.id}/@collections/#{id}"}
+    basic_info.merge!({:totalResults => readable_items_count(user, client), 
+                       :link => {   :rel => "self", :href => "/appdata/#{client.id}/@collections/#{id}"}
                        })
     return basic_info
   end
@@ -36,17 +36,17 @@ class Collection < ActiveRecord::Base
   # Returns a hash containing the basic info of the collection. Used for info_hash and coplete JSON
   def basic_hash(user, client)
     {
-      'id' => id,
-      'title' => title,
-      'tags' => tags,
-      'owner'  => owner_id,
-      'private' => private,
-      'metadata' => metadata,
-      'updated_at' => updated_at.utc,
-      'updated_by' => updated_by,
-      'updated_by_name' => (updated_by.nil? ? nil : Person.find_by_id(updated_by).name_or_username),
-      'read_only' => read_only,
-      'indestructible' => indestructible
+      :id => id,
+      :title => title,
+      :tags => tags,
+      :owner  => owner_id,
+      :private => private,
+      :metadata => metadata,
+      :updated_at => updated_at.utc,
+      :updated_by => updated_by,
+      :updated_by_name => (updated_by.nil? ? nil : Person.find_by_id(updated_by).name_or_username),
+      :read_only => read_only,
+      :indestructible => indestructible
     }
   end
 
@@ -172,6 +172,7 @@ class Collection < ActiveRecord::Base
   def sort_items(a,b)
     if a[:type] == "collection"
       if b[:type] == "collection"
+        logger.info { "Comparing dates #{a[:updated_at].to_s} and #{b[:updated_at].to_s}" }
         return -(DateTime.parse(a[:updated_at].to_s) <=> DateTime.parse(b[:updated_at].to_s)) 
       else
         return -1
