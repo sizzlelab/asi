@@ -172,7 +172,6 @@ class Collection < ActiveRecord::Base
   def sort_items(a,b)
     if a[:type] == "collection"
       if b[:type] == "collection"
-        logger.info { "Comparing dates #{a[:updated_at].to_s} and #{b[:updated_at].to_s}" }
         return -(DateTime.parse(a[:updated_at].to_s) <=> DateTime.parse(b[:updated_at].to_s)) 
       else
         return -1

@@ -6,6 +6,7 @@ class Person < ActiveRecord::Base
   usesguid
 
   attr_reader :password
+  attr_protected :roles
 
   has_one :name, :class_name => "PersonName", :dependent => :destroy
   has_one :person_spec, :dependent => :destroy
