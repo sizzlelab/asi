@@ -139,8 +139,8 @@ class Person < ActiveRecord::Base
     return person_hash
   end
   
-  def to_json(client_id=nil, *a)
-    person_hash = get_person_hash(nil, client_id)
+  def to_json(client_id=nil, connection_person=nil, *a)
+    person_hash = get_person_hash(connection_person, client_id)
     return person_hash.to_json(*a)
   end
 
