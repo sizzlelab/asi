@@ -3,6 +3,7 @@
 development:
   adapter: mysql
   database: commonservices_development
+  encoding: utf8
   username: cos
   password: a,.srdg330
   host: localhost
@@ -13,6 +14,7 @@ development:
 test:
   adapter: mysql
   database: commonservices_test
+  encoding: utf8
   username: cos
   password: a,.srdg330
   host: localhost
@@ -20,6 +22,7 @@ test:
 production:
   adapter: mysql
   database: commonservices_production
+  encoding: utf8
   username: cos
   password: a,.srdg330
   host: localhost
