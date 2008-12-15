@@ -48,7 +48,7 @@ class CollectionsController < ApplicationController
                                  :tags => params["tags"],
                                  :metadata => params[:metadata],
                                  :title => params["title"],
-                                 :private => params["private"] )
+                                 :priv => params["priv"] )
 
     if @user and params['owner']
       if @collection.indestructible
@@ -59,8 +59,8 @@ class CollectionsController < ApplicationController
         @collection.owner = @user
       end
     else
-      if params["private"]
-        render :status => :bad_request, :json => "Cannot set private a collection wihtout an owner." and return
+      if params["priv"]
+        render :status => :bad_request, :json => "Cannot set a collection private wihtout an owner." and return
       end
     end
     
@@ -76,7 +76,7 @@ class CollectionsController < ApplicationController
     @collection.update_attributes({:read_only => params[:read_only]}) if params[:read_only]
     @collection.update_attributes({:title => params[:title]}) if params[:title]
     @collection.update_attributes({:tags => params[:tags]}) if params[:tags]
-    @collection.update_attributes({:private => params[:private]}) if params[:private]
+    @collection.update_attributes({:priv => params[:priv]}) if params[:priv]
   end
 
   def delete
