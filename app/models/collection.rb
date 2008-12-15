@@ -40,7 +40,7 @@ class Collection < ActiveRecord::Base
       :title => title,
       :tags => tags,
       :owner  => owner_id,
-      :private => private,
+      :priv => priv,
       :metadata => metadata,
       :updated_at => updated_at.utc,
       :updated_by => updated_by,
@@ -57,7 +57,7 @@ class Collection < ActiveRecord::Base
 
   # Returns true if the given person, using the given client, has permission to view this collection.
   def read?(person, client)
-    if (! self.private)
+    if (! self.priv)
       return self.client == client
     end
     return (self.client == nil || self.client == client) && 
