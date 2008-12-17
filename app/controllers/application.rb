@@ -21,6 +21,11 @@ class ApplicationController < ActionController::Base
   filter_parameter_logging :password
 
   DEFAULT_AVATAR_IMAGES = {
+    "cos" => {
+      "full" => "cos_avatar_80_80.jpg",
+      "large_thumb" => "cos_avatar_80_80.jpg",
+      "small_thumb" => "cos_avatar_50_50.jpg"
+    },
     "ossi" => {
       "full" => "cos_avatar_80_80.jpg",
       "large_thumb" => "cos_avatar_80_80.jpg",
@@ -30,7 +35,7 @@ class ApplicationController < ActionController::Base
       "full" => "cos_avatar_80_80.jpg",
       "large_thumb" => "cos_avatar_80_80.jpg",
       "small_thumb" => "cos_avatar_50_50.jpg"
-    }
+    },
   }
 
   def doc
