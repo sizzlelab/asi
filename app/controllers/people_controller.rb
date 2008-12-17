@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
   
-  before_filter :ensure_client_login 
+  before_filter :ensure_client_login, :except => [:get_avatar, :get_small_thumbnail, :get_large_thumbnail]
   before_filter :ensure_person_logout, :only  => :create
   
   def index
@@ -217,7 +217,7 @@ class PeopleController < ApplicationController
         @data = @person.avatar.raw_small_thumb   
       end
     else 
-      get_default_avatar(@client.name, image_type)
+      get_default_avatar(@client, image_type)
     end           
     respond_to do |format|
       format.jpg
@@ -225,7 +225,12 @@ class PeopleController < ApplicationController
   end
   
   def get_default_avatar(service, image_type)
-    full_filename = "#{RAILS_ROOT}/public/images/#{DEFAULT_AVATAR_IMAGES[service][image_type]}"
+    if service.nil?
+      service_name = "cos"
+    else
+      service_name = service.name
+    end
+    full_filename = "#{RAILS_ROOT}/public/images/#{DEFAULT_AVATAR_IMAGES[service_name][image_type]}"
     @data = File.open(full_filename,'rb').read
   end  
   
