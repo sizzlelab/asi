@@ -12,7 +12,10 @@ echo "http://maps.cs.hut.fi/cos/" > app/views/layouts/_servername.html.erb
 date > app/views/layouts/_build_date.html.erb
 
 #stripe the socket lines out from database.yml
-grep -v socket config/database.yml > config/database.yml_mod
+#grep -v socket config/database.yml > config/database.yml_mod
+
+# change the socket line to match maps-server configuration
+sed "s/socket: \/var\/run\/mysqld\/mysqld\.sock/socket: \/var\/lib\/mysql\/mysql\.sock/" config/database.yml > config/database.yml_mod
 mv config/database.yml_mod config/database.yml
 
 rake db:migrate RAILS_ENV=production
