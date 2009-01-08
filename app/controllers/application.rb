@@ -32,10 +32,10 @@ class ApplicationController < ActionController::Base
       "small_thumb" => "cos_avatar_50_50.jpg"
     },
     "kassi" => {
-      "full" => "cos_avatar_80_80.jpg",
-      "large_thumb" => "cos_avatar_80_80.jpg",
-      "small_thumb" => "cos_avatar_50_50.jpg"
-    },
+      "full" => "kassi_avatar.png",
+      "large_thumb" => "kassi_avatar.png",
+      "small_thumb" => "kassi_avatar_small.png"
+    }
   }
 
   def doc
