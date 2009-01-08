@@ -23,8 +23,8 @@ class ApplicationController < ActionController::Base
   DEFAULT_AVATAR_IMAGES = {
     "cos" => {
       "full" => "cos_avatar_80_80.jpg",
-      "large_thumb" => "cos_avatar_80_80.jpg",
-      "small_thumb" => "cos_avatar_50_50.jpg"
+      "large_thumb" => "kassi_avatar.png",
+      "small_thumb" => "kassi_avatar_small.png"
     },
     "ossi" => {
       "full" => "cos_avatar_80_80.jpg",
