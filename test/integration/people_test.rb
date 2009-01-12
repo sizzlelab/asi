@@ -46,7 +46,8 @@ class PeopleTest < ActionController::IntegrationTest
                                      :altitude => 992,
                                      :horizontal_accuracy => 1,
                                      :vertical_accuracy => 1}})
-      
+                                     
+      puts "the following test seems to fail in Rails 2.2. Not yet known why:"
       ossi.updates_avatar({ :id => people(:test).id, 
                             :file => 
                             ActionController::TestUploadedFile.new("#{RAILS_ROOT}/test/fixtures/Bison_skull_pile.png", "image/png", true) })

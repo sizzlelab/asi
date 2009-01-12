@@ -8,7 +8,7 @@ module COSRoutes
 
   def resource(route, options)
     documentation route.gsub(":", "")
-    options.except(:controller, :format_put, :format_post).each do |method, action|
+    options.except(:controller, :format_get, :format_put, :format_post).each do |method, action|
       if method.to_s.eql?("get")
         format = options[:format_get] || 'json'
       elsif method.to_s.eql?("post") || method.to_s.eql?("put")  

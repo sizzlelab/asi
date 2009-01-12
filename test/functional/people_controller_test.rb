@@ -126,7 +126,7 @@ class PeopleControllerTest < ActionController::TestCase
     
     # update birthdate
     valid_date = "1945-12-24"
-    invalid_dates = ["asdasdasdasdfasf", "19999-11-11", "1999-31-31"]
+    invalid_dates = ["asdasdasdasdfasf", "1999-11-111", "1999-31-31"]
     put :update, { :user_id => people(:valid_person).id, :person => { :birthdate =>  valid_date  }, :format => 'json' }, 
                  { :session_id => sessions(:session1).id }
     assert_response :success, @response.body
