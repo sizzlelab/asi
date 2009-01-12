@@ -1,11 +1,7 @@
 require 'test_helper'
 
 class SessionTest < ActiveSupport::TestCase
-  
-  def setup 
-    @error_messages = ActiveRecord::Errors.default_error_messages
-  end
-  
+    
   def test_session_validity
     assert sessions(:session1).valid?    
   end
