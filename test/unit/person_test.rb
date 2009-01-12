@@ -4,7 +4,11 @@ require 'json'
 class PersonTest < ActiveSupport::TestCase
 
   def setup 
-    @error_messages = I18n.translate('activerecord.errors.messages')
+    begin  #this is done to have compatibility with both Rails 2.1 and 2.2
+      @error_messages = I18n.translate('activerecord.errors.messages')
+    rescue Exception => e
+      @error_messages = ActiveRecord::Errors.default_error_messages
+    end
     @valid_person = people(:valid_person) 
     @invalid_person = people(:invalid_person)
     @valid_person_spec = person_specs(:valid_person_spec) 
