@@ -1,5 +1,5 @@
 #!/bin/sh
-# A crude Common Services build script specific to the maps.cs.hut.fi machine.
+# A crude Common Services build script specific to the alpha.sizl.org machine.
 # Note that you must run this script twice until changes to this file take effect;
 # changes to finish.sh take effect immediately.
 

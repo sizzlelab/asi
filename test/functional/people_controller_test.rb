@@ -34,18 +34,6 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :missing
   end
   
-  def test_get_by_username  
-    #get person with valid username
-    get :get_by_username, { :username => people(:valid_person).username, :format => 'json' }, 
-                          { :session_id => sessions(:session1).id }
-    assert_response :success
-    assert_equal(assigns["person"].username, people(:valid_person).username )
-
-    #try to get person with non existing username
-    get :get_by_username, { :username => "NonExistingUser", :format => 'json' }
-    assert_response :missing
-  end
-  
   def test_create
     # create valid user
     assert_nil(Session.find(sessions(:client_only_session).id).person_id)
@@ -62,13 +50,9 @@ class PeopleControllerTest < ActionController::TestCase
     assert_not_nil(Session.find(sessions(:client_only_session).id).person_id)
         
     # check that the created user can be found
-    get :get_by_username, { :username  => "newbie", :format  => 'json' }, { :session_id => sessions(:session1).id }
-    assert_response :success
-    created_user = assigns["person"]
+    created_user = Person.find_by_username("newbie")
     assert_equal created_user.username, user.username
     assert_equal created_user.consent, user.consent
-    json = JSON.parse(@response.body)
-    assert_equal("not_set", json["avatar"]["status"]) #check that avatar is initially 'not_set'
   end
 
   def test_update

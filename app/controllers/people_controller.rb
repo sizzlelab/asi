@@ -17,13 +17,6 @@ class PeopleController < ApplicationController
     end
   end
   
-  def get_by_username
-    @person = Person.find_by_username(params['username'])
-    if ! @person
-      render :status  => :not_found and return
-    end
-  end
-
   def create
     @person = Person.new(params[:person])
     if @person.save
