@@ -7,8 +7,8 @@ class ApplicationController < ActionController::Base
   layout 'default'
 
   before_filter :maintain_session_and_user
-  before_filter :log
   
+  after_filter :log
   after_filter :set_correct_content_type
 
   # See ActionController::RequestForgeryProtection for details

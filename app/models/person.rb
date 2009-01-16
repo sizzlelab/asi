@@ -116,6 +116,11 @@ class Person < ActiveRecord::Base
       'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" },
                     :status => ( avatar ? "set" : "not_set" ) }
     }
+    
+    if connection_person == self
+      person_hash.merge!({'email' => email})
+    end
+    
     if self.person_spec
       self.person_spec.attributes.except('status_message', 'status_message_changed').each do |key, value|
         unless PersonSpec::NO_JSON_FIELDS.include?(key)
