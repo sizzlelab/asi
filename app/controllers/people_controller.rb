@@ -22,6 +22,7 @@ class PeopleController < ApplicationController
     if @person.save
       @application_session.person_id = @person.id
       @application_session.save
+      UserMailer.deliver_registration_confirmation(@person)
       render :status => :created and return
     else
       render :status => :bad_request, :json => @person.errors.full_messages.to_json and return
