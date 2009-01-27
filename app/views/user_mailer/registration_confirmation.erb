@@ -1,3 +1,13 @@
 Hi <%= @user.username %>!
 
-Thanks for registering!
+Thanks for registering. Before your you can log in, your account must be activated to ensure the email address is correct.
+
+Click the link below or point your browser to:
+http://<%= @confirmation_url %><%= @key %>
+
+Have fun with OtaSizzle services!
+
+ - The OtaSizzle Team
+ 
+ 
+(If you have not registered to any OtaSizzle service and have received this mail by accident, you can simply ignore this.)

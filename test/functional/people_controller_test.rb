@@ -37,6 +37,9 @@ class PeopleControllerTest < ActionController::TestCase
   def test_create
     # create valid user
     assert_nil(Session.find(sessions(:client_only_session).id).person_id)
+    @emails = ActionMailer::Base.deliveries
+    @emails.clear
+    
     post :create, { :person => {:username  => "newbie", 
                     :password => "newbass",
                     :email => "newbie@testland.gov",
@@ -48,6 +51,16 @@ class PeopleControllerTest < ActionController::TestCase
     assert_not_nil user
     json = JSON.parse(@response.body)
     assert_not_nil(Session.find(sessions(:client_only_session).id).person_id)
+    assert_equal(1, @emails.length)
+    assert_not_nil(user.pending_validation)
+    assert_equal(user.id, user.pending_validation.person_id)
+    mailtext = @emails[0].to_s
+    
+    puts mailtext
+    # make sure that the activation link and username exists in email
+    assert mailtext =~ /http\S+#{user.pending_validation.key}/
+    assert mailtext =~ /#{user.username}/
+    
         
     # check that the created user can be found
     created_user = Person.find_by_username("newbie")
