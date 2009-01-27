@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
   
-  before_filter :ensure_client_login, :except => [:get_avatar, :get_small_thumbnail, :get_large_thumbnail]
+  before_filter :ensure_client_login, :except => [:update_avatar, :get_avatar, :get_small_thumbnail, :get_large_thumbnail]
   before_filter :ensure_person_logout, :only  => :create
   
   def index
@@ -22,7 +22,14 @@ class PeopleController < ApplicationController
     if @person.save
       @application_session.person_id = @person.id
       @application_session.save
-      UserMailer.deliver_registration_confirmation(@person)
+      
+      chars_for_key = [('a'..'z'),('A'..'Z'),(0..9)].map{|i| i.to_a}.flatten
+      key = (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
+      @person.pending_validation = PendingValidation.new({:key =>  key})
+      @person.pending_validation.save
+      UserMailer.deliver_registration_confirmation(@person, key)
+      
+      
       render :status => :created and return
     else
       render :status => :bad_request, :json => @person.errors.full_messages.to_json and return
@@ -146,9 +153,10 @@ class PeopleController < ApplicationController
   end
   
   def update_avatar
-    if ! ensure_same_as_logged_person(params['user_id'])
-      render :status => :forbidden and return
-    end
+    # COMMENTED AWAY TEMPORARILY TO HELP TESTING OF KASSI
+    # if ! ensure_same_as_logged_person(params['user_id'])
+    #   render :status => :forbidden and return
+    # end
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
       render :status  => :not_found and return
