@@ -1,6 +1,5 @@
 <% if @person %>
   <%= @person.to_json(@client.id, @user) %>
-  <% logger.info { "DEBUGX: #{@person.to_json(@client.id, @user)}" } %>
 <% else %>
   <%= {}.to_json %>
 <% end %>

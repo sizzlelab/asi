@@ -70,5 +70,6 @@ Rails::Initializer.run do |config|
   PURSE_LIMIT = -10
   RESSI_URL = "http://localhost:9000"
   RESSI_TIMEOUT = 5
+  COS_MAIL_FROM_ADRESS = "support@sizl.org"
   
 end
