@@ -12,12 +12,11 @@ class Person < ActiveRecord::Base
   has_one :person_spec, :dependent => :destroy
   has_one :location, :dependent => :destroy
   has_one :avatar, :class_name => "Image", :dependent => :destroy
-  has_many :roles, :dependent => :destroy
+  has_one :pending_validation, :dependent => :destroy
   
+  has_many :roles, :dependent => :destroy
   has_many :sessions, :dependent => :destroy
-
   has_many :connections, :dependent => :destroy
-
   has_many :contacts, 
   :through => :connections,
   :conditions => "status = 'accepted'", 
