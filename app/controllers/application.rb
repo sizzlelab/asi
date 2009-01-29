@@ -72,9 +72,25 @@ class ApplicationController < ActionController::Base
   
   def log
     request.extend(LoggingHelper)
+    
     logger.info("  Session: " + request.to_json({ :session => @application_session }))
     logger.info("  Headers: " + request.headers.except("RAW_POST_DATA").to_json)
-    logger.info { "Session DB id:  #{session[:session_id]}" }
+    
+    # Saving the log data also to Ressi
+    if RESSI_URL
+      cos_event = CosEvent.create({
+        :user_id =>        @user ? @user.id : nil,
+        :application_id => @client ? @client.id : nil, 
+        :cos_session_id => @_session.session_id, 
+        :ip_address =>     request.remote_ip, 
+        :action =>         controller_class_name + "\#" + action_name, 
+        :parameters =>     respond_to?(:filter_parameters) ? filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller 
+        :return_value =>   @_response.headers['Status'], 
+        :headers =>        request.headers.except("RAW_POST_DATA").to_json
+        })
+    end if
+    
+    logger.info { "Session DB id:  #{session[:session_id]}   Ressi: #{RESSI_URL ? cos_event.valid? : nil}" }
   end
   
   def set_correct_content_type

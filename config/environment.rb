@@ -68,7 +68,7 @@ Rails::Initializer.run do |config|
   # Environment variable part for Common Services begins here
   DB_STRING_MAX_LENGTH = 255
   PURSE_LIMIT = -10
-  RESSI_URL = "http://localhost:9000"
+  RESSI_URL = nil # "http://localhost:9000"
   RESSI_TIMEOUT = 5
   COS_MAIL_FROM_ADRESS = "support@sizl.org"
   
