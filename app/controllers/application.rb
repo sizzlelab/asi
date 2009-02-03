@@ -1,12 +1,14 @@
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 require 'logging_helper'
+require 'json'
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   layout 'default'
 
   before_filter :maintain_session_and_user
+  before_filter :fix_utf8_characters
   
   after_filter :log
   after_filter :set_correct_content_type
@@ -120,5 +122,17 @@ class ApplicationController < ActionController::Base
       #logger.debug "NO SESSION:" + session[:session_id]
     end
     
+  end
+  
+  #this is done to all params because Rails seems to mess up parsing utf8 charas encoded in \\u00e4 like form
+  def fix_utf8_characters
+    logger.info { "PAREAMSSSS: #{params.inspect}" } unless params.nil?
+    temphash = JSON.parse(params.to_json.gsub(/\\\\u/,'\\u')).inspect unless params.nil?
+    logger.info { "temppi: #{temphash}" }
+    logger.info { "paramssi on: #{params.class}" }
+    params = temphash
+    logger.info { "PAREAMSSSS22222222222: #{params.inspect}" } unless params.nil?
+    params.delete!("user_id")
+    params
   end
 end

@@ -2,6 +2,7 @@ class PeopleController < ApplicationController
   
   before_filter :ensure_client_login, :except => [:update_avatar, :get_avatar, :get_small_thumbnail, :get_large_thumbnail]
   before_filter :ensure_person_logout, :only  => :create
+  #before_filter :fix_utf8_characters, :only => [:create, :update, :index]
   
   def index
     @people = Person.find_with_ferret(params['search'])
@@ -27,8 +28,9 @@ class PeopleController < ApplicationController
       key = (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
       @person.pending_validation = PendingValidation.new({:key =>  key})
       @person.pending_validation.save
-      UserMailer.deliver_registration_confirmation(@person, key)
-      
+      if RAILS_ENV != "development"
+        UserMailer.deliver_registration_confirmation(@person, key)
+      end
       
       render :status => :created and return
     else
