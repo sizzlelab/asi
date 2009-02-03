@@ -56,7 +56,6 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal(user.id, user.pending_validation.person_id)
     mailtext = @emails[0].to_s
     
-    puts mailtext
     # make sure that the activation link and username exists in email
     assert mailtext =~ /http\S+#{user.pending_validation.key}/
     assert mailtext =~ /#{user.username}/

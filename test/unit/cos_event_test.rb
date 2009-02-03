@@ -18,7 +18,7 @@ class CosEventTest < ActiveSupport::TestCase
       assert(test_event.valid?, "event not valid.")
       assert test_event.save
       assert_not_nil(test_event)
-    end if
+    end
   end
 
 end
