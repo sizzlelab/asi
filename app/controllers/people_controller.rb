@@ -57,13 +57,15 @@ class PeopleController < ApplicationController
       end
     end
    
-    if @person.errors.full_messages.to_s == "Person spec is invalid"
-      errors = @person.person_spec.errors.full_messages.to_json
-    elsif ! @person.errors.full_messages.blank?
-      errors = @person.errors.full_messages
-    end
+    # if @person.errors.full_messages.to_s == "Person spec is invalid"
+    #   errors = @person.person_spec.errors.full_messages.to_json
+    # elsif @person.errors.full_messages.to_s == "Person name is invalid"
+    #   errors = @person.name.errors.full_messages.to_json  
+    # elsif ! @person.errors.full_messages.blank?
+    #   errors = @person.errors.full_messages.to_json
+    # end
     
-    render :status  => :bad_request, :json => errors.to_json
+    render :status => :bad_request, :json => @person.errors.full_messages.to_json
     @person = nil
   end
   

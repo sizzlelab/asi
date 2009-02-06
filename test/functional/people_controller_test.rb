@@ -99,6 +99,18 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal("Joe", assigns["person"].name.given_name)
     json = JSON.parse(@response.body)
     
+    # try to update with too long given name
+    put :update, { 
+                   :user_id => people(:valid_person).id, 
+                   :person => { 
+                     :name => { :given_name => "JoeJoeJoeJoeJoeJoeJoeJoeJoeJoeJoe" } 
+                   }, 
+                   :format => 'json' 
+                 }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :bad_request
+    json = JSON.parse(@response.body)
+    
     # update status_message
     test_status = "Testing hard..."
     put :update, { :user_id => people(:valid_person).id, :person => { :status_message =>  test_status  }, :format => 'json' }, 
