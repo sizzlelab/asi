@@ -8,7 +8,6 @@ class ApplicationController < ActionController::Base
   layout 'default'
 
   before_filter :maintain_session_and_user
-  before_filter :fix_utf8_characters
   
   after_filter :log
   after_filter :set_correct_content_type
@@ -110,6 +109,11 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  #this should be done to all stored params (from Kassi etc.) because Rails seems to mess up parsing utf8 charas encoded in \\u00e4 like form
+  def fix_utf8_characters(parameter_hash)
+    return HashWithIndifferentAccess.new(JSON.parse(parameter_hash.to_json.gsub(/\\\\u/,'\\u')))
+  end
+  
   protected
  
   def maintain_session_and_user
@@ -129,19 +133,7 @@ class ApplicationController < ActionController::Base
       end
     else
       #logger.debug "NO SESSION:" + session[:session_id]
-    end
-    
+    end 
   end
   
-  #this is done to all params because Rails seems to mess up parsing utf8 charas encoded in \\u00e4 like form
-  def fix_utf8_characters
-    logger.info { "PAREAMSSSS: #{params.inspect}" } unless params.nil?
-    temphash = JSON.parse(params.to_json.gsub(/\\\\u/,'\\u')).inspect unless params.nil?
-    logger.info { "temppi: #{temphash}" }
-    logger.info { "paramssi on: #{params.class}" }
-    params = temphash
-    logger.info { "PAREAMSSSS22222222222: #{params.inspect}" } unless params.nil?
-    params.delete!("user_id")
-    params
-  end
 end

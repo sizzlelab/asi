@@ -70,6 +70,8 @@ class Person < ActiveRecord::Base
           errors.add name.errors.full_messages.first
           return false
         end  
+         #puts "name.valid? #{name.valid?}"
+         #puts "virheet: #{name.errors.full_messages}"
       else
         name = PersonName.new(hash[:name])
         unless name.save
@@ -103,7 +105,12 @@ class Person < ActiveRecord::Base
         return false
       end
     end
-    super(hash.except(:name))
+    t = super(hash.except(:name))
+    # puts "name.valid? #{name.valid?}"
+    # puts "person_spec.valid? #{person_spec.valid?}"
+    # puts "spec virheet: #{person_spec.errors.full_messages}"
+    # puts "valid? #{valid?}"
+    return t
   end
 
   def self.find_by_username_and_password(username, password)
