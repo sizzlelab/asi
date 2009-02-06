@@ -7,9 +7,7 @@ class PersonNameTest < ActiveSupport::TestCase
   end
   
   def test_max_lengths
-    assert_length :min, @valid_person_name, :given_name, PersonName::GIVEN_NAME_MIN_LENGTH
     assert_length :max, @valid_person_name, :given_name, PersonName::GIVEN_NAME_MAX_LENGTH
-    assert_length :min, @valid_person_name, :family_name, PersonName::FAMILY_NAME_MIN_LENGTH
     assert_length :max, @valid_person_name, :family_name, PersonName::FAMILY_NAME_MAX_LENGTH
   end
   

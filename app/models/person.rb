@@ -66,10 +66,33 @@ class Person < ActiveRecord::Base
   def update_attributes(hash)
     if hash[:name]
       if name
-        name.update_attributes(hash[:name])
+        unless name.update_attributes(hash[:name])
+          errors.add name.errors.full_messages.first
+          return false
+        end  
       else
-        create_name(hash[:name])
+        name = PersonName.new(hash[:name])
+        unless name.save
+          errors.add name.errors.full_messages.first
+          return false
+        end
       end
+    end
+    if hash[:phone_number]
+      person_spec = PersonSpec.new unless person_spec
+      person_spec.phone_number = hash[:phone_number]
+      unless person_spec.save
+        errors.add person_spec.errors.full_messages.first
+        return false
+      end  
+    end
+    if hash[:unstructured_address]
+      person_spec = PersonSpec.new unless person_spec
+      person_spec.unstructured_address = hash[:unstructured_address]
+      unless person_spec.save
+        errors.add person_spec.errors.full_messages.first
+        return false
+      end  
     end
     if hash[:birthdate] && ! hash[:birthdate].blank? 
       #Check the format of the birthday parameter
