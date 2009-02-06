@@ -92,13 +92,31 @@ class PeopleControllerTest < ActionController::TestCase
                  { :session_id => sessions(:session1).id }
     assert_response :forbidden
 
-    # update name
+    # update name 
     put :update, { :user_id => people(:valid_person).id, :person => { :name => { :given_name => "Joe" } }, :format => 'json' }, 
                  { :session_id => sessions(:session1).id }
     assert_response :success
     assert_equal("Joe", assigns["person"].name.given_name)
     json = JSON.parse(@response.body)
     
+    #FIXME put this and the next test in use and working
+    # try to update too long name 
+    # put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa" } }, :format => 'json' }, 
+    #              { :session_id => sessions(:session1).id }
+    # assert_response :bad_request
+    # assert_not_equal("Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa", assigns["person"].name.given_name)
+    # json = JSON.parse(@response.body)
+    # puts json
+    
+    # try to update too long phone number 
+    # put :update, { :user_id => people(:valid_person).id, :person => { :phone_number => "123456789012345678901234567890" }, :format => 'json' }, 
+    #              { :session_id => sessions(:session1).id }
+    # assert_response :bad_request
+    # #assert_not_equal("Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa", assigns["person"].name.given_name)
+    # json = JSON.parse(@response.body)
+    # puts json
+    # 
+
     # try to update with too long given name
     put :update, { 
                    :user_id => people(:valid_person).id, 
@@ -111,6 +129,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :bad_request
     json = JSON.parse(@response.body)
     
+
     # update status_message
     test_status = "Testing hard..."
     put :update, { :user_id => people(:valid_person).id, :person => { :status_message =>  test_status  }, :format => 'json' }, 

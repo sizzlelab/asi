@@ -19,6 +19,9 @@ class PeopleController < ApplicationController
   end
   
   def create
+    parameters_hash = HashWithIndifferentAccess.new(params.clone)
+    params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
+    
     @person = Person.new(params[:person])
     if @person.save
       @application_session.person_id = @person.id
@@ -39,6 +42,9 @@ class PeopleController < ApplicationController
   end
 
   def update
+    parameters_hash = HashWithIndifferentAccess.new(params.clone)
+    params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
+      
     errors = {}
     if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
@@ -69,6 +75,7 @@ class PeopleController < ApplicationController
     @person = nil
   end
   
+  
   def delete
     @person = Person.find_by_id(params['user_id'])
     if ! @person  
@@ -80,6 +87,7 @@ class PeopleController < ApplicationController
     @person.destroy
     session[:session_id] = @user = nil
   end
+  
   
   def add_friend
     # If there is no pending connection between persons, 
@@ -112,6 +120,7 @@ class PeopleController < ApplicationController
       end
     end
   end
+  
   
   def get_friends
     @person = Person.find_by_id(params['user_id'])
