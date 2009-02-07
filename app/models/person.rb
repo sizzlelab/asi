@@ -66,35 +66,10 @@ class Person < ActiveRecord::Base
   def update_attributes(hash)
     if hash[:name]
       if name
-        unless name.update_attributes(hash[:name])
-          errors.add name.errors.full_messages.first
-          return false
-        end  
-         #puts "name.valid? #{name.valid?}"
-         #puts "virheet: #{name.errors.full_messages}"
+        name.update_attributes(hash[:name])
       else
-        name = PersonName.new(hash[:name])
-        unless name.save
-          errors.add name.errors.full_messages.first
-          return false
-        end
+        create_name(hash[:name])
       end
-    end
-    if hash[:phone_number]
-      person_spec = PersonSpec.new unless person_spec
-      person_spec.phone_number = hash[:phone_number]
-      unless person_spec.save
-        errors.add person_spec.errors.full_messages.first
-        return false
-      end  
-    end
-    if hash[:unstructured_address]
-      person_spec = PersonSpec.new unless person_spec
-      person_spec.unstructured_address = hash[:unstructured_address]
-      unless person_spec.save
-        errors.add person_spec.errors.full_messages.first
-        return false
-      end  
     end
     if hash[:birthdate] && ! hash[:birthdate].blank? 
       #Check the format of the birthday parameter
@@ -105,12 +80,19 @@ class Person < ActiveRecord::Base
         return false
       end
     end
-    t = super(hash.except(:name))
-    # puts "name.valid? #{name.valid?}"
-    # puts "person_spec.valid? #{person_spec.valid?}"
-    # puts "spec virheet: #{person_spec.errors.full_messages}"
-    # puts "valid? #{valid?}"
-    return t
+    
+    success = super(hash.except(:name))
+    
+    if self.name && !self.name.valid?
+      success = false
+      self.name.errors.each{|attr, msg| errors.add(attr, msg)}
+    end
+    if  self.person_spec && !self.person_spec.valid?
+      success = false
+      self.person_spec.errors.each{|attr, msg| errors.add(attr, msg)}
+    end
+    
+    return success    
   end
 
   def self.find_by_username_and_password(username, password)

@@ -72,8 +72,9 @@ class PeopleControllerTest < ActionController::TestCase
     testing_email = "newemail@oldserv.er"
     put :update, { :user_id => people(:valid_person).id, :person => {:email => testing_email }, :format => 'json' }, 
                  { :session_id => sessions(:session1).id }
-    assert_response :success
+    
     json = JSON.parse(@response.body)
+    assert_response :success
 
     # try to update the id
     put :update, { :user_id => people(:valid_person).id, :person => {:id => "9999" }, :format => 'json' }, 
@@ -99,23 +100,22 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal("Joe", assigns["person"].name.given_name)
     json = JSON.parse(@response.body)
     
-    #FIXME put this and the next test in use and working
-    # try to update too long name 
-    # put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa" } }, :format => 'json' }, 
-    #              { :session_id => sessions(:session1).id }
-    # assert_response :bad_request
-    # assert_not_equal("Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa", assigns["person"].name.given_name)
-    # json = JSON.parse(@response.body)
-    # puts json
+    #try to update too long name 
+    put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa" } }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :bad_request
+    #assert_not_equal("Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa", assigns["person"].name.given_name)
+    json = JSON.parse(@response.body)
+    #puts json
     
-    # try to update too long phone number 
-    # put :update, { :user_id => people(:valid_person).id, :person => { :phone_number => "123456789012345678901234567890" }, :format => 'json' }, 
-    #              { :session_id => sessions(:session1).id }
-    # assert_response :bad_request
-    # #assert_not_equal("Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa", assigns["person"].name.given_name)
-    # json = JSON.parse(@response.body)
-    # puts json
-    # 
+    #try to update too long phone number 
+    put :update, { :user_id => people(:valid_person).id, :person => { :phone_number => "123456789012345678901234567890" }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :bad_request
+    #assert_not_equal("Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa", assigns["person"].name.given_name)
+    json = JSON.parse(@response.body)
+   # puts json
+    
 
     # try to update with too long given name
     put :update, { 
@@ -172,6 +172,15 @@ class PeopleControllerTest < ActionController::TestCase
       json = JSON.parse(@response.body)
       assert_equal valid_date, json["birthdate"]                  
     end  
+  end
+  
+  def test_update_invalid_email
+      invalid_email = "newemail(at)oldserv.er"
+      put :update, { :user_id => people(:valid_person).id, :person => {:email => invalid_email }, :format => 'json' }, 
+                   { :session_id => sessions(:session1).id }  
+      assert_response :bad_request
+      json = JSON.parse(@response.body)
+      assert json.to_s =~ /email/i && json.to_s =~ /invalid/i
   end
   
   def test_delete    
