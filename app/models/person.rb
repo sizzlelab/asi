@@ -33,7 +33,7 @@ class Person < ActiveRecord::Base
   :conditions => "status = 'pending'"
 
   # Max & min lengths for all fields 
-  USERNAME_MIN_LENGTH = 4 
+  USERNAME_MIN_LENGTH = 3 
   USERNAME_MAX_LENGTH = 20 
   USERNAME_RANGE = USERNAME_MIN_LENGTH..USERNAME_MAX_LENGTH 
   EMAIL_MAX_LENGTH = 50 

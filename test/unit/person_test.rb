@@ -61,7 +61,7 @@ class PersonTest < ActiveSupport::TestCase
   # Test the validations involving username with valid examples.
   def test_username_with_valid_examples 
     person = @valid_person 
-    valid_usernames = %w{juho kusti juho_kusti} 
+    valid_usernames = %w{juho kusti juho_kusti enu} 
     valid_usernames.each do |username| 
       person.username = username 
       assert person.valid?, "#{username} should pass validation, but doesn't" 
@@ -71,10 +71,10 @@ class PersonTest < ActiveSupport::TestCase
   # Test the validations involving username with invalid examples.
   def test_username_with_invalid_examples 
     person = @valid_person 
-    invalid_usernames = %w{rails/rocks web2.0 javscript:something} 
+    invalid_usernames = %w{rails/rocks web2.0 javscript:something ME} 
     invalid_usernames.each do |username| 
       person.username = username
-      assert !person.valid?, "#{name} shouldn't pass validation, but does" 
+      assert !person.valid?, "#{username} shouldn't pass validation, but does" 
     end 
   end
   
