@@ -1,6 +1,8 @@
 #!/bin/sh
-# The last part of the Common Services build script. This is in a separate file so that the newest version from the repository
-# is always run. 
+# The last part of the Common Services build script. This is in a separate 
+# file so that the newest version from the repository is always run. 
+# NOTE: This script must be run from the same directory where the COS is 
+# located (see COS_PATH from alpha-build.sh)
 
 SERVERNAME="http://cos.alpha.sizl.org/"
 

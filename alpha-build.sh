@@ -6,7 +6,7 @@
 COS_PATH=/var/datat/cos/common-services
 
 #sudo mongrel_rails stop -P $COS_PATH/tmp/pids/mongrel.pid
-sudo mongrel_rails cluster::stop
+sudo mongrel_rails cluster::stop -C $COS_PATH/config/mongrel_cluster.yml
 cd /
 rm -rf $COS_PATH
 svn export --force file:///svn/common-services/trunk $COS_PATH
