@@ -7,7 +7,7 @@
 SERVERNAME="http://cos.sizl.org/"
 
 #change COS to use production Ressi
-sed -i "s/localhost\:9000/cos\.sizl\.org\/ressi\//" config/environments.rb
+sed -i "s/localhost\:9000/cos\.sizl\.org\/ressi\//" config/environment.rb
 
 REV=$((`svn info svn+ssh://alpha.sizl.org/svn/common-services | \
 grep "^Last Changed Rev" | \
