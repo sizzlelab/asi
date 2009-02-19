@@ -4,6 +4,9 @@
 
 SERVERNAME="http://cos.sizl.org/"
 
+#change COS to use production Ressi
+sed -i "s/localhost\:9000/cos\.sizl\.org\/ressi\//" config/environments.rb
+
 REV=$((`svn info svn+ssh://alpha.sizl.org/svn/common-services | \
 grep "^Last Changed Rev" | \
 perl -pi -e "s/Last Changed Rev: //"`-`svn info svn+ssh://alpha.sizl.org/svn/common-services/tags | \
@@ -15,5 +18,6 @@ date > app/views/layouts/_build_date.html.erb
 rake db:migrate
 rake test
 rake db:migrate RAILS_ENV=production
-script/server -d -e production
+#script/server -d -e production
+mongrel_rails cluster::start
 sudo /etc/init.d/apache2 restart
