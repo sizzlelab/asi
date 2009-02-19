@@ -4,6 +4,9 @@
 
 SERVERNAME="http://cos.alpha.sizl.org/"
 
+#change COS to use alpha's Ressi
+sed -i "s/localhost\:9000/cos\.alpha\.sizl\.org\/ressi\//" config/environments.rb
+
 REV=$((`svn info file:///svn/common-services | \
 grep "^Last Changed Rev" | \
 perl -pi -e "s/Last Changed Rev: //"`-`svn info file:///svn/common-services/tags | \
