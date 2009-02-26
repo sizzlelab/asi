@@ -4,9 +4,7 @@ full:
   person_id: 1
   latitude: 60.163389841749
   longitude: 24.857125767506
-  altitude: 38.0
-  vertical_accuracy: 58.0
-  horizontal_accuracy: 115.657775878906
+  accuracy: 58.0
   label: Otaniemen Alepa
   updated_at: 2008-07-11 12:36:33
   created_at: 2008-07-11 12:36:33

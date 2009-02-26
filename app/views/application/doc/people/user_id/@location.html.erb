@@ -9,19 +9,18 @@
 
                  :parameters => [ { :latitude  => "Latitude coordinates in Decimal Degree format" },
                                   { :longitude => "Longitude coordinate sin Decimal Degree format" },
-                                  { :altitude  => "Altitude in meters"},
                                   { :label     => "Text label given to current location" },
-                                  { :horizontal_accuracy => "Accuray of horizontal location" },
-                                  { :vertical_accuracy   => "Accuracy of altitude"},
-                                  
+                                  { :accuracy  => "Accuracy of the location"},
                                 ] },
               {
+				:name => "POST",
+				:description => "Works the same way as PUT."
+			  },
+			  {
                 :name => "GET",
                 :description => "Gets the location of the user. The returned structure is similar to PUT-methods parameter structure",
-                
               },
-               
-                  
-                  ] %>
+             ]
+ %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>

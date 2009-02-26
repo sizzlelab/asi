@@ -39,9 +39,7 @@ class LocationsControllerTest < ActionController::TestCase
     put :update, {:user_id => people(:valid_person).id,
                   :latitude => 24.852395, 
                   :longitude => -12.1231, 
-                  :altitude => 432,
-                  :horizontal_accuracy => 12,
-                  :vertical_accuracy => 49,
+                  :accuracy => 12,
                   :label => "Experimental grounds \\o/",
                   :format => "json" },
                   { :session_id => sessions(:session2).id }
@@ -56,9 +54,7 @@ class LocationsControllerTest < ActionController::TestCase
     put :update, {:user_id => people(:valid_person).id,
                   :latitude => test_latitude, 
                   :longitude => -12.1231, 
-                  :altitude => 432,
-                  :horizontal_accuracy => 12,
-                  :vertical_accuracy => 49,
+                  :accuracy => 12,
                   :label => test_label,
                   :format => "json" },
                   { :session_id => sessions(:session1).id }
@@ -70,29 +66,29 @@ class LocationsControllerTest < ActionController::TestCase
     assert_equal test_label, Person.find_by_id( people(:valid_person).id).location.label
   end
   
-  def test_update_partial_location
-    original_label = Person.find_by_id( people(:valid_person).id).location.label
-    original_longitude = Person.find_by_id( people(:valid_person).id).location.longitude
-    test_label =  "New exciting location"
-    put :update, {:user_id => people(:valid_person).id,
-                  :altitude => 11,
-                  :label => test_label,
-                  :format => "json" },
-                  { :session_id => sessions(:session1).id }
-    assert_response :success
-    json = JSON.parse(@response.body)
-    
-    #check that fields upadated correctly
-    assert_equal test_label, Person.find_by_id( people(:valid_person).id).location.label
-    
-    #check that other fields not touched
-    assert_equal(original_longitude, Person.find_by_id( people(:valid_person).id).location.longitude)
-  end
+  # Partial location update no longer possible as of version 2009-02-26:
+  
+  #def test_update_partial_location
+  #  original_label = Person.find_by_id( people(:valid_person).id).location.label
+  #  original_longitude = Person.find_by_id( people(:valid_person).id).location.longitude
+  #  test_label =  "New exciting location"
+  #  put :update, {:user_id => people(:valid_person).id,
+  #                :label => test_label,
+  #                :format => "json" },
+  #                { :session_id => sessions(:session1).id }
+  #  assert_response :success
+  #  json = JSON.parse(@response.body)
+  #  
+  #  #check that fields upadated correctly
+  #  assert_equal test_label, Person.find_by_id( people(:valid_person).id).location.label
+  #  
+  #  #check that other fields not touched
+  #  assert_equal(original_longitude, Person.find_by_id( people(:valid_person).id).location.longitude)
+  #end
   
   def test_time_stamp_update
      timestamp = Person.find_by_id( people(:valid_person).id).location.updated_at
      put :update, {:user_id => people(:valid_person).id,
-                   :altitude => 11,
                    :label => "New exciting location",
                    :format => "json" },
                    { :session_id => sessions(:session1).id }

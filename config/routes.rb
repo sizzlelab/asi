@@ -63,15 +63,15 @@ ActionController::Routing::Routes.draw do |map|
                                            :delete => 'delete_avatar',
                                            :format_get => 'jpg',
                                            :format_post => 'html'
-                                           
+
   map.resource '/people/:user_id/@avatar/large_thumbnail', :controller => 'people',
                                                            :get => 'get_large_thumbnail', 
                                                            :format_get => 'jpg'
-                                                                                                                                         
+
   map.resource '/people/:user_id/@avatar/small_thumbnail', :controller => 'people',
                                                            :get => 'get_small_thumbnail', 
                                                            :format_get => 'jpg'
-                                                     
+
   map.resource '/people', :controller => 'people',
                           :post => 'create',
                           :get => 'index'
@@ -84,7 +84,7 @@ ActionController::Routing::Routes.draw do |map|
                                                             :get => 'pending_friend_requests'
 
   map.resource '/people/:user_id/@pending_friend_requests/:friend_id', :controller => 'people',
-                                                          :delete => 'reject_friend_request'                                                            
+                                                          :delete => 'reject_friend_request'
                                                             
                                             
   map.resource '/people/:user_id/@friends/:friend_id', :controller => 'people',
@@ -92,7 +92,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource '/people/:user_id/@location', :controller => 'locations',
                                              :get => 'get',
-                                             :put => 'update'
+                                             :put => 'update',
+                                             :post => 'update'
   
   map.resource '/people/:user_id/@transactions/transactions.xml', :controller => 'transactions',
                                               :get => 'get',
