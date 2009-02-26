@@ -6,9 +6,7 @@ class LocationTest < ActiveSupport::TestCase
     loc = Location.new( :person_id => 1,
                   :latitude => 24.852395, 
                   :longitude => -12.1231, 
-                  :altitude => 432,
-                  :horizontal_accuracy => 12,
-                  :vertical_accuracy => 49,
+                  :accuracy => 20
                   :label => "Experimental grounds \\o/"
                   )
     assert loc.valid?
