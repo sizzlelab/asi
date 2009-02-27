@@ -5,9 +5,11 @@
 
 <% methods = [ { :name => "PUT", 
 
-                 :description => "Sets the location of the user. Only the submitted fields will be updated. The modified user must be logged in.", 
+                 :description => "Sets the location of the user. If only some of the fields are updated, rest will be set to null. The modified user must be logged in OR specify username and password.", 
 
-                 :parameters => [ { :latitude  => "Latitude coordinates in Decimal Degree format" },
+                 :parameters => [ { :username  => "Username of the person (if not otherwise logged in)" },
+								  { :password  => "Password associated to the username (if not otherwise logged in)" },
+ 								  { :latitude  => "Latitude coordinates in Decimal Degree format" },
                                   { :longitude => "Longitude coordinate sin Decimal Degree format" },
                                   { :label     => "Text label given to current location" },
                                   { :accuracy  => "Accuracy of the location"},
