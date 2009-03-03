@@ -11,7 +11,7 @@ class PeopleTest < ActionController::IntegrationTest
       ossi.updates_person_details_with({ :id => people(:test).id, 
                                          :person => { :name => 
                                            { :given_name => "Pentteri", :family_name => "Pamppunen" },
-                                         :status_message => "Tesqtasdasding..." } })
+                                         :status_message => "Testing..." } })
 
       ossi.updates_person_details_with({ :id => people(:test).id, 
                                          :person => { :email => "j@example.org" }})
