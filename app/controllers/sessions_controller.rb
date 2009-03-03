@@ -28,10 +28,13 @@ class SessionsController < ApplicationController
       if (! @session.person_match) && (params[:username] || params[:password])
         # inserted username, password -pair is not found in database
         @session.destroy
-
         render :status => :unauthorized, :json => "Password and username didn't match for any person.".to_json and return
-
       end
+      if VALIDATE_EMAILS && PendingValidation.find_by_person_id(@session.person_id)
+         @session.destroy
+         render :status => :forbidden, :json => "The email address for this user account is not yet confirmed. Login requires confirmation.".to_json and return
+      end
+      
       session[:session_id] = @session.id
       render :status => :created, :json => { :user_id => @session.person_id,
                                              :app_id => @session.client_id }

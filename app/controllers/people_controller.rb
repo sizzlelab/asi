@@ -24,15 +24,19 @@ class PeopleController < ApplicationController
     
     @person = Person.new(params[:person])
     if @person.save
-      @application_session.person_id = @person.id
-      @application_session.save
-      
-      chars_for_key = [('a'..'z'),('A'..'Z'),(0..9)].map{|i| i.to_a}.flatten
-      key = (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
-      @person.pending_validation = PendingValidation.new({:key =>  key})
-      @person.pending_validation.save
-      if RAILS_ENV != "development"
-        UserMailer.deliver_registration_confirmation(@person, key)
+  
+      if VALIDATE_EMAILS
+        chars_for_key = [('a'..'z'),('A'..'Z'),(0..9)].map{|i| i.to_a}.flatten
+        key = (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
+        @person.pending_validation = PendingValidation.new({:key =>  key})
+        @person.pending_validation.save
+        if RAILS_ENV != "development"
+          UserMailer.deliver_registration_confirmation(@person, confirmation_url({:key  => @person.pending_validation.key}))
+        end
+      else
+        # No email validation required, assing created user to current session right away
+        @application_session.person_id = @person.id
+        @application_session.save
       end
       
       render :status => :created and return

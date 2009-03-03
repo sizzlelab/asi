@@ -1,9 +1,6 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  person: 
-  key: MyString
+  person: :not_yet_validated
+  key: testkey12
 
-two:
-  person: 
-  key: MyString

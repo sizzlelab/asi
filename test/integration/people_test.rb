@@ -57,6 +57,33 @@ class PeopleTest < ActionController::IntegrationTest
     end
   end
 
+  def test_register_and_validate_email
+    if VALIDATE_EMAILS
+      new_session do |kassi|
+        kassi.logs_in_with({:app_name => clients(:one).name, :app_password => "testi"})
+        kassi.creates_user_with({:username => "Testimies69", :password => "testi", 
+                                 :email => "testimies69@example.com" })
+        
+        kassi.logs_out
+        # "receive email"
+        confirmation_key = Person.find_by_username("Testimies69").pending_validation.key
+      
+        #first: Login is not possible, because email is not validated
+        kassi.logs_in_with({:app_name => clients(:one).name, :app_password => "testi",
+                            :username => "Testimies69", :password => "testi", 
+                            :expected_response => :forbidden})
+    
+        #Confirm email
+        kassi.confirms_email_with(:key => confirmation_key)  
+    
+        #Login should work now
+        kassi.logs_in_with({:app_name => clients(:one).name, :app_password => "testi",
+                            :username => "Testimies69", :password => "testi", 
+                            :expected_response => :created})
+      end 
+    end
+  end
+
   private
 
   def new_session

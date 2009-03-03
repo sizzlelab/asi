@@ -1,10 +1,10 @@
 class UserMailer < ActionMailer::Base
 
-  def registration_confirmation(user, key)
+  def registration_confirmation(user, confirmation_url)
     recipients user.email
     from       COS_MAIL_FROM_ADRESS
     subject    "OtaSizzle registration confirmation"
-    body       :user => user, :key => key, :confirmation_url => "example.com/root_url"
+    body       :user => user, :confirmation_url => confirmation_url
   end
 
 end
