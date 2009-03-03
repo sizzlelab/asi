@@ -72,4 +72,7 @@ Rails::Initializer.run do |config|
   RESSI_TIMEOUT = 5
   COS_MAIL_FROM_ADRESS = "support@sizl.org"
   
+  #If following is true, created users must validate their emails before they can log in.
+  VALIDATE_EMAILS = false
+  
 end

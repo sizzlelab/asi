@@ -104,10 +104,11 @@ ActionController::Routing::Routes.draw do |map|
                            :delete => 'destroy',
                            :post => 'create'
   
- map.resource '/transactions', :controller => 'transactions',
+  map.resource '/transactions', :controller => 'transactions',
                                :get => 'get',
                                :post => 'create'
-
+  
+  map.confirmation '/confirmation', :controller => 'confirmations', :action => 'confirm_email'
 
   map.documentation '/appdata'
 

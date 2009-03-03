@@ -92,9 +92,14 @@ end
 
 module COSTestingDSL
   def logs_in_with(options)
+    if expected_response = options[:expected_response]
+      options.delete(:expected_response)
+    else
+      expected_response = :created
+    end
     post "/session", options
-    assert_response :created
-    assert_not_nil session[:session_id]
+    assert_response expected_response
+    assert_not_nil session[:session_id] if expected_response == :created
   end
 
   def finds_collections(options)
@@ -204,6 +209,17 @@ module COSTestingDSL
   def updates_avatar(options)
     put "/people/#{options[:id]}/@avatar", options
     assert_response :success
+  end
+  
+  def creates_user_with(options)
+    post "/people", {:person => options}
+    assert_response :created, @response.body
+  end
+  
+  def confirms_email_with(options)
+    post "/confirmation", options
+    assert_response :success, @response.body
+    assert_nil(PendingValidation.find_by_key(options[:key]))
   end
 
   private
