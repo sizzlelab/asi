@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  street_address: MyString
+  postal_code: MyString
+  locality: MyString
+  owner_id: 1
+  owner_type: person
+
+two:
+  street_address: MyString
+  postal_code: MyString
+  locality: MyString
+  owner_id: "1"
+  owner_type: person

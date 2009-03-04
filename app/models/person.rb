@@ -9,6 +9,7 @@ class Person < ActiveRecord::Base
   attr_protected :roles
 
   has_one :name, :class_name => "PersonName", :dependent => :destroy
+  has_one :address, :as => :owner, :dependent => :destroy
   has_one :person_spec, :dependent => :destroy
   has_one :location, :dependent => :destroy
   has_one :avatar, :class_name => "Image", :dependent => :destroy
@@ -71,6 +72,13 @@ class Person < ActiveRecord::Base
         create_name(hash[:name])
       end
     end
+    if hash[:address]
+      if address
+        address.update_attributes(hash[:address])
+      else
+        create_address(hash[:address])
+      end
+    end
     if hash[:birthdate] && ! hash[:birthdate].blank? 
       #Check the format of the birthday parameter
       begin
@@ -124,6 +132,7 @@ class Person < ActiveRecord::Base
      #email is not shown in normal person hash for spam prevention reasons
      #'email' => email,
       'name' => name,
+      'address' => address,
       'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" },
                     :status => ( avatar ? "set" : "not_set" ) }
     }
