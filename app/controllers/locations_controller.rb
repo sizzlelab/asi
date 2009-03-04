@@ -20,14 +20,20 @@ class LocationsController < ApplicationController
 
       # ...unless the correct username and password is given
       person = Person.find_by_username_and_password(params['username'], params['password'])
-      if !person or params['user_id'] != person.id
+      if !person or (params['user_id'] && params['user_id'] != person.id)
         render :status => :unauthorized, :json => "Password and username didn't match the person.".to_json and return
       end
     end
     
-    @location = Location.find_by_person_id(params['user_id'])
+    user_id = params['user_id']
+    if !user_id
+      user_id = person.id
+    end
+    
+    @location = Location.find_by_person_id(user_id)
+    
     if ! @location  
-      @location = Location.new(:person_id => params['user_id'])
+      @location = Location.new(:person_id => user_id)
       @location.save
     end
 
