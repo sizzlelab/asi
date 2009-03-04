@@ -92,12 +92,14 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource '/people/:user_id/@location', :controller => 'locations',
                                              :get => 'get',
-                                             :put => 'update',
-                                             :post => 'update'
-  
+                                             :put => 'update'
+
   map.resource '/people/:user_id/@transactions/transactions.xml', :controller => 'transactions',
                                               :get => 'get',
                                               :post => 'create'
+
+  map.resource '/location/single_update', :controller => 'locations',
+                                          :post => 'update'
 
   map.resource '/session', :controller => 'sessions',
                            :get => 'get',
@@ -105,8 +107,8 @@ ActionController::Routing::Routes.draw do |map|
                            :post => 'create'
   
   map.resource '/transactions', :controller => 'transactions',
-                               :get => 'get',
-                               :post => 'create'
+                                :get => 'get',
+                                :post => 'create'
   
   map.confirmation '/confirmation', :controller => 'confirmations', :action => 'confirm_email'
 
