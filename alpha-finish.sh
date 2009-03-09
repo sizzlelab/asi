@@ -9,6 +9,9 @@ SERVERNAME="http://cos.alpha.sizl.org/"
 #change COS to use alpha's Ressi
 sed -i "s/localhost\:9000/cos\.alpha\.sizl\.org\/ressi\//" config/environment.rb
 
+# turn on email validation
+sed -i "s/VALIDATE_EMAILS = false/VALIDATE_EMAILS = true/" config/environment.rb
+
 REV=$((`svn info file:///svn/common-services | \
 grep "^Last Changed Rev" | \
 perl -pi -e "s/Last Changed Rev: //"`-`svn info file:///svn/common-services/tags | \

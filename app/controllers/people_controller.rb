@@ -31,7 +31,12 @@ class PeopleController < ApplicationController
         @person.pending_validation = PendingValidation.new({:key =>  key})
         @person.pending_validation.save
         if RAILS_ENV != "development"
-          UserMailer.deliver_registration_confirmation(@person, confirmation_url({:key  => @person.pending_validation.key}))
+          #address = confirmation_url({:key  => @person.pending_validation.key})
+          #TODO Make above-like dynamic address creation to work
+          address = "http://cos.alpha.sizl.org/confirmation?key=#{@person.pending_validation.key}"
+          UserMailer.deliver_registration_confirmation(@person, address)
+        
+        
         end
       else
         # No email validation required, assing created user to current session right away
