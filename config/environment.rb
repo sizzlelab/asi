@@ -70,9 +70,10 @@ Rails::Initializer.run do |config|
   PURSE_LIMIT = -10
   RESSI_URL = "http://localhost:9000"
   RESSI_TIMEOUT = 5
-  COS_MAIL_FROM_ADRESS = "support@sizl.org"
+  COS_MAIL_FROM_ADRESS = "tuki@sizl.org"
   
   #If following is true, created users must validate their emails before they can log in.
+  #VALIDATE_EMAILS = true
   VALIDATE_EMAILS = false
   
 end
