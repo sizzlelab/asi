@@ -126,6 +126,9 @@ class PersonTest < ActiveSupport::TestCase
     assert_not_nil json["status"]["message"]
     spec_fields.delete("status_message_changed")
     assert_not_nil json["status"]["changed"]
+    assert_not_nil(json["location"])
+    assert(json["location"]["latitude"]<=90)
+    assert(json["location"]["latitude"]>=-90)
     
     spec_fields.each do |value|
         assert_not_nil json[value] , "#{value} was nil."

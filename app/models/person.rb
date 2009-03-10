@@ -158,6 +158,10 @@ class Person < ActiveRecord::Base
       person_hash.merge!({'connection' => get_connection_string(connection_person)})
     end
     
+    if location
+      person_hash.merge!({:location => location.location_hash})
+    end
+    
     if !client_id.nil?
       person_hash.merge!({'role' => role_title(client_id)})
     end

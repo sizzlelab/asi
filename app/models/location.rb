@@ -20,13 +20,17 @@ class Location < ActiveRecord::Base
   end
 
   def to_json(*a)
+    location_hash.to_json(*a)
+  end
+  
+  def location_hash
     {
       :latitude => self.latitude,
       :longitude => self.longitude,
       :label => self.label,
       :accuracy => self.accuracy,
       :updated_at => self.updated_at
-    }.to_json(*a)
+    }
   end
 
 end
