@@ -28,7 +28,7 @@ class PeopleControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_equal people(:valid_person).id, json["id"]
     assert_nil json["password"]
-    
+
      #try to show a person with invalid id
     get :show, { :user_id => -1, :format => 'json' }
     assert_response :missing
