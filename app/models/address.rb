@@ -8,9 +8,9 @@ class Address < ActiveRecord::Base
 
   validates_presence_of :owner_id, :owner_type
   
-  validates_length_of :street_address, :maximum => STREET_ADDRESS_MAX_LENGTH
-  validates_length_of :postal_code, :maximum => POSTAL_CODE_MAX_LENGTH
-  validates_length_of :locality, :maximum => LOCALITY_MAX_LENGTH
+  validates_length_of :street_address, :allow_nil => true, :maximum => STREET_ADDRESS_MAX_LENGTH
+  validates_length_of :postal_code, :allow_nil => true, :maximum => POSTAL_CODE_MAX_LENGTH
+  validates_length_of :locality, :allow_nil => true, :maximum => LOCALITY_MAX_LENGTH
 
   def to_json(*a)
     {
