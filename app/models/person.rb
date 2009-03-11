@@ -42,6 +42,9 @@ class Person < ActiveRecord::Base
   # Text box sizes for display in the views 
   USERNAME_SIZE = 20 
   
+  # Constant to present the "accepted" connection in returned JSONs
+  ACCEPTED_CONNECTION_STRING = "friend"
+  
   #validates_presence_of :username, :password
   validates_uniqueness_of :username, :email
   #validates_length_of :username, :within => USERNAME_RANGE
@@ -129,6 +132,7 @@ class Person < ActiveRecord::Base
   end
 
   #creates a hash of person attributes. If connection_person is not nil, adds connection attribute to hash
+  # connection_person means the person who is asking to get the hash for current person
   def get_person_hash(connection_person=nil, client_id=nil)
     person_hash = {
       'id' => id,
@@ -160,10 +164,10 @@ class Person < ActiveRecord::Base
     
     if connection_person
       person_hash.merge!({'connection' => get_connection_string(connection_person)})
-    end
-    
-    if location
-      person_hash.merge!({:location => location.location_hash})
+      # if the asker is a friend (or self), include location
+      if location && (person_hash['connection'] == ACCEPTED_CONNECTION_STRING || connection_person == self)
+        person_hash.merge!({:location => location.location_hash})
+      end
     end
     
     if !client_id.nil?
@@ -235,7 +239,7 @@ class Person < ActiveRecord::Base
   def get_connection_string(asker)
     type = Connection.type(asker, self)
     if type == "accepted"
-      type = "friend"
+      type = ACCEPTED_CONNECTION_STRING
     end
     return type
   end
