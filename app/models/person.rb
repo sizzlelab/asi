@@ -89,11 +89,15 @@ class Person < ActiveRecord::Base
       end
     end
     
-    success = super(hash.except(:name))
+    success = super(hash.except(:name, :address))
     
     if self.name && !self.name.valid?
       success = false
       self.name.errors.each{|attr, msg| errors.add(attr, msg)}
+    end
+    if self.address && !self.address.valid?
+      success = false
+      self.address.errors.each{|attr, msg| errors.add(attr, msg)}
     end
     if  self.person_spec && !self.person_spec.valid?
       success = false
