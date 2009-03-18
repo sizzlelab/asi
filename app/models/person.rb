@@ -210,7 +210,7 @@ class Person < ActiveRecord::Base
         return role.title
       end
     end
-    return Role::USER # no match so normal user
+    return nil # not registered to the client service
   end
   
   # Create a new avatar image to a person

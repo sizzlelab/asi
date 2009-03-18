@@ -6,4 +6,12 @@ class Role < ActiveRecord::Base
   ADMINISTRATOR = "administrator"
   MODERATOR = "moderator"
   USER = "user"
+  
+  def self.find_by_client_id(client_id)
+    Role.find(:all, :conditions => "client_id = '#{client_id}'")
+  end
+  
+  def self.find_by_user_id(user_id)
+    Role.find(:all, :conditions => "person_id = '#{user_id}'")
+  end
 end

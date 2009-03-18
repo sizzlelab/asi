@@ -25,6 +25,13 @@ class PeopleController < ApplicationController
     @person = Person.new(params[:person])
     if @person.save
   
+      @role = Role.new(:person_id => @person.id, 
+                       :client_id => @client.id, 
+                       :title => Role::USER, 
+                       :terms_version => params[:person][:consent]
+                      )
+      @role.save
+  
       if VALIDATE_EMAILS
         chars_for_key = [('a'..'z'),('A'..'Z'),(0..9)].map{|i| i.to_a}.flatten
         key = (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
