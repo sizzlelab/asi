@@ -22,7 +22,11 @@ class Address < ActiveRecord::Base
   end                
   
   def unstructured
-    "#{street_address} #{postal_code} #{locality}"
+    if street_address && street_address != "" && ((postal_code && postal_code != "") || (locality && locality != ""))
+      "#{street_address}, #{postal_code} #{locality}"
+    else
+      "#{street_address} #{postal_code} #{locality}"
+    end    
   end
 
 end
