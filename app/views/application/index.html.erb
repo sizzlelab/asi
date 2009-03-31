@@ -3,10 +3,16 @@
   This is the start page of OtaSizzle Common Services &ndash; <strong>COS</strong> for short. 
   Currently, only JSON access to resources is supported. However, this HTML view to them acts
   as the authoritative COS reference.
+</p>  
+<p>
+  This API is used to document also the features that are <strong>planned but not yet implemented</strong>.
+   Those future features will be marked with <span class='not_implemented'>grey background</span>.
 </p>
 
 <h2>Getting Started</h2>
-<p>Try the <a href="test">interactive tester</a>!</p>
+<p> Read the <span class='not_implemented'><a href="doc/tutorial">Getting Started Tutorial</a></span>.</p>
+<p>Or try the <a href="test">interactive tester</a> if you already have an application account.</p>
+<p>Instructions in a nutshell are:</p>
 <ul>
   <li><tt>POST /session</tt> to create a new session.</li>
   <li><tt>GET</tt> resources to view them, create new ones with <tt>POST</tt> and update them in place with <tt>PUT</tt>. 
@@ -16,10 +22,11 @@
   <li><tt>DELETE /session</tt> when finished.</li>
 </ul>
 
-<h2>Services</h2>
+<h2>Services - The COS API reference</h2>
 <ul>
 <li><a href="doc/session"><tt>/session</tt></a> &ndash; logging in and out</li>
 <li><a href="doc/people"><tt>/people</tt></a> &ndash; social networking information</li>
+<li><a href="doc/groups"><tt>/groups</tt></a> &ndash; groups of people</li>
 <li><a href="doc/appdata"><tt>/appdata</tt></a> &ndash; arbitrary application-specific data</li>
 </ul>
 

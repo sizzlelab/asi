@@ -1,3 +1,6 @@
+<% if defined?(not_implemented) && not_implemented %>
+  <div class='not_implemented'>
+<% end %>
 
 <h3><%= name %></h3>
 <div class="method">
@@ -53,4 +56,8 @@
 <% end %>
 
 </div>
+
+<% if defined?(not_implemented) && not_implemented %>
+  </div>
+<% end %>
 

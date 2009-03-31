@@ -40,6 +40,9 @@ class PeopleController < ApplicationController
         if VALIDATE_EMAILS && RAILS_ENV != "development"
           #address = confirmation_url({:key  => @person.pending_validation.key})
           #TODO Make above-like dynamic address creation to work
+          #!campussourcing_2009-02-18.log:16:07:00 <@thierry> Gnomet: 
+          #                 "#{request.protocol}#{request.host}#{request.request_uri}"
+          #COULD BE ABOVE solution?? ^
           address = "http://cos.alpha.sizl.org/confirmation?key=#{@person.pending_validation.key}"
           UserMailer.deliver_registration_confirmation(@person, address)      
         end
