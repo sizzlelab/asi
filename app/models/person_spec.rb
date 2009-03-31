@@ -2,8 +2,8 @@ class PersonSpec < ActiveRecord::Base
 
   belongs_to :person
 
-  ALL_FIELDS = %w(status_message gender birthdate unstructured_address irc_nick msn_nick phone_number)
-  STRING_FIELDS = %w(status_message unstructured_address irc_nick msn_nick)
+  ALL_FIELDS = %w(status_message gender birthdate irc_nick msn_nick phone_number)
+  STRING_FIELDS = %w(status_message irc_nick msn_nick)
   # Fields that are not included in json
   NO_JSON_FIELDS = %w(id person_id created_at updated_at)
   # Fields that need to be translated if the language is changed.
