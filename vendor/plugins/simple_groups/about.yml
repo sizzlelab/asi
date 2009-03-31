@@ -1,0 +1,8 @@
+author: Jon Hope
+summary: Adds a simple system for grouping users.
+description: Adds a simple system for grouping users, using a has_many :through relationship.
+homepage: http://localhost/
+plugin: http://github.com/JonMidhir/simple_groups/tree/master
+license: MIT
+version: 1.0
+rails_version: 2.0+

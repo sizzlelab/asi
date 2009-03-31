@@ -97,6 +97,22 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/:user_id/@transactions/transactions.xml', :controller => 'transactions',
                                               :get => 'get',
                                               :post => 'create'
+                                              
+  map.resource '/people/:user_id/@groups', :controller => 'groups',
+                                           :get => 'get_groups_of_person',
+                                           :post => 'add_member'
+                                              
+  map.resource '/groups', :controller => 'groups',
+                          :post => 'create'
+                          
+  map.resource '/groups/@public', :controller => 'groups',
+                          :get => 'public_groups'
+                          
+  map.resource '/groups/:group_id', :controller => 'groups',
+                          :get => 'show' 
+                          
+  map.resource '/groups/:group_id/@members', :controller => 'groups',
+                          :get => 'get_members'                                                                       
 
   map.resource '/location/single_update', :controller => 'locations',
                                           :post => 'update'
@@ -113,11 +129,14 @@ ActionController::Routing::Routes.draw do |map|
   map.confirmation '/confirmation', :controller => 'confirmations', :action => 'confirm_email'
 
   map.documentation '/appdata'
+  
+  map.documentation '/tutorial'
 
   map.connect '/doc', :controller => 'application', :action => 'index'
-
+  
   map.connect '/test', :controller => 'application', :action => 'test'
-
+  
+  
   map.root :controller => 'application',
            :action => 'index',
            :conditions => { :method => :get }

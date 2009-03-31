@@ -2,7 +2,8 @@ require 'digest/sha2'
 
 class Person < ActiveRecord::Base
   include AuthenticationHelper
-
+  
+  include_simple_groups
   usesguid
 
   attr_reader :password
@@ -232,6 +233,17 @@ class Person < ActiveRecord::Base
       username
     end
   end
+  
+  # Methods provided by include_simple_groups:
+  # user.groups
+  # user.pending_groups
+  # user.is_member_of?(group)
+  # user.is_mod_of?(group)
+  # user.request_membership_of(group)
+  # user.pending_and_accepted_groups
+  # user.membership(group)
+  # user.leave(group)
+  # user.become_member_of(group)
   
   private
   

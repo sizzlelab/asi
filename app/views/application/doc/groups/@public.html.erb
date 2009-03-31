@@ -1,0 +1,13 @@
+<h1><code>/groups/@public</code></h1>
+<p>
+  A resource for accessing all the public groups. Public groups include those with type <code>open</code> or <code>closed</code>
+</p>
+
+<% methods = [ 
+                { :name => "GET", 
+
+                 :description => "Returns an array of all the public groups." },                
+               
+                ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
