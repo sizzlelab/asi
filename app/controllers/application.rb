@@ -45,19 +45,19 @@ class ApplicationController < ActionController::Base
 
   def ensure_person_login
     unless @user
-      head :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
+      render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
     end
   end
  
   def ensure_person_logout
     if @user
-      head :status => :conflict, :json => "You must logout before you can login or register".to_json and return
+      render :status => :conflict, :json => "You must logout before you can login or register".to_json and return
     end
   end
   
   def ensure_client_login
     unless @client
-      head :status => :unauthorized, :json => "Please login as a client to continue".to_json and return
+      render :status => :unauthorized, :json => "Please login as a client to continue".to_json and return
     end
   end
  

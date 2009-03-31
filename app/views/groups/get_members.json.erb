@@ -1,0 +1,5 @@
+<% if @group %>
+  <%= @group.json_with_members %>
+<% else %>
+  <%= {}.to_json %>
+<% end %>
