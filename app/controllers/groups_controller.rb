@@ -1,5 +1,9 @@
 class GroupsController < ApplicationController
 
+  #TODO enable filters
+  #before_filter :ensure_person_login, :except => [:show, :public_groups]
+  #before_filter :ensure_client_login, :only => [:show, :public_groups]
+  
   def create
     @group = Group.new(:title => params[:title], :group_type => params[:type])
     if @group.save
@@ -13,16 +17,14 @@ class GroupsController < ApplicationController
     #TODO check that asker has rights to get info
     
     #puts "show method! #{params[:group_id]}"
-    @group = Group.find_by_id(params[:group_id])
-    #@group = Group.find_by_id("testgroupid")
-     if ! @group
-       render :status => :not_found and return
-     end
+    @group = get_group_or_not_found(params[:group_id])
+
   end
   
   def public_groups
     #TODO match only public groups
     @groups = Group.find(:all)
+    render :template => 'groups/list_groups'
   end
   
   def add_member  
@@ -44,5 +46,23 @@ class GroupsController < ApplicationController
   def get_groups_of_person
     #TODO match only public groups
     @groups = Person.find_by_id(params[:user_id]).groups
+    render :template => 'groups/list_groups'
+  end
+  
+  def get_members
+    #TODO check that asker has rights to get info
+    
+    @group = get_group_or_not_found(params[:group_id])
+
+  end
+  
+  private
+  
+  def get_group_or_not_found(group_id)
+    group = Group.find_by_id(params[:group_id])
+    if ! group
+     render :status => :not_found, :json => "Could not find a group with specified id".to_json and return
+    end
+    return group
   end
 end

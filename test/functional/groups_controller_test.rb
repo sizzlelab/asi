@@ -35,4 +35,9 @@ class GroupsControllerTest < ActionController::TestCase
     assert_equal(people(:valid_person).groups.size,json["entry"].size)
   end
   
+  def test_get_public_groups
+    get :public_groups, { :format => 'json' }
+    assert_response :success, @response.body
+  end
+  
 end

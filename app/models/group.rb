@@ -63,4 +63,9 @@ class Group < ActiveRecord::Base
     end 
     #puts "Members lisäyksen JÄLKEEN: #{self.members.inspect}"
   end
+  
+  def json_with_members
+    #TODO add info of members
+    to_json
+  end
 end
