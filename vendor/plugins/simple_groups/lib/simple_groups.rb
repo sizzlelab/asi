@@ -48,14 +48,19 @@ module SimpleGroups
         #puts self.pending_and_accepted_groups.inspect + "R1"
         #self.groups
         #group.members << self unless self.pending_and_accepted_groups.include?(group)
-        group.add_member(self) #unless self.pending_and_accepted_groups.include?(group)
-        group.save
+        if group.add_member(self) #unless self.pending_and_accepted_groups.include?(group)
+          if group.accept_member(self)
+            group.save
+            return true
+          end
+        end
+        return false
         #puts self.pending_and_accepted_groups.inspect + "RRR"
         #puts "#{group.members.inspect} Group members at the moment"
           # group.members.push self 
           # puts self.pending_and_accepted_groups.inspect + "RRR222"
           # puts group.members.inspect + "PAX"
-        group.accept_member(self)
+        
           
          # puts "#{group.members.inspect} Group after acceptt"
       end

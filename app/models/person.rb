@@ -146,7 +146,9 @@ class Person < ActiveRecord::Base
                     :status => ( avatar ? "set" : "not_set" ) }
     }
     
-    if connection_person == self
+    #TODO Make more sensible check for the clients that are authorized to get email
+    # Currently check if client_id matches to Kassi.
+    if connection_person == self || client_id == "acm-TkziGr3z9Tab_ZvnhG"
       person_hash.merge!({'email' => email})
     end
     
