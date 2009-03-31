@@ -5,7 +5,7 @@ class GroupsControllerTest < ActionController::TestCase
   fixtures :people
 
   def test_create
-    post :create, {:title => "testgroup", :format => 'json'}, { :session_id => sessions(:session1).id }
+    post :create, {:title => "testgroup", :type => "open", :format => 'json'}, { :session_id => sessions(:session1).id }
     assert(Group.find_by_title("testgroup"), "Created group not found.")
   end
   

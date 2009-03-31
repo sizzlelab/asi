@@ -1,7 +1,7 @@
 class GroupsController < ApplicationController
 
   def create
-    @group = Group.new(:title => params[:title])
+    @group = Group.new(:title => params[:title], :group_type => params[:type])
     if @group.save
       render :status => :created and return
     else  
