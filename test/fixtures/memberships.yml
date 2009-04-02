@@ -5,3 +5,12 @@ one:
   group_id: testgroupid
   admin_role: 1
   accepted_at: 2008-07-11 12:36:33
+
+
+two:
+  id: 2
+  person_id: 3
+  group_id: testgroupid
+  admin_role: 0
+  accepted_at: 2008-08-11 12:36:33
+

@@ -21,7 +21,7 @@ module SimpleGroups
         self.groups.include?(group)     
       end
 
-      def is_mod_of?(group)
+      def is_admin_of?(group)
         self.membership(group).admin_role if self.is_member_of?(group)
       end
 

@@ -64,8 +64,14 @@ class Group < ActiveRecord::Base
     #puts "Members lisäyksen JÄLKEEN: #{self.members.inspect}"
   end
   
+  def grant_admin_status_to(person)
+    person.membership(self).update_attribute("admin_role", true) if person.is_member_of?(self)
+  end
+  
   def json_with_members
     #TODO add info of members
-    to_json
+    hash = self.to_json
+    puts hash.inspect
+    return hash
   end
 end

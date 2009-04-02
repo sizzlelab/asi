@@ -1,5 +1,5 @@
-<% if @group %>
-  <%= @group.json_with_members %>
+<% if @members %>
+  <%= {:entry  => @members}.to_json %>
 <% else %>
   <%= {}.to_json %>
 <% end %>
