@@ -25,6 +25,11 @@ class GroupTest < ActiveSupport::TestCase
     #test listing members
     assert(g.members.count == 2, "Person count in group did not match")
   end
+  
+  def test_granting_admin
+    groups(:open).grant_admin_status_to(people(:contact))
+    assert people(:contact).is_admin_of?(groups(:open)), "Granting admin status failed"    
+  end
     
   
 end

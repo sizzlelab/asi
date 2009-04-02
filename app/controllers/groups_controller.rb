@@ -1,12 +1,15 @@
 class GroupsController < ApplicationController
 
   #TODO enable filters
-  #before_filter :ensure_person_login, :except => [:show, :public_groups]
-  #before_filter :ensure_client_login, :only => [:show, :public_groups]
+  before_filter :ensure_person_login, :except => [:show, :public_groups]
+  before_filter :ensure_client_login, :only => [:show, :public_groups]
   
   def create
     @group = Group.new(:title => params[:title], :group_type => params[:type])
     if @group.save
+      # Make the creator as an admin member
+      @user.become_member_of(@group)
+      @group.grant_admin_status_to(@user)
       render :status => :created and return
     else  
       render :status => :bad_request, :json => @group.errors.full_messages.to_json and return
@@ -23,7 +26,7 @@ class GroupsController < ApplicationController
   
   def public_groups
     #TODO match only public groups
-    @groups = Group.find(:all)
+    @groups = Group.all(:conditions => ["group_type = 'open' OR group_type = 'closed'"])
     render :template => 'groups/list_groups'
   end
   
@@ -53,6 +56,7 @@ class GroupsController < ApplicationController
     #TODO check that asker has rights to get info
     
     @group = get_group_or_not_found(params[:group_id])
+    @members = @group.members
 
   end
   
