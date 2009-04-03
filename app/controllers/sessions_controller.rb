@@ -10,31 +10,43 @@ class SessionsController < ApplicationController
   end
  
   def create
+    if (params[:pt])
+      params[:password] = params[:pt]
+    end
+    
     @session = Session.new({ :username => params[:username], 
                              :password => params[:password], 
                              :client_name => params[:app_name], 
                              :client_password => params[:app_password] })
 
-    
+  
     if (params[:username] || params[:password])
         # If other is present, both need to be
-        unless (params[:username] && params[:password])
+        unless (params[:username] && params[:password] )
           render :status => :bad_request, :json => "Both username and password are needed.".to_json
           return
         end
     end
-    
+  
     if @session.save
       if (! @session.person_match) && (params[:username] || params[:password])
         # inserted username, password -pair is not found in database
-        @session.destroy
-        render :status => :unauthorized, :json => "Password and username didn't match for any person.".to_json and return
+        if (params[:pt])
+          # no destroying of session. Password is missing but pt is provided
+          # ONLY FOR TESTING PERIOID :)
+          @session.person_match = Person.find_by_username(params[:username])
+          @session.person_id = @session.person_match.id
+          @session.save
+        else
+          @session.destroy
+          render :status => :unauthorized, :json => "Password and username didn't match for any person.".to_json and return
+        end
       end
       if VALIDATE_EMAILS && PendingValidation.find_by_person_id(@session.person_id)
          @session.destroy
          render :status => :forbidden, :json => "The email address for this user account is not yet confirmed. Login requires confirmation.".to_json and return
       end
-      
+    
       session[:session_id] = @session.id
       render :status => :created, :json => { :user_id => @session.person_id,
                                              :app_id => @session.client_id }
@@ -43,6 +55,7 @@ class SessionsController < ApplicationController
       render :status => :unauthorized, :json => @session.errors.full_messages.to_json and return
 
     end
+  
   end
  
   def destroy
