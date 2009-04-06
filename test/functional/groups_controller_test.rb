@@ -5,7 +5,12 @@ class GroupsControllerTest < ActionController::TestCase
   fixtures :people
 
   def test_create
-    post :create, {:title => "testgroup", :type => "open", :format => 'json'}, { :session_id => sessions(:session1).id }
+    description_text = "A group that is used for testing. It is veery nice that you can
+                        write even a little longer story here to describe the purpose and the
+                        ideology of the group... Ja even ääkköset should work here. :)"
+    post :create, {:title => "testgroup", :type => "open", 
+         :description => description_text,
+         :format => 'json'}, { :session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     #puts json.inspect
@@ -13,7 +18,9 @@ class GroupsControllerTest < ActionController::TestCase
     assert(Group.find_by_title("testgroup"), "Created group not found.")
     assert(Group.find_by_title("testgroup").members.first.is_admin_of?(Group.find_by_id(id)), 
             "Creator was not made admin in new group")
-      
+    group = Group.find(id)
+    assert_equal(description_text, group.description)
+               
   end
   
   def test_show

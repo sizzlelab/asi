@@ -16,8 +16,10 @@
 
                  :description => "Creates a new group. The creator is automatically added to the new group as an admin.", 
 
-                 :parameters => [ {:title => "The title (or name) of the group."  },
-                                  {:type => "Can be <code>open</code>, <span class='not_implemented'><code>closed</code>, <code>hidden</code> or <code>personal</code></span>"}], 
+                 :parameters => [ {:title => "The title (or name) of the group."},
+                                  {:type => "Can be <code>open</code>, <span class='not_implemented'><code>closed</code>, <code>hidden</code> or <code>personal</code></span>"},
+                                  {:description => "A descriptive text for the group (optional)"}
+                                ], 
 
                  :returns => { "201" => "Created. The response includes also the information for the group, for example the group GUID as <code>id</code>."
                               },
