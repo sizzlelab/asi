@@ -1,0 +1,16 @@
+<h1><code>/groups/&lt;group_id&gt;/@members</code></h1>
+<p>
+  A resource for accessing the member list of a single group specified by <tt>group_id</tt>
+</p>
+
+<% methods = [ { :name => "GET", 
+                 :description => "Gets the member list of the group. ",
+                 :returns => { "200" => "The returned JSON contains always an 'entry' slot, which contains a list of members
+                                          or an empty list if the group has no members."}
+                 
+               },
+                           
+                  ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+
