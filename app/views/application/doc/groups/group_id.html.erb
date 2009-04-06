@@ -1,0 +1,22 @@
+<h1><code>/groups/&lt;group_id&gt;</code></h1>
+<p>
+  A resource for accessing a single group specified by <tt>group_id</tt>
+</p>
+
+<% methods = [ { :name => "GET", 
+                 :description => "Gets the available information of the group (without the member list). ",
+                 :returns => { "200" => "OK. The response body contains the group JSON."}
+                 
+               },
+                           
+                  ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+
+<h2>Subresources</h2>
+<ul>
+<li>
+  <a href="doc/groups/group_id/@members"><tt>/groups/&lt;group_id&gt;/@members</tt></a> &ndash; 
+  the member list of the group
+</li>
+</ul>
