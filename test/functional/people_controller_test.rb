@@ -417,7 +417,61 @@ class PeopleControllerTest < ActionController::TestCase
       assert_equal 'application/json', @response.content_type
       
   end
+  
+  # Password validations are not performed in the normal way because it is not stored in clear text
+  # in the model. Here is checked that creating or updating doesn't succeed with invalid password.
+  def test_password_constraints
+    
+    too_short_password = "shw"
+    too_long_password = "abcdefghijklmnopq"
+    # Try to create user with too short password
+    post :create, { :person => {:username  => "failer", 
+                    :password => too_short_password,
+                    :email => "failer@example.gov",
+                    :consent => "FI1" }, 
+                    :format => 'json'}, 
+                  { :session_id => sessions(:client_only_session).id }
+    assert_response :bad_request 
+    json = JSON.parse(@response.body)
+    assert_nil assigns["person"] 
+    assert_equal("[\"Password is too short\"]", @response.body)
+    
+    # Try to create user with too long password
+    post :create, { :person => {:username  => "failer", 
+                    :password => too_long_password,
+                    :email => "failer@example.gov",
+                    :consent => "FI1" }, 
+                    :format => 'json'}, 
+                  { :session_id => sessions(:client_only_session).id }
+    assert_response :bad_request 
+    json = JSON.parse(@response.body)
+    assert_nil assigns["person"] 
+    assert_equal("[\"Password is too long\"]", @response.body)
+    
+    # Try to update valid users password to too short
+    encrypted_password = people(:valid_person).encrypted_password
+    put :update, { :user_id => people(:valid_person).id, :person => { :password =>too_short_password }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :bad_request
+    assert_equal("[\"Password is too short\"]", @response.body)
+    
+    #check that the stored password was not changed
+    assert_equal(encrypted_password, Person.find(people(:valid_person).id).encrypted_password)
+    json = JSON.parse(@response.body)
+    
 
+    # Try to update valid users password to too long 
+    encrypted_password = people(:valid_person).encrypted_password
+    put :update, { :user_id => people(:valid_person).id, :person => { :password =>too_long_password }, :format => 'json' }, 
+                 { :session_id => sessions(:session1).id }
+    assert_response :bad_request
+    assert_equal("[\"Password is too long\"]", @response.body)
+    
+    #check that the stored password was not changed
+    assert_equal(encrypted_password, Person.find(people(:valid_person).id).encrypted_password)
+    json = JSON.parse(@response.body)   
+  end
+  
   private 
   
   def search(search, should_find=true)

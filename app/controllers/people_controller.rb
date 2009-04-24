@@ -54,7 +54,9 @@ class PeopleController < ApplicationController
       
       render :status => :created and return
     else
-      render :status => :bad_request, :json => @person.errors.full_messages.to_json and return
+      render :status => :bad_request, :json => @person.errors.full_messages.to_json 
+      @person = nil
+      return
     end
   end
 
