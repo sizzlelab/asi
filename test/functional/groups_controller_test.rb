@@ -11,7 +11,7 @@ class GroupsControllerTest < ActionController::TestCase
     post :create, {:title => "testgroup", :type => "open", 
          :description => description_text,
          :format => 'json'}, { :session_id => sessions(:session1).id }
-    assert_response :success, @response.body
+    assert_response :created, @response.body
     json = JSON.parse(@response.body)
     #puts json.inspect
     assert id = json["group"]["id"]

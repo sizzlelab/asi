@@ -1,8 +1,9 @@
 class GroupsController < ApplicationController
 
   #TODO enable filters
-  before_filter :ensure_person_login, :except => [:show, :public_groups]
-  before_filter :ensure_client_login, :only => [:show, :public_groups]
+  methods_not_requiring_person_login = [:show, :public_groups, :get_members]
+  before_filter :ensure_person_login, :except => methods_not_requiring_person_login
+  before_filter :ensure_client_login, :only => methods_not_requiring_person_login
   
   def create
     @group = Group.new(:title => params[:title], :group_type => params[:type], :description => params[:description])

@@ -6,9 +6,10 @@ module AuthenticationHelper
 
   def password=(password)
     @password = password
-    unless password_is_not_being_updated?
-      self.salt = [Array.new(9){rand(256).chr}.join].pack('m').chomp
-      self.encrypted_password = ENCRYPT.hexdigest(password + self.salt)
+    
+    unless errors.on(:password)
+        self.salt = [Array.new(9){rand(256).chr}.join].pack('m').chomp
+        self.encrypted_password = ENCRYPT.hexdigest(password + self.salt)
     end
   end
  
@@ -20,6 +21,8 @@ module AuthenticationHelper
     @password = @password_confirmation = nil
   end
  
+  #The purpose of this method is probably that it checks if password is being updated or not
+  # ie. if there already is an encrypted password and we need no checkin for the clear text password
   def password_is_not_being_updated?
     self.id and self.password.blank?
   end

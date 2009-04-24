@@ -22,14 +22,13 @@ class PersonTest < ActiveSupport::TestCase
   end
 
   # This person should be invalid by construction. 
-  # def test_person_invalidity 
-  #    assert !@invalid_person.valid? 
-  #    attributes = [:username, :encrypted_password] 
-  #    attributes.each do |attribute| 
-  #      assert @invalid_person.errors.invalid?(attribute) 
-  #    end 
-  #  end
-  # FROM AUTH should be remade because new costraints for password...
+  def test_person_invalidity 
+     assert !@invalid_person.valid? 
+     attributes = [:username, :email] 
+     attributes.each do |attribute| 
+       assert @invalid_person.errors.invalid?(attribute) 
+     end 
+   end
 
   # Check uniqueness of username.
   def test_uniqueness_of_username
@@ -51,12 +50,15 @@ class PersonTest < ActiveSupport::TestCase
     assert_length :max, @valid_person, :username, Person::USERNAME_MAX_LENGTH
   end
 
+  # This is not in use because password lenght is validated only on create and update, not on model level, as normal
+  # Password constraints are tested in people_controller_test (func)
+  
   # Check that password is not too long or too short.
   # def test_password_length_boundaries
-  #   assert_length :min, @valid_person, :password, Person::PASSWORD_MIN_LENGTH
-  #   assert_length :max, @valid_person, :password, Person::PASSWORD_MAX_LENGTH
+  #   just_created_person = Person.new(:email => "valid@example.com", :username => "passwdtester", :password => "firstProperValue") #password length is only checked if encrypted password is not already set
+  #   assert_length :min, just_created_person, :password, Person::PASSWORD_MIN_LENGTH
+  #   assert_length :max, just_created_person, :password, Person::PASSWORD_MAX_LENGTH
   # end
-  # FROM AUTH
 
   # Test the validations involving username with valid examples.
   def test_username_with_valid_examples 

@@ -71,7 +71,7 @@ class Group < ActiveRecord::Base
   def json_with_members
     #TODO add info of members
     hash = self.to_json
-    puts hash.inspect
+    #puts hash.inspect
     return hash
   end
 end

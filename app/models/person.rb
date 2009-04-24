@@ -35,6 +35,8 @@ class Person < ActiveRecord::Base
   :conditions => "status = 'pending'"
 
   # Max & min lengths for all fields 
+  PASSWORD_MIN_LENGTH = 4
+  PASSWORD_MAX_LENGTH = 16
   USERNAME_MIN_LENGTH = 3 
   USERNAME_MAX_LENGTH = 20 
   USERNAME_RANGE = USERNAME_MIN_LENGTH..USERNAME_MAX_LENGTH 
@@ -46,9 +48,13 @@ class Person < ActiveRecord::Base
   # Constant to present the "accepted" connection in returned JSONs
   ACCEPTED_CONNECTION_STRING = "friend"
   
-  #validates_presence_of :username, :password
+  validates_presence_of :username
+  #validates_presence_of :password, :unless  => :encrypted_password
   validates_uniqueness_of :username, :email
   #validates_length_of :username, :within => USERNAME_RANGE
+  validates_length_of :password, :minimum => PASSWORD_MIN_LENGTH, :message => "is too short", :unless =>  :password_is_not_being_updated? 
+  validates_length_of :password, :maximum => PASSWORD_MAX_LENGTH, :message => "is too long", :unless =>  :password_is_not_being_updated? 
+  #Password length is validated in AuthenticationHelper
   validates_length_of :username, :minimum => USERNAME_MIN_LENGTH, :message => "is too short"
   validates_length_of :username, :maximum => USERNAME_MAX_LENGTH, :message => "is too long"
   validates_length_of :email, :maximum => EMAIL_MAX_LENGTH, :message => "is too long"
@@ -57,7 +63,7 @@ class Person < ActiveRecord::Base
                       :with => /^[A-Z0-9_]*$/i, 
                       :message => "is invalid"
   
-  validates_format_of :password, :with => /^([\x20-\x7E]){4,16}$/,
+  validates_format_of :password, :with => /^([\x20-\x7E])+$/,
                       :message => "is invalid",
                       :unless => :password_is_not_being_updated?                    
 
