@@ -19,20 +19,21 @@ class Person < ActiveRecord::Base
   has_many :roles, :dependent => :destroy
   has_many :sessions, :dependent => :destroy
   has_many :connections, :dependent => :destroy
+  
   has_many :contacts, 
-  :through => :connections,
-  :conditions => "status = 'accepted'", 
-  :order => :username
+           :through => :connections,
+           :conditions => "status = 'accepted'", 
+           :order => :username
 
   has_many :requested_contacts, 
-  :through => :connections, 
-  :source => :contact,
-  :conditions => "status = 'requested'" 
+           :through => :connections, 
+           :source => :contact,
+           :conditions => "status = 'requested'" 
 
   has_many :pending_contacts, 
-  :through => :connections, 
-  :source => :contact,
-  :conditions => "status = 'pending'"
+           :through => :connections, 
+           :source => :contact,
+           :conditions => "status = 'pending'"
 
   # Max & min lengths for all fields 
   PASSWORD_MIN_LENGTH = 4

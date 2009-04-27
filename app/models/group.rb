@@ -7,12 +7,17 @@ class Group < ActiveRecord::Base
   has_many :mods, :through => :memberships, :source => :person, :conditions => ['admin_role = ?', true]
 
   VALID_GROUP_TYPES =  %w(open) #closed hidden personal (to be implemented)
+  TITLE_MIN_LENGTH = 2
+  TITLE_MAX_LENGTH = 70
+  DESCRIPTION_MAX_LENGTH = 400
 
   validates_inclusion_of :group_type,
-  :in => VALID_GROUP_TYPES,
-  :allow_nil => false,
-  :message => "must currently be 'open'" #", 'closed', 'hidden' or 'personal'"
-
+                         :in => VALID_GROUP_TYPES,
+                         :allow_nil => false,
+                         :message => "must currently be 'open'" #", 'closed', 'hidden' or 'personal'"
+                         
+  validates_length_of :title, :within => 2..70
+  validates_length_of :description, :allow_nil => true, :allow_blank => true, :maximum => DESCRIPTION_MAX_LENGTH, :message => "is too long"                       
   
   def membership(person)
     Membership.find(:first, :conditions => ['group_id = ? AND person_id = ?', self.id, person.id])
