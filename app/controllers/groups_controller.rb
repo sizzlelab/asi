@@ -32,15 +32,17 @@ class GroupsController < ApplicationController
   end
   
   def add_member  
-    #TODO check that people can add only himslef
+    if params[:user_id] != @user.id
+      render :status => :forbidden, :json  => ["Only the user himself can add him to this group."].to_json and return
+    end
     
     @group = Group.find_by_id(params[:group_id])
     @person = Person.find_by_id(params[:user_id])
     if ! @group
-      render :status => :not_found, :json => "Could not find a group with specified id".to_json and return
+      render :status => :not_found, :json => ["Could not find a group with specified id"].to_json and return
     end
     if ! @person 
-      render :status => :not_found, :json => "Could not find a person with specified id".to_json and return
+      render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
     end
     
     @person.become_member_of(@group)   
@@ -61,12 +63,30 @@ class GroupsController < ApplicationController
 
   end
   
+  def remove_person_from_group
+    if params[:user_id] != @user.id
+      render :status => :forbidden, :json  => ["Only the user himself can remove him from this group."].to_json and return
+    end
+    
+    @group = Group.find_by_id(params[:group_id])
+    @person = Person.find_by_id(params[:user_id])
+    if ! @group
+      render :status => :not_found, :json => ["Could not find a group with specified id"].to_json and return
+    end
+    if ! @person 
+      render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
+    end
+    
+    @person.leave(@group)
+    
+  end
+  
   private
   
   def get_group_or_not_found(group_id)
     group = Group.find_by_id(params[:group_id])
     if ! group
-     render :status => :not_found, :json => "Could not find a group with specified id".to_json and return
+     render :status => :not_found, :json => ["Could not find a group with specified id"].to_json and return
     end
     return group
   end

@@ -9,7 +9,14 @@
                                           or an empty list if the group has no members."}
                  
                },
-                           
+              { :name => "POST",
+                :description => "POST is not allowed for this resource, but to add members, see: <a href=\"doc/people/user_id/@groups\"><tt>/people/&lt;user_id&gt;/@groups</tt></a>"
+                  
+              },
+              { :name => "DELETE",
+                :description => "DELETE is not allowed for this resource, but to remove members, see: <a href=\"doc/people/user_id/@groups/group_id\"><tt>/people/&lt;user_id&gt;/@groups/&lt;group_id&gt;</tt></a>"
+                
+              }             
                   ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>

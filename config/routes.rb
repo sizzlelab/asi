@@ -84,7 +84,7 @@ ActionController::Routing::Routes.draw do |map|
                                                             :get => 'pending_friend_requests'
 
   map.resource '/people/:user_id/@pending_friend_requests/:friend_id', :controller => 'people',
-                                                          :delete => 'reject_friend_request'
+                                                                       :delete => 'reject_friend_request'
                                                             
                                             
   map.resource '/people/:user_id/@friends/:friend_id', :controller => 'people',
@@ -95,24 +95,27 @@ ActionController::Routing::Routes.draw do |map|
                                              :put => 'update'
 
   map.resource '/people/:user_id/@transactions/transactions.xml', :controller => 'transactions',
-                                              :get => 'get',
-                                              :post => 'create'
+                                                                  :get => 'get',
+                                                                  :post => 'create'
                                               
   map.resource '/people/:user_id/@groups', :controller => 'groups',
                                            :get => 'get_groups_of_person',
                                            :post => 'add_member'
+                                           
+  map.resource '/people/:user_id/@groups/:group_id', :controller => 'groups',
+                                                     :delete => 'remove_person_from_group'                              
                                               
   map.resource '/groups', :controller => 'groups',
                           :post => 'create'
                           
   map.resource '/groups/@public', :controller => 'groups',
-                          :get => 'public_groups'
+                                  :get => 'public_groups'
                           
   map.resource '/groups/:group_id', :controller => 'groups',
-                          :get => 'show' 
+                                    :get => 'show' 
                           
   map.resource '/groups/:group_id/@members', :controller => 'groups',
-                          :get => 'get_members'                                                                       
+                                             :get => 'get_members'                                                                       
 
   map.resource '/location/single_update', :controller => 'locations',
                                           :post => 'update'

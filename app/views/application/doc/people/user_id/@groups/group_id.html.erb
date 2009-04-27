@@ -1,0 +1,16 @@
+<h1><code>/people/&lt;user_id&gt;/@groups/&lt;group_id&gt;</code></h1>
+<p>
+  A resource for accessing a single group where the user specified by <tt>user_id</tt> is member.
+</p>
+
+<% methods = [ { :name => "DELETE",
+                 :description => "Removes the person specified by <tt>user_id</tt> from the group. 
+                                  (The user_id must refer to the person who is logged in.)",
+                 :returns => { "200" => "Ok.",
+                               "404" => "Group or user was not found.",
+                              }
+
+               }
+              ] %>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
