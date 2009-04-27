@@ -33,11 +33,18 @@ class GroupsControllerTest < ActionController::TestCase
   def test_add_member
     assert ! groups(:open).has_member?(people(:friend))
     post :add_member, {:group_id =>  groups(:open).id, :user_id => people(:friend).id, :format => 'json' },
-                      { :session_id => sessions(:session1).id }
+                      { :session_id => sessions(:session4).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert groups(:open).has_member?(people(:friend))
     assert people(:friend).is_member_of?(groups(:open))
+    
+    # Should not be able to add a friend to a group (session is associated to different person)
+    post :add_member, {:group_id =>  groups(:open).id, :user_id => people(:friend).id, :format => 'json' },
+                      { :session_id => sessions(:session1).id }
+    assert_response :forbidden, @response.body
+    json = JSON.parse(@response.body)                  
+    
   end
   
   def test_get_groups_of_person
@@ -65,5 +72,21 @@ class GroupsControllerTest < ActionController::TestCase
     assert json["entry"]
     assert_equal(2, json["entry"].size)
     assert( json["entry"].first["id"] == people(:valid_person).id || json["entry"].first["id"] == people(:contact).id )           
+  end
+  
+  def test_removing_a_member
+    assert groups(:open).has_member?(people(:valid_person))
+    delete :remove_person_from_group, {:group_id =>  groups(:open).id, :user_id => people(:valid_person).id, :format => 'json' },
+                      { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert ! groups(:open).has_member?(people(:valid_person)), "Removing a group member failed!"
+    assert ! people(:valid_person).is_member_of?(groups(:open))
+    
+    # Should not be able to remove an other person from a group (session is associated to different person)
+    delete :remove_person_from_group, {:group_id =>  groups(:open).id, :user_id => people(:valid_person).id, :format => 'json' },
+                      { :session_id => sessions(:session4).id }
+    assert_response :forbidden, @response.body
+    json = JSON.parse(@response.body)
   end
 end
