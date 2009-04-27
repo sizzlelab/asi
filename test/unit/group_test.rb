@@ -30,6 +30,11 @@ class GroupTest < ActiveSupport::TestCase
     groups(:open).grant_admin_status_to(people(:contact))
     assert people(:contact).is_admin_of?(groups(:open)), "Granting admin status failed"    
   end
-    
+  
+  def test_length_boundaries
+    assert_length :min, groups(:open), :title, Group::TITLE_MIN_LENGTH
+    assert_length :max, groups(:open), :title, Group::TITLE_MAX_LENGTH
+    assert_length :max, groups(:open), :description, Group::DESCRIPTION_MAX_LENGTH
+  end
   
 end
