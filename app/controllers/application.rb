@@ -114,6 +114,11 @@ class ApplicationController < ActionController::Base
     return HashWithIndifferentAccess.new(JSON.parse(parameter_hash.to_json.gsub(/\\\\u/,'\\u')))
   end
   
+  def get_random_string
+    chars_for_key = [('a'..'z'),('A'..'Z'),(0..9)].map{|i| i.to_a}.flatten
+    return (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
+  end
+  
   protected
  
   def maintain_session_and_user
