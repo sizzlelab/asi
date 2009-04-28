@@ -3,13 +3,13 @@ require 'test_helper'
 class GroupTest < ActiveSupport::TestCase
 
   def test_create
-    g = Group.new(:title => "testiryhma", :group_type => "open")
+    g = Group.new(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
     assert(g.valid?, g.errors.full_messages)
     assert(g.save, "Saving failed!")
   end
   
   def test_add_member
-    g = Group.create(:title => "testiryhma", :group_type => "open")
+    g = Group.create(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
     assert(g.valid?, "created group was not valid")
     assert people(:friend).become_member_of(g), "Becoming a member of a group failed"
     assert(people(:friend).is_member_of?(g), "Joining a group failed.")

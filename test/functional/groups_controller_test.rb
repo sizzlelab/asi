@@ -20,7 +20,9 @@ class GroupsControllerTest < ActionController::TestCase
             "Creator was not made admin in new group")
     group = Group.find(id)
     assert_equal(description_text, group.description)
-               
+    assert_equal(sessions(:session1).person.id, group.created_by)
+             
+          
   end
   
   def test_show

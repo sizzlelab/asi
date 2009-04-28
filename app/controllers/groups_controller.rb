@@ -6,7 +6,10 @@ class GroupsController < ApplicationController
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
   
   def create
-    @group = Group.new(:title => params[:title], :group_type => params[:type], :description => params[:description])
+    @group = Group.new(:title => params[:title], 
+                       :group_type => params[:type], 
+                       :description => params[:description],
+                       :created_by => @user.id)
     if @group.save
       # Make the creator as an admin member
       @user.become_member_of(@group)

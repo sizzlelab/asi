@@ -9,7 +9,7 @@ class Group < ActiveRecord::Base
   VALID_GROUP_TYPES =  %w(open) #closed hidden personal (to be implemented)
   TITLE_MIN_LENGTH = 2
   TITLE_MAX_LENGTH = 70
-  DESCRIPTION_MAX_LENGTH = 400
+  DESCRIPTION_MAX_LENGTH = 5000
 
   validates_inclusion_of :group_type,
                          :in => VALID_GROUP_TYPES,
@@ -18,6 +18,7 @@ class Group < ActiveRecord::Base
                          
   validates_length_of :title, :within => 2..70
   validates_length_of :description, :allow_nil => true, :allow_blank => true, :maximum => DESCRIPTION_MAX_LENGTH, :message => "is too long"                       
+  validates_presence_of :created_by
   
   def membership(person)
     Membership.find(:first, :conditions => ['group_id = ? AND person_id = ?', self.id, person.id])
