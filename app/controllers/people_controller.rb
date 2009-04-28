@@ -32,9 +32,8 @@ class PeopleController < ApplicationController
                       )
       @role.save
   
-      if VALIDATE_EMAILS
-        chars_for_key = [('a'..'z'),('A'..'Z'),(0..9)].map{|i| i.to_a}.flatten
-        key = (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
+      if VALIDATE_EMAILS # set in conf/
+        key = get_random_string
         @person.pending_validation = PendingValidation.new({:key =>  key})
         @person.pending_validation.save
         if VALIDATE_EMAILS && RAILS_ENV != "development"
@@ -46,11 +45,11 @@ class PeopleController < ApplicationController
           address = "http://cos.alpha.sizl.org/confirmation?key=#{@person.pending_validation.key}"
           UserMailer.deliver_registration_confirmation(@person, address)      
         end
-      else
-        # No email validation required, assing created user to current session right away
-        @application_session.person_id = @person.id
-        @application_session.save
       end
+      # assosiating created user to current session
+      # (this first login is allowed even though the mail is not yet confirmed)
+      @application_session.person_id = @person.id
+      @application_session.save
       
       render :status => :created and return
     else
