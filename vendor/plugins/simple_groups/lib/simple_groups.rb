@@ -10,7 +10,7 @@ module SimpleGroups
         has_many :groups, :through => :memberships#, :conditions => 'accepted_at IS NOT NULL'
         has_many :pending_groups, :through => :memberships, :source => :group, :conditions => 'accepted_at IS NULL'
         
-        include SimpleGroups::UserExtensions::InstanceMethods
+        include SimpleGroups::UserExtensions::InstanceMethods #see below
       end
     end
 
