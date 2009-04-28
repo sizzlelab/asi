@@ -6,6 +6,9 @@ class GroupsController < ApplicationController
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
   
   def create
+    parameters_hash = HashWithIndifferentAccess.new(params.clone)
+    params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
+      
     @group = Group.new(:title => params[:title], 
                        :group_type => params[:type], 
                        :description => params[:description],
@@ -26,6 +29,12 @@ class GroupsController < ApplicationController
     #puts "show method! #{params[:group_id]}"
     @group = get_group_or_not_found(params[:group_id])
 
+  end
+  
+  def update
+    parameters_hash = HashWithIndifferentAccess.new(params.clone)
+    params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
+    
   end
   
   def public_groups
