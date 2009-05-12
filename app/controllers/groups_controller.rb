@@ -28,7 +28,7 @@ class GroupsController < ApplicationController
     
     #puts "show method! #{params[:group_id]}"
     @group = get_group_or_not_found(params[:group_id])
-
+    #puts "CONTROLLERISSA:#{@user}"
   end
   
   def update
@@ -38,8 +38,10 @@ class GroupsController < ApplicationController
   end
   
   def public_groups
-    #TODO match only public groups
     @groups = Group.all(:conditions => ["group_type = 'open' OR group_type = 'closed'"])
+    @groups_hash = @groups.collect do |group|
+      group.get_group_hash(@user)
+    end
     render :template => 'groups/list_groups'
   end
   
@@ -62,8 +64,11 @@ class GroupsController < ApplicationController
   
   # Returns a list of the public groups of the person specified by user_id
   def get_groups_of_person
-    #TODO match only public groups
+    #TODO match only public groups if asker is not the user himself.
     @groups = Person.find_by_id(params[:user_id]).groups
+    @groups_hash = @groups.collect do |group|
+      group.get_group_hash(@user)
+    end
     render :template => 'groups/list_groups'
   end
   

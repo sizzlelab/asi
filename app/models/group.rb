@@ -74,10 +74,33 @@ class Group < ActiveRecord::Base
     person.membership(self).update_attribute("admin_role", true) if person.is_member_of?(self)
   end
   
-  def json_with_members
-    #TODO add info of members
-    hash = self.to_json
-    #puts hash.inspect
-    return hash
+  def to_json(asking_person=nil, *a)
+    group_hash = get_group_hash(asking_person)
+    return group_hash.to_json(*a)
   end
+  
+  def get_group_hash(asking_person=nil)
+    group_hash = {'group'  => {
+      'id' => id,
+      'title' => title, 
+      'description' => description,
+      'group_type' => group_type,
+      'created_at' => created_at,
+      'created_by' => created_by,
+      'number_of_members' => members.count
+      }
+    }
+    
+    if asking_person
+      group_hash['group'].merge!({'is_member' => (has_member?(asking_person))})
+    end
+    return group_hash
+  end
+  
+  # def json_with_members
+  #   #TODO add info of members
+  #   hash = self.to_json
+  #   #puts hash.inspect
+  #   return hash
+  # end
 end
