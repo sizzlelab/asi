@@ -20,9 +20,7 @@ class GroupsControllerTest < ActionController::TestCase
             "Creator was not made admin in new group")
     group = Group.find(id)
     assert_equal(description_text, group.description)
-    assert_equal(sessions(:session1).person.id, group.created_by)
-             
-          
+    assert_equal(sessions(:session1).person.id, group.created_by)  
   end
   
   def test_show
@@ -30,6 +28,13 @@ class GroupsControllerTest < ActionController::TestCase
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert_equal(groups(:open).title, json['group']['title'])
+    assert_equal(groups(:open).description, json['group']['description'])
+    assert_equal(groups(:open).id, json['group']['id'])
+    assert_equal(groups(:open).members.count, json['group']['number_of_members'])
+    assert_equal(groups(:open).created_by, json['group']['created_by'])
+    assert_equal(groups(:open).group_type, json['group']['group_type'])
+    #assert_equal(groups(:open).created_at, json['group']['created_at']) #format problems prevent easy testing
+    assert_equal(groups(:open).has_member?(sessions(:session1).person), json['group']['is_member'])
   end
   
   def test_add_member

@@ -1,6 +1,7 @@
 open:
   id: testgroupid
   title: "Open testiryhma-group"
+  description: "Tänne hurjasti ääkkösia for testing!%#€# :D"
   created_by: 1
   group_type: open
   
