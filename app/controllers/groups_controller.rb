@@ -1,6 +1,5 @@
 class GroupsController < ApplicationController
 
-  #TODO enable filters
   methods_not_requiring_person_login = [:show, :public_groups, :get_members]
   before_filter :ensure_person_login, :except => methods_not_requiring_person_login
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
