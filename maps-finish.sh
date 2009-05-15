@@ -4,7 +4,7 @@
 
 SERVERNAME="http://maps.cs.hut.fi/cos/"
 # for regexp use, the same name in escaped form
-ESCAPED_SERVERNAME="http\:\/\/maps\.cs\.hut\.fi\/cos\/"
+ESCAPED_SERVERNAME="http\:\/\/maps\.cs\.hut\.fi\/cos"
 
 #change relative url root to SERVERNAME
 sed -i "s/relative_url_root = \"http\:\/\/cos\.sizl\.org\"/relative_url_root = \"$ESCAPED_SERVERNAME\"/" config/environments/production.rb
