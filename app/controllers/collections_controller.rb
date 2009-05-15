@@ -48,8 +48,14 @@ class CollectionsController < ApplicationController
                                  :tags => params["tags"],
                                  :metadata => params[:metadata],
                                  :title => params["title"],
-                                 :priv => params["priv"] )
-
+                                 :priv => params["priv"],
+                                 :id => params["id"] )
+                                 
+    # Check: if user submitted an id, but it is not set, there was an error
+    if params["id"] && params["id"] != @collection.id                        
+      render :status => :bad_request, :json =>  @collection.errors.full_messages and return                     
+    end
+    
     if @user and params['owner']
       if @collection.indestructible
         render :status => :bad_request, :json => "Cannot set both: owner and indestructible" and return
@@ -66,8 +72,12 @@ class CollectionsController < ApplicationController
     
     @collection.client = @client
     @collection.updated_by = @user ? @user.id : @client.id
-    @collection.save
-    render :status => :created
+        
+    if @collection.save
+      render :status => :created
+    else
+      render :status => :bad_request, :json =>  @collection.errors.full_messages and return 
+    end
   end
 
   def update
