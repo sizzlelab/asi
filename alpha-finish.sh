@@ -5,12 +5,17 @@
 # located (see COS_PATH from alpha-build.sh)
 
 SERVERNAME="http://cos.alpha.sizl.org/"
+# for regexp use, the same name in escaped form
+ESCAPED_SERVERNAME="http\:\/\/cos\.alpha\.sizl\.org\/"
 
 #change COS to use alpha's Ressi
 sed -i "s/localhost\:9000/cos\.alpha\.sizl\.org\/ressi\//" config/environment.rb
 
 # turn on email validation
 sed -i "s/VALIDATE_EMAILS = false/VALIDATE_EMAILS = true/" config/environment.rb
+
+#change relative url root to SERVERNAME
+sed -i "s/relative_url_root = \"http\:\/\/cos\.sizl\.org\"/relative_url_root = \"$ESCAPED_SERVERNAME\"/" config/environments/production.rb
 
 REV=$((`svn info file:///svn/common-services | \
 grep "^Last Changed Rev" | \
