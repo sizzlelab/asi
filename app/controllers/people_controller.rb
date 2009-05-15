@@ -137,7 +137,7 @@ class PeopleController < ApplicationController
     if person
       UserMailer.deliver_recovery(:key => CryptoHelper.encrypt("#{person.id}:#{person.salt}"),
                                   :email => person.email,
-                                  :domain => request.env['HTTP_HOST'])
+                                  :domain => SERVER_DOMAIN)
       render :json => "Recovery mail sent to specified address.".to_json, :status => :ok and return
     else
       render :json => "Record not found.".to_json, :status => :not_found and return
