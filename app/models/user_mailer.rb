@@ -7,4 +7,13 @@ class UserMailer < ActionMailer::Base
     body       :user => user, :confirmation_url => confirmation_url
   end
 
+  def recovery(options)
+    recipients options[:email]
+    from COS_MAIL_FROM_ADRESS
+    subject "OtaSizzle password recovery"
+    content_type 'text/html'
+
+    body :key => options[:key], :domain => options[:domain]
+  end
+
 end

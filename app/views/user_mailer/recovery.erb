@@ -1,0 +1,12 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+
+Hi,<br/><br/>
+
+This is automated password recovery email. If you haven't requested this mail please ignore it. <br/><br/>
+
+In order to change your password please follow this link:<br/>
+
+<%= "http://#{@domain}/people/reset_password?id=#{@key}" %>

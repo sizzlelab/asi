@@ -2,8 +2,11 @@ require 'test_helper'
 
 class UserMailerTest < ActionMailer::TestCase
   fixtures :people
-  
-  
+
+  def setup
+    ActionMailer::Base.deliveries.clear
+  end
+
   def test_registration_confirmation
     person = people(:valid_person)
     mail = UserMailer.create_registration_confirmation(person, "random_key")
@@ -12,5 +15,26 @@ class UserMailerTest < ActionMailer::TestCase
     assert_equal(person.email, mail.to.first)
     
     #TODO tests for the contents too
+  end
+
+  def test_password_recovery
+    person = people(:valid_person)
+
+    key = CryptoHelper.encrypt("#{person.id}:#{person.salt}")
+
+    UserMailer.deliver_recovery(:key => key,
+                                  :email => person.email,
+                                  :domain => 'localhost')
+                                                            
+    assert !ActionMailer::Base.deliveries.empty?
+
+    mail = ActionMailer::Base.deliveries.first
+
+    assert_equal([COS_MAIL_FROM_ADRESS], mail.from)
+    assert_equal([person.email], mail.to)
+    assert_equal("OtaSizzle password recovery", mail.subject)
+
+    link = "http://localhost/people/reset_password?id=#{key}"
+    assert_match(link, mail.body)
   end
 end

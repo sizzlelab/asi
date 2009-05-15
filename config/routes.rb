@@ -103,7 +103,16 @@ ActionController::Routing::Routes.draw do |map|
                                            :post => 'add_member'
                                            
   map.resource '/people/:user_id/@groups/:group_id', :controller => 'groups',
-                                                     :delete => 'remove_person_from_group'                              
+                                                     :delete => 'remove_person_from_group'
+
+  map.resource '/people/recover_password', :controller => 'people',
+                                           :post => 'recover_password'
+
+  map.resource '/people/reset_password', :controller => 'people',
+                                         :get => 'reset_password',
+                                         :post => 'change_password',
+                                         :format_get => 'html',
+                                         :format_post => 'html'
                                               
   map.resource '/groups', :controller => 'groups',
                           :post => 'create'
