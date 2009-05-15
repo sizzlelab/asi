@@ -24,7 +24,7 @@ module AuthenticationHelper
   #The purpose of this method is probably that it checks if password is being updated or not
   # ie. if there already is an encrypted password and we need no checkin for the clear text password
   def password_is_not_being_updated?
-    self.id and self.password.blank?
+    self.id and self.password.nil?
   end
 
 end

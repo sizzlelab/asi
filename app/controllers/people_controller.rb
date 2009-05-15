@@ -1,7 +1,7 @@
 class PeopleController < ApplicationController
   
   before_filter :ensure_client_login, :except => [:update_avatar, :get_avatar, :get_small_thumbnail, :get_large_thumbnail]
-  before_filter :ensure_person_logout, :only  => :create
+  before_filter :ensure_person_logout, :only  => [:create, :recover_password]
   #before_filter :fix_utf8_characters, :only => [:create, :update, :index]
   
   def index
@@ -130,7 +130,54 @@ class PeopleController < ApplicationController
       end
     end
   end
-  
+
+  def recover_password
+    person = Person.find_by_email(params[:email])
+
+    if person
+      UserMailer.deliver_recovery(:key => CryptoHelper.encrypt("#{person.id}:#{person.salt}"),
+                                  :email => person.email,
+                                  :domain => request.env['HTTP_HOST'])
+      render :json => "Recovery mail sent to specified address.".to_json, :status => :ok and return
+    else
+      render :json => "Record not found.".to_json, :status => :not_found and return
+    end
+
+  end
+
+  def reset_password
+    @id = params[:id];
+  end
+
+  def change_password
+    if(!params[:id] || params[:id].empty?)
+      flash[:notice] = "Access forbidden"
+      render :status => :unauthorized and return
+    end
+
+    begin
+      key = CryptoHelper.decrypt(params[:id]).split(/:/);
+      person = Person.find(key[0], :conditions => {:salt => key[1]})
+      
+      if(params[:password] == params[:confirm_password])
+
+        if person.update_attributes(:password => params[:password]);
+          flash[:notice] = "Changed password successfully."
+        else
+          flash[:error] = person.errors.full_messages
+          redirect_to "/people/reset_password?id=#{params[:id]}"
+        end
+      else
+        flash[:error] = "Password and confirmation do not match."
+        redirect_to "/people/reset_password?id=#{params[:id]}"
+      end
+      
+    rescue ActiveRecord::RecordNotFound
+      flash[:notice] = "Access forbidden."
+      render :status => :unauthorized and return
+    end
+
+  end
   
   def get_friends
     @person = Person.find_by_id(params['user_id'])

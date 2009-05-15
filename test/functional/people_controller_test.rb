@@ -4,6 +4,7 @@ require 'json'
 
 class PeopleControllerTest < ActionController::TestCase
   fixtures :sessions
+  fixtures :people
   
   def setup
     @controller = PeopleController.new
@@ -67,6 +68,67 @@ class PeopleControllerTest < ActionController::TestCase
     created_user = Person.find_by_username("newbie")
     assert_equal created_user.username, user.username
     assert_equal created_user.consent, user.consent
+  end
+
+  def test_recover_password
+    ActionMailer::Base.deliveries.clear
+
+    #Testing invalid email address
+    post :recover_password, { :format => 'json', :email => "not@found"},
+                            { :session_id => sessions(:client_only_session).id}
+
+    assert ActionMailer::Base.deliveries.empty?, "Testing that no email is sent."
+    assert_response :not_found, "Testing that no record is found"
+
+
+    #testing password changing
+    person = people(:valid_person)
+    post :recover_password, { :format => 'json', :email => person.email},
+                            { :session_id => sessions(:client_only_session).id}
+
+    assert !ActionMailer::Base.deliveries.empty?
+
+    mail = ActionMailer::Base.deliveries.first
+
+    id = mail.body[/id=(.*)/, 1]
+
+    get :reset_password, { :format => 'html', :id => id },
+                         { :session_id => sessions(:client_only_session).id}
+    assert_response :ok, 'Testing that form page is successfully opened.'
+
+    post :change_password, { :format => 'html', :id => id,
+                             :password => 'testing', :confirm_password => 'testing'},
+                           { :session_id => sessions(:client_only_session).id}
+    assert_response :ok, 'Testing if password is succesfully changed.'
+
+    post :change_password, { :format => 'html', :id => id,
+                             :password => 'testing', :confirm_password =>'testing'},
+                           { :session_id => sessions(:client_only_session).id}
+    assert_response :unauthorized, "Testing that id works only once, and invalid id's are not accepted"
+
+    post :change_password, { :format => 'html',
+                             :password => 'testing', :confirm_password =>'testing'},
+                           { :session_id => sessions(:client_only_session).id}
+    assert_response :unauthorized, "Testing that empty id is not accepted"
+
+    #fetching new id and testing with invalid password combinations
+    ActionMailer::Base.deliveries.clear
+    
+    post :recover_password, { :format => 'json', :email => person.email},
+                            { :session_id => sessions(:client_only_session).id}
+
+    assert !ActionMailer::Base.deliveries.empty?
+
+    mail = ActionMailer::Base.deliveries.first
+    id = mail.body[/id=(.*)/, 1]
+
+    { "password" => "pass" , "o" => "o", "" => "" }.each do |password, confirm_password|
+      post :change_password, { :format => 'html', :id => id,
+                               :password => password, :confirm_password => confirm_password},
+                             { :session_id => sessions(:client_only_session).id}
+      assert_redirected_to("people/reset_password?id=#{id}", 
+                           "Testing invalid password combinations. Password: #{password}, Confirmation: #{confirm_password}")
+    end
   end
 
   def test_update
