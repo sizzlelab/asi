@@ -10,7 +10,7 @@ ESCAPED_SERVERNAME="http\:\/\/maps\.cs\.hut\.fi\/cos"
 #sed -i "s/relative_url_root = \"http\:\/\/cos\.sizl\.org\"/relative_url_root = \"$ESCAPED_SERVERNAME\"/" config/environments/production.rb
 
 #change SERVER_DOMAIN constant to SERVERNAME
-sed -i "s/SERVER_DOMAIN =  \"http\:\/\/cos\.sizl\.org\"/SERVER_DOMAIN = \"$ESCAPED_SERVERNAME\"/" config/environments/production.rb
+sed -i "s/SERVER_DOMAIN = \"http\:\/\/cos\.sizl\.org\"/SERVER_DOMAIN = \"$ESCAPED_SERVERNAME\"/" config/environments/production.rb
 
 
 REV=$((`svn info svn+ssh://alpha.sizl.org/svn/common-services | \
