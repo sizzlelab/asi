@@ -32,5 +32,5 @@ ActionMailer::Base.default_charset = "utf-8"
 
 # This should correct the URL:s in links in production site
 # This is changed to match the server name in server specific finsih scripts
-ActionController::AbstractRequest.relative_url_root = "http://cos.sizl.org"
+# ActionController::AbstractRequest.relative_url_root = "http://cos.sizl.org"
 
