@@ -5,10 +5,9 @@
 # located (see COS_PATH from alpha-build.sh)
 
 #CHANGED TEMPORARILY TO KASSI TO TEST WHILE OTAVERKKO HAS PROBLEMS
-SERVERNAME="http://kassi.alpha.sizl.org/"
-
+SERVERNAME="http://kassi.alpha.sizl.org"
 # for regexp use, the same name in escaped form
-ESCAPED_SERVERNAME="http\:\/\/cos\.alpha\.sizl\.org"
+ESCAPED_SERVERNAME="http\:\/\/kassi\.alpha\.sizl\.org"
 
 #change COS to use alpha's Ressi
 sed -i "s/localhost\:9000/cos\.alpha\.sizl\.org\/ressi\//" config/environment.rb
@@ -17,7 +16,12 @@ sed -i "s/localhost\:9000/cos\.alpha\.sizl\.org\/ressi\//" config/environment.rb
 sed -i "s/VALIDATE_EMAILS = false/VALIDATE_EMAILS = true/" config/environment.rb
 
 #change relative url root to SERVERNAME
-sed -i "s/relative_url_root = \"http\:\/\/cos\.sizl\.org\"/relative_url_root = \"$ESCAPED_SERVERNAME\"/" config/environments/production.rb
+#sed -i "s/relative_url_root = \"http\:\/\/cos\.sizl\.org\"/relative_url_root = \"$ESCAPED_SERVERNAME\"/" config/environments/production.rb
+
+#change SERVER_DOMAIN constant to SERVERNAME
+sed -i "s/SERVER_DOMAIN =  \"http\:\/\/cos\.sizl\.org\"/SERVER_DOMAIN = \"$ESCAPED_SERVERNAME\"/" config/environments/production.rb
+
+
 
 REV=$((`svn info file:///svn/common-services | \
 grep "^Last Changed Rev" | \
