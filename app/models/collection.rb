@@ -1,12 +1,25 @@
 class Collection < ActiveRecord::Base
   usesguid
 
+  attr_accessor :user_set_id
   has_many_polymorphs :items, :from => [:text_items, :images, :collections], :through => :ownerships, :as => :parent
   belongs_to :owner, :class_name => "Person"
   belongs_to :client
   serialize :metadata, Hash
 
   validates_presence_of :client
+  
+  def initialize(params={})
+    handle_user_requested_id_param(params[:id])
+    super(params)
+  end
+  
+  # GUID plugin sets its own random id automatically, but if user set an id, use it here
+  def after_initialize
+    if self.user_set_id
+      self.id = self.user_set_id
+    end
+  end
 
   def to_json(user=nil,client=nil, count=nil, start_index=nil, *a)
     return {}.to_json if client.nil?
@@ -181,4 +194,16 @@ class Collection < ActiveRecord::Base
     end
   end
   
+  def handle_user_requested_id_param(id)
+    #Check that if user submitted an id, it has to be in right format     
+    if id 
+      if  !(id =~ /^[A-Z0-9_]{8,22}$/i)
+        errors.add :id, "is not in valid format. Use only letters, numbers and underscore. Length preferably 22. (min 8)"
+      elsif Collection.find_by_id(id)
+        errors.add(:id, "is already taken.")
+      else
+        self.user_set_id = id #store id from params to temporary attribute which is used in after_initialize        
+      end   
+    end 
+  end  
 end

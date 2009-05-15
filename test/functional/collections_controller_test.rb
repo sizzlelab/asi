@@ -139,12 +139,12 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_equal("test-collection", json["title"])
 
     # With only an owner
-    post :create, { :format => 'json' }, 
-                  { :owner => people(:valid_person).id }
+    post :create, { :format => 'json', :owner => people(:valid_person).id }, 
+                  { :session_id => sessions(:session1).id }
     assert_response :forbidden
 
     # With neither
-    post :create, { :format => 'json' }
+    post :create, { :format => 'json' }, {:session_id => sessions(:session1).id}
     assert_response :forbidden
   end
     
@@ -522,4 +522,49 @@ class CollectionsControllerTest < ActionController::TestCase
     end      
   end
   
+  def test_creating_a_collection_with_predefined_id
+    test_id = "test_id_with_randomnes"
+    
+    post :create, { :app_id => clients(:one).id, :format => 'json', :title => "test-collection", :id => test_id}, 
+                  { :client => clients(:one).id, :session_id => sessions(:session1).id }              
+    assert_response :created, @response.body
+    assert_not_nil assigns["collection"]
+    assert_nil assigns["collection"].owner
+    assert_equal(assigns["collection"].client, clients(:one))
+    json = JSON.parse(@response.body)
+    assert_not_nil json["id"]
+    assert_not_nil(json["title"])
+    assert_equal("test-collection", json["title"])
+    assert_equal(test_id, json["id"])
+    
+    #test that the id of the created collection was set right
+    get :show, { :app_id => clients(:one).id, :id => test_id, :format => 'json' }, 
+               { :session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal(test_id, json["id"])
+    
+    # Test that can't make an other collection with same id
+     post :create, { :app_id => clients(:one).id, :format => 'json', :title => "test-collection", :id => test_id}, 
+                    { :client => clients(:one).id, :session_id => sessions(:session1).id }
+    assert_response :bad_request, @response.body
+    json = JSON.parse(@response.body)
+    assert(json.to_s.match(/is already taken/), "No message about the id being already taken")
+    
+    # Test that can't make with too short ID
+     post :create, { :app_id => clients(:one).id, :format => 'json', :title => "shortID", :id => test_id}, 
+                    { :client => clients(:one).id, :session_id => sessions(:session1).id }
+    assert_response :bad_request, @response.body
+
+    # Test that can't make with too long ID
+     post :create, { :app_id => clients(:one).id, :format => 'json', :title => "over_22_chars_long_id12", :id => test_id}, 
+                    { :client => clients(:one).id, :session_id => sessions(:session1).id }
+    assert_response :bad_request, @response.body
+    
+    # Test that can't make id with illegal characters 
+     post :create, { :app_id => clients(:one).id, :format => 'json', :title => "id_with_€%&_spice", :id => test_id}, 
+                    { :client => clients(:one).id, :session_id => sessions(:session1).id }
+    assert_response :bad_request, @response.body
+
+  end
 end
