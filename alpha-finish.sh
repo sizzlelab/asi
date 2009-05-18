@@ -4,10 +4,10 @@
 # NOTE: This script must be run from the same directory where the COS is 
 # located (see COS_PATH from alpha-build.sh)
 
-#CHANGED TEMPORARILY TO KASSI TO TEST WHILE OTAVERKKO HAS PROBLEMS
-SERVERNAME="http://kassi.alpha.sizl.org"
+
+SERVERNAME="http://cos.alpha.sizl.org"
 # for regexp use, the same name in escaped form
-ESCAPED_SERVERNAME="http\:\/\/kassi\.alpha\.sizl\.org"
+ESCAPED_SERVERNAME="http\:\/\/cos\.alpha\.sizl\.org"
 
 #change COS to use alpha's Ressi
 sed -i "s/localhost\:9000/cos\.alpha\.sizl\.org\/ressi\//" config/environment.rb
