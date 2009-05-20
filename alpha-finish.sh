@@ -29,7 +29,7 @@ perl -pi -e "s/Last Changed Rev: //"`-`svn info file:///svn/common-services/tags
 grep "^Last Changed Rev" | \
 perl -pi -e "s/Last Changed Rev: //"`))
 echo $REV > app/views/layouts/_revision.html.erb
-echo $SERVERNAME > app/views/layouts/_servername.html.erb
+#echo $SERVERNAME > app/views/layouts/_servername.html.erb
 date > app/views/layouts/_build_date.html.erb
 rake db:migrate
 rake test
