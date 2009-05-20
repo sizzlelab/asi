@@ -4,6 +4,8 @@ class GroupsController < ApplicationController
   before_filter :ensure_person_login, :except => methods_not_requiring_person_login
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
   
+  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group ]
+  
   def create
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
     params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
@@ -26,7 +28,7 @@ class GroupsController < ApplicationController
     #TODO check that asker has rights to get info
     
     #puts "show method! #{params[:group_id]}"
-    @group = get_group_or_not_found(params[:group_id])
+    #@group = get_group_or_not_found(params[:group_id])
     #puts "CONTROLLERISSA:#{@user}"
   end
   
@@ -49,11 +51,7 @@ class GroupsController < ApplicationController
       render :status => :forbidden, :json  => ["Only the user himself can add him to this group."].to_json and return
     end
     
-    @group = Group.find_by_id(params[:group_id])
     @person = Person.find_by_id(params[:user_id])
-    if ! @group
-      render :status => :not_found, :json => ["Could not find a group with specified id"].to_json and return
-    end
     if ! @person 
       render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
     end
@@ -74,7 +72,7 @@ class GroupsController < ApplicationController
   def get_members
     #TODO check that asker has rights to get info
     
-    @group = get_group_or_not_found(params[:group_id])
+    #@group = get_group_or_not_found(params[:group_id])
     @members = @group.members
 
   end
@@ -83,12 +81,8 @@ class GroupsController < ApplicationController
     if params[:user_id] != @user.id
       render :status => :forbidden, :json  => ["Only the user himself can remove him from this group."].to_json and return
     end
-    
-    @group = Group.find_by_id(params[:group_id])
+       
     @person = Person.find_by_id(params[:user_id])
-    if ! @group
-      render :status => :not_found, :json => ["Could not find a group with specified id"].to_json and return
-    end
     if ! @person 
       render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
     end
@@ -103,11 +97,11 @@ class GroupsController < ApplicationController
   
   private
   
-  def get_group_or_not_found(group_id)
-    group = Group.find_by_id(params[:group_id])
-    if ! group
-     render :status => :not_found, :json => ["Could not find a group with specified id"].to_json and return
+  def get_group_or_not_found
+    begin
+      @group = Group.find(params[:group_id])
+    rescue ActiveRecord::RecordNotFound
+      head :status => :not_found and return
     end
-    return group
   end
 end
