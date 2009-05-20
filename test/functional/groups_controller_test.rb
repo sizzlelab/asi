@@ -78,7 +78,13 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert json["entry"]
     assert_equal(2, json["entry"].size)
-    assert( json["entry"].first["id"] == people(:valid_person).id || json["entry"].first["id"] == people(:contact).id )           
+    assert( json["entry"].first["id"] == people(:valid_person).id || json["entry"].first["id"] == people(:contact).id ) 
+    
+    # try to get members of unexisting group
+    get :get_members, {:group_id =>  "non_existent_id", :format => 'json' },
+                      { :session_id => sessions(:session1).id }
+    assert_response :not_found, @response.body
+          
   end
   
   def test_removing_a_member
