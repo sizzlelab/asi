@@ -95,5 +95,16 @@ class GroupsControllerTest < ActionController::TestCase
                       { :session_id => sessions(:session4).id }
     assert_response :forbidden, @response.body
     json = JSON.parse(@response.body)
+    
+    # Should destroy the group when the last person leaves
+    assert groups(:open).has_member?(people(:contact))
+    assert_not_nil(Group.find_by_id(groups(:open).id))
+    delete :remove_person_from_group, {:group_id =>  groups(:open).id, :user_id => people(:contact).id, :format => 'json' },
+                      { :session_id => sessions(:session7).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    #assert ! groups(:open).has_member?(people(:valid_person)), "Removing a group member failed!"
+    #assert ! people(:valid_person).is_member_of?(groups(:open))
+    assert_nil(Group.find_by_id(groups(:open).id),"Group not destroyed when last person leaved.")
   end
 end
