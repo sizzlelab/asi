@@ -1,7 +1,7 @@
 class Group < ActiveRecord::Base
   usesguid
 
-  has_many :memberships
+  has_many :memberships, :dependent => :destroy
   has_many :members, :through => :memberships, :source => :person, :conditions => 'accepted_at IS NOT NULL'
   has_many :pending_members, :through => :memberships, :source => :person, :conditions => 'accepted_at IS NULL'
   has_many :mods, :through => :memberships, :source => :person, :conditions => ['admin_role = ?', true]

@@ -95,6 +95,10 @@ class GroupsController < ApplicationController
     
     @person.leave(@group)
     
+    # If the last member leaves, the group is destroyed
+    if @group.members.count < 1
+      @group.destroy
+    end
   end
   
   private
