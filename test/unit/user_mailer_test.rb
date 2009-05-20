@@ -24,7 +24,7 @@ class UserMailerTest < ActionMailer::TestCase
 
     UserMailer.deliver_recovery(:key => key,
                                   :email => person.email,
-                                  :domain => 'localhost')
+                                  :domain => SERVER_DOMAIN)
                                                             
     assert !ActionMailer::Base.deliveries.empty?
 
@@ -34,7 +34,7 @@ class UserMailerTest < ActionMailer::TestCase
     assert_equal([person.email], mail.to)
     assert_equal("OtaSizzle password recovery", mail.subject)
 
-    link = "http://localhost/people/reset_password?id=#{key}"
+    link = "#{SERVER_DOMAIN}/people/reset_password?id=#{key}"
     assert_match(link, mail.body)
   end
 end
