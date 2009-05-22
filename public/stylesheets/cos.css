@@ -65,3 +65,207 @@ div.footer {
     background-color:#aaaacc;    
   
 }
+
+/* Feedback */
+
+#feedback_admin{
+    width: 1000px;
+    margin-left: -200px;
+}
+
+#feedback {
+	width: 600px;
+	text-align: center;
+	clear: both;
+}
+
+#feedback_spacer {
+	height: 50px;
+}
+
+#feedback_form {
+	border-top: 1px solid #000;
+	margin: 50px 0;
+	padding-top: 50px;
+}
+
+div.feedback_item {
+	margin: 3px;
+	border: 1px solid #000;
+}
+
+div.listed_feedback_checkbox {
+	width: 90px;
+	float: left;
+	padding: 10px;
+}
+
+div.listed_feedback_field {
+	width: 125px;
+	float: left;
+	padding: 10px;
+}
+
+div.listed_feedback_field_wider {
+	width: 200px;
+	float: left;
+	padding: 10px;
+}
+
+div.listed_feedback_content {
+	float: left;
+	width: 280px;
+	padding: 10px;
+}
+
+div.unhandled_feedback {
+	background: #dbf5b1;
+}
+
+div.handle_feedback_button {
+	width: 80px;
+	height: 35px;
+	border: 2px solid #64a006;
+	background: #dbf5b1;
+}
+
+div.handle_feedback_button a {
+	font-size: 10px;
+	font-weight: bold;
+	text-decoration: none;
+	display: block;
+	height: 25px;
+	background: #c0e783;
+	padding: 5px;
+}
+
+div.handle_feedback_button a:hover {
+	background: #dbf5b1;
+}
+
+div.accept_or_reject_terms {
+	margin-left: 10px;
+	overflow: hidden;
+}
+
+div.terms {
+	clear: both;
+}
+
+/* Content page -specific link panel */
+div.links_panel {
+	background: #e0e6d8;
+	margin-top: 10px;
+	padding: 7px 8px;
+	overflow: hidden;
+	border: 1px solid #000;
+}
+
+div.visibility_checkboxes {
+	margin: 5px;
+}
+
+/* Pagination links */
+
+div.pagination {
+	margin-top: 0px;
+	float: right;
+}
+
+div.form_container {
+	overflow: hidden;
+	width: 600px;
+}
+
+div.form_left {
+	font-weight: bold;
+	float: left;
+	width: 150px;
+	margin-top: 8px;
+	margin-bottom: 10px;
+}
+
+div.form_right {
+	float: left;
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+div.form_header {
+	font-weight: bold;
+	margin-bottom: 7px;
+}
+
+div.form_field {
+	margin-bottom: 15px;
+}
+
+div.search_form_left {
+	font-weight: bold;
+	float: left;
+	width: 75px;
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+div.search_form_right {
+	float: left;
+	margin-top: 3px;
+	margin-bottom: 7px;
+}
+
+/* Listed objects */
+
+div.listed_object {
+	width: 731px;
+	overflow: hidden;
+}
+
+div.listed_full_width_object {
+	width: 958px;
+	overflow: hidden;
+}
+
+div.listed_object_person_image {
+	float: left;
+	padding: 10px;
+	width: 50px;
+}
+
+div.listed_object_title {
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 13px;
+}
+
+div.listed_object_title a {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+div.listed_object_right {
+	width: 292px;
+	float: left;
+	padding: 10px;
+}
+
+div.listed_object_right_line {
+	overflow: hidden;
+	width: 270px;
+	margin-bottom: 3px;
+}
+
+div.listed_object_right_line_title {
+	font-weight: bold;
+	float: left;
+	width: 155px;
+}
+
+div.listed_object_right_line_content {
+	float: left;
+	width: 115px;
+}
+
+div.pagination_padding {
+	padding-top: 6px;
+}

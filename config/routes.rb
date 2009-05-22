@@ -28,6 +28,10 @@ ActionController::Routing::Routes.draw do |map|
 
   map.extend(COSRoutes)
 
+  map.namespace :admin do |admin|
+    admin.resources :feedbacks, :member => { :handle => :put }
+  end
+
   map.resource '/appdata/:user_id/@self/:app_id', :controller => 'client_data',
                                                   :get => 'show', 
                                                   :put => 'update'
@@ -139,6 +143,8 @@ ActionController::Routing::Routes.draw do |map|
                                 :post => 'create'
   
   map.confirmation '/confirmation', :controller => 'confirmations', :action => 'confirm_email'
+
+  map.request_new_confirm_email "confirmation/request_new_confirm_email", :controller => 'confirmations', :action => "request_new_confirm_email", :format => "html", :format_get => "html"
 
   map.documentation '/appdata'
   
