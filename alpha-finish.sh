@@ -13,7 +13,7 @@ ESCAPED_SERVERNAME="http\:\/\/cos\.alpha\.sizl\.org"
 sed -i "s/localhost\:9000/cos\.alpha\.sizl\.org\/ressi\//" config/environment.rb
 
 # turn on email validation
-sed -i "s/VALIDATE_EMAILS = false/VALIDATE_EMAILS = true/" config/environment.rb
+#sed -i "s/VALIDATE_EMAILS = false/VALIDATE_EMAILS = true/" config/environment.rb
 
 #change relative url root to SERVERNAME
 #sed -i "s/relative_url_root = \"http\:\/\/cos\.sizl\.org\"/relative_url_root = \"$ESCAPED_SERVERNAME\"/" config/environments/production.rb
