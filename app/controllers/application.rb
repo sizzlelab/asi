@@ -140,5 +140,29 @@ class ApplicationController < ActionController::Base
       #logger.debug "NO SESSION:" + session[:session_id]
     end 
   end
+
+  #Feedback functionality
+  # Change current navigation state based on array containing new navi items.
+  def save_navi_state(navi_items)
+    session[:navi1] = navi_items[0] || session[:navi1]
+    session[:navi2] = navi_items[1] || session[:navi2]
+    session[:navi3] = navi_items[2] || session[:navi3]
+    session[:navi4] = navi_items[3] || session[:navi4]
+    session[:profile_navi] = navi_items[4] || session[:profile_navi]
+  end
+
+  # Define how many listed items are shown per page.
+  def per_page
+    if params[:per_page].eql?("all")
+      :all
+    else
+      params[:per_page] || 10
+    end
+  end
+
+   # Feedback form is present in every view.
+  def set_up_feedback_form
+    @feedback = Feedback.new
+  end
   
 end

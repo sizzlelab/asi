@@ -1,0 +1,34 @@
+<% handled_style = feedback.is_handled == 0 ? "unhandled_feedback" : "" %>
+<div id="feedback_<%= feedback.id.to_s %>" class="feedback_item <%= handled_style %>">
+  <div class="listed_full_width_object">
+    <div class="listed_feedback_checkbox">
+      <% if feedback.is_handled == 0 %>
+        <div class="handle_feedback_button">
+          <%= link_to "Mark as handled", handle_admin_feedback_path(feedback), :method => :put %>
+        </div>  
+      <% else %>
+        &nbsp;
+      <% end %>  
+    </div>  
+    <div class="listed_feedback_field">
+      <b>
+      <% if feedback.author_id == "Anonymous"%>
+        Anonymous
+      <% elsif feedback.author_id == "virheilmoitus500" %>
+        Errorpage500
+      <% else %>  
+        <%= feedback.author_id %>
+      <% end %>
+      </b>
+    </div>
+    <div class="listed_feedback_field">  
+      <%= feedback.created_at.to_formatted_s(:basic_date_format_minutes) %>  
+    </div>
+    <div class="listed_feedback_field_wider">
+      <%= feedback.url %>
+    </div>    
+    <div class="listed_feedback_content">
+      <%= text_with_line_breaks(feedback.content) %>
+    </div>
+  </div>     
+</div>

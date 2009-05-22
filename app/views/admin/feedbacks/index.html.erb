@@ -1,0 +1,50 @@
+<div id="feedback_admin">
+<div class="browse_objects_header">
+  <h1>
+    <%= "Feedback" %> (<%= pluralize(@new_feedback_item_amount, "unhandled", "unhandled") %>)
+  </h1>
+</div>
+
+<div class="links_panel">
+  <div class="left_float">
+     <%= page_entries_info @feedbacks %> | 
+     <%= "Show feedback items on page"%>:
+     <%= create_footer_pagination_links(["10", "30", "50", "all"], "feedback") %>
+  </div>
+  <div class="right_float">
+    <%= will_paginate @feedbacks, :prev_label => "Previous", :next_label => "Next" %>
+  </div>    
+</div>
+
+
+  <div class="listed_full_width_object">
+    <div class="listed_feedback_checkbox">
+      &nbsp;
+    </div>  
+    <div class="listed_feedback_field">
+      <b><%= "Sender" %></b>
+    </div>
+    <div class="listed_feedback_field">  
+      <b><%= "Sent at" %></b>
+    </div>
+    <div class="listed_feedback_field_wider">
+      <b><%= "Url" %></b>
+    </div>    
+    <div class="listed_feedback_content">
+      <b><%= "Content" %></b>
+    </div>
+  </div>
+  <%= render :partial => @feedbacks %>
+
+
+<div class="links_panel">
+  <div class="left_float">
+     <%= page_entries_info @feedbacks %> |
+     <%= "Show feedback items on page" %>:
+     <%= create_footer_pagination_links(["10", "30", "50", "all"], "feedback") %>
+  </div>
+  <div class="right_float">
+    <%= will_paginate @feedbacks, :prev_label => "Previous", :next_label => "Next" %>
+  </div>    
+</div>
+</div>
