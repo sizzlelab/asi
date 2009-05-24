@@ -1,10 +1,14 @@
 <html>
   <head>
     <title>Common Services <%= render :partial => "layouts/version" %></title>
-    <base href="<%= render :partial => "layouts/servername" %>" />
+    <base href="<%= SERVER_DOMAIN %>" />
     <link rel="stylesheet" href="stylesheets/cos.css" type="text/css" media="screen" />
   </head>
   <body>
+    <p style="color: green"><%= flash[:notice] %></p> 
+    <p style="color: orange"><%= flash[:warning] %></p> 
+    <p style="color: red"><%= flash[:error] %></p> 
+    
     <%= yield %>
     
         <div id="feedback">
@@ -14,7 +18,7 @@
             <b><%= "Leave feedback:" %></b><br /><br />
             <%= f.text_area :content, :size => "60x5" %>
             <br /><br />
-            <strong>Author name:<strong/>
+            <strong>Name (if you want):<strong/>
             <%= f.text_field :author_id%>
             <br/><br />
             <%= f.hidden_field :url, :value => request.request_uri %>
