@@ -34,14 +34,14 @@ class PersonTest < ActiveSupport::TestCase
   def test_uniqueness_of_username
     person_repeat = Person.new(:username => @valid_person.username.upcase)
     assert !person_repeat.valid?
-    assert_equal @error_messages[:taken], person_repeat.errors.on(:username), "Test must be case insensitive."
+    assert_equal @error_messages[:taken], person_repeat.errors.on(:username), "Test must be case sensitive."
   end
   
   # Check uniqueness of email.
   def test_uniqueness_of_email
-    person_repeat = Person.new(:email => @valid_person.email)
+    person_repeat = Person.new(:email => @valid_person.email.upcase)
     assert !person_repeat.valid?
-    assert_equal @error_messages[:taken], person_repeat.errors.on(:email)
+    assert_equal @error_messages[:taken], person_repeat.errors.on(:email), "Test must be case sensitive."
   end
 
   # Check that username is not too long or too short.
