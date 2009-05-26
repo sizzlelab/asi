@@ -51,7 +51,7 @@ class Person < ActiveRecord::Base
   
   validates_presence_of :username
   #validates_presence_of :password, :unless  => :encrypted_password
-  validates_uniqueness_of :username, :email
+  validates_uniqueness_of :username, :email, :case_sensitive => false
   #validates_length_of :username, :within => USERNAME_RANGE
   validates_length_of :password, :minimum => PASSWORD_MIN_LENGTH, :message => "is too short", :unless =>  :password_is_not_being_updated? 
   validates_length_of :password, :maximum => PASSWORD_MAX_LENGTH, :message => "is too long", :unless =>  :password_is_not_being_updated? 

@@ -30,11 +30,11 @@ class PersonTest < ActiveSupport::TestCase
      end 
    end
 
-  # Check uniqueness of username.
+  # Check uniqueness of username, must be case insesitive.
   def test_uniqueness_of_username
-    person_repeat = Person.new(:username => @valid_person.username)
+    person_repeat = Person.new(:username => @valid_person.username.upcase)
     assert !person_repeat.valid?
-    assert_equal @error_messages[:taken], person_repeat.errors.on(:username)
+    assert_equal @error_messages[:taken], person_repeat.errors.on(:username), "Test must be case insensitive."
   end
   
   # Check uniqueness of email.
