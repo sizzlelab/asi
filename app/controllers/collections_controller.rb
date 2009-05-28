@@ -22,7 +22,7 @@ class CollectionsController < ApplicationController
          :add_headers => { 'Allow' => 'PUT' }
 
   def index
-    conditions = { :client_id => @client.id }
+    conditions = { :client_id => params[:app_id] }
     if params["tags"]
       conditions.merge!({:tags => params["tags"]})
     end
@@ -32,7 +32,7 @@ class CollectionsController < ApplicationController
   end
 
   def show
-    if @collection.client != @client or ! @collection.read?(@user, @client)
+    if ! @collection.read?(@user, @client)
       @collection = nil
       render :status => :forbidden and return
     end
