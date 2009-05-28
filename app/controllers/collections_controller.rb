@@ -28,7 +28,18 @@ class CollectionsController < ApplicationController
     end
     
     @collections = Collection.find(:all, :conditions => conditions, :order => 'updated_at DESC' )
+    collections_found = @collections
+    puts "collections found: #{collections_found}"
     @collections.reject! { |item| ! item.read?(@user, @client) }
+    puts "Collections finally: #{@collections}"
+    if ! @collections
+      if collections_found
+        #this means there was found some target collections but the requestor didn't have permission to view any
+        render :status => :forbidden and return
+      else
+        #there jsut was not any collections: return empty entry
+      end
+    end
   end
 
   def show
@@ -134,8 +145,9 @@ class CollectionsController < ApplicationController
   private
   
   def verify_client
+    #TODO remove the temporary access of sizzlespots app made for the code camp needs
     if @client == nil or params["app_id"].to_s != @client.id.to_s
-      render :status => :forbidden and return
+      render :status => :forbidden and return unless (@client && @client.name == "sizzlespots")
     end
   end
 

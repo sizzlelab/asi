@@ -1,8 +1,10 @@
 <%
 entries = Array.new
 
-@collections.each do |item|
-  entries << item.info_hash(@user, @client)
+if @collections
+  @collections.each do |item|
+    entries << item.info_hash(@user, @client)
+  end
 end
 %>
 
