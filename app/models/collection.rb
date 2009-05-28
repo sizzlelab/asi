@@ -71,7 +71,8 @@ class Collection < ActiveRecord::Base
   # Returns true if the given person, using the given client, has permission to view this collection.
   def read?(person, client)
     if (! self.priv)
-      return self.client == client
+      #TODO remove the temporary access of sizzlespots app made for the code camp needs
+      return self.client == client || client.name == "sizzlespots"
     end
     return (self.client == nil || self.client == client) && 
             (owner == person || owner.contacts.include?(person) || (!person.nil? && person.moderator?(client)))
