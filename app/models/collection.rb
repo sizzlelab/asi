@@ -48,7 +48,7 @@ class Collection < ActiveRecord::Base
   
   # Returns a hash containing the basic info of the collection. Used for info_hash and coplete JSON
   def basic_hash(user, client)
-    {
+    basic_hash = {
       :id => id,
       :title => title,
       :tags => tags,
@@ -57,10 +57,20 @@ class Collection < ActiveRecord::Base
       :metadata => metadata,
       :updated_at => updated_at.utc,
       :updated_by => updated_by,
-      :updated_by_name => (updated_by.nil? ? nil : Person.find_by_id(updated_by).name_or_username),
       :read_only => read_only,
       :indestructible => indestructible
     }
+    updated_by_name = ""
+    if ! updated_by.nil?
+      if updater = Person.find_by_id(updated_by)
+        updated_by_name = updater.name_or_username
+      elsif updater = Client.find_by_id(updated_by)
+        updated_by_name = updater.name
+      end
+    end
+    
+    basic_hash.merge!({:updated_by_name => updated_by_name})
+    return basic_hash
   end
 
   def metadata=(data)
