@@ -29,10 +29,8 @@ class CollectionsController < ApplicationController
     
     @collections = Collection.find(:all, :conditions => conditions, :order => 'updated_at DESC' )
     collections_found = @collections
-    puts "collections found: #{collections_found}"
     @collections.reject! { |item| ! item.read?(@user, @client) }
-    puts "Collections finally: #{@collections}"
-    if ! @collections
+    if @collections.empty?
       if collections_found
         #this means there was found some target collections but the requestor didn't have permission to view any
         render :status => :forbidden and return
