@@ -11,10 +11,18 @@ class SessionsControllerTest < ActionController::TestCase
     @response = ActionController::TestResponse.new
   end
   
+  def test_client_login
+    #test with client only
+    post :create, { :app_name => "ossi", :app_password => "testi", :format => 'json'}
+    assert_response :created
+    assert_not_nil session[:cos_session_id]
+    json = JSON.parse(@response.body)
+  end
+
   def test_create
     post :create, { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :created
-    assert_not_nil session[:session_id]
+    assert_not_nil session[:cos_session_id]
     json = JSON.parse(@response.body)
 
     delete :destroy, {:format => 'json'}
@@ -26,15 +34,7 @@ class SessionsControllerTest < ActionController::TestCase
     assert_response :unauthorized
     json = JSON.parse(@response.body)
 
-    post :create, { :username => "testi", :password => "testi", :format => 'json'}
-    assert_response :unauthorized
-    
-    #test with client only
-    post :create, { :app_name => "ossi", :app_password => "testi", :format => 'json'}
-    assert_response :created
-    assert_not_nil session[:session_id]
-    json = JSON.parse(@response.body)
-    
+
     delete :destroy, {:format => 'json'}
     assert_response :success
     json = JSON.parse(@response.body)
@@ -54,7 +54,7 @@ class SessionsControllerTest < ActionController::TestCase
   end
   
   def test_get
-    get :get, { :format => 'json'}, { :session_id => sessions(:session1).id }
+    get :get, { :format => 'json'}, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert_equal json["user_id"], sessions(:session1).person_id  
@@ -69,19 +69,19 @@ class SessionsControllerTest < ActionController::TestCase
     # destroy
     delete :destroy, {:format => 'json'}
     assert_response :success
-    assert_nil session[:session_id]
+    assert_nil session[:cos_session_id]
     
     # create a client only session to destroy
     post :create, { :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :created
-    assert_not_nil session[:session_id]
+    assert_not_nil session[:cos_session_id]
     json = JSON.parse(@response.body)
 
     # destroy
     delete :destroy, {:format => 'json'}
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_nil session[:session_id]
+    assert_nil session[:cos_session_id]
   end
 
   def test_create_without_password
@@ -111,7 +111,7 @@ class SessionsControllerTest < ActionController::TestCase
 
     post :create, { :username => "testi", :password => "testi", 
                     :app_name => "ossi", :app_password => "testi", :format => 'json' },
-                  { :session_id => sessions(:session1).id } 
+                  { :cos_session_id => sessions(:session1).id } 
     assert_response :conflict
   end
 end

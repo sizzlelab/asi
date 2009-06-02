@@ -13,7 +13,7 @@ class LocationsControllerTest < ActionController::TestCase
   def test_get
     get :get, {:user_id => people(:valid_person).id,
                   :format => "json" },
-                  { :session_id => sessions(:client_only_session).id }
+                  { :cos_session_id => sessions(:client_only_session).id }
     assert_response :success
     assert_not_nil assigns["location"]
     json = JSON.parse(@response.body)
@@ -26,7 +26,7 @@ class LocationsControllerTest < ActionController::TestCase
     #get location of person without a set location
     get :get, {:user_id => people(:test).id,
                   :format => "json" },
-                  { :session_id => sessions(:client_only_session).id }
+                  { :cos_session_id => sessions(:client_only_session).id }
     assert_response :success
     json = JSON.parse(@response.body)
     assert_nil(assigns["label"])
@@ -42,7 +42,7 @@ class LocationsControllerTest < ActionController::TestCase
                   :accuracy => 12,
                   :label => "Experimental grounds \\o/",
                   :format => "json" },
-                  { :session_id => sessions(:session2).id }
+                  { :cos_session_id => sessions(:session2).id }
     assert_response :forbidden
     json = JSON.parse(@response.body)
     
@@ -57,7 +57,7 @@ class LocationsControllerTest < ActionController::TestCase
                   :accuracy => 12,
                   :label => test_label,
                   :format => "json" },
-                  { :session_id => sessions(:session1).id }
+                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
     
@@ -75,7 +75,7 @@ class LocationsControllerTest < ActionController::TestCase
   #  put :update, {:user_id => people(:valid_person).id,
   #                :label => test_label,
   #                :format => "json" },
-  #                { :session_id => sessions(:session1).id }
+  #                { :cos_session_id => sessions(:session1).id }
   #  assert_response :success
   #  json = JSON.parse(@response.body)
   #  
@@ -91,7 +91,7 @@ class LocationsControllerTest < ActionController::TestCase
      put :update, {:user_id => people(:valid_person).id,
                    :label => "New exciting location",
                    :format => "json" },
-                   { :session_id => sessions(:session1).id }
+                   { :cos_session_id => sessions(:session1).id }
      assert_response :success
      json = JSON.parse(@response.body)
       

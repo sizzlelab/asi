@@ -19,7 +19,7 @@ class CollectionsTest < ActionController::IntegrationTest
 
   def test_create_and_delete_collection
     new_session do |ossi|
-      ossi.logs_in_with( {:username => people(:test).username, :password => "testi", :app_name => clients(:one).name, :app_password => "testi"})
+      ossi.logs_in_with( {:username => people(:test).username, :password => "testi", :app_name => clients(:one).name, :app_password => "testi" })
       collection_id = ossi.creates_collection(:client_id => clients(:one).id)
       options = { :client_id => clients(:one).id, :id => collection_id }
       ossi.adds_text_to_collection options

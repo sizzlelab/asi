@@ -11,7 +11,7 @@ class ClientDataControllerTest < ActionController::TestCase
 
   def test_show
     get :show, { :app_id => clients(:one).id, :user_id => people(:valid_person).id, :format => 'json' }, 
-               { :session_id => sessions(:session1).id }
+               { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["set"]
     json = JSON.parse(@response.body)
@@ -20,7 +20,7 @@ class ClientDataControllerTest < ActionController::TestCase
 
   def test_authorization
     get :show, { :app_id => clients(:two).id, :user_id => people(:valid_person).id, :format => 'json' }, 
-               { :session_id => sessions(:session1).id }
+               { :cos_session_id => sessions(:session1).id }
     assert_response :forbidden
     assert_nil assigns["set"]
     json = JSON.parse(@response.body)
@@ -31,7 +31,7 @@ class ClientDataControllerTest < ActionController::TestCase
                    :app_id => clients(:one).id, 
                    :user_id => people(:valid_person).id, 
                    :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :success
     
     json = JSON.parse(@response.body)

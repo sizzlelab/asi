@@ -10,7 +10,7 @@ class GroupsControllerTest < ActionController::TestCase
                         ideology of the group... Ja even ääkköset should work here. :)"
     post :create, {:title => "testgroup", :type => "open", 
          :description => description_text,
-         :format => 'json'}, { :session_id => sessions(:session1).id }
+         :format => 'json'}, { :cos_session_id => sessions(:session1).id }
     assert_response :created, @response.body
     json = JSON.parse(@response.body)
     #puts json.inspect
@@ -24,7 +24,7 @@ class GroupsControllerTest < ActionController::TestCase
   end
   
   def test_show
-    get :show, {:group_id =>  groups(:open).id, :format => 'json'}, { :session_id => sessions(:session1).id }
+    get :show, {:group_id =>  groups(:open).id, :format => 'json'}, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert_equal(groups(:open).title, json['group']['title'])
@@ -40,7 +40,7 @@ class GroupsControllerTest < ActionController::TestCase
   def test_add_member
     assert ! groups(:open).has_member?(people(:friend))
     post :add_member, {:group_id =>  groups(:open).id, :user_id => people(:friend).id, :format => 'json' },
-                      { :session_id => sessions(:session4).id }
+                      { :cos_session_id => sessions(:session4).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert groups(:open).has_member?(people(:friend))
@@ -48,14 +48,14 @@ class GroupsControllerTest < ActionController::TestCase
     
     # Should not be able to add a friend to a group (session is associated to different person)
     post :add_member, {:group_id =>  groups(:open).id, :user_id => people(:friend).id, :format => 'json' },
-                      { :session_id => sessions(:session1).id }
+                      { :cos_session_id => sessions(:session1).id }
     assert_response :forbidden, @response.body
     json = JSON.parse(@response.body)                  
     
   end
   
   def test_get_groups_of_person
-    get :get_groups_of_person, {:user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    get :get_groups_of_person, {:user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert(json["entry"], "Malformed json response.")
@@ -64,7 +64,7 @@ class GroupsControllerTest < ActionController::TestCase
   end
   
   def test_get_public_groups
-    get :public_groups, { :format => 'json' }, { :session_id => sessions(:client_only_session).id }
+    get :public_groups, { :format => 'json' }, { :cos_session_id => sessions(:client_only_session).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert json["entry"]
@@ -73,7 +73,7 @@ class GroupsControllerTest < ActionController::TestCase
   
   def test_get_members_of_group
     get :get_members, {:group_id =>  groups(:open).id, :format => 'json' },
-                      { :session_id => sessions(:session1).id }
+                      { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert json["entry"]
@@ -82,7 +82,7 @@ class GroupsControllerTest < ActionController::TestCase
     
     # try to get members of unexisting group
     get :get_members, {:group_id =>  "non_existent_id", :format => 'json' },
-                      { :session_id => sessions(:session1).id }
+                      { :cos_session_id => sessions(:session1).id }
     assert_response :not_found, @response.body
           
   end
@@ -90,7 +90,7 @@ class GroupsControllerTest < ActionController::TestCase
   def test_removing_a_member
     assert groups(:open).has_member?(people(:valid_person))
     delete :remove_person_from_group, {:group_id =>  groups(:open).id, :user_id => people(:valid_person).id, :format => 'json' },
-                      { :session_id => sessions(:session1).id }
+                      { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert ! groups(:open).has_member?(people(:valid_person)), "Removing a group member failed!"
@@ -98,7 +98,7 @@ class GroupsControllerTest < ActionController::TestCase
     
     # Should not be able to remove an other person from a group (session is associated to different person)
     delete :remove_person_from_group, {:group_id =>  groups(:open).id, :user_id => people(:valid_person).id, :format => 'json' },
-                      { :session_id => sessions(:session4).id }
+                      { :cos_session_id => sessions(:session4).id }
     assert_response :forbidden, @response.body
     json = JSON.parse(@response.body)
     
@@ -106,7 +106,7 @@ class GroupsControllerTest < ActionController::TestCase
     assert groups(:open).has_member?(people(:contact))
     assert_not_nil(Group.find_by_id(groups(:open).id))
     delete :remove_person_from_group, {:group_id =>  groups(:open).id, :user_id => people(:contact).id, :format => 'json' },
-                      { :session_id => sessions(:session7).id }
+                      { :cos_session_id => sessions(:session7).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     #assert ! groups(:open).has_member?(people(:valid_person)), "Removing a group member failed!"

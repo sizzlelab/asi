@@ -75,7 +75,7 @@ class ApplicationController < ActionController::Base
     request.extend(LoggingHelper)
     
     logger.info("  Session: " + request.to_json({ :session => @application_session }))
-    logger.info("  Headers: " + request.headers.except("RAW_POST_DATA").to_json)
+    logger.info("  Headers: " + Hash.new(request.headers).except("RAW_POST_DATA").to_json)
     
     saved_to_ressi = ""
     
@@ -85,12 +85,12 @@ class ApplicationController < ActionController::Base
         cos_event = CosEvent.create({
           :user_id =>        @user ? @user.id : nil,
           :application_id => @client ? @client.id : nil, 
-          :cos_session_id => @_session.session_id, 
+          :session_id =>     session[:cos_session_id],
           :ip_address =>     request.remote_ip, 
           :action =>         controller_class_name + "\#" + action_name, 
           :parameters =>     respond_to?(:filter_parameters) ? filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller 
           :return_value =>   @_response.headers['Status'], 
-          :headers =>        request.headers.except("RAW_POST_DATA").to_json
+          :headers =>        Hash.new(request.headers).except("RAW_POST_DATA").to_json
         })
         saved_to_ressi = cos_event.valid?
       else
@@ -100,7 +100,7 @@ class ApplicationController < ActionController::Base
       saved_to_ressi = "ERROR " + e.to_s
     end
     
-    logger.info { "Session DB id:  #{session[:session_id]}   Ressi: #{saved_to_ressi}" }
+    logger.info { "Session DB id:  #{session[:cos_session_id]}   Ressi: #{saved_to_ressi}" }
   end
   
   def set_correct_content_type
@@ -122,22 +122,22 @@ class ApplicationController < ActionController::Base
   protected
  
   def maintain_session_and_user
-    if session[:session_id]
-      if @application_session = Session.find_by_id(session[:session_id])
-        begin #Strange rescue solution is because request.path_info acts strangely in tests
+    if session[:cos_session_id]
+      if @application_session = Session.find_by_id(session[:cos_session_id])
+#        begin #Strange rescue solution is because request.path_info acts strangely in tests
           path = request.path_info
-        rescue NoMethodError => e
-          path = "running/tests/no/path/available"
-        end
+ #       rescue NoMethodError => e
+  #        path = "running/tests/no/path/available"
+   #     end
         @application_session.update_attributes(:ip_address => request.remote_addr, :path => path)
         @user = @application_session.person
         @client = @application_session.client
       else
-        session[:session_id] = nil
+        session[:cos_session_id] = nil
         render :status => :unauthorized and return
       end
     else
-      #logger.debug "NO SESSION:" + session[:session_id]
+      #logger.debug "NO SESSION:" + session[:cos_session_id]
     end 
   end
 

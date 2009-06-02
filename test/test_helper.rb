@@ -7,7 +7,7 @@ rescue Exception => e
   #Redgreen is copletely optional so no problem if not found :)
 end
 
-class Test::Unit::TestCase
+class ActiveSupport::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method
   # in a transaction that's rolled back on completion.  This ensures that the
   # test database remains unchanged so your fixtures don't have to be reloaded
@@ -99,7 +99,7 @@ module COSTestingDSL
     end
     post "/session", options
     assert_response expected_response
-    assert_not_nil session[:session_id] if expected_response == :created
+    assert_not_nil session[:cos_session_id] if expected_response == :created
   end
 
   def finds_collections(options)
@@ -189,7 +189,7 @@ module COSTestingDSL
   def logs_out
     delete "/session"
     assert_response :success
-    assert_nil session[:session_id]
+    assert_nil session[:cos_session_id]
   end
 
   def updates_location_with(options)
