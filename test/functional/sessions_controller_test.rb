@@ -24,6 +24,7 @@ class SessionsControllerTest < ActionController::TestCase
     #test with user only
     post :create, { :username => "testi", :password => "testia,.u", :format => 'json'}
     assert_response :unauthorized
+    json = JSON.parse(@response.body)
 
     post :create, { :username => "testi", :password => "testi", :format => 'json'}
     assert_response :unauthorized
@@ -41,12 +42,15 @@ class SessionsControllerTest < ActionController::TestCase
     #test with erroneus login information
     post :create, { :username => "testi", :password => "testia,.u", :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :unauthorized
+    json = JSON.parse(@response.body)
 
     post :create, { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "tesaoeulcrhti", :format => 'json'}
     assert_response :unauthorized
+    json = JSON.parse(@response.body)
     
     post :create, { :username => "testi", :password => "testi2513", :app_name => "ossi", :app_password => "t23452esaoeulcrhti", :format => 'json'}
     assert_response :unauthorized
+    json = JSON.parse(@response.body)
   end
   
   def test_get
@@ -78,6 +82,12 @@ class SessionsControllerTest < ActionController::TestCase
     assert_response :success
     json = JSON.parse(@response.body)
     assert_nil session[:session_id]
+  end
+
+  def test_create_without_password
+    post :create, { :app_name => 'ossi', :app_password => 'testi', :username => 'testi', :format => 'json'}
+    assert_response :bad_request
+    json = JSON.parse @response.body
   end
   
   def test_routing

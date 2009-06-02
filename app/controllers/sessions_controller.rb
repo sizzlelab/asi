@@ -23,7 +23,8 @@ class SessionsController < ApplicationController
     if (params[:username] || params[:password])
         # If other is present, both need to be
         unless (params[:username] && params[:password] )
-          render :status => :bad_request, :json => "Both username and password are needed.".to_json
+          @session.destroy
+          render :status => :bad_request, :json => ["Both username and password are needed."].to_json
           return
         end
     end
@@ -39,12 +40,12 @@ class SessionsController < ApplicationController
           @session.save
         else
           @session.destroy
-          render :status => :unauthorized, :json => "Password and username didn't match for any person.".to_json and return
+          render :status => :unauthorized, :json => ["Password and username didn't match for any person."].to_json and return
         end
       end
       if VALIDATE_EMAILS && PendingValidation.find_by_person_id(@session.person_id)
          @session.destroy
-         render :status => :forbidden, :json => "The email address for this user account is not yet confirmed. Login requires confirmation.".to_json and return
+         render :status => :forbidden, :json => ["The email address for this user account is not yet confirmed. Login requires confirmation."].to_json and return
       end
     
       session[:session_id] = @session.id
