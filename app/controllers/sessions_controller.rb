@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
 
   before_filter :ensure_client_logout, :only => :create
+  #skip_before_filter :maintain_session_and_user, :only => [:create]
   
   def get
     @session = @application_session
@@ -48,7 +49,7 @@ class SessionsController < ApplicationController
          render :status => :forbidden, :json => ["The email address for this user account is not yet confirmed. Login requires confirmation."].to_json and return
       end
     
-      session[:session_id] = @session.id
+      session[:cos_session_id] = @session.id
       render :status => :created, :json => { :user_id => @session.person_id,
                                              :app_id => @session.client_id }
     else
@@ -62,7 +63,7 @@ class SessionsController < ApplicationController
   def destroy
     render :status => :not_found and return unless @application_session
     @application_session.destroy
-    session[:session_id] = @user = @client = nil
+    session[:cos_session_id] = @user = @client = nil
   end
   
 end

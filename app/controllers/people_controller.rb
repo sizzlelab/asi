@@ -95,7 +95,7 @@ class PeopleController < ApplicationController
       render :status => :forbidden and return
     end
     @person.destroy
-    session[:session_id] = @user = nil
+    session[:cos_session_id] = @user = nil
   end
   
   

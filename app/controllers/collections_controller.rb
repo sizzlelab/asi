@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CollectionsController < ApplicationController
 
   before_filter :verify_client
@@ -66,7 +67,7 @@ class CollectionsController < ApplicationController
       end
     else
       if params["priv"]
-        render :status => :bad_request, :json => "Cannot set a collection private wihtout an owner." and return
+        render :status => :bad_request, :json => "Cannot set a collection private without an owner." and return
       end
     end
     

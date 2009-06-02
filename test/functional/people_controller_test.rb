@@ -15,7 +15,7 @@ class PeopleControllerTest < ActionController::TestCase
     
   def test_index
     # Should find nothing
-    get :index, { :format => 'json' }, { :session_id => sessions(:session1).id }
+    get :index, { :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success 
     assert_not_nil assigns(:people)
     json = JSON.parse(@response.body)
@@ -23,7 +23,7 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_show
     #show person with valid id
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["person"]
     json = JSON.parse(@response.body)
@@ -46,7 +46,7 @@ class PeopleControllerTest < ActionController::TestCase
                     :email => "newbie@testland.gov",
                     :consent => "FI1" }, 
                     :format => 'json'}, 
-                  { :session_id => sessions(:client_only_session).id }
+                  { :cos_session_id => sessions(:client_only_session).id }
     assert_response :created 
     user = assigns["person"] 
     assert_not_nil user
@@ -75,7 +75,7 @@ class PeopleControllerTest < ActionController::TestCase
 
     #Testing invalid email address
     post :recover_password, { :format => 'json', :email => "not@found"},
-                            { :session_id => sessions(:client_only_session).id}
+                            { :cos_session_id => sessions(:client_only_session).id}
 
     assert ActionMailer::Base.deliveries.empty?, "Testing that no email is sent."
     assert_response :not_found, "Testing that no record is found"
@@ -84,7 +84,7 @@ class PeopleControllerTest < ActionController::TestCase
     #testing password changing
     person = people(:valid_person)
     post :recover_password, { :format => 'json', :email => person.email},
-                            { :session_id => sessions(:client_only_session).id}
+                            { :cos_session_id => sessions(:client_only_session).id}
 
     assert !ActionMailer::Base.deliveries.empty?
 
@@ -93,29 +93,29 @@ class PeopleControllerTest < ActionController::TestCase
     id = mail.body[/id=(.*)/, 1]
 
     get :reset_password, { :format => 'html', :id => id },
-                         { :session_id => sessions(:client_only_session).id}
+                         { :cos_session_id => sessions(:client_only_session).id}
     assert_response :ok, 'Testing that form page is successfully opened.'
 
     post :change_password, { :format => 'html', :id => id,
                              :password => 'testing', :confirm_password => 'testing'},
-                           { :session_id => sessions(:client_only_session).id}
+                           { :cos_session_id => sessions(:client_only_session).id}
     assert_response :ok, 'Testing if password is succesfully changed.'
 
     post :change_password, { :format => 'html', :id => id,
                              :password => 'testing', :confirm_password =>'testing'},
-                           { :session_id => sessions(:client_only_session).id}
+                           { :cos_session_id => sessions(:client_only_session).id}
     assert_response :unauthorized, "Testing that id works only once, and invalid id's are not accepted"
 
     post :change_password, { :format => 'html',
                              :password => 'testing', :confirm_password =>'testing'},
-                           { :session_id => sessions(:client_only_session).id}
+                           { :cos_session_id => sessions(:client_only_session).id}
     assert_response :unauthorized, "Testing that empty id is not accepted"
 
     #fetching new id and testing with invalid password combinations
     ActionMailer::Base.deliveries.clear
     
     post :recover_password, { :format => 'json', :email => person.email},
-                            { :session_id => sessions(:client_only_session).id}
+                            { :cos_session_id => sessions(:client_only_session).id}
 
     assert !ActionMailer::Base.deliveries.empty?
 
@@ -125,7 +125,7 @@ class PeopleControllerTest < ActionController::TestCase
     { "password" => "pass" , "o" => "o", "" => "" }.each do |password, confirm_password|
       post :change_password, { :format => 'html', :id => id,
                                :password => password, :confirm_password => confirm_password},
-                             { :session_id => sessions(:client_only_session).id}
+                             { :cos_session_id => sessions(:client_only_session).id}
       assert_redirected_to("people/reset_password?id=#{id}", 
                            "Testing invalid password combinations. Password: #{password}, Confirmation: #{confirm_password}")
     end
@@ -135,14 +135,14 @@ class PeopleControllerTest < ActionController::TestCase
     # update valid user
     testing_email = "newemail@oldserv.er"
     put :update, { :user_id => people(:valid_person).id, :person => {:email => testing_email }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     
     json = JSON.parse(@response.body)
     assert_response :success
 
     # try to update the id
     put :update, { :user_id => people(:valid_person).id, :person => {:id => "9999" }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
     assert_not_equal json["id"], "9999"
@@ -154,31 +154,31 @@ class PeopleControllerTest < ActionController::TestCase
     
     # try to update other user than self
     put :update, { :user_id => people(:friend).id, :person => {:email => testing_email }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :forbidden
 
     # update name 
     put :update, { :user_id => people(:valid_person).id, :person => { :name => { :given_name => "Joe" } }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_equal("Joe", assigns["person"].name.given_name)
     json = JSON.parse(@response.body)
     
     put :update, { :user_id => people(:valid_person).id, :person => { :address => { :street_address => "Jämeräntaival" } }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_equal("Jämeräntaival", assigns["person"].address.street_address)
     json = JSON.parse(@response.body)
     
     #try to update too long name 
     put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa" } }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
     json = JSON.parse(@response.body)
     
     #try to update too long phone number 
     put :update, { :user_id => people(:valid_person).id, :person => { :phone_number => "123456789012345678901234567890" }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
     #assert_not_equal("Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa", assigns["person"].name.given_name)
     json = JSON.parse(@response.body)
@@ -193,7 +193,7 @@ class PeopleControllerTest < ActionController::TestCase
                    }, 
                    :format => 'json' 
                  }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
     json = JSON.parse(@response.body)
     
@@ -201,19 +201,19 @@ class PeopleControllerTest < ActionController::TestCase
     # update status_message
     test_status = "Testing hard..."
     put :update, { :user_id => people(:valid_person).id, :person => { :status_message =>  test_status  }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_equal(test_status, assigns["person"].person_spec.status_message)
     json = JSON.parse(@response.body)
     # check that same status message is returned with show
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
     assert_equal test_status, json["status"]["message"]
   
     # Check that updating the name doesn't delete old values
     put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Doe" } }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_equal("Joe", assigns["person"].name.given_name)
     assert_equal("Doe", assigns["person"].name.family_name)
@@ -223,19 +223,19 @@ class PeopleControllerTest < ActionController::TestCase
     valid_date = "1945-12-24"
     invalid_dates = ["asdasdasdasdfasf", "1999-11-111", "1999-31-31"]
     put :update, { :user_id => people(:valid_person).id, :person => { :birthdate =>  valid_date  }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
     assert_equal valid_date, json["birthdate"]
     #try invalid dates
     invalid_dates.each do |birthdate|
       put :update, { :user_id => people(:valid_person).id, :person => { :birthdate =>  birthdate  }, :format => 'json' }, 
-                   { :session_id => sessions(:session1).id }
+                   { :cos_session_id => sessions(:session1).id }
       assert_response :bad_request
       #check that stored date didn't change
-      get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+      get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
       assert_response :success
       json = JSON.parse(@response.body)
       assert_equal valid_date, json["birthdate"]                  
@@ -245,7 +245,7 @@ class PeopleControllerTest < ActionController::TestCase
   def test_update_invalid_email
       invalid_email = "newemail(at)oldserv.er"
       put :update, { :user_id => people(:valid_person).id, :person => {:email => invalid_email }, :format => 'json' }, 
-                   { :session_id => sessions(:session1).id }  
+                   { :cos_session_id => sessions(:session1).id }  
       assert_response :bad_request
       json = JSON.parse(@response.body)
       assert json.to_s =~ /email/i && json.to_s =~ /invalid/i
@@ -253,12 +253,12 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_delete    
     #delete person with valid id
-    delete :delete, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    delete :delete, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
     
     # Check that deleted user is really removed
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session4).id }
+    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session4).id }
     assert_response :missing
     
     # Check that related objects are removed also
@@ -273,40 +273,40 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :missing
     
     #try to delete other user than self
-    delete :delete, { :user_id => people(:contact).id, :format => 'json' },  { :session_id => sessions(:session4).id }
+    delete :delete, { :user_id => people(:contact).id, :format => 'json' },  { :cos_session_id => sessions(:session4).id }
     assert_response :forbidden
     
   end
   
   def test_update_and_get_avatar
     # try to show the default large thumbnail
-    get :get_large_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }
+    get :get_large_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     
     # try to show the default small thumbnail
-    get :get_small_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }
+    get :get_small_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     
     # try to upload an avatar
     put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("Australian_painted_lady.jpg","image/jpeg"),
                           :format => 'html' }, 
-                        { :session_id => sessions(:session1).id }                 
+                        { :cos_session_id => sessions(:session1).id }                 
     assert_response :success
     
     # try to show the uploaded avatar
-    get :get_avatar, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }
+    get :get_avatar, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     
     # try to show the large thumbnail of the avatar
-    get :get_large_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }
+    get :get_large_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     
     # try to show the small thumbnail of the avatar
-    get :get_small_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :session_id => sessions(:session1).id }
+    get :get_small_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     
     # check that avatar info is changed to 'set'
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert_equal("set", json["avatar"]["status"])
@@ -315,14 +315,14 @@ class PeopleControllerTest < ActionController::TestCase
   
   def test_delete_avatar
     #delete person with valid id
-    delete :delete_avatar, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    delete :delete_avatar, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)  
   end
   
   def test_add_friend
     #add friend to a valid person (as a request at first)
-    post :add_friend, { :user_id  => people(:valid_person).id, :friend_id => people(:not_yet_friend).id, :format  => 'json' }, { :session_id => sessions(:session1).id }
+    post :add_friend, { :user_id  => people(:valid_person).id, :friend_id => people(:not_yet_friend).id, :format  => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
     
@@ -330,7 +330,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert  assigns["person"].requested_contacts.include?(assigns["friend"])
     
     # add the friendship also in other direction == accept the request
-    post :add_friend, { :user_id  => people(:not_yet_friend).id, :friend_id => people(:valid_person).id, :format  => 'json' },  { :session_id => sessions(:session3).id }
+    post :add_friend, { :user_id  => people(:not_yet_friend).id, :friend_id => people(:valid_person).id, :format  => 'json' },  { :cos_session_id => sessions(:session3).id }
     assert_response :success
     json = JSON.parse(@response.body)
     
@@ -344,7 +344,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert people(:friend).person_spec.status_message_changed > people(:invalid_person).person_spec.status_message_changed,
                   "Statusmessages in fixtures are not in the order that the test would expect."
     
-    get :get_friends, { :user_id  => people(:valid_person).id, :format  => 'json' }, { :session_id => sessions(:session1).id }
+    get :get_friends, { :user_id  => people(:valid_person).id, :format  => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["person"]
     assert_not_nil assigns["friends"]
@@ -356,7 +356,7 @@ class PeopleControllerTest < ActionController::TestCase
     # Check that the order is reversed because of the sorting parameters.
     get :get_friends, { :user_id  => people(:valid_person).id, :sortBy => "status_changed",
                         :sortOrder => "descending", :format  => 'json' }, 
-                        { :session_id => sessions(:session1).id }
+                        { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["person"]
     assert_not_nil assigns["friends"]
@@ -369,7 +369,7 @@ class PeopleControllerTest < ActionController::TestCase
   def test_remove_friend
     #test that friendship exists both ways
     
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["person"]
     user = assigns["person"]
@@ -385,7 +385,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert friend.contacts.include?(user)
     
     # breakup friendship
-    delete :remove_friend, { :user_id => people(:valid_person).id, :friend_id => people(:friend).id, :format => 'json' }, { :session_id => sessions(:session1).id }
+    delete :remove_friend, { :user_id => people(:valid_person).id, :friend_id => people(:friend).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
    
@@ -453,7 +453,7 @@ class PeopleControllerTest < ActionController::TestCase
 
   def test_pending_contacts
     person = people(:requested)
-    get :pending_friend_requests, { :user_id => person.id, :format => 'json' }, { :session_id => sessions(:session5) }
+    get :pending_friend_requests, { :user_id => person.id, :format => 'json' }, { :cos_session_id => sessions(:session5) }
     assert_response :success
     json = JSON.parse(@response.body)
     assert json.size > 0
@@ -467,14 +467,14 @@ class PeopleControllerTest < ActionController::TestCase
     person = people(:requested)
     assert !person.pending_contacts.empty?
     delete :reject_friend_request, { :user_id => person.id, :friend_id => people(:valid_person).id,  :format => 'json' }, 
-                                   { :session_id => sessions(:session5) }
+                                   { :cos_session_id => sessions(:session5) }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert person.pending_contacts.empty?
   end
   
   def test_response_content_type
-      get :index, {:format => 'json', :search => "test"}, { :session_id => sessions(:session1) }
+      get :index, {:format => 'json', :search => "test"}, { :cos_session_id => sessions(:session1) }
       assert_equal 'application/json', @response.content_type
       
   end
@@ -491,7 +491,7 @@ class PeopleControllerTest < ActionController::TestCase
                     :email => "failer@example.gov",
                     :consent => "FI1" }, 
                     :format => 'json'}, 
-                  { :session_id => sessions(:client_only_session).id }
+                  { :cos_session_id => sessions(:client_only_session).id }
     assert_response :bad_request 
     json = JSON.parse(@response.body)
     assert_nil assigns["person"] 
@@ -503,7 +503,7 @@ class PeopleControllerTest < ActionController::TestCase
                     :email => "failer@example.gov",
                     :consent => "FI1" }, 
                     :format => 'json'}, 
-                  { :session_id => sessions(:client_only_session).id }
+                  { :cos_session_id => sessions(:client_only_session).id }
     assert_response :bad_request 
     json = JSON.parse(@response.body)
     assert_nil assigns["person"] 
@@ -512,7 +512,7 @@ class PeopleControllerTest < ActionController::TestCase
     # Try to update valid users password to too short
     encrypted_password = people(:valid_person).encrypted_password
     put :update, { :user_id => people(:valid_person).id, :person => { :password =>too_short_password }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
     assert_equal("[\"Password is too short\"]", @response.body)
     
@@ -524,7 +524,7 @@ class PeopleControllerTest < ActionController::TestCase
     # Try to update valid users password to too long 
     encrypted_password = people(:valid_person).encrypted_password
     put :update, { :user_id => people(:valid_person).id, :person => { :password =>too_long_password }, :format => 'json' }, 
-                 { :session_id => sessions(:session1).id }
+                 { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
     assert_equal("[\"Password is too long\"]", @response.body)
     
@@ -536,7 +536,7 @@ class PeopleControllerTest < ActionController::TestCase
   private 
   
   def search(search, should_find=true)
-    get :index, { :format => 'json', :search => search }, { :session_id => sessions(:session1) }
+    get :index, { :format => 'json', :search => search }, { :cos_session_id => sessions(:session1) }
     assert_response :success
     assert_not_nil assigns["people"]
     json = JSON.parse(@response.body)
