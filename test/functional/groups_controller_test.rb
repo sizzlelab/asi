@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'test_helper'
 require 'json'
 
@@ -35,6 +36,11 @@ class GroupsControllerTest < ActionController::TestCase
     assert_equal(groups(:open).group_type, json['group']['group_type'])
     #assert_equal(groups(:open).created_at, json['group']['created_at']) #format problems prevent easy testing
     assert_equal(groups(:open).has_member?(sessions(:session1).person), json['group']['is_member'])
+  end
+
+  def test_not_found
+    get :show, { :group_id => "nonexistent", :format => 'json'}, { :cos_session_id => sessions(:session1).id }
+    assert_response :not_found, @response.body
   end
   
   def test_add_member
@@ -113,4 +119,93 @@ class GroupsControllerTest < ActionController::TestCase
     #assert ! people(:valid_person).is_member_of?(groups(:open))
     assert_nil(Group.find_by_id(groups(:open).id),"Group not destroyed when last person leaved.")
   end
+
+  def test_change_group_info
+    group = groups(:open)
+    session = sessions(:session1)
+    assert session.person.is_admin_of?(group)
+
+    data =  { :description => "foo Ja even ääkköset ",
+              :title => "baaaa Ja even ääkköset äääää" }
+
+    put :update, { :group_id => group.id, :group => data, :format => 'json' },
+                 { :cos_session_id => session.id }
+    assert_response :ok, @response.body
+
+    json = JSON.parse(@response.body)
+
+    data.each do |key, value|
+      assert_equal(data[key], json["group"][key.to_s])
+    end
+  end
+
+  def test_try_change_group_info_to_invalid
+    group = groups(:open)
+    session = sessions(:session1)
+    assert session.person.is_admin_of?(group)
+
+    data =  { :title => "a" }
+
+    put :update, { :group_id => group.id, :group => data, :format => 'json' },
+                 { :cos_session_id => session.id }
+    assert_response :bad_request, @response.body
+    json = JSON.parse(@response.body)
+
+    get :show, { :group_id => group.id, :format => 'json' },
+               { :cos_session_id => session.id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+
+    data.each do |key, value|
+      assert_not_equal(data[key], json["group"][key.to_s])
+    end    
+  end
+
+
+  def test_try_change_group_info_illegally
+    group = groups(:open)
+    session = sessions(:session1)
+    assert session.person.is_admin_of?(group)
+
+    data =  { :created_by => "foo",
+              :updated_at => "01-01-1950 10:10:10" }
+
+    put :update, { :group_id => group.id, :group => data, :format => 'json' },
+                 { :cos_session_id => session.id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+
+    get :show, { :group_id => group.id, :format => 'json' },
+               { :cos_session_id => session.id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+
+    data.each do |key, value|
+      assert_not_equal(data[key], json["group"][key.to_s])
+    end    
+  end
+
+
+  def test_try_change_group_info_unauthorized
+    group = groups(:open)
+    session = sessions(:session2)
+    assert ! session.person.is_admin_of?(group)
+
+    data =  { :title => "Foobar" }
+
+    put :update, { :group_id => group.id, :group => data, :format => 'json' },
+                 { :cos_session_id => session.id }
+    assert_response :forbidden, @response.body
+    json = JSON.parse(@response.body)    
+
+    get :show, { :group_id => group.id, :format => 'json' },
+               { :cos_session_id => session.id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+
+    data.each do |key, value|
+      assert_not_equal(data[key], json["group"][key.to_s])
+    end    
+  end
+
 end
