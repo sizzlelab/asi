@@ -60,6 +60,11 @@ ActionController::Routing::Routes.draw do |map|
                                          :put => 'update', 
                                          :delete => 'delete'
 
+  #map.resource '/people/@me', :controller => 'people',
+  #                              :get => 'show',
+  #                              :put => 'update',
+  #                              :delete => 'delete'
+
   map.resource '/people/:user_id/@avatar', :controller => 'people',
                                            :post => 'update_avatar',
                                            :get => 'get_avatar', 
@@ -125,10 +130,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/groups/@public', :controller => 'groups',
                                   :get => 'public_groups'
                           
-  map.resource '/groups/:group_id', :controller => 'groups',
-                                    :get => 'show' 
+  map.resource '/groups/@public/:group_id', :controller => 'groups',
+                                            :get => 'show' 
                           
-  map.resource '/groups/:group_id/@members', :controller => 'groups',
+  map.resource '/groups/@public/:group_id/@members', :controller => 'groups',
                                              :get => 'get_members'                                                                       
 
   map.resource '/location/single_update', :controller => 'locations',
