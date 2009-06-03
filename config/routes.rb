@@ -129,7 +129,15 @@ ActionController::Routing::Routes.draw do |map|
                           
   map.resource '/groups/@public', :controller => 'groups',
                                   :get => 'public_groups'
-                          
+
+  # Deprecated
+  map.resource '/groups/:group_id', :controller => 'groups',
+                                            :get => 'show' 
+
+  map.resource '/groups/:group_id/@members', :controller => 'groups',
+                                                     :get => 'get_members'                                                                       
+
+  # New version                          
   map.resource '/groups/@public/:group_id', :controller => 'groups',
                                             :get => 'show' 
                           
