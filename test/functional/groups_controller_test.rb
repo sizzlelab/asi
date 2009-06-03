@@ -168,7 +168,8 @@ class GroupsControllerTest < ActionController::TestCase
     assert session.person.is_admin_of?(group)
 
     data =  { :created_by => "foo",
-              :updated_at => "01-01-1950 10:10:10" }
+              :updated_at => "01-01-1950 10:10:10",
+              :group_type => "closed" }
 
     put :update, { :group_id => group.id, :group => data, :format => 'json' },
                  { :cos_session_id => session.id }

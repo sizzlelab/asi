@@ -102,6 +102,11 @@ class Group < ActiveRecord::Base
   def created_by=(created_by)
     self[:created_by] ||= created_by
   end
+
+  # Disallow changes to group type
+  def group_type=(group_type)
+    self[:group_type] ||= group_type
+  end
   
   # def json_with_members
   #   #TODO add info of members
