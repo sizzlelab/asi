@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
         cos_event = CosEvent.create({
           :user_id =>        @user ? @user.id : nil,
           :application_id => @client ? @client.id : nil, 
-          :session_id =>     session[:cos_session_id],
+          :cos_session_id => session[:cos_session_id],
           :ip_address =>     request.remote_ip, 
           :action =>         controller_class_name + "\#" + action_name, 
           :parameters =>     respond_to?(:filter_parameters) ? filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller 
@@ -124,12 +124,7 @@ class ApplicationController < ActionController::Base
   def maintain_session_and_user
     if session[:cos_session_id]
       if @application_session = Session.find_by_id(session[:cos_session_id])
-#        begin #Strange rescue solution is because request.path_info acts strangely in tests
-          path = request.path_info
- #       rescue NoMethodError => e
-  #        path = "running/tests/no/path/available"
-   #     end
-        @application_session.update_attributes(:ip_address => request.remote_addr, :path => path)
+        @application_session.update_attributes(:ip_address => request.remote_addr, :path => request.path_info)
         @user = @application_session.person
         @client = @application_session.client
       else
