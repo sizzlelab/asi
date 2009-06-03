@@ -77,3 +77,5 @@ Rails::Initializer.run do |config|
   VALIDATE_EMAILS = false
   
 end
+
+require 'render_extend'
