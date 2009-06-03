@@ -4,7 +4,7 @@ class GroupsController < ApplicationController
   before_filter :ensure_person_login, :except => methods_not_requiring_person_login
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
   
-  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group ]
+  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update ]
   
   def create
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
@@ -13,7 +13,8 @@ class GroupsController < ApplicationController
     @group = Group.new(:title => params[:title], 
                        :group_type => params[:type], 
                        :description => params[:description],
-                       :created_by => @user.id)
+                       :created_by => @user)
+
     if @group.save
       # Make the creator as an admin member
       @user.become_member_of(@group)
@@ -28,14 +29,19 @@ class GroupsController < ApplicationController
     #TODO check that asker has rights to get info
     
     #puts "show method! #{params[:group_id]}"
-    #@group = get_group_or_not_found(params[:group_id])
+    # @group = get_group_or_not_found(params[:group_id])
     #puts "CONTROLLERISSA:#{@user}"
   end
   
   def update
-    parameters_hash = HashWithIndifferentAccess.new(params.clone)
-    params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
-    
+    if not @user.is_admin_of?(@group)
+      render :status => :forbidden, :json => "You are not an admin of this group.".to_json and return
+    elsif @group.update_attributes(params[:group])
+      render :status => :ok, :json => @group.to_json
+    else
+      render :status => :bad_request, :json => @group.errors.full_messages.to_json
+      @group = nil
+    end
   end
   
   def public_groups

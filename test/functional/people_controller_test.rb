@@ -27,6 +27,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns["person"]
     json = JSON.parse(@response.body)
+
     assert_equal people(:valid_person).id, json["id"]
     assert_nil json["password"]
 

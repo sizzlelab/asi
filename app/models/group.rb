@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Group < ActiveRecord::Base
   usesguid
 
@@ -6,7 +7,7 @@ class Group < ActiveRecord::Base
   has_many :pending_members, :through => :memberships, :source => :person, :conditions => 'accepted_at IS NULL'
   has_many :mods, :through => :memberships, :source => :person, :conditions => ['admin_role = ?', true]
 
-  VALID_GROUP_TYPES =  %w(open) #closed hidden personal (to be implemented)
+  VALID_GROUP_TYPES =  %w(open closed) #closed hidden personal (to be implemented)
   TITLE_MIN_LENGTH = 2
   TITLE_MAX_LENGTH = 70
   DESCRIPTION_MAX_LENGTH = 5000
@@ -95,6 +96,11 @@ class Group < ActiveRecord::Base
       group_hash['group'].merge!({'is_member' => (has_member?(asking_person))})
     end
     return group_hash
+  end
+
+  # Disallow changes to group creator
+  def created_by=(created_by)
+    self[:created_by] ||= created_by
   end
   
   # def json_with_members
