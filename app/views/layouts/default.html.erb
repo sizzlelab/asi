@@ -2,7 +2,7 @@
   <head>
     <title>Common Services <%= render :partial => "layouts/version" %></title>
     <base href="<%= SERVER_DOMAIN %>" />
-    <link rel="stylesheet" href="stylesheets/cos.css" type="text/css" media="screen" />
+    <%= stylesheet_link_tag("cos") %>
   </head>
   <body>
     <p style="color: green"><%= flash[:notice] %></p> 
