@@ -18,7 +18,7 @@ class Image < ActiveRecord::Base
   def save_to_db?(options, person)
     self.data = options[:file].read
     self.person_id = person.id                  
-    if valid_file?(options[:file].content_type, options[:file].original_filename) and convert
+    if valid_file?(options[:file].content_type, options[:file].original_filename) and convert(options[:file].original_filename)
       self.save
       return true
     end 
@@ -31,6 +31,12 @@ class Image < ActiveRecord::Base
     #The upload should be nonempty.
     if filename == nil
       errors.add_to_base("Please enter an image filename")
+      return false
+    end
+    
+    #The upload should have file suffix
+    if filename =~ /\.(jpe?g)|(png)|$/i
+      errors.add_to_base("Please use image file with a filename suffix")
       return false
     end
     
@@ -50,7 +56,7 @@ class Image < ActiveRecord::Base
   end
   
   # Returns true if conversion of image is successful.
-  def convert
+  def convert(filename)
     source_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "temp_#{filename}")
     full_size_image_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "full_image.jpg")
     large_thumbnail_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "large_thumb_image.jpg")
