@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
   }
 
   def doc
-    render :action => request.path[1..-1]
+    render :action => request.path[1..-1].gsub(/\/$/, "")
   end
 
   def ensure_person_login
