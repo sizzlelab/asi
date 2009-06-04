@@ -149,6 +149,7 @@ class GroupsControllerTest < ActionController::TestCase
     put :update, { :group_id => group.id, :group => data, :format => 'json' },
                  { :cos_session_id => session.id }
     assert_response :bad_request, @response.body
+
     json = JSON.parse(@response.body)
 
     get :show, { :group_id => group.id, :format => 'json' },

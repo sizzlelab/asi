@@ -132,7 +132,9 @@ ActionController::Routing::Routes.draw do |map|
 
   # Deprecated
   map.resource '/groups/:group_id', :controller => 'groups',
-                                            :get => 'show' 
+                                    :get => 'show',
+                                    :put => 'update'
+
 
   map.resource '/groups/:group_id/@members', :controller => 'groups',
                                                      :get => 'get_members'                                                                       

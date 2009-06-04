@@ -17,7 +17,7 @@ class Group < ActiveRecord::Base
                          :allow_nil => false,
                          :message => "must currently be 'open'" #", 'closed', 'hidden' or 'personal'"
                          
-  validates_length_of :title, :within => 2..70
+  validates_length_of :title, :within => TITLE_MIN_LENGTH..TITLE_MAX_LENGTH
   validates_length_of :description, :allow_nil => true, :allow_blank => true, :maximum => DESCRIPTION_MAX_LENGTH, :message => "is too long"                       
   validates_presence_of :created_by
   
