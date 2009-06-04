@@ -315,10 +315,10 @@ class PeopleControllerTest < ActionController::TestCase
   end
   
   def test_update_avatar_image_without_suffix
-    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("kuva_ilman_päätettä","image/jpeg"),
+    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("kuva_ilman_paatetta","image/jpeg"),
                           :format => 'html' }, 
                         { :cos_session_id => sessions(:session1).id }                 
-    assert_response :success
+    assert_response :error
   end
   
   def test_delete_avatar
