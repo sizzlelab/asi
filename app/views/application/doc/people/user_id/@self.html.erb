@@ -31,7 +31,11 @@
                                             {:family_name => "Person's family name."}
                                           ]},
                                           {:phone_number => "Person's phone number, stored as a string." },
-                                          {:unstructured_address => "Person's address in free form."},
+                                          {:address => [
+                                            {:street_address => "Person's street address"},
+                                            {:postal_code => "Person's postal code, e.g. 02150"},
+                                            {:locality => "Person's locality, e.g. Espoo"}
+                                          ]}
                                           
                                           
                                     ]
