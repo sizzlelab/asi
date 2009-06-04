@@ -53,16 +53,18 @@ class GroupsController < ApplicationController
   end
   
   def add_member  
-    if params[:user_id] != @user.id
-      render :status => :forbidden, :json  => ["Only the user himself can add him to this group."].to_json and return
+    if @group
+      if params[:user_id] != @user.id
+        render :status => :forbidden, :json  => ["Only the user themselves can join a group."].to_json and return
+      end
+      
+      @person = Person.find_by_id(params[:user_id])
+      if ! @person 
+        render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
+      end
+      
+      @person.become_member_of(@group)
     end
-    
-    @person = Person.find_by_id(params[:user_id])
-    if ! @person 
-      render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
-    end
-    
-    @person.become_member_of(@group)   
   end
   
   # Returns a list of the public groups of the person specified by user_id
@@ -77,27 +79,28 @@ class GroupsController < ApplicationController
   
   def get_members
     #TODO check that asker has rights to get info
-    
-    #@group = get_group_or_not_found(params[:group_id])
-    @members = @group.members
-
+    if @group
+      @members = @group.members
+    end
   end
-  
+
   def remove_person_from_group
-    if params[:user_id] != @user.id
-      render :status => :forbidden, :json  => ["Only the user himself can remove him from this group."].to_json and return
-    end
-       
-    @person = Person.find_by_id(params[:user_id])
-    if ! @person 
-      render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
-    end
-    
-    @person.leave(@group)
-    
-    # If the last member leaves, the group is destroyed
-    if @group.members.count < 1
-      @group.destroy
+    if @group
+      if params[:user_id] != @user.id and not @user.is_admin_of?(@group)
+        render :status => :forbidden, :json  => ["You are not authorized to remove this user from this group."].to_json and return
+      end
+      
+      @person = Person.find_by_id(params[:user_id])
+      if ! @person 
+        render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
+      end
+      
+      @person.leave(@group)
+      
+      # If the last member leaves, the group is destroyed
+      if @group.members.count < 1
+        @group.destroy
+      end
     end
   end
   
@@ -107,7 +110,7 @@ class GroupsController < ApplicationController
     begin
       @group = Group.find(params[:group_id])
     rescue ActiveRecord::RecordNotFound
-      head :status => :not_found and return
+      render :status => :not_found, :json => "There is no such group.".to_json
     end
   end
 end

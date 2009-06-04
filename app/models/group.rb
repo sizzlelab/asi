@@ -5,7 +5,7 @@ class Group < ActiveRecord::Base
   has_many :memberships, :dependent => :destroy
   has_many :members, :through => :memberships, :source => :person, :conditions => 'accepted_at IS NOT NULL'
   has_many :pending_members, :through => :memberships, :source => :person, :conditions => 'accepted_at IS NULL'
-  has_many :mods, :through => :memberships, :source => :person, :conditions => ['admin_role = ?', true]
+  has_many :admins, :through => :memberships, :source => :person, :conditions => ['admin_role = ?', true]
 
   VALID_GROUP_TYPES =  %w(open closed) #closed hidden personal (to be implemented)
   TITLE_MIN_LENGTH = 2

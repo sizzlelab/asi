@@ -1,5 +1,5 @@
 <% if @members %>
   <%= {:entry  => @members}.to_json %>
 <% else %>
-  <%= {}.to_json %>
+  <%= {:entry => []}.to_json %>
 <% end %>

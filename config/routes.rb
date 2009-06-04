@@ -146,6 +146,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/groups/@public/:group_id/@members', :controller => 'groups',
                                              :get => 'get_members'                                                                       
 
+
   map.resource '/location/single_update', :controller => 'locations',
                                           :post => 'update'
 

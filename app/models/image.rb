@@ -63,8 +63,8 @@ class Image < ActiveRecord::Base
 
     # Then resize the source file to the size defined by full_image_size parameter
     # and convert it to .jpg file. Resize uses ImageMagick directly from command line.
-    img = system("#{'convert'} '#{source_file}' -resize #{FULL_IMAGE_SIZE} '#{full_size_image_file}'")
-    large_thumb = system("#{'convert'} '#{source_file}' -resize #{LARGE_THUMB_SIZE} '#{large_thumbnail_file}'")
+    img = system("#{'convert'} '#{source_file}' -resize #{FULL_IMAGE_SIZE} '#{full_size_image_file}' &> #{RAILS_ROOT}/log/convert.log")
+    large_thumb = system("#{'convert'} '#{source_file}' -resize #{LARGE_THUMB_SIZE} '#{large_thumbnail_file}' &> #{RAILS_ROOT}/log/convert.log")
     
     # If new file exists, it means that the original file is a valid image file. If so,
     # make a thumbnail using RMagick. Thumbnail is created by cutting as big as possible 

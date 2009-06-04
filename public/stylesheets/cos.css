@@ -269,3 +269,8 @@ div.listed_object_right_line_content {
 div.pagination_padding {
 	padding-top: 6px;
 }
+
+p.deprecated {
+        padding: 5px;
+        border: 2px solid red;
+}
