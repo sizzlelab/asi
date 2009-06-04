@@ -62,7 +62,11 @@ class GroupsController < ApplicationController
       if ! @person 
         render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
       end
-      
+
+      if @person.is_member_of?(@group)
+        render :status => :conflict, :json => "You are already a member of this group".to_json and return
+      end
+
       @person.become_member_of(@group)
     end
   end

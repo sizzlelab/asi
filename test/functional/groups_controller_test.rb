@@ -59,6 +59,20 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)                  
     
   end
+
+  def test_rejoin
+    assert ! groups(:open).has_member?(people(:friend))
+    post :add_member, {:group_id =>  groups(:open).id, :user_id => people(:friend).id, :format => 'json' },
+                      { :cos_session_id => sessions(:session4).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert groups(:open).has_member?(people(:friend))
+    assert people(:friend).is_member_of?(groups(:open))
+
+    post :add_member, {:group_id =>  groups(:open).id, :user_id => people(:friend).id, :format => 'json' },
+                      { :cos_session_id => sessions(:session4).id }
+    assert_response :conflict, @response.body
+  end
   
   def test_get_groups_of_person
     get :get_groups_of_person, {:user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
@@ -249,6 +263,5 @@ class GroupsControllerTest < ActionController::TestCase
     
     assert_equal json["entry"].size, group.members.size
   end
-
 
 end
