@@ -210,4 +210,45 @@ class GroupsControllerTest < ActionController::TestCase
     end    
   end
 
+  def test_kick
+    group = groups(:open)
+    session = sessions(:session1)
+    assert session.person.is_admin_of?(group)
+    user = group.members[1]
+    assert_not_equal user, session.person
+
+    delete :remove_person_from_group, {:group_id => group.id, :user_id => user.id, :format => 'json' },
+    { :cos_session_id => session.id }
+    assert_response :success, @response.body
+
+    get :get_members, {:group_id => group.id, :user_id => user.id, :format => 'json'},
+    { :cos_session_id => session.id }
+    assert_response :success, @response.body
+
+    json = JSON.parse(@response.body)
+    
+    assert json["entry"].size < group.members.size
+  end
+
+  def test_unauthorized_kick
+    group = groups(:open)
+    session = sessions(:session5)
+    assert ! session.person.is_admin_of?(group)
+    user = group.members[1]
+    assert_not_equal user, session.person
+
+    delete :remove_person_from_group, {:group_id => group.id, :user_id => user.id, :format => 'json' },
+    { :cos_session_id => session.id }
+    assert_response :forbidden, @response.body
+
+    get :get_members, {:group_id => group.id, :user_id => user.id, :format => 'json'},
+    { :cos_session_id => session.id }
+    assert_response :success, @response.body
+
+    json = JSON.parse(@response.body)
+    
+    assert_equal json["entry"].size, group.members.size
+  end
+
+
 end
