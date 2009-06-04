@@ -19,4 +19,4 @@ png:
   
 paatteeton:
   id: 3
-  data: <%= fixture_data("kuva_ilman_päätettä") %>
+  data: <%= fixture_data("kuva_ilman_paatetta") %>
