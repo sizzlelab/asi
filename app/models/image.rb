@@ -35,7 +35,7 @@ class Image < ActiveRecord::Base
     end
     
     #The upload should have file suffix
-    if filename =~ /\.(jpe?g)|(png)|$/i
+    unless filename =~ /\.(jpg)|(jpeg)|(png)|(gif)$/i
       errors.add_to_base("Please use image file with a filename suffix")
       return false
     end
