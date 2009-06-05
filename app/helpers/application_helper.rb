@@ -47,7 +47,6 @@ module ApplicationHelper
 
     text.split("/").inject do |sum, part|
       begin
-        puts sum + "/" + part, part
         ActionController::Routing::Routes.recognize_path("/doc" + "#{sum}/#{part}")
         link += "/" + link_to_unless_current(part, "/doc" + "#{sum}/#{part}")
         sum + "/" + part
