@@ -20,7 +20,9 @@ class Group < ActiveRecord::Base
   validates_length_of :title, :within => TITLE_MIN_LENGTH..TITLE_MAX_LENGTH
   validates_length_of :description, :allow_nil => true, :allow_blank => true, :maximum => DESCRIPTION_MAX_LENGTH, :message => "is too long"                       
   validates_presence_of :created_by
-  
+
+  validates_uniqueness_of :title, :case_sensitive => false
+
   def membership(person)
     Membership.find(:first, :conditions => ['group_id = ? AND person_id = ?', self.id, person.id])
   end

@@ -21,8 +21,15 @@
                                   {:description => "A descriptive text for the group (optional)"}
                                 ], 
 
-                 :returns => { "201" => "Created. The response includes also the information for the group, for example the group GUID as <code>id</code>."
-                              } 
+                 :returns => { "201" => "Created. The response includes also the information for the group, for example the group GUID as <code>id</code>.",
+                               "400" => "There was an error in one of the parameters."
+                              },
+
+                 :error_messages => { "Title is too short" => "Title length must be at least #{Group::TITLE_MIN_LENGTH} characters.",
+                                      "Title is too long" => "Title length must be at most #{Group::TITLE_MAX_LENGTH} characters.",
+                                      "Description is too long" => "Description length must be at most #{Group::DESCRIPTION_MAX_LENGTH} characters.",
+                                      "Title has already been taken" => "Each group must have a unique title. The uniqueness check is case-insensitive." }
+                 
                  
                               
                   } ] %>

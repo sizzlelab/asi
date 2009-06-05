@@ -264,4 +264,14 @@ class GroupsControllerTest < ActionController::TestCase
     assert_equal json["entry"].size, group.members.size
   end
 
+  def test_duplicate_group
+    group = groups(:open)
+    session = sessions(:session1)
+    
+    post :create, { :title => group.title, :type => "open", :format => 'json' }, 
+                  { :cos_session_id => session.id }
+    assert_response :bad_request, @response.body
+    json = JSON.parse(@response.body)
+  end
+
 end
