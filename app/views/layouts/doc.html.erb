@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <title>Common Services <%= render :partial => "layouts/version" %></title>
+    <base href="<%= SERVER_DOMAIN %>" />
+    <%= stylesheet_link_tag("cos") %>
+  </head>
+  <body>
+    <p style="color: green"><%= flash[:notice] %></p> 
+    <p style="color: orange"><%= flash[:warning] %></p> 
+    <p style="color: red"><%= flash[:error] %></p> 
+    
+    <%= yield %>
+    
+    <div id="feedback">
+      <div id="feedback_spacer">&nbsp;</div>
+      <div id="feedback_form">
+        <% form_for :feedback, :url => admin_feedbacks_path do |f| %>
+        <b><%= "Leave feedback:" %></b><br /><br />
+        <%= f.text_area :content, :size => "60x5" %>
+        <br /><br />
+        <strong>Name (if you want):<strong/>
+          <%= f.text_field :author_id%>
+          <br/><br />
+          <%= f.hidden_field :url, :value => request.request_uri %>
+          <%= submit_tag "Send feedback", :onclick => "this.disabled=true,this.form.submit();" %>
+          <% end %>
+      </div>
+    </div>
+
+    <div class="footer">
+      OtaSizzle Common Services <%= render :partial => "layouts/version" %> built <%= render :partial => "layouts/build_date" %>
+    </div>
+  </body>
+</html>

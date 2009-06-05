@@ -39,8 +39,12 @@ class ApplicationController < ActionController::Base
     }
   }
 
+  def index
+    render :layout => "doc"
+  end
+
   def doc
-    render :action => request.path[1..-1].gsub(/\/$/, "")
+    render :action => request.path[1..-1].gsub(/\/$/, ""), :layout => "doc"
   end
 
   def ensure_person_login
