@@ -40,4 +40,8 @@ module ApplicationHelper
     pattern = /[\.)]*$/
     h(text).gsub(/https?:\/\/\S+/) { |link_url| link_to(link_url.gsub(pattern,""), link_url.gsub(pattern,"")) +  link_url.match(pattern)[0]}.gsub(/\n/, "<br />")
   end
+
+  def doc_title(text)
+    "<h1><code>#{link_to('COS', root_url)}#{text}</code></h1>"
+  end
 end
