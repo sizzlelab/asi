@@ -21,7 +21,7 @@ class ImageTest < ActiveSupport::TestCase
     image = @image_jpg
     image.person_id = people(:valid_person).id
     assert image.valid_file?("image/jpeg", "test.jpg")
-    assert image.convert
+    assert image.convert("image.jpg")
   end  
    
   def test_should_update_image
