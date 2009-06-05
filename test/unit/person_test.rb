@@ -113,7 +113,7 @@ class PersonTest < ActiveSupport::TestCase
     avatar = @valid_avatar
     avatar.person_id = person.id
     assert avatar.valid_file?("image/jpeg", "testfile.jpg")
-    assert avatar.convert
+    assert avatar.convert("testfile.jpg")
     person.avatar = @valid_avatar
     json = JSON.parse(person.to_json(nil,person))
     assert_not_nil json["id"]
