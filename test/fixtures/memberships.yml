@@ -14,3 +14,10 @@ two:
   admin_role: 0
   accepted_at: 2008-08-11 12:36:33
 
+three:
+  id: 3
+  person_id: 1
+  group_id: yure23t
+  admin_role: 1
+  accepted_at: 2008-08-11 12:36:33
+

@@ -42,6 +42,39 @@ class GroupsControllerTest < ActionController::TestCase
     get :show, { :group_id => "nonexistent", :format => 'json'}, { :cos_session_id => sessions(:session1).id }
     assert_response :not_found, @response.body
   end
+
+   def test_request_and_accept_membership
+    group = groups(:closed)
+    session = sessions(:session1)
+    assert session.person.is_admin_of?(group)
+    
+    assert ! groups(:closed).has_member?(people(:friend))
+
+    post :add_member, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :format => 'json' },
+                      { :cos_session_id => sessions(:session4).id }
+                    
+    assert_response :ok
+
+    put :accept_pending_membership_request, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :format => 'json' },
+                                            { :cos_session_id => sessions(:session1).id }
+    assert_response :ok
+    assert groups(:closed).has_member?(people(:friend))
+    
+  end
+
+   def test_unauthorized_membership_accept
+     assert ! groups(:closed).has_member?(people(:friend))
+
+     post :add_member, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :format => 'json' },
+                      { :cos_session_id => sessions(:session4).id }
+
+     put :accept_pending_membership_request, {:group_id => groups(:closed), :user_id => people(:friend).id, :format => 'json'},
+                                             {:cos_session_id => sessions(:session4).id }
+     assert_response :unauthorized
+
+     assert ! groups(:closed).has_member?(people(:friend))
+   end
+
   
   def test_add_member
     assert ! groups(:open).has_member?(people(:friend))
@@ -175,7 +208,6 @@ class GroupsControllerTest < ActionController::TestCase
       assert_not_equal(data[key], json["group"][key.to_s])
     end    
   end
-
 
   def test_try_change_group_info_illegally
     group = groups(:open)

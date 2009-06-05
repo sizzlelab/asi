@@ -4,16 +4,16 @@ class GroupsController < ApplicationController
   before_filter :ensure_person_login, :except => methods_not_requiring_person_login
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
   
-  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update ]
+  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update, :accept_pending_membership_request ]
   
   def create
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
     params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
       
     @group = Group.new(:title => params[:title], 
-                       :group_type => params[:type], 
-                       :description => params[:description],
-                       :created_by => @user)
+      :group_type => params[:type],
+      :description => params[:description],
+      :created_by => @user)
 
     if @group.save
       # Make the creator as an admin member
@@ -67,7 +67,13 @@ class GroupsController < ApplicationController
         render :status => :conflict, :json => "You are already a member of this group".to_json and return
       end
 
-      @person.become_member_of(@group)
+      if @group.group_type == 'open'
+        @person.become_member_of(@group)
+        render :status => :ok, :json => "Become member of group succesfully.".to_json and return
+      elsif @group.group_type == 'closed'
+        @person.request_membership_of(@group)
+        render :status => :ok, :json => "Membership requested.".to_json and return
+      end
     end
   end
   
@@ -85,6 +91,16 @@ class GroupsController < ApplicationController
     #TODO check that asker has rights to get info
     if @group
       @members = @group.members
+    end
+  end
+
+
+  def accept_pending_membership_request
+    person = Person.find_by_id(params[:user_id])
+    if @user.is_admin_of?(@group) && @group.pending_members.include?(person)
+      person.become_member_of(@group)
+    else
+      render :status => :unauthorized, :json => "Accepting pending requests can be done by admins only.".to_json and return
     end
   end
 

@@ -10,12 +10,22 @@
                
                {
                  :name => "POST",
-                 :description => "Add the person specified by <tt>user_id</tt> to a group. 
+                 :description => "Add the person specified by <tt>user_id</tt> to a group. If group is closed, sends a membership request.
                                  (The user_id must refer to the person who is logged in.)",
                  :parameters => [{
                                     :group_id => "The id of the target group."
                                 }],
-                  :returns => { "200" => "The join was successful.", "409" => "The user is already a member of this group." } }
+                  :returns => { "200" => "The join was successful.", "409" => "The user is already a member of this group." }
+                },
+
+                {
+                  :name => "PUT",
+                  :description => "Accept the person's pending membership request specified by <tt>user_id</tt>. (The logged in user must be an admin of the group.)",
+                  :parameters => [{
+                                      :group_id => "The id of the target group."
+                                  }],
+                  :returns => { "200" => "The request was accepted successfully.", "401" => "The request was done by an unauthorized user." }
+                }
               ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
