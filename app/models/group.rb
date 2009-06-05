@@ -7,7 +7,8 @@ class Group < ActiveRecord::Base
   has_many :pending_members, :through => :memberships, :source => :person, :conditions => 'accepted_at IS NULL'
   has_many :admins, :through => :memberships, :source => :person, :conditions => ['admin_role = ?', true]
 
-  VALID_GROUP_TYPES =  %w(open closed) #closed hidden personal (to be implemented)
+
+  VALID_GROUP_TYPES =  %w(open closed) #hidden personal (to be implemented)
   TITLE_MIN_LENGTH = 2
   TITLE_MAX_LENGTH = 70
   DESCRIPTION_MAX_LENGTH = 5000
@@ -15,7 +16,7 @@ class Group < ActiveRecord::Base
   validates_inclusion_of :group_type,
                          :in => VALID_GROUP_TYPES,
                          :allow_nil => false,
-                         :message => "must currently be 'open'" #", 'closed', 'hidden' or 'personal'"
+                         :message => "must currently be 'open', 'closed'" #", 'hidden' or 'personal'"
                          
   validates_length_of :title, :within => TITLE_MIN_LENGTH..TITLE_MAX_LENGTH
   validates_length_of :description, :allow_nil => true, :allow_blank => true, :maximum => DESCRIPTION_MAX_LENGTH, :message => "is too long"                       
@@ -27,10 +28,19 @@ class Group < ActiveRecord::Base
     Membership.find(:first, :conditions => ['group_id = ? AND person_id = ?', self.id, person.id])
   end
 
+  def pending_member?(person)
+
+  end
+
   def accept_member(person)
-    #puts "accepting #{person.username}"
-    #puts self.membership(person).inspect
-    if self.membership(person)
+   # puts "accepting #{person.username}"
+   # puts self.membership(person).inspect
+  # puts self.pending_members.inspect
+  # puts self.members.inspect
+    if self.membership(person) && self.group_type == "open"
+      self.membership(person).update_attribute(:accepted_at, Time.now)
+      return true
+    elsif self.pending_members.include?(person) && self.group_type == "closed"
       self.membership(person).update_attribute(:accepted_at, Time.now)
       return true
     else
@@ -67,8 +77,10 @@ class Group < ActiveRecord::Base
 
   def add_member(person)
     #puts "Members ENNEN lisäystä: #{self.members.inspect}"
-    if !person.nil?
+    if !person.nil? && self.group_type != 'closed'
       self.members.push(person) unless self.pending_and_accepted_members.include?(person)
+    elsif person && self.group_type == 'closed'
+      self.members.push(person) if self.pending_members.include?(person)
     end 
     #puts "Members lisäyksen JÄLKEEN: #{self.members.inspect}"
   end

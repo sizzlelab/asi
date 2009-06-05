@@ -110,11 +110,12 @@ ActionController::Routing::Routes.draw do |map|
                                               
   map.resource '/people/:user_id/@groups', :controller => 'groups',
                                            :get => 'get_groups_of_person',
-                                           :post => 'add_member'
+                                           :post => 'add_member',
+                                           :put => 'accept_pending_membership_request'
                                            
   map.resource '/people/:user_id/@groups/:group_id', :controller => 'groups',
                                                      :delete => 'remove_person_from_group'
-
+                                                   
   map.resource '/people/recover_password', :controller => 'people',
                                            :post => 'recover_password'
 
