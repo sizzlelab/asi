@@ -18,7 +18,8 @@
                                "400" => "The new group information is invalid." },
                  :error_messages => { "Title is too short" => "Title length must be at least #{Group::TITLE_MIN_LENGTH} characters.",
                                       "Title is too long" => "Title length must be at most #{Group::TITLE_MAX_LENGTH} characters.",
-                                      "Description is too long" => "Description length must be at most #{Group::DESCRIPTION_MAX_LENGTH} characters." }
+                                      "Description is too long" => "Description length must be at most #{Group::DESCRIPTION_MAX_LENGTH} characters.",
+                                      "Title has already been taken" => "Each group must have a unique title. The uniqueness check is case-insensitive."  }
                  
                },
                            

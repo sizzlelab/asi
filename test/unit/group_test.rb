@@ -36,5 +36,16 @@ class GroupTest < ActiveSupport::TestCase
     assert_length :max, groups(:open), :title, Group::TITLE_MAX_LENGTH
     assert_length :max, groups(:open), :description, Group::DESCRIPTION_MAX_LENGTH
   end
+
+  def test_name_uniqueness
+    g = Group.new(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
+    assert g.save
+
+    g2 = Group.new(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
+    assert ! g2.save, "Allows duplicate group names"
+
+    g3 = Group.new(:title => "Testiryhma", :group_type => "open", :created_by => "testperson_id")
+    assert ! g3.save, "Allows case-insensitive duplicate group names"
+  end
   
 end
