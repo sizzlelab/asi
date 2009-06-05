@@ -16,7 +16,7 @@ jpg:
 png:
   id: 2
   data: <%= fixture_data("Bison_skull_pile.png") %>
-  
+
 paatteeton:
-  id: 3
+  id: 30
   data: <%= fixture_data("kuva_ilman_paatetta") %>
