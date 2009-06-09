@@ -9,7 +9,17 @@
                                "404" => "Group or user was not found.",
                               }
 
-               }
+               },
+               {
+                  :name => "PUT",
+                  :description => "Resource for changing membership status. User's admin status in group can be changed. Also, pending membership requests can be accepted.
+                                   User's own admin status cannot be changed, changing of admin status must be done by different group admin.
+                                  (The logged in user must be an admin of the group.)",
+                  :parameters => [
+                                   {:accept_request => "True, for accepting pending request"}, {:admin_status => "True for granting admin status, false for removing status."}
+                                 ],
+                  :returns => { "200" => "The request was accepted successfully.", "401" => "The request was done by an unauthorized user.", "403" => "Action was forbidden. Usually means that user cannot change their own admin status." }
+                }
               ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
