@@ -17,19 +17,19 @@ class GroupTest < ActiveSupport::TestCase
   def test_add_member_open
     g = Group.create(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
     assert(g.valid?, "created group was not valid")
-    assert people(:friend).become_member_of(g), "Becoming a member of a group failed"
-    assert(people(:friend).is_member_of?(g), "Joining a group failed.")
-    
-    #add a second member
-    people(:not_yet_friend).become_member_of(g)
-    assert(people(:not_yet_friend).is_member_of?(g), "Joining a group failed.")
-    
-    #test asking if member
-    assert(g.has_member?(people(:friend)), "Person not in a group where he should be")
-    assert(g.has_member?(people(:not_yet_friend)), "Person not in a group where he should be")
-    
-    #test listing members
-    assert(g.members.count == 2, "Person count in group did not match")
+    assert_difference 'g.members.count', 1 do
+      assert people(:friend).become_member_of(g), "Becoming a member of a group failed"
+      assert people(:friend).is_member_of?(g), "Joining a group failed."
+
+      assert(g.has_member?(people(:friend)), "Person not in a group where he should be")
+    end
+  end
+
+  def test_add_nil
+    g = Group.create(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
+    assert_no_difference 'g.members.count' do
+      g.add_member(nil)
+    end
   end
 
   def test_add_member_closed
@@ -38,32 +38,18 @@ class GroupTest < ActiveSupport::TestCase
       assert(g.valid?, g.errors.full_messages.inspect)
       assert(g.save, "Saving failed!")
 
-      #try to add a member without acceptance
-      assert !people(:friend).become_member_of(g), "Becoming a member of a group should fail"
-      assert !people(:friend).is_member_of?(g), "Shouldn't be member."
+      assert_no_difference 'g.members.count' do 
+        assert !people(:friend).become_member_of(g), "Becoming a member of a group should fail"
+        assert !people(:friend).is_member_of?(g), "Shouldn't be member."
+      end
 
-      #ask for membership
-      people(:friend).request_membership_of(g)
-      
-      g.reload
+      assert_difference 'g.members.count', 1 do
+        people(:friend).request_membership_of(g)
+        assert people(:friend).become_member_of(g), "Becoming a member of a group failed."
 
-      assert people(:friend).become_member_of(g), "Becoming a member of a group failed."
-      assert people(:friend).is_member_of?(g)
-
-      #add a second member
-      people(:not_yet_friend).request_membership_of(g)
-
-      g.reload
-
-      assert people(:not_yet_friend).become_member_of(g), "Becoming a member of a group failed."
-      assert people(:not_yet_friend).is_member_of?(g), "Joining a group failed."
-
-      #test asking if member
-      assert(g.has_member?(people(:friend)), "Person not in a group where he should be")
-      assert(g.has_member?(people(:not_yet_friend)), "Person not in a group where he should be")
-
-      #test listing members
-      assert(g.members.count == 2, "Person count in group did not match")
+        assert people(:friend).is_member_of?(g)
+        assert(g.has_member?(people(:friend)), "Person not in a group where he should be")
+      end
     end
   end
   

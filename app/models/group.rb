@@ -40,7 +40,7 @@ class Group < ActiveRecord::Base
     if self.membership(person) && self.group_type == "open"
       self.membership(person).update_attribute(:accepted_at, Time.now)
       return true
-    elsif self.pending_members.include?(person) && ! auto_accept?
+    elsif self.pending_members.include?(person) && ! auto_accept_members?
       self.membership(person).update_attribute(:accepted_at, Time.now)
       return true
     else
@@ -62,8 +62,7 @@ class Group < ActiveRecord::Base
 
   def add_member(person)
     return false if ! person
-
-    if auto_accept?
+    if auto_accept_members?
       self.members.push(person) unless self.pending_and_accepted_members.include?(person)
     else
       self.members.push(person) if self.pending_members.include?(person)
@@ -109,7 +108,7 @@ class Group < ActiveRecord::Base
 
   private 
 
-  def auto_accept?
+  def auto_accept_members?
     self.group_type == 'open'
   end
   
