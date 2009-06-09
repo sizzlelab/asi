@@ -42,17 +42,18 @@ module ApplicationHelper
   end
 
   def doc_title(text)
-    text = text.gsub("&lt;", "").gsub("&gt;", "")
+    #text = text
     link = "<h1><code>#{link_to('COS', root_url)}"
 
     text.split("/").inject do |sum, part|
+      parturl = part.gsub("&lt;", "").gsub("&gt;", "")
       begin
-        ActionController::Routing::Routes.recognize_path("/doc" + "#{sum}/#{part}")
-        link += "/" + link_to_unless_current(part, "/doc" + "#{sum}/#{part}")
-        sum + "/" + part
+        ActionController::Routing::Routes.recognize_path("/doc" + "#{sum}/#{parturl}")
+        link += "/" + link_to_unless_current(part, "/doc" + "#{sum}/#{parturl}")
+        sum + "/" + parturl
       rescue ActionController::RoutingError
         link += "/#{part}"
-        sum + "/" + part
+        sum + "/" + parturl
       end
     end
 
