@@ -10,8 +10,8 @@
                
                {
                  :name => "POST",
-                 :description => "Add the person specified by <tt>user_id</tt> to a group. If group is closed, sends a membership request.
-                                 (The user_id must refer to the person who is logged in.)",
+                 :description => "Attempts to add the person specified by <tt>user_id</tt> to a group. If the group is closed and <tt>user_id</tt> is logged in, a membership request is sent.
+                                  If <tt>user_id</tt> is not logged in, an invitation is sent to <tt>user_id</tt> &ndash; but only if the group is open or the logged in user is an admin of the group.",
                  :parameters => [{
                                     :group_id => "The id of the target group."
                                 }],
