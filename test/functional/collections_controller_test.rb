@@ -226,6 +226,16 @@ class CollectionsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
   end
 
+  def test_add_unauthorized
+    # Should be able to add to a collection belonging to the client
+    post :add, { :app_id => clients(:one).id, :id => collections(:seven).id, :format => 'json', 
+                 :title => "The Engine", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." },
+               { :cos_session_id => sessions(:session1).id }
+    assert_response :forbidden
+    json = JSON.parse(@response.body)
+  end
+
+
   def test_add_image
     get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' }, 
                { :cos_session_id => sessions(:session1).id }

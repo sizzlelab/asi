@@ -40,3 +40,7 @@ six:
   owner_id: 1
   priv: true
 
+seven:
+  id: 7
+  read_only: false
+  client_id: 2
