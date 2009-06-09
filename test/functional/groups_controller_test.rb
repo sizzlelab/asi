@@ -71,7 +71,7 @@ class GroupsControllerTest < ActionController::TestCase
      put :accept_pending_membership_request, {:group_id => groups(:closed), :user_id => people(:friend).id, :format => 'json'},
                                              {:cos_session_id => sessions(:session4).id }
      assert_response :unauthorized
-
+     
      assert ! groups(:closed).has_member?(people(:friend))
    end
 
@@ -90,7 +90,6 @@ class GroupsControllerTest < ActionController::TestCase
                       { :cos_session_id => sessions(:session1).id }
     assert_response :forbidden, @response.body
     json = JSON.parse(@response.body)                  
-    
   end
 
   def test_rejoin
@@ -305,5 +304,14 @@ class GroupsControllerTest < ActionController::TestCase
     assert_response :bad_request, @response.body
     json = JSON.parse(@response.body)
   end
+  
+  def test_not_found
+    assert ! groups(:open).has_member?(people(:friend))
+    post :add_member, {:group_id =>  "foo", :user_id => people(:friend).id, :format => 'json' },
+                      { :cos_session_id => sessions(:session4).id }
+    assert_response :not_found, @response.body
+    json = JSON.parse(@response.body)
+  end
+
 
 end
