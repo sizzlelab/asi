@@ -9,11 +9,11 @@ class GroupsController < ApplicationController
   def create
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
     params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
-      
+    
     @group = Group.new(:title => params[:title], 
-      :group_type => params[:type],
-      :description => params[:description],
-      :created_by => @user)
+                       :group_type => params[:type],
+                       :description => params[:description],
+                       :created_by => @user)
 
     if @group.save
       # Make the creator as an admin member
@@ -53,28 +53,27 @@ class GroupsController < ApplicationController
   end
   
   def add_member  
-    if @group
-      if params[:user_id] != @user.id
-        render :status => :forbidden, :json  => ["Only the user themselves can join a group."].to_json and return
-      end
-      
-      @person = Person.find_by_id(params[:user_id])
-      if ! @person 
-        render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
-      end
-
-      if @person.is_member_of?(@group)
-        render :status => :conflict, :json => "You are already a member of this group".to_json and return
-      end
-
-      if @group.group_type == 'open'
-        @person.become_member_of(@group)
-        render :status => :ok, :json => "Become member of group succesfully.".to_json and return
-      elsif @group.group_type == 'closed'
-        @person.request_membership_of(@group)
-        render :status => :ok, :json => "Membership requested.".to_json and return
-      end
+    if params[:user_id] != @user.id
+      render :status => :forbidden, :json  => ["Only the user themselves can join a group."].to_json and return
     end
+    
+    @person = Person.find_by_id(params[:user_id])
+    if ! @person 
+      render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
+    end
+
+    if @person.is_member_of?(@group)
+      render :status => :conflict, :json => "You are already a member of this group".to_json and return
+    end
+
+    if @group.group_type == 'open'
+      @person.become_member_of(@group)
+      render :status => :ok, :json => "Become member of group succesfully.".to_json and return
+    elsif @group.group_type == 'closed'
+      @person.request_membership_of(@group)
+      render :status => :ok, :json => "Membership requested.".to_json and return
+    end
+
   end
   
   # Returns a list of the public groups of the person specified by user_id
@@ -105,23 +104,23 @@ class GroupsController < ApplicationController
   end
 
   def remove_person_from_group
-    if @group
-      if params[:user_id] != @user.id and not @user.is_admin_of?(@group)
-        render :status => :forbidden, :json  => ["You are not authorized to remove this user from this group."].to_json and return
-      end
-      
-      @person = Person.find_by_id(params[:user_id])
-      if ! @person 
-        render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
-      end
-      
-      @person.leave(@group)
-      
-      # If the last member leaves, the group is destroyed
-      if @group.members.count < 1
-        @group.destroy
-      end
+
+    if params[:user_id] != @user.id and not @user.is_admin_of?(@group)
+      render :status => :forbidden, :json  => ["You are not authorized to remove this user from this group."].to_json and return
     end
+    
+    @person = Person.find_by_id(params[:user_id])
+    if ! @person 
+      render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
+    end
+    
+    @person.leave(@group)
+    
+    # If the last member leaves, the group is destroyed
+    if @group.members.count < 1
+      @group.destroy
+    end
+
   end
   
   private
