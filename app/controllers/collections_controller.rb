@@ -99,7 +99,7 @@ class CollectionsController < ApplicationController
 
   def add
     if ! @collection.write?(@user, @client)
-      render :status => :forbidden and return
+      render :status => :forbidden, :json => "This collection belongs to another client.".to_json and return
     end
     head :status => :bad_request and return unless @collection.create_item(params, @user, @client)
     @item = @collection.items[-1]
