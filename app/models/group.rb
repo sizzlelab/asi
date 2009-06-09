@@ -72,6 +72,10 @@ class Group < ActiveRecord::Base
   def grant_admin_status_to(person)
     person.membership(self).update_attribute("admin_role", true) if person.is_member_of?(self)
   end
+
+  def remove_admin_status_from(person)
+    person.membership(self).update_attribute("admin_role", false) if person.is_member_of?(self)
+  end
   
   def to_json(asking_person=nil, *a)
     group_hash = get_group_hash(asking_person)
