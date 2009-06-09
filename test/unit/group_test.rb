@@ -33,37 +33,38 @@ class GroupTest < ActiveSupport::TestCase
   end
 
   def test_add_member_closed
-    g = Group.create(:title => "Closed", :group_type => "closed", :created_by => "testperson_id")
-    assert(g.valid?, g.errors.full_messages)
-    assert(g.save, "Saving failed!")
+    [ "closed", "hidden" ].each do |type| 
+      g = Group.create(:title => "#{type} test group", :group_type => type, :created_by => "testperson_id")
+      assert(g.valid?, g.errors.full_messages.inspect)
+      assert(g.save, "Saving failed!")
 
-    #try to add a member without acceptance
-    assert !people(:friend).become_member_of(g), "Becoming a member of a group should fail"
-    assert !people(:friend).is_member_of?(g), "Shouldn't be member."
+      #try to add a member without acceptance
+      assert !people(:friend).become_member_of(g), "Becoming a member of a group should fail"
+      assert !people(:friend).is_member_of?(g), "Shouldn't be member."
 
-    #ask for membership
-    people(:friend).request_membership_of(g)
-    
-    g.reload
+      #ask for membership
+      people(:friend).request_membership_of(g)
+      
+      g.reload
 
-    assert people(:friend).become_member_of(g), "Becoming a member of a group failed."
-    assert people(:friend).is_member_of?(g)
+      assert people(:friend).become_member_of(g), "Becoming a member of a group failed."
+      assert people(:friend).is_member_of?(g)
 
-    #add a second member
-    people(:not_yet_friend).request_membership_of(g)
+      #add a second member
+      people(:not_yet_friend).request_membership_of(g)
 
-    g.reload
+      g.reload
 
-    assert people(:not_yet_friend).become_member_of(g), "Becoming a member of a group failed."
-    assert people(:not_yet_friend).is_member_of?(g), "Joining a group failed."
+      assert people(:not_yet_friend).become_member_of(g), "Becoming a member of a group failed."
+      assert people(:not_yet_friend).is_member_of?(g), "Joining a group failed."
 
-    #test asking if member
-    assert(g.has_member?(people(:friend)), "Person not in a group where he should be")
-    assert(g.has_member?(people(:not_yet_friend)), "Person not in a group where he should be")
+      #test asking if member
+      assert(g.has_member?(people(:friend)), "Person not in a group where he should be")
+      assert(g.has_member?(people(:not_yet_friend)), "Person not in a group where he should be")
 
-    #test listing members
-    assert(g.members.count == 2, "Person count in group did not match")
-
+      #test listing members
+      assert(g.members.count == 2, "Person count in group did not match")
+    end
   end
   
   def test_granting_admin

@@ -8,7 +8,7 @@ class Group < ActiveRecord::Base
   has_many :admins, :through => :memberships, :source => :person, :conditions => ['admin_role = ?', true]
 
 
-  VALID_GROUP_TYPES =  %w(open closed) #hidden personal (to be implemented)
+  VALID_GROUP_TYPES =  %w(open closed hidden) #personal (to be implemented)
   TITLE_MIN_LENGTH = 2
   TITLE_MAX_LENGTH = 70
   DESCRIPTION_MAX_LENGTH = 5000
@@ -24,6 +24,10 @@ class Group < ActiveRecord::Base
 
   validates_uniqueness_of :title, :case_sensitive => false
 
+  def Group.all_public
+    Group.all(:conditions => ["group_type = 'open' OR group_type = 'closed'"])
+  end
+
   def membership(person)
     Membership.find(:first, :conditions => ['group_id = ? AND person_id = ?', self.id, person.id])
   end
@@ -33,22 +37,15 @@ class Group < ActiveRecord::Base
   end
 
   def accept_member(person)
-   # puts "accepting #{person.username}"
-   # puts self.membership(person).inspect
-  # puts self.pending_members.inspect
-  # puts self.members.inspect
     if self.membership(person) && self.group_type == "open"
       self.membership(person).update_attribute(:accepted_at, Time.now)
       return true
-    elsif self.pending_members.include?(person) && self.group_type == "closed"
+    elsif self.pending_members.include?(person) && ! auto_accept?
       self.membership(person).update_attribute(:accepted_at, Time.now)
       return true
     else
       return false
     end
-    
-    #puts self.membership(person).inspect
-
   end
 
   def pending_and_accepted_members
@@ -59,30 +56,18 @@ class Group < ActiveRecord::Base
     self.membership(person).destroy if person.is_member_of?(self)
   end
 
-  # def mods_online
-  #   self.mods.find(:all, :conditions => ['people.updated_at > ?', 50.seconds.ago])
-  # end
-  #
-  # def members_online
-  #   self.members.find(:all, :conditions => ['people.updated_at > ?', 70.seconds.ago])
-  # end
-  #
-  # def members_offline
-  #   self.members - self.members_online
-  # end
-
   def has_member?(person)
     self.members.include?(person)
   end
 
   def add_member(person)
-    #puts "Members ENNEN lisäystä: #{self.members.inspect}"
-    if !person.nil? && self.group_type != 'closed'
+    return false if ! person
+
+    if auto_accept?
       self.members.push(person) unless self.pending_and_accepted_members.include?(person)
-    elsif person && self.group_type == 'closed'
+    else
       self.members.push(person) if self.pending_members.include?(person)
     end 
-    #puts "Members lisäyksen JÄLKEEN: #{self.members.inspect}"
   end
   
   def grant_admin_status_to(person)
@@ -120,6 +105,12 @@ class Group < ActiveRecord::Base
   # Disallow changes to group type
   def group_type=(group_type)
     self[:group_type] ||= group_type
+  end
+
+  private 
+
+  def auto_accept?
+    self.group_type == 'open'
   end
   
   # def json_with_members
