@@ -4,7 +4,7 @@ class GroupsController < ApplicationController
   before_filter :ensure_person_login, :except => methods_not_requiring_person_login
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
   
-  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update, :accept_pending_membership_request ]
+  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update, :accept_pending_membership_request, :change_admin_status, :update_membership_status ]
   
   def create
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
@@ -93,13 +93,21 @@ class GroupsController < ApplicationController
     end
   end
 
+  def update_membership_status
+    
+    if @user.is_admin_of?(@group)
+      if !params[:admin_status].nil?
+        result = change_admin_status
+      end
 
-  def accept_pending_membership_request
-    person = Person.find_by_id(params[:user_id])
-    if @user.is_admin_of?(@group) && @group.pending_members.include?(person)
-      person.become_member_of(@group)
+      if params[:accept_request]
+        result = accept_pending_membership_request
+      end
+      puts result.inspect
+      render :status => result[:status], :json => result[:message].to_json and return
+      
     else
-      render :status => :unauthorized, :json => "Accepting pending requests can be done by admins only.".to_json and return
+      render :status => :unauthorized, :json => "Changing admin status can be done by admins only.".to_json and return
     end
   end
 
@@ -132,4 +140,35 @@ class GroupsController < ApplicationController
       render :status => :not_found, :json => "There is no such group.".to_json
     end
   end
+
+  def accept_pending_membership_request
+    person = Person.find_by_id(params[:user_id])
+
+    if @user.is_admin_of?(@group) && @group.pending_members.include?(person)
+      person.become_member_of(@group)
+      return {:status => :ok, :message => "Pending request accepted"}
+    else
+      return {:status => :unauthorized, :message => "Accepting pending requests can be done by admins only."}
+    end
+
+  end
+
+  def change_admin_status
+    person = Person.find_by_id(params[:user_id])
+
+    if params[:admin_status]
+      if @group.grant_admin_status_to(person)
+        return {:status => :ok, :message => "Admin status granted."}
+      end
+    else
+      if @user.id != person.id && @group.remove_admin_status_from(person)
+        return {:status => :ok, :message => "Admin status removed."}
+      end
+    end
+
+     return {:status => :forbidden, :message => "Request denied." }
+
+  end
+
 end
+

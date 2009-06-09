@@ -23,6 +23,40 @@ class GroupsControllerTest < ActionController::TestCase
     assert_equal(description_text, group.description)
     assert_equal(sessions(:session1).person.id, group.created_by)  
   end
+
+  def test_grant_and_remove_admin_status
+    person = people(:friend)
+    admin = groups(:open).members.first;
+    session = sessions(:session1)
+
+    assert admin.is_admin_of?(groups(:open))
+    assert ! person.is_admin_of?(groups(:open))
+
+    assert admin.id == session.person_id
+    assert person != admin
+
+    assert ! groups(:open).has_member?(person)
+    post :add_member, {:group_id =>  groups(:open).id, :user_id => person.id, :format => 'json' },
+                      { :cos_session_id => sessions(:session4).id }
+    assert_response :success, @response.body
+
+    put :update_membership_status, {:group_id => groups(:open).id, :admin_status => true, :user_id => person.id, :format => 'json'},
+                                   {:cos_session_id => session.id}
+    assert_response :success
+
+    assert person.is_admin_of?(groups(:open)), "Granting admin rights failed."
+
+    put :update_membership_status, {:group_id => groups(:open).id, :admin_status => false, :user_id => person.id, :format => 'json'},
+                                   {:cos_session_id => sessions(:session4).id}
+    assert_response :forbidden
+    assert person.is_admin_of?(groups(:open)), "Person should still be admin. Removing admin rights from self is forbidden."
+
+    put :update_membership_status, {:group_id => groups(:open).id, :admin_status => false, :user_id => person.id, :format => 'json'},
+                                   {:cos_session_id => session.id}
+    assert_response :success
+    assert ! person.is_admin_of?(groups(:open)), "Removing of admin rights didn't work."
+
+  end
   
   def test_show
     get :show, {:group_id =>  groups(:open).id, :format => 'json'}, { :cos_session_id => sessions(:session1).id }
@@ -55,11 +89,10 @@ class GroupsControllerTest < ActionController::TestCase
                     
     assert_response :ok
 
-    put :accept_pending_membership_request, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :format => 'json' },
-                                            { :cos_session_id => sessions(:session1).id }
+    put :update_membership_status, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :accept_request => true, :format => 'json' },
+                                   { :cos_session_id => sessions(:session1).id }
     assert_response :ok
     assert groups(:closed).has_member?(people(:friend))
-    
   end
 
    def test_unauthorized_membership_accept
@@ -68,7 +101,7 @@ class GroupsControllerTest < ActionController::TestCase
      post :add_member, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :format => 'json' },
                       { :cos_session_id => sessions(:session4).id }
 
-     put :accept_pending_membership_request, {:group_id => groups(:closed), :user_id => people(:friend).id, :format => 'json'},
+     put :update_membership_status, {:group_id => groups(:closed), :user_id => people(:friend).id, :accept_request => true, :format => 'json'},
                                              {:cos_session_id => sessions(:session4).id }
      assert_response :unauthorized
      
