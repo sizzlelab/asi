@@ -8,6 +8,7 @@ class PeopleTest < ActionController::IntegrationTest
       ossi.logs_in_with({ :username => people(:test).username, :password => "testi", 
                           :app_name => clients(:one).name, :app_password => "testi"})
       ossi.gets_person_details({ :id => people(:test).id })
+      
       ossi.updates_person_details_with({ :id => people(:test).id, 
                                          :person => { :name => 
                                            { :given_name => "Pentteri", :family_name => "Pamppunen" },
@@ -81,6 +82,24 @@ class PeopleTest < ActionController::IntegrationTest
                             :username => "Testimies69", :password => "testi", 
                             :expected_response => :created})
       end 
+    end
+  end
+
+  def test_me_syntax 
+    new_session do |ossi|
+      ossi.logs_in_with({ :username => people(:test).username, :password => "testi", 
+                          :app_name => clients(:one).name, :app_password => "testi"})
+      me_too = ossi.get "/people/" + people(:test).id + "/@self"
+      ossi.assert_response :success
+      me = ossi.get '/people/@me/@self'
+      ossi.assert_response :success
+      assert_same(me, me_too)
+      ossi.logs_out
+      
+      ossi.logs_in_with({:app_name => clients(:one).name, :app_password => "testi"})
+      ossi.get '/people/@me/@self'
+      ossi.assert_response :unauthorized
+      
     end
   end
 
