@@ -37,6 +37,21 @@ class GroupsTest < ActionController::IntegrationTest
     end
   end
 
+  def test_hidden_group
+    new_session do |ossi|
+      ossi.logs_in_with( { :username => people(:valid_person).username, :password => "testi", :app_name => clients(:one).name, :app_password => "testi" })
+      group_id = ossi.creates_group_with( { :title => "My first hidden group", :type => "hidden", :description => "Testing..." } )
+      ossi.sends_group_invite_to(people(:test).id, group_id)
+      ossi.logs_out
+
+      ossi.logs_in_with( {:username => people(:test).username, :password => "testi", :app_name => clients(:one).name, :app_password => "testi"})
+      invites = ossi.lists_membership_invites(people(:test).id, group_id)
+      assert_equal 1, invites.size
+      ossi.joins_group(people(:test).id, invites[0])
+      ossi.logs_out     
+    end
+  end
+
   private
 
   def new_session

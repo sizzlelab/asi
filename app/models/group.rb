@@ -7,6 +7,7 @@ class Group < ActiveRecord::Base
   has_many :pending_members, :through => :memberships, :source => :person, :conditions => 'accepted_at IS NULL'
   has_many :admins, :through => :memberships, :source => :person, :conditions => ['admin_role = ?', true]
 
+  belongs_to :creator, :foreign_key => "created_by", :class_name => "Person"
 
   VALID_GROUP_TYPES =  %w(open closed hidden) #personal (to be implemented)
   TITLE_MIN_LENGTH = 2
@@ -63,7 +64,11 @@ class Group < ActiveRecord::Base
   def add_member(person)
     return false if ! person
     if auto_accept_members?
-      self.members.push(person) unless self.pending_and_accepted_members.include?(person)
+      unless self.pending_and_accepted_members.include?(person)
+        self.members.push(person) 
+      else
+        accept_member(person) if self.pending_members.include?(person)
+      end
     else
       self.members.push(person) if self.pending_members.include?(person)
     end 
@@ -75,6 +80,11 @@ class Group < ActiveRecord::Base
 
   def remove_admin_status_from(person)
     person.membership(self).update_attribute("admin_role", false) if person.is_member_of?(self)
+  end
+
+  def invite(person, inviter)
+    members << person
+    person.membership(self).update_attribute("inviter", inviter)
   end
   
   def to_json(asking_person=nil, *a)

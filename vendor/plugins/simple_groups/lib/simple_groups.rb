@@ -7,8 +7,9 @@ module SimpleGroups
     module ClassMethods
       def include_simple_groups
         has_many :memberships, :dependent => :destroy
-        has_many :groups, :through => :memberships#, :conditions => 'accepted_at IS NOT NULL'
-        has_many :pending_groups, :through => :memberships, :source => :group, :conditions => 'accepted_at IS NULL'
+        has_many :groups, :through => :memberships, :conditions => 'accepted_at IS NOT NULL'
+        has_many :pending_groups, :through => :memberships, :source => :group, :conditions => 'accepted_at IS NULL AND inviter_id IS NULL'
+        has_many :invited_groups, :through => :memberships, :source => :group, :conditions => 'accepted_at IS NULL AND inviter_id IS NOT NULL'
         
         include SimpleGroups::UserExtensions::InstanceMethods #see below
       end

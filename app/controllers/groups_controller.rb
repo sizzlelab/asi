@@ -55,7 +55,9 @@ class GroupsController < ApplicationController
 
   def add_member  
     if params[:user_id] != @user.id
-      render :status => :forbidden, :json  => ["Only the user themselves can join a group."].to_json and return
+      @invitee = Person.find_by_id(params[:user_id])
+      @group.invite(@invitee, @user)
+      render :status => :created, :json => "Invitation sent.".to_json and return
     end
     
     @person = Person.find_by_id(params[:user_id])
@@ -134,6 +136,14 @@ class GroupsController < ApplicationController
     @requests = @group.pending_members
   end
 
+  def get_invites
+    @groups = @user.invited_groups
+    @groups_hash = @groups.collect do |group|
+      group.get_group_hash(@user)
+    end
+    render :template => 'groups/list_groups'
+  end
+
   private
 
   def get_group_or_not_found
@@ -176,7 +186,7 @@ class GroupsController < ApplicationController
       end
     end
 
-     return {:status => :forbidden, :message => "Request denied." }
+    return {:status => :forbidden, :message => "Request denied." }
 
   end
 

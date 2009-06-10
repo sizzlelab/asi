@@ -91,5 +91,23 @@ class GroupTest < ActiveSupport::TestCase
     g3 = Group.new(:title => "Testiryhma", :group_type => "open", :created_by => "testperson_id")
     assert ! g3.save, "Allows case-insensitive duplicate group names"
   end
-  
+
+  def test_invite
+    [ groups(:open), groups(:closed) ].each do |group|
+      inviter = group.creator
+      invitee = people(:friend)
+      assert inviter.is_admin_of?(group), "Inviter is not an admin"
+      assert ! invitee.is_member_of?(group), "Invitee is a member"
+
+      group.invite(invitee, inviter)
+
+      assert ! invitee.is_member_of?(group), "Invitee is a member too soon"
+      assert invitee.invited_groups.include?(group), "Group is not in invitations"
+      assert ! invitee.pending_groups.include?(group), "Group is pending"
+
+      invitee.become_member_of(group)
+      assert ! invitee.invited_groups.include?(group), "Group stays in invitations"
+      assert invitee.is_member_of?(group)
+    end
+  end
 end
