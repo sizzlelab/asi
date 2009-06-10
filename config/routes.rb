@@ -148,6 +148,9 @@ ActionController::Routing::Routes.draw do |map|
                                              :get => 'get_members'                                                                       
 
 
+  map.resource '/groups/@public/:group_id/@pending', :controller => 'groups',
+                   :get => 'get_pending_members'
+
   map.resource '/location/single_update', :controller => 'locations',
                                           :post => 'update'
 
@@ -177,6 +180,5 @@ ActionController::Routing::Routes.draw do |map|
            :action => 'index',
            :conditions => { :method => :get }
 
-  # XXX This is a fake route for functional tests
   map.connect '/:controller/:action', :format => 'json'
 end

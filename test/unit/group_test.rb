@@ -17,6 +17,7 @@ class GroupTest < ActiveSupport::TestCase
   def test_add_member_open
     g = Group.create(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
     assert(g.valid?, "created group was not valid")
+
     assert_difference 'g.members.count', 1 do
       assert people(:friend).become_member_of(g), "Becoming a member of a group failed"
       assert people(:friend).is_member_of?(g), "Joining a group failed."
@@ -66,6 +67,14 @@ class GroupTest < ActiveSupport::TestCase
     assert ! people(:contact).is_admin_of?(groups(:open)), "Removing admin status failed."
   end
 
+  def test_granting_admin_closed
+    people(:contact).request_membership_of(groups(:closed))
+    people(:contact).become_member_of(groups(:closed))
+
+    groups(:closed).grant_admin_status_to(people(:contact))
+    assert people(:contact).is_admin_of?(groups(:closed)), "Granting admin status failed"    
+  end
+  
   def test_length_boundaries
     assert_length :min, groups(:open), :title, Group::TITLE_MIN_LENGTH
     assert_length :max, groups(:open), :title, Group::TITLE_MAX_LENGTH
