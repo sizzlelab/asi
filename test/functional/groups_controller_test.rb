@@ -95,7 +95,7 @@ class GroupsControllerTest < ActionController::TestCase
 
     assert groups(:closed).pending_members.include?(people(:friend))
 
-    put :update_membership_status, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :accept_request => true, :format => 'json' },
+    put :update_membership_status, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :accepted => true, :format => 'json' },
                                    { :cos_session_id => sessions(:session1).id }
     assert_response :ok
     assert groups(:closed).has_member?(people(:friend))
@@ -107,7 +107,7 @@ class GroupsControllerTest < ActionController::TestCase
      post :add_member, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :format => 'json' },
                       { :cos_session_id => sessions(:session4).id }
 
-     put :update_membership_status, {:group_id => groups(:closed), :user_id => people(:friend).id, :accept_request => true, :format => 'json'},
+     put :update_membership_status, {:group_id => groups(:closed), :user_id => people(:friend).id, :accepted => true, :format => 'json'},
                                              {:cos_session_id => sessions(:session4).id }
      assert_response :forbidden
      
@@ -123,12 +123,6 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert groups(:open).has_member?(people(:friend))
     assert people(:friend).is_member_of?(groups(:open))
-    
-    # Should not be able to add a friend to a group (session is associated to different person)
-    post :add_member, {:group_id =>  groups(:open).id, :user_id => people(:friend).id, :format => 'json' },
-                      { :cos_session_id => sessions(:session1).id }
-    assert_response :forbidden, @response.body
-    json = JSON.parse(@response.body)                  
   end
 
   def test_rejoin
@@ -359,6 +353,17 @@ class GroupsControllerTest < ActionController::TestCase
 
     get :get_pending_members, { :group_id => group.id, :format => 'json' },
     { :cos_session_id => session.id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+  end
+
+  def test_send_invite
+    group = groups(:closed)
+    session = sessions(:session1)
+    assert session.person.is_admin_of?(group)
+
+    post :add_member, { :user_id => people(:friend).id, :group_id => group.id, :format => 'json' }, 
+                     { :cos_session_id => session.id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
   end

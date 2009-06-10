@@ -255,6 +255,17 @@ module COSTestingDSL
     assert_response :success, @response.body
   end
 
+  def sends_group_invite_to(user_id, group_id)
+    post "/people/#{user_id}/@groups/", { :group_id => group_id }
+    assert_response :success, @response.body
+  end
+
+  def lists_membership_invites(user_id, group_id)
+    get "/people/#{user_id}/@groups/@invites"
+    assert_response :success, @response.body
+    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+  end
+
   private
 
   def subset(a, b)
