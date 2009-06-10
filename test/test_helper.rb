@@ -251,7 +251,8 @@ module COSTestingDSL
   end
 
   def accepts_member(user_id, group_id)
-    assert false
+    put "/people/#{user_id}/@groups/#{group_id}", { :accepted => "true" }
+    assert_response :success, @response.body
   end
 
   private

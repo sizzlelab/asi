@@ -101,7 +101,7 @@ class GroupsController < ApplicationController
         result = change_admin_status
       end
 
-      if params[:accept_request]
+      if params[:accepted]
         result = accept_pending_membership_request
       end
       puts result.inspect
