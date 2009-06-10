@@ -1,5 +1,6 @@
 class PeopleController < ApplicationController
-  
+
+  before_filter :change_me_to_userid  
   before_filter :ensure_client_login, :except => [:update_avatar, :get_avatar, :get_small_thumbnail, :get_large_thumbnail, :reset_password, :change_password]
   before_filter :ensure_person_logout, :only  => [:create, :recover_password]
   #before_filter :fix_utf8_characters, :only => [:create, :update, :index]
@@ -320,4 +321,19 @@ class PeopleController < ApplicationController
       return order    #the default is "ascending"
     end
   end
+
+  # If request is using /people/@me/xxxxxxx, change user_id from @me to real userid
+  def change_me_to_userid
+    if params[:user_id] == "@me"
+      if ses = Session.find_by_id(session[:cos_session_id])
+        if ses.person
+          params[:user_id] = ses.person.id
+        else
+          render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
+        end
+      end
+    end
+  end
+
+  
 end
