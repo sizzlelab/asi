@@ -222,6 +222,38 @@ module COSTestingDSL
     assert_nil(PendingValidation.find_by_key(options[:key]))
   end
 
+  def creates_group_with(options)
+    post "/groups", options
+    assert_response :success, @response.body
+    JSON.parse(@response.body)["group"]["id"]
+  end
+
+  def lists_public_groups
+    get "/groups/@public"
+    assert_response :success, @response.body
+    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+  end
+
+  def lists_membership_requests(group_id)
+    get "/groups/@public/#{group_id}/@pending"
+    assert_response :success, @response.body
+    JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
+  end
+
+  def joins_group(user_id, group_id)
+    post "/people/#{user_id}/@groups", {:group_id => group_id}
+    assert_response :success, @response.body
+  end
+
+  def leaves_group(user_id, group_id)
+    delete "/people/#{user_id}/@groups/#{group_id}"
+    assert_response :success, @response.body
+  end
+
+  def accepts_member(user_id, group_id)
+    assert false
+  end
+
   private
 
   def subset(a, b)

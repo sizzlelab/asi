@@ -4,8 +4,10 @@ class GroupsController < ApplicationController
   before_filter :ensure_person_login, :except => methods_not_requiring_person_login
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
   
-  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update, :accept_pending_membership_request, :change_admin_status, :update_membership_status ]
-  
+  ADMIN_METHODS = [ :update, :accept_pending_membership_request, :get_pending_members, :change_admin_status ]
+  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update_membership_status ] + ADMIN_METHODS
+  before_filter :ensure_admin, :only => ADMIN_METHODS
+
   def create
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
     params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
@@ -17,7 +19,8 @@ class GroupsController < ApplicationController
 
     if @group.save
       # Make the creator as an admin member
-      @user.become_member_of(@group)
+      @user.request_membership_of(@group)
+      @group.accept_member(@user) #XXX this is a little counter-intuitive
       @group.grant_admin_status_to(@user)
       render :status => :created and return
     else  
@@ -34,24 +37,22 @@ class GroupsController < ApplicationController
   end
   
   def update
-    if not @user.is_admin_of?(@group)
-      render :status => :forbidden, :json => "You are not an admin of this group.".to_json and return
-    elsif @group.update_attributes(params[:group])
+    if @group.update_attributes(params[:group])
       render :status => :ok, :json => @group.to_json
     else
       render :status => :bad_request, :json => @group.errors.full_messages.to_json
       @group = nil
     end
   end
-  
+
   def public_groups
-    @groups = Group.all(:conditions => ["group_type = 'open' OR group_type = 'closed'"])
+    @groups = Group.all_public
     @groups_hash = @groups.collect do |group|
       group.get_group_hash(@user)
     end
     render :template => 'groups/list_groups'
   end
-  
+
   def add_member  
     if params[:user_id] != @user.id
       render :status => :forbidden, :json  => ["Only the user themselves can join a group."].to_json and return
@@ -75,7 +76,7 @@ class GroupsController < ApplicationController
     end
 
   end
-  
+
   # Returns a list of the public groups of the person specified by user_id
   def get_groups_of_person
     #TODO match only public groups if asker is not the user himself.
@@ -85,7 +86,7 @@ class GroupsController < ApplicationController
     end
     render :template => 'groups/list_groups'
   end
-  
+
   def get_members
     #TODO check that asker has rights to get info
     if @group
@@ -107,12 +108,11 @@ class GroupsController < ApplicationController
       render :status => result[:status], :json => result[:message].to_json and return
       
     else
-      render :status => :unauthorized, :json => "Changing admin status can be done by admins only.".to_json and return
+      render :status => :forbidden, :json => "Changing admin status can be done by admins only.".to_json and return
     end
   end
 
   def remove_person_from_group
-
     if params[:user_id] != @user.id and not @user.is_admin_of?(@group)
       render :status => :forbidden, :json  => ["You are not authorized to remove this user from this group."].to_json and return
     end
@@ -128,16 +128,26 @@ class GroupsController < ApplicationController
     if @group.members.count < 1
       @group.destroy
     end
-
   end
-  
+
+  def get_pending_members
+    @requests = @group.pending_members
+  end
+
   private
-  
+
   def get_group_or_not_found
     begin
       @group = Group.find(params[:group_id])
     rescue ActiveRecord::RecordNotFound
-      render :status => :not_found, :json => "There is no such group.".to_json
+      render :status => :not_found, :json => "Group with id #{params[:group_id]} not found.".to_json
+    end
+  end
+
+
+  def ensure_admin
+    if not @user.is_admin_of?(@group)
+      render :status => :forbidden, :json => "You are not an admin of this group.".to_json
     end
   end
 

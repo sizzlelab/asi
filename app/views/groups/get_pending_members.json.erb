@@ -1,0 +1,5 @@
+<% if @requests %>
+  <%= {:entry  => @requests}.to_json %>
+<% else %>
+  <%= {:entry => []}.to_json %>
+<% end %>

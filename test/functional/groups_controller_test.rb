@@ -6,22 +6,26 @@ class GroupsControllerTest < ActionController::TestCase
   fixtures :people
 
   def test_create
-    description_text = "A group that is used for testing. It is veery nice that you can
+    [ "open", "closed" ].each do |type|
+      description_text = "A group that is used for testing. It is veery nice that you can
                         write even a little longer story here to describe the purpose and the
                         ideology of the group... Ja even ääkköset should work here. :)"
-    post :create, {:title => "testgroup", :type => "open", 
-         :description => description_text,
-         :format => 'json'}, { :cos_session_id => sessions(:session1).id }
-    assert_response :created, @response.body
-    json = JSON.parse(@response.body)
-    #puts json.inspect
-    assert id = json["group"]["id"]
-    assert(Group.find_by_title("testgroup"), "Created group not found.")
-    assert(Group.find_by_title("testgroup").members.first.is_admin_of?(Group.find_by_id(id)), 
-            "Creator was not made admin in new group")
-    group = Group.find(id)
-    assert_equal(description_text, group.description)
-    assert_equal(sessions(:session1).person.id, group.created_by)  
+      title = "testgroup (#{type})"
+      post :create, {:title => title, :type => type, 
+        :description => description_text,
+        :format => 'json'}, { :cos_session_id => sessions(:session1).id }
+      assert_response :created, @response.body
+      json = JSON.parse(@response.body)
+      #puts json.inspect
+      assert id = json["group"]["id"]
+      group = Group.find(id)
+      assert(group, "Created group not found. (#{type})")
+      assert(group.members.include?(sessions(:session1).person), "Creator was not made member of new group (#{type})")
+      assert(group.members.first.is_admin_of?(Group.find_by_id(id)), 
+             "Creator was not made admin in new group (#{type})")
+      assert_equal(description_text, group.description)
+      assert_equal(sessions(:session1).person.id, group.created_by)  
+    end
   end
 
   def test_grant_and_remove_admin_status
@@ -89,6 +93,8 @@ class GroupsControllerTest < ActionController::TestCase
                     
     assert_response :ok
 
+    assert groups(:closed).pending_members.include?(people(:friend))
+
     put :update_membership_status, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :accept_request => true, :format => 'json' },
                                    { :cos_session_id => sessions(:session1).id }
     assert_response :ok
@@ -103,7 +109,7 @@ class GroupsControllerTest < ActionController::TestCase
 
      put :update_membership_status, {:group_id => groups(:closed), :user_id => people(:friend).id, :accept_request => true, :format => 'json'},
                                              {:cos_session_id => sessions(:session4).id }
-     assert_response :unauthorized
+     assert_response :forbidden
      
      assert ! groups(:closed).has_member?(people(:friend))
    end
@@ -346,5 +352,15 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
   end
 
+  def test_get_pending_membership_requests
+    group = groups(:closed)
+    session = sessions(:session1)
+    assert session.person.is_admin_of?(group)
+
+    get :get_pending_members, { :group_id => group.id, :format => 'json' },
+    { :cos_session_id => session.id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+  end
 
 end
