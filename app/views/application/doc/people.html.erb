@@ -42,6 +42,9 @@
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
 
 <h2>Subresources</h2>
+
+<p>NOTE: all subresources can be accessed with /people/@me/something if a user is logged in to reference the current user.</p>
+
 <ul>
   <li>  
     <a href="doc/people/user_id/@self"><tt>/people/&lt;user_id&gt;/@self</tt></a> &ndash; a user's profile
