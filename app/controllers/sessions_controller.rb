@@ -19,10 +19,10 @@ class SessionsController < ApplicationController
     end
     
     # If the right authenticity_token is provided, we'll trust it's CoreUI
-    if (params[:authenticity_token] && params[:authenticity_token] == form_authenticity_token)
+    if (params[:authenticity_token] && params[:authenticity_token] == form_authenticity_token && params[:app_name] == COREUI_APP_NAME)
       @session = Session.new({ :username => params[:username],
                                :password => params[:password], 
-                               :client_name => COREUI_APP_NAME, 
+                               :client_name => params[:app_name], 
                                :client_password => COREUI_APP_PASSWORD })
       ui_mode = true
     else

@@ -73,7 +73,7 @@ Rails::Initializer.run do |config|
   COS_MAIL_FROM_ADRESS = "tuki@sizl.org"
   
   COREUI_APP_NAME = "coreui"
-  COREUI_APP_PASSWORD = "coreui"
+  COREUI_APP_PASSWORD = "8IJHk!-()a"
   
   #If following is true, created users must validate their emails before they can log in.
   #VALIDATE_EMAILS = true
