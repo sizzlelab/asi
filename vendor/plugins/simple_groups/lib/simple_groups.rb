@@ -27,7 +27,7 @@ module SimpleGroups
       end
 
       def request_membership_of(group)
-        group.members << self unless self.is_member_of?(group)
+        return group.request_membership(self)
       end
 
       def pending_and_accepted_groups

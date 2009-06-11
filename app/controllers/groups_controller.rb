@@ -20,7 +20,7 @@ class GroupsController < ApplicationController
     if @group.save
       # Make the creator as an admin member
       @user.request_membership_of(@group)
-      @group.accept_member(@user) #XXX this is a little counter-intuitive
+      @group.accept_member(@user)
       @group.grant_admin_status_to(@user)
       render :status => :created and return
     else  
@@ -70,7 +70,7 @@ class GroupsController < ApplicationController
     end
 
     if @group.group_type == 'open'
-      @person.become_member_of(@group)
+      @person.request_membership_of(@group)
       render :status => :ok, :json => "Become member of group succesfully.".to_json and return
     elsif @group.group_type == 'closed'
       @person.request_membership_of(@group)
@@ -106,7 +106,6 @@ class GroupsController < ApplicationController
       if params[:accepted]
         result = accept_pending_membership_request
       end
-      puts result.inspect
       render :status => result[:status], :json => result[:message].to_json and return
       
     else
@@ -165,7 +164,7 @@ class GroupsController < ApplicationController
     person = Person.find_by_id(params[:user_id])
 
     if @user.is_admin_of?(@group) && @group.pending_members.include?(person)
-      person.become_member_of(@group)
+      @group.accept_member(person)
       return {:status => :ok, :message => "Pending request accepted"}
     else
       return {:status => :unauthorized, :message => "Accepting pending requests can be done by admins only."}

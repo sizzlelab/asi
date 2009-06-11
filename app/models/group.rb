@@ -6,6 +6,7 @@ class Group < ActiveRecord::Base
   has_many :members, :through => :memberships, :source => :person, :conditions => 'accepted_at IS NOT NULL'
   has_many :pending_members, :through => :memberships, :source => :person, :conditions => 'accepted_at IS NULL'
   has_many :admins, :through => :memberships, :source => :person, :conditions => ['admin_role = ?', true]
+  has_many :invited_members, :through => :memberships, :source => :person, :conditions => 'inviter_id IS NOT NULL'
 
   belongs_to :creator, :foreign_key => "created_by", :class_name => "Person"
 
@@ -33,20 +34,19 @@ class Group < ActiveRecord::Base
     Membership.find(:first, :conditions => ['group_id = ? AND person_id = ?', self.id, person.id])
   end
 
-  def pending_member?(person)
+  def request_membership(person)
+    accept_member(person) and return if invited_members.include?(person)
+    members << person
+    accept_member(person) if auto_accept_members?
+  end
 
+  def invite(person, inviter)
+    members << person
+    person.membership(self).update_attribute("inviter", inviter)
   end
 
   def accept_member(person)
-    if self.membership(person) && self.group_type == "open"
-      self.membership(person).update_attribute(:accepted_at, Time.now)
-      return true
-    elsif self.pending_members.include?(person) && ! auto_accept_members?
-      self.membership(person).update_attribute(:accepted_at, Time.now)
-      return true
-    else
-      return false
-    end
+    self.membership(person).update_attribute(:accepted_at, Time.now)
   end
 
   def pending_and_accepted_members
@@ -61,30 +61,12 @@ class Group < ActiveRecord::Base
     self.members.include?(person)
   end
 
-  def add_member(person)
-    return false if ! person
-    if auto_accept_members?
-      unless self.pending_and_accepted_members.include?(person)
-        self.members.push(person) 
-      else
-        accept_member(person) if self.pending_members.include?(person)
-      end
-    else
-      self.members.push(person) if self.pending_members.include?(person)
-    end 
-  end
-  
   def grant_admin_status_to(person)
     person.membership(self).update_attribute("admin_role", true) if person.is_member_of?(self)
   end
 
   def remove_admin_status_from(person)
     person.membership(self).update_attribute("admin_role", false) if person.is_member_of?(self)
-  end
-
-  def invite(person, inviter)
-    members << person
-    person.membership(self).update_attribute("inviter", inviter)
   end
   
   def to_json(asking_person=nil, *a)

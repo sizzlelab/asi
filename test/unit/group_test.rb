@@ -19,34 +19,26 @@ class GroupTest < ActiveSupport::TestCase
     assert(g.valid?, "created group was not valid")
 
     assert_difference 'g.members.count', 1 do
-      assert people(:friend).become_member_of(g), "Becoming a member of a group failed"
+      people(:friend).request_membership_of(g)
       assert people(:friend).is_member_of?(g), "Joining a group failed."
 
-      assert(g.has_member?(people(:friend)), "Person not in a group where he should be")
-    end
-  end
-
-  def test_add_nil
-    g = Group.create(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
-    assert_no_difference 'g.members.count' do
-      g.add_member(nil)
+      assert g.has_member?(people(:friend)), "Person not in a group where he should be"
     end
   end
 
   def test_add_member_closed
-    [ "closed", "hidden" ].each do |type| 
+    [ "closed" ].each do |type| 
       g = Group.create(:title => "#{type} test group", :group_type => type, :created_by => "testperson_id")
       assert(g.valid?, g.errors.full_messages.inspect)
       assert(g.save, "Saving failed!")
 
       assert_no_difference 'g.members.count' do 
-        assert !people(:friend).become_member_of(g), "Becoming a member of a group should fail"
+        people(:friend).request_membership_of(g)
         assert !people(:friend).is_member_of?(g), "Shouldn't be member."
       end
 
       assert_difference 'g.members.count', 1 do
-        people(:friend).request_membership_of(g)
-        assert people(:friend).become_member_of(g), "Becoming a member of a group failed."
+        g.accept_member(people(:friend))
 
         assert people(:friend).is_member_of?(g)
         assert(g.has_member?(people(:friend)), "Person not in a group where he should be")
@@ -69,7 +61,7 @@ class GroupTest < ActiveSupport::TestCase
 
   def test_granting_admin_closed
     people(:contact).request_membership_of(groups(:closed))
-    people(:contact).become_member_of(groups(:closed))
+    groups(:closed).accept_member(people(:contact))
 
     groups(:closed).grant_admin_status_to(people(:contact))
     assert people(:contact).is_admin_of?(groups(:closed)), "Granting admin status failed"    
@@ -105,7 +97,7 @@ class GroupTest < ActiveSupport::TestCase
       assert invitee.invited_groups.include?(group), "Group is not in invitations"
       assert ! invitee.pending_groups.include?(group), "Group is pending"
 
-      invitee.become_member_of(group)
+      invitee.request_membership_of(group)
       assert ! invitee.invited_groups.include?(group), "Group stays in invitations"
       assert invitee.is_member_of?(group)
     end
