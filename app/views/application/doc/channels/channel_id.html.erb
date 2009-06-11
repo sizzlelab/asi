@@ -1,0 +1,37 @@
+<%= doc_title '/channels/&lt;channel_id&gt;' %>
+
+<p>A resource for accessing a single channel in OtaSizzle.</p>
+
+<%
+methods = [ { :name => "GET", 
+							:description => "Show channel.",
+							:returns => { "200" => "Returns channel.",
+								 				 		"404" => "Channel not found" } 
+						}, 
+						{	:name => "DELETE",
+							:description => "Delete channel",
+							:returns => { "200" => "Succesfully deleted channel.",
+								 						"404" => "Channel not found." } 
+						},
+						{	:name => "PUT",
+							:description => "Modify channel. Only given parameters are affected.",
+							:parameters => [ { :name => "Channel name" },
+															 { :description => "Channel description" },
+															 { :context => "Context associated with channel." },
+															 { :type => "Channel type."} ],
+							:returns => { "200" => "Succesfully modified channel.",
+								 						"400" => "Malformed request.",
+								 						"404" => "Channel not found" } 
+						}
+					]
+
+%>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+
+<h2>Subresources</h2>
+
+<ul>
+	<li><a href="doc/channels/channel_id/@messages"><tt>/channels/&lt;channel_id&gt;/@messages</tt></a> &ndash; Messages for a channel.</li>
+	<li><a href="doc/channels/channel_id/@messages/msg_id"><tt>/channels/&lt;channel_id&gt;/@messages/&lt;msg_id&gt;</tt></a> &ndash; Single message</li>
+</ul>
