@@ -1,0 +1,27 @@
+<% doc_title '/channels' %>
+
+<p>A resource for accessing channels in OtaSizzle</p>
+
+<%
+methods = [ { :name => "GET", 
+							:description => "List channels",
+							:parameters => [ { :search => "The search term." } ], 
+							:returns => { "200" => "List of matching channels or all channels if search term is omitted."}, 
+						{	:name => "POST",
+							:description => "Create a channel"
+							:parameters => [ { :name => "Channel name",
+																 :description => "Channel description" } ],
+							:returns => { "201" => "Created. Response includes also the created channel's id",
+								 						"400" => "Malformed request." } 
+							} ]
+
+%>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+
+<h2>Subresources</h2>
+
+<ul>
+	<li><a href="doc/channels/channel_id/"><tt>/channels/&lt;channel_id&gt;</tt></a> &ndash; A single channel.</li>
+	
+</ul>
