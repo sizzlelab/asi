@@ -31,7 +31,16 @@ ActionController::Routing::Routes.draw do |map|
   map.namespace :admin do |admin|
     admin.resources :feedbacks, :member => { :handle => :put }
   end
-
+  
+  map.namespace :coreui do |coreui|
+    coreui.root :controller => 'profile',
+                :action => 'index',
+                :conditions => { :method => :get }
+    coreui.resources :profile
+  end
+  
+  # Application-specific client data
+  
   map.resource '/appdata/:user_id/@self/:app_id', :controller => 'client_data',
                                                   :get => 'show', 
                                                   :put => 'update'
@@ -55,6 +64,22 @@ ActionController::Routing::Routes.draw do |map|
                                                    # :get => 'show_item',
                                                     :delete => 'delete_item'
 
+  # Role management (Person-client-connection)
+
+  map.resource '/appdata/:app_id/@people', :controller => 'client', :get => 'index'
+  
+  map.resource '/appdata/:app_id/@people/:roles', :controller => 'client', :get => 'index'
+  
+  map.resource '/people/:user_id/@apps', :controller => 'client', :get => 'index_services',
+                                                                  :post => 'create'
+  
+  map.resource '/people/:user_id/@apps/:app_id/@role', :controller => 'client', :get => 'show', 
+                                                                                :delete => 'delete',
+                                                                                :post => 'create',
+                                                                                :put => 'update'
+  
+  # People
+  
   map.resource '/people/:user_id/@self', :controller => 'people',
                                          :get => 'show', 
                                          :put => 'update', 
@@ -107,7 +132,16 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/:user_id/@transactions/transactions.xml', :controller => 'transactions',
                                                                   :get => 'get',
                                                                   :post => 'create'
-                                              
+
+  map.resource '/people/recover_password', :controller => 'people',
+                                           :post => 'recover_password'
+
+  map.resource '/people/reset_password', :controller => 'people',
+                                         :get => 'reset_password',
+                                         :post => 'change_password',
+                                         :format_get => 'html',
+                                         :format_post => 'html'
+
   map.resource '/people/:user_id/@groups', :controller => 'groups',
                                            :get => 'get_groups_of_person',
                                            :post => 'add_member'
@@ -119,15 +153,15 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/:user_id/@groups/:group_id', :controller => 'groups',
                                                      :put => 'update_membership_status',
                                                      :delete => 'remove_person_from_group'
-                                                   
-  map.resource '/people/recover_password', :controller => 'people',
-                                           :post => 'recover_password'
 
-  map.resource '/people/reset_password', :controller => 'people',
-                                         :get => 'reset_password',
-                                         :post => 'change_password',
-                                         :format_get => 'html',
-                                         :format_post => 'html'
+  map.resource '/people/:user_id/@groups', :controller => 'groups',
+                                           :get => 'get_groups_of_person',
+                                           :post => 'add_member'
+                                           
+  map.resource '/people/:user_id/@groups/:group_id', :controller => 'groups',
+                                                     :delete => 'remove_person_from_group'
+
+  # Groups
                                               
   map.resource '/groups', :controller => 'groups',
                           :post => 'create'
@@ -151,12 +185,15 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/groups/@public/:group_id/@members', :controller => 'groups',
                                              :get => 'get_members'                                                                       
 
+  # Location shortcut
 
   map.resource '/groups/@public/:group_id/@pending', :controller => 'groups',
                    :get => 'get_pending_members'
 
   map.resource '/location/single_update', :controller => 'locations',
                                           :post => 'update'
+
+  # Others
 
   map.resource '/session', :controller => 'sessions',
                            :get => 'get',
