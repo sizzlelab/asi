@@ -22,9 +22,22 @@ class Group < ActiveRecord::Base
                          
   validates_length_of :title, :within => TITLE_MIN_LENGTH..TITLE_MAX_LENGTH
   validates_length_of :description, :allow_nil => true, :allow_blank => true, :maximum => DESCRIPTION_MAX_LENGTH, :message => "is too long"                       
-  validates_presence_of :created_by
+  validates_presence_of :creator
 
   validates_uniqueness_of :title, :case_sensitive => false
+
+  class << self
+    alias :orig_create :create
+  end
+
+  def Group.create(options)
+    g = orig_create(options)
+    if g.valid?
+      g.accept_member(g.creator)
+      g.grant_admin_status_to(g.creator)
+    end
+    g
+  end
 
   def Group.all_public
     Group.all(:conditions => ["group_type = 'open' OR group_type = 'closed'"])
@@ -41,11 +54,15 @@ class Group < ActiveRecord::Base
   end
 
   def invite(person, inviter)
-    members << person
-    person.membership(self).update_attribute("inviter", inviter)
+    return false if invited_members.include?(person)
+    if auto_accept_members? or inviter.is_admin_of?(self)
+      members << person
+      person.membership(self).update_attribute("inviter", inviter)
+    end
   end
 
   def accept_member(person)
+    members << person unless membership(person)
     self.membership(person).update_attribute(:accepted_at, Time.now)
   end
 
@@ -67,6 +84,13 @@ class Group < ActiveRecord::Base
 
   def remove_admin_status_from(person)
     person.membership(self).update_attribute("admin_role", false) if person.is_member_of?(self)
+  end
+
+  def show?(person)
+    return true if person == creator
+    return true if person.is_member_of?(self)
+    return true if group_type == "open" || group_type == "closed"
+    false
   end
   
   def to_json(asking_person=nil, *a)

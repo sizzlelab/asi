@@ -3,19 +3,19 @@ require 'test_helper'
 class GroupTest < ActiveSupport::TestCase
 
   def test_create_open
-    g = Group.new(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
+    g = Group.new(:title => "testiryhma", :group_type => "open", :creator => people(:valid_person))
     assert(g.valid?, g.errors.full_messages)
     assert(g.save, "Saving failed!")
   end
 
   def test_create_closed
-    g = Group.new(:title => "Closed", :group_type => "closed", :created_by => "testperson_id")
+    g = Group.new(:title => "Closed", :group_type => "closed", :creator => people(:valid_person))
     assert(g.valid?, g.errors.full_messages)
     assert(g.save, "Saving failed!")
   end
   
   def test_add_member_open
-    g = Group.create(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
+    g = Group.create(:title => "testiryhma", :group_type => "open", :creator => people(:valid_person))
     assert(g.valid?, "created group was not valid")
 
     assert_difference 'g.members.count', 1 do
@@ -28,7 +28,7 @@ class GroupTest < ActiveSupport::TestCase
 
   def test_add_member_closed
     [ "closed" ].each do |type| 
-      g = Group.create(:title => "#{type} test group", :group_type => type, :created_by => "testperson_id")
+      g = Group.create(:title => "#{type} test group", :group_type => type, :creator => people(:valid_person))
       assert(g.valid?, g.errors.full_messages.inspect)
       assert(g.save, "Saving failed!")
 
@@ -38,7 +38,7 @@ class GroupTest < ActiveSupport::TestCase
       end
 
       assert_difference 'g.members.count', 1 do
-        g.accept_member(people(:friend))
+        g.admins[0].accept_member(people(:friend), g)
 
         assert people(:friend).is_member_of?(g)
         assert(g.has_member?(people(:friend)), "Person not in a group where he should be")
@@ -74,13 +74,13 @@ class GroupTest < ActiveSupport::TestCase
   end
 
   def test_name_uniqueness
-    g = Group.new(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
+    g = Group.new(:title => "testiryhma", :group_type => "open", :creator => people(:valid_person))
     assert g.save
 
-    g2 = Group.new(:title => "testiryhma", :group_type => "open", :created_by => "testperson_id")
+    g2 = Group.new(:title => "testiryhma", :group_type => "open", :creator => people(:valid_person))
     assert ! g2.save, "Allows duplicate group names"
 
-    g3 = Group.new(:title => "Testiryhma", :group_type => "open", :created_by => "testperson_id")
+    g3 = Group.new(:title => "Testiryhma", :group_type => "open", :creator => people(:valid_person))
     assert ! g3.save, "Allows case-insensitive duplicate group names"
   end
 

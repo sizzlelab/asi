@@ -12,16 +12,12 @@ class GroupsController < ApplicationController
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
     params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
     
-    @group = Group.new(:title => params[:title], 
-                       :group_type => params[:type],
-                       :description => params[:description],
-                       :created_by => @user)
+    @group = Group.create(:title => params[:title], 
+                          :group_type => params[:type],
+                          :description => params[:description],
+                          :created_by => @user)
 
-    if @group.save
-      # Make the creator as an admin member
-      @user.request_membership_of(@group)
-      @group.accept_member(@user)
-      @group.grant_admin_status_to(@user)
+    if @group.valid?
       render :status => :created and return
     else  
       render :status => :bad_request, :json => @group.errors.full_messages.to_json and return
@@ -29,11 +25,7 @@ class GroupsController < ApplicationController
   end
 
   def show
-    #TODO check that asker has rights to get info
-    
-    #puts "show method! #{params[:group_id]}"
-    # @group = get_group_or_not_found(params[:group_id])
-    #puts "CONTROLLERISSA:#{@user}"
+    render :status => :forbidden, :json => "You are not allowed to view this group.".to_json and return unless @group.show?(@user)
   end
   
   def update
@@ -163,8 +155,7 @@ class GroupsController < ApplicationController
   def accept_pending_membership_request
     person = Person.find_by_id(params[:user_id])
 
-    if @user.is_admin_of?(@group) && @group.pending_members.include?(person)
-      @group.accept_member(person)
+    if @user.accept_member(person, @group) 
       return {:status => :ok, :message => "Pending request accepted"}
     else
       return {:status => :unauthorized, :message => "Accepting pending requests can be done by admins only."}
