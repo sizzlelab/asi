@@ -1,0 +1,2 @@
+module Coreui::ProfileHelper
+end

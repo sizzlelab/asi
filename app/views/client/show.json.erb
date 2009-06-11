@@ -1,0 +1,5 @@
+<% if @role %>
+  <%= @role.to_json %>
+<% else %>
+  <%= {}.to_json %>
+<% end %>

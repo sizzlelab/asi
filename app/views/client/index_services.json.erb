@@ -1,0 +1,5 @@
+<% if @services %>
+  <%= @services.to_json %>
+<% else %>
+  <%= {}.to_json %>
+<% end %>

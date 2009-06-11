@@ -1,1 +1,40 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+valid_user:
+  id: 1
+  person_id: abc
+  client_id: def
+  title: user
+
+valid_moderator:
+  id: 2
+  person_id: ghi
+  client_id: def
+  title: moderator
+
+valid_administrator:
+  id: 3
+  person_id: jkl
+  client_id: mno
+  title: administrator
+
+invalid_title:
+  id: 4
+  person_id: pqr
+  client_id: stu
+  title: hangaround
+
+missing_person_id:
+  id: 5
+  client_id: mno
+  title: user
+
+missing_client_id:
+  id: 6
+  person_id: ghi
+  title: user
+
+missing_title:
+  id: 7
+  person_id: jkl
+  client_id: def

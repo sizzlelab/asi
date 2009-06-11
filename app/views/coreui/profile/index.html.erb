@@ -1,0 +1,7 @@
+<% if @profiles != nil %>
+  <% @profiles.each do |a, b| %>
+    <p><strong><%= a %>: </strong><%= b %></p>
+  <% end %>
+<% else %>
+  <%= render :partial => "/coreui/login" %>
+<% end %>
