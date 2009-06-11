@@ -3,6 +3,8 @@ module ApplicationHelper
   def http_status code
     codes = { "200" => "Ok",
              "201" => "Created",
+             "202" => "Accepted",
+             "203" => "Non-authoritative Information",
              "400" => "Bad Request",
              "401" => "Unauthorized",
              "403" => "Forbidden",

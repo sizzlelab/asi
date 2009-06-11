@@ -58,7 +58,9 @@ class Group < ActiveRecord::Base
     if auto_accept_members? or inviter.is_admin_of?(self)
       members << person
       person.membership(self).update_attribute("inviter", inviter)
+      return true
     end
+    return false
   end
 
   def accept_member(person)
@@ -87,9 +89,11 @@ class Group < ActiveRecord::Base
   end
 
   def show?(person)
+    return true if group_type == "open" || group_type == "closed"
+    return false if not person
     return true if person == creator
     return true if person.is_member_of?(self)
-    return true if group_type == "open" || group_type == "closed"
+    return true if invited_members.include?(person)
     false
   end
   

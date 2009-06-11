@@ -1,12 +1,12 @@
 <%= doc_title '/groups' %>
 <p>
-  A resource for accessing the groups of OtaSizzle. There will be four types of groups <em>open</em>, <span class="not_implemented"><em>closed</em>, <em>hidden</em> and <em>personal</em></span>
+  A resource for accessing the groups of OtaSizzle. There will be four types of groups <em>open</em>, <em>closed</em>, <em>hidden</em> <span class="not_implemented">and <em>personal</em></span>.
 </p>
 <p><strong>Open</strong> groups can be publicly listed and all users are free to join.</p>
-<div class='not_implemented'>
 <p><strong>Closed</strong> groups can be listed publicly, but users can not join directly. They can request
    membership that must be approved by group admins or they can be invited by an admin.</p> 
-<p><strong>Hidden</strong> groups are not visible in public listings or in peoples profiles. Otherwise similar to closed groups.</p>
+<p><strong>Hidden</strong> groups are not visible in public listings or in people's profiles. Otherwise similar to closed groups.</p>
+<div class='not_implemented'>
 <p><strong>Personal</strong> groups are visible only to the creator. He can add people in 
   personal groups, but even the added people will not know this. Personal groups can be used to categorize friends etc.</p>    
 </div>
@@ -17,7 +17,7 @@
                  :description => "Creates a new group. The creator is automatically added to the new group as an admin.", 
 
                  :parameters => [ {:title => "The title (or name) of the group."},
-                                  {:type => "Can be <code>open</code>, <span class='not_implemented'><code>closed</code>, <code>hidden</code> or <code>personal</code></span>"},
+                                  {:type => "Can be <code>open</code>, <code>closed</code>, <code>hidden</code> or <span class='not_implemented'><code>personal</code></span>"},
                                   {:description => "A descriptive text for the group (optional)"}
                                 ], 
 

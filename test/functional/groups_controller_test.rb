@@ -91,7 +91,7 @@ class GroupsControllerTest < ActionController::TestCase
     post :add_member, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :format => 'json' },
                       { :cos_session_id => sessions(:session4).id }
                     
-    assert_response :ok
+    assert_response :accepted
 
     assert groups(:closed).pending_members.include?(people(:friend))
 
@@ -363,9 +363,21 @@ class GroupsControllerTest < ActionController::TestCase
     assert session.person.is_admin_of?(group)
 
     post :add_member, { :user_id => people(:friend).id, :group_id => group.id, :format => 'json' }, 
-                     { :cos_session_id => session.id }
+                      { :cos_session_id => session.id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
+  end
+
+  def test_send_unauthorized_invite
+    group = groups(:hidden)
+    session = sessions(:session8)
+    assert session.person.is_member_of?(group)
+    assert ! session.person.is_admin_of?(group)
+
+    post :add_member, { :user_id => people(:friend).id, :group_id => group.id, :format => 'json' }, 
+                      { :cos_session_id => session.id }
+    assert_response :forbidden, @response.body
+    json = JSON.parse(@response.body)  
   end
 
 end

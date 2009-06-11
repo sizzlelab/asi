@@ -48,8 +48,16 @@ class GroupsController < ApplicationController
   def add_member  
     if params[:user_id] != @user.id
       @invitee = Person.find_by_id(params[:user_id])
-      @group.invite(@invitee, @user)
-      render :status => :created, :json => "Invitation sent.".to_json and return
+      
+      if @invitee.invited_groups.include?(@group)
+        render :status => :conflict, :json => "That user has already been invited.".to_json and return
+      end
+
+      if @group.invite(@invitee, @user)
+        render :status => :accepted, :json => "Invitation sent.".to_json and return
+      else
+        render :status => :forbidden, :json => "You are not an admin of this group.".to_json and return
+      end
     end
     
     @person = Person.find_by_id(params[:user_id])
@@ -63,19 +71,18 @@ class GroupsController < ApplicationController
 
     if @group.group_type == 'open'
       @person.request_membership_of(@group)
-      render :status => :ok, :json => "Become member of group succesfully.".to_json and return
+      render :status => :created, :json => "Become member of group succesfully.".to_json and return
     elsif @group.group_type == 'closed'
       @person.request_membership_of(@group)
-      render :status => :ok, :json => "Membership requested.".to_json and return
+      render :status => :accepted, :json => "Membership requested.".to_json and return
     end
 
   end
 
   # Returns a list of the public groups of the person specified by user_id
   def get_groups_of_person
-    #TODO match only public groups if asker is not the user himself.
     @groups = Person.find_by_id(params[:user_id]).groups
-    @groups_hash = @groups.collect do |group|
+    @groups_hash = @groups.find_all{|g| g.show?(@user)}.collect do |group|
       group.get_group_hash(@user)
     end
     render :template => 'groups/list_groups'
@@ -141,7 +148,10 @@ class GroupsController < ApplicationController
     begin
       @group = Group.find(params[:group_id])
     rescue ActiveRecord::RecordNotFound
-      render :status => :not_found, :json => "Group with id #{params[:group_id]} not found.".to_json
+      render :status => :not_found, :json => "Group with id #{params[:group_id]} not found.".to_json and return
+    end
+    if ! @group.show?(@user)
+      render :status => :forbidden, :json => "You do not have permission to view this group.".to_json
     end
   end
 

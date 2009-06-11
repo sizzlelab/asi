@@ -21,3 +21,30 @@ three:
   admin_role: 1
   accepted_at: 2008-08-11 12:36:33
 
+four:
+  id: 4
+  person_id: 2
+  group_id: yure23t
+  admin_role: 0
+  accepted_at: 2008-08-11 12:36:33
+
+foour:
+  id: 44
+  person_id: 15aa
+  group_id: ppiasas
+  admin_role: 0
+  accepted_at: 2008-08-11 12:36:33
+
+five:
+  id: 5
+  person_id: 2
+  group_id: ppiasas
+  admin_role: 0
+  accepted_at: 2008-08-11 12:36:33
+
+six:
+  id: 6
+  person_id: 1
+  group_id: ppiasas
+  admin_role: 1
+  accepted_at: 2008-09-11 12:36:33
