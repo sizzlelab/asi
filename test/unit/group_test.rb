@@ -102,4 +102,33 @@ class GroupTest < ActiveSupport::TestCase
       assert invitee.is_member_of?(group)
     end
   end
+
+  def test_unauthorized_invite
+    [ groups(:hidden), groups(:closed) ].each do |group|
+      inviter = group.members.detect {|p| ! p.is_admin_of?(group) }
+      assert inviter, "No non-admin member in #{group.group_type}"
+      invitee = people(:friend)
+      assert ! inviter.is_admin_of?(group), "Inviter is an admin"
+      assert ! invitee.is_member_of?(group), "Invitee is a member"
+
+      group.invite(invitee, inviter)
+
+      assert ! invitee.is_member_of?(group), "Invitee is a member"
+      assert ! invitee.invited_groups.include?(group), "Group is in invitations"
+      assert ! invitee.pending_groups.include?(group), "Group is pending"
+
+      invitee.request_membership_of(group)
+      assert ! invitee.is_member_of?(group)
+    end
+  end
+
+  def test_hidden_viewing_rules
+    group = groups(:hidden)
+    assert group.show?(group.members[0]), "Show to member"
+    assert ! people(:friend).is_member_of?(group)
+    assert ! group.show?(people(:friend)), "Don't show to non-member" 
+    assert ! Group.all_public.include?(group), "Don't show in public listing"
+    group.creator.invite(people(:friend), group)
+    assert group.show?(people(:friend)), "Show to invited"
+  end
 end

@@ -33,7 +33,7 @@ class GroupsTest < ActionController::IntegrationTest
       ossi.logs_in_with( { :username => people(:valid_person).username, :password => "testi", :app_name => clients(:one).name, :app_password => "testi" })
       requests = ossi.lists_membership_requests(group_id)
       assert_equal 1, requests.size
-      #ossi.accepts_member(requests[0], group_id)
+      ossi.accepts_member(requests[0], group_id)
     end
   end
 
