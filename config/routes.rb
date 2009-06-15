@@ -85,11 +85,6 @@ ActionController::Routing::Routes.draw do |map|
                                          :put => 'update', 
                                          :delete => 'delete'
 
-  #map.resource '/people/@me', :controller => 'people',
-  #                              :get => 'show',
-  #                              :put => 'update',
-  #                              :delete => 'delete'
-
   map.resource '/people/:user_id/@avatar', :controller => 'people',
                                            :post => 'update_avatar',
                                            :get => 'get_avatar', 
@@ -199,6 +194,27 @@ ActionController::Routing::Routes.draw do |map|
                            :get => 'get',
                            :delete => 'destroy',
                            :post => 'create'
+  
+  
+  # Channels
+  map.resource '/channels', :controller => 'channels',
+                            :get => 'list',
+                            :post => 'create'
+  
+  map.resource '/channels/:channel_id/', :controller => 'channels',
+                                         :get => 'show',
+                                         :put => 'modify',
+                                         :delete => 'delete'
+  
+  map.resource '/channels/:channel_id/@messages', :controller => 'channels',
+                                                  :get => 'list_messages',
+                                                  :post => 'post_message'
+  
+  map.resource '/channels/:channel_id/@messages/:msg_id', :controller => 'channels',
+                                                          :get => 'show_message',
+                                                          :delete => 'delete_message'
+  
+  # End channels
   
   map.resource '/transactions', :controller => 'transactions',
                                 :get => 'get',
