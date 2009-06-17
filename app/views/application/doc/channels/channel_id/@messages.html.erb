@@ -1,20 +1,27 @@
 <%= doc_title '/channels/&lt;channel_id&gt;/@messages' %>
 
-<p>A resource for accessing a single channel in OtaSizzle.</p>
+<p>A resource for accessing messages in a single channel in OtaSizzle.</p>
 
 <%
 methods = [ { :name => "GET", 
 							:description => "Show messages.",
+							:parameters => [ { :content => "If true, returns full messages as array, otherwise only message ids."},
+															 { :num => "Number of messages to return."},
+															 { :start_index => "Return num messages counting from :start_index."}
+														 ],
 							:returns => { "200" => "Returns messages.",
-								 				 		"404" => "Channel not found" } 
+														"403" => "User has no access to channel.",
+								 				 		"404" => "Channel not found." } 
 						}, 
 						{	:name => "POST",
 							:description => "Post a message to channel",
-							:parameters => [ { :title => "Post title" },
-															 { :body => "Body of message" },
-															 { :user => "Posting user's id" } ],
-							:returns => { "201" => "Created. Response includes also the created post's id",
-								 						"400" => "Malformed request." } 
+							:parameters => [ { :title => "Message title" },
+															 { :content_type => "Message's content type. Only text/* are currently supported."},
+															 { :content => "Message content." }
+															],
+							:returns => { "201" => "Created. Response includes created message.",
+								 						"400" => "Malformed request.",
+								 						"403" => "User has no rights to post to channel."} 
 							} ]
 
 %>

@@ -4,16 +4,23 @@
 
 <%
 methods = [ { :name => "GET", 
-							:description => "List channels",
-							:parameters => [ { :search => "The search term." } ], 
-							:returns => { "200" => "List of matching channels or all channels if search term is omitted."} }, 
+							:description => "List channels matching any of the parameters.",
+							:parameters => [ { :search => "Search term for text search from channel name and description." },
+								 							 { :group_id => "Group id." },
+															 { :user_id => "User id." }
+														 ],
+							:returns => { "200" => "List of matching and accessible channels or all channels if search terms are omitted."} }, 
 						{	:name => "POST",
 							:description => "Create a channel. Parameters are optional.",
 							:parameters => [ { :name => "Channel name" },
 															 { :description => "Channel description" },
-															 { :context => "Context associated with channel." },
-															 { :type => "Channel type."} ],
-							:returns => { "201" => "Created. Response includes also the created channel's id",
+															 { :owner => "Channel owner. Defaults to current user."}, 
+															 { :user_subscriptions => "List of user ids subscripted to the channel."},
+															 { :group_subscriptions => "List of group ids subscripted to the channel." },
+															 { :type => "Channel type. Hidden or public."}
+															],
+							:returns => { "201" => "Created. Response contains created channel.",
+														"401" => "Login required.",
 								 						"400" => "Malformed request." } 
 							} ]
 
