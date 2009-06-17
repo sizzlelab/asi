@@ -1,16 +1,18 @@
 <%= doc_title '/channels/&lt;channel_id&gt;/@messages/&lt;msg_id&gt;' %>
 
-<p>A resource for accessing a single channel in OtaSizzle.</p>
+<p>A resource for accessing single messages in a channel in OtaSizzle.</p>
 
 <%
 methods = [ { :name => "GET", 
 							:description => "Show message.",
 							:returns => { "200" => "Returns message.",
-								 				 		"404" => "Message not found" } 
+														"403" => "User has no access to channel.",
+								 				 		"404" => "Message not found." } 
 						}, 
 						{	:name => "DELETE",
 							:description => "Delete message.",
 							:returns => { "201" => "Message deleted.",
+														"403" => "User has no access to channel.",
 								 						"404" => "Message not found." } 
 							} ]
 

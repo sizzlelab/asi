@@ -6,22 +6,30 @@
 methods = [ { :name => "GET", 
 							:description => "Show channel.",
 							:returns => { "200" => "Returns channel.",
+														"401" => "Login required.",
+														"403" => "User has no access to channel.",
 								 				 		"404" => "Channel not found" } 
 						}, 
 						{	:name => "DELETE",
 							:description => "Delete channel",
 							:returns => { "200" => "Succesfully deleted channel.",
+														"401" => "Login required.",
+														"403" => "User has no access to channel.",
 								 						"404" => "Channel not found." } 
 						},
 						{	:name => "PUT",
 							:description => "Modify channel. Only given parameters are affected.",
 							:parameters => [ { :name => "Channel name" },
 															 { :description => "Channel description" },
-															 { :context => "Context associated with channel." },
-															 { :type => "Channel type."} ],
-							:returns => { "200" => "Succesfully modified channel.",
+															 { :owner => "Channel owner. Defaults to current user."}, 
+															 { :user_subscriptions => "List of user ids subscripted to the channel."},
+															 { :group_subscriptions => "List of group ids subscripted to the channel." },
+															 { :type => "Channel type. Hidden or public."} ],
+							:returns => { "200" => "Succesfully modified channel. Returns the modified channel.",
 								 						"400" => "Malformed request.",
-								 						"404" => "Channel not found" } 
+														"401" => "Login required.",
+														"403" => "User has no access to channel.",
+								 						"404" => "Channel not found." } 
 						}
 					]
 
