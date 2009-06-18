@@ -1,4 +1,6 @@
 class LocationsController < ApplicationController
+
+  before_filter :change_me_to_userid
   
   USER_UPDATEABLE_FIELDS = %w(longitude latitude accuracy label)
   
@@ -51,5 +53,20 @@ class LocationsController < ApplicationController
       #TODO return more info about which parameter went wrong
     end
   end
+  
+  private
+  
+  def change_me_to_userid
+    if params[:user_id] == "@me"
+      if ses = Session.find_by_id(session[:cos_session_id])
+        if ses.person
+          params[:user_id] = ses.person.id
+        else
+          render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
+        end
+      end
+    end
+  end
+
 
 end

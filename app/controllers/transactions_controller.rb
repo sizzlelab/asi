@@ -1,5 +1,7 @@
 class TransactionsController < ApplicationController
   
+  before_filter :change_me_to_userid
+  
   def create
     if ! params[:transaction][:receiver_id]
       params[:transaction][:receiver_id] = Person.find_by_username(params[:transaction][:receiver_username]).id
@@ -32,6 +34,21 @@ class TransactionsController < ApplicationController
 
   def get
   end
+
+  private
+
+  def change_me_to_userid
+    if params[:user_id] == "@me"
+      if ses = Session.find_by_id(session[:cos_session_id])
+        if ses.person
+          params[:user_id] = ses.person.id
+        else
+          render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
+        end
+      end
+    end
+  end
+
 
 end
 
