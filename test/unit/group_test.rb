@@ -155,6 +155,12 @@ class GroupTest < ActiveSupport::TestCase
     end
   end
 
+  def test_change_group_type_to_invalid
+    [ groups(:open), groups(:hidden), groups(:closed) ].each do |group|
+      assert ! group.update_attributes(:group_type => "asoetid")
+    end
+  end
+
   def test_hidden_viewing_rules
     group = groups(:hidden)
     assert group.show?(group.members[0]), "Show to member"
