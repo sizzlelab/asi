@@ -31,12 +31,6 @@ class GroupsController < ApplicationController
   end
   
   def update
-    if(params[:group][:group_type])
-      unless @group.change_group_type(params[:group][:group_type], @user)
-        render :status => :forbidden, :json => "You are not allowed to change the group type.".to_json and return
-      end
-    end
-
     if @group.update_attributes(params[:group])
       render :status => :ok, :json => @group.to_json
     else
