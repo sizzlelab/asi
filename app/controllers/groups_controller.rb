@@ -91,8 +91,7 @@ class GroupsController < ApplicationController
   end
 
   def get_members
-    #TODO check that asker has rights to get info
-    if @group
+    if @group 
       @members = @group.members
     end
   end
