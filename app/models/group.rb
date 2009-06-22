@@ -146,24 +146,7 @@ class Group < ActiveRecord::Base
     orig_update_attributes attributes
     
   end
-
-  def change_group_type(group_type, changer)
-
-    if changer.is_admin_of?(self)
-      self.update_attributes(:group_type => group_type)
-
-      if auto_accept_members?
-        pending_members.each do |pending|
-          accept_member pending
-        end
-      end
-
-      return true
-    end
-
-    return false
-  end
-
+  
   private 
 
   def auto_accept_members?
