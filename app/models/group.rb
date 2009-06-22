@@ -18,7 +18,7 @@ class Group < ActiveRecord::Base
   validates_inclusion_of :group_type,
                          :in => VALID_GROUP_TYPES,
                          :allow_nil => false,
-                         :message => "must currently be 'open', 'closed'" #", 'hidden' or 'personal'"
+                         :message => "must currently be 'open', 'closed', 'hidden' " #or 'personal'"
                          
   validates_length_of :title, :within => TITLE_MIN_LENGTH..TITLE_MAX_LENGTH
   validates_length_of :description, :allow_nil => true, :allow_blank => true, :maximum => DESCRIPTION_MAX_LENGTH, :message => "is too long"                       
@@ -26,8 +26,11 @@ class Group < ActiveRecord::Base
 
   validates_uniqueness_of :title, :case_sensitive => false
 
+  alias_method :orig_update_attributes, :update_attributes
+ 
   class << self
     alias :orig_create :create
+    #alias :orig_update_attributes :update_attributes
   end
 
   def Group.create(options)
@@ -125,14 +128,46 @@ class Group < ActiveRecord::Base
     self[:created_by] ||= created_by
   end
 
-  # Disallow changes to group type
-  def group_type=(group_type)
-    self[:group_type] ||= group_type
+  #Disallow changes to group type
+  #def group_type=(group_type)
+  #  self[:group_type] ||= group_type
+  #end
+
+  #Overwritten update_attributes method that updates pending members if
+  #group type is changed to open
+  def update_attributes(attributes)
+  
+    if attributes[:group_type] == 'open'
+      pending_members.each do |pending|
+        accept_member pending
+      end
+    end
+    
+    orig_update_attributes attributes
+    
+  end
+
+  def change_group_type(group_type, changer)
+
+    if changer.is_admin_of?(self)
+      self.update_attributes(:group_type => group_type)
+
+      if auto_accept_members?
+        pending_members.each do |pending|
+          accept_member pending
+        end
+      end
+
+      return true
+    end
+
+    return false
   end
 
   private 
 
   def auto_accept_members?
+
     self.group_type == 'open'
   end
   
