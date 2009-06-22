@@ -247,8 +247,7 @@ class GroupsControllerTest < ActionController::TestCase
     assert session.person.is_admin_of?(group)
 
     data =  { :created_by => "foo",
-              :updated_at => "01-01-1950 10:10:10",
-              :group_type => "closed" }
+              :updated_at => "01-01-1950 10:10:10" }
 
     put :update, { :group_id => group.id, :group => data, :format => 'json' },
                  { :cos_session_id => session.id }
@@ -378,6 +377,63 @@ class GroupsControllerTest < ActionController::TestCase
                       { :cos_session_id => session.id }
     assert_response :forbidden, @response.body
     json = JSON.parse(@response.body)  
+  end
+
+  def test_change_group_type_to_open
+    data = {:group_type => 'open'}
+
+    group = groups(:hidden)
+    admin = group.creator
+
+    put :update, {:group => data, :group_id => group.id, :format => 'json' },
+                 {:cos_session_id => sessions(:session1).id}
+    assert_response :ok, @response.body
+    group.reload
+    assert group.group_type == "open", 'Group type should be open"'
+
+
+    group = groups(:closed)
+    admin = group.creator
+
+    post :add_member, {:group_id =>  group, :user_id => people(:friend).id, :format => 'json' },
+                      { :cos_session_id => sessions(:session4).id }
+
+    assert ! group.pending_members.empty?, "Should be one pending member in the group."
+    assert ! people(:friend).is_member_of?(group), "Person shouldn't be member."
+
+    put :update, {:group => data, :group_id => group.id, :format => 'json' },
+                 {:cos_session_id => sessions(:session1).id}
+
+    assert_response :ok, @response.body
+    group.reload
+    assert group.group_type == "open", 'Group type should be open"'
+
+    assert people(:friend).is_member_of?(group), "Person should have been accepted as a member"
+
+  end
+
+  def test_change_group_type_to_closed
+
+    data = {:group_type => 'closed'}
+
+    [groups(:open), groups(:hidden)].each do |group|
+      put :update, { :group => data, :group_id => group.id, :format => 'json'},
+                    { :cos_session_id => sessions(:session1).id}
+      assert_response :ok, @response.body
+      group.reload
+      assert group.group_type == "closed", "Group type should have been changed to closed."
+    end
+  end
+
+  def test_change_group_type_to_hidden
+    data = {:group_type => 'hidden'}
+    [groups(:open), groups(:closed)].each do |group|
+      put :update, { :group => data, :group_id => group.id, :format => 'json'},
+                    { :cos_session_id => sessions(:session1).id}
+      assert_response :ok, @response.body
+      group.reload
+      assert group.group_type == "hidden", "Group type should have been changed to hidden."
+    end
   end
 
 end

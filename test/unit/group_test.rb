@@ -122,6 +122,39 @@ class GroupTest < ActiveSupport::TestCase
     end
   end
 
+  def test_change_group_type_to_open
+
+    group = groups(:hidden)
+    group.update_attributes(:group_type => "open")
+    assert group.group_type == "open", 'Group type should be open"'
+
+    group = groups(:closed)
+
+    people(:contact).request_membership_of(group)
+    assert ! group.pending_members.empty?, "Should be one pending member in the group."
+    assert ! people(:contact).is_member_of?(group), "Person shouldn't be member."
+
+    group.update_attributes(:group_type => "open")
+    assert group.group_type == "open", 'Group type should be open"'
+
+    assert people(:contact).is_member_of?(group), "Person should have been accepted as a member"
+
+  end
+
+  def test_change_group_type_to_hidden
+    [ groups(:open), groups(:closed) ].each do |group|
+      group.update_attributes(:group_type => "hidden")
+      assert group.group_type == "hidden", 'Group type should be hidden'
+    end
+  end
+
+  def test_change_group_type_to_closed
+    [ groups(:open), groups(:hidden) ].each do |group|
+      group.update_attributes(:group_type => "closed")
+      assert group.group_type == "closed", 'Group type should be closed'
+    end
+  end
+
   def test_hidden_viewing_rules
     group = groups(:hidden)
     assert group.show?(group.members[0]), "Show to member"
