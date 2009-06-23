@@ -119,6 +119,7 @@ class Group < ActiveRecord::Base
     
     if asking_person
       group_hash['group'].merge!({'is_member' => (has_member?(asking_person))})
+      group_hash['group'].merge!({'is_admin' => asking_person.is_admin_of?(self)}) if has_member?(asking_person)
     end
     return group_hash
   end
