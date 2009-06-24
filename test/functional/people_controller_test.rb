@@ -436,6 +436,9 @@ class PeopleControllerTest < ActionController::TestCase
     search("", false)
     search("stephen")
     search("Liimatta")
+    search("sepi")
+    search("sepi-jaakko")
+    search("Sepi-Jaakko Seutula")
   end
   
   def test_routing

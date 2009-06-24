@@ -1,0 +1,24 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+# one:
+#   column: value
+#
+# two:
+#   column: value
+
+julkikanava:
+  id: channel1
+  name: Julkikanava
+  description: Tämä testaa kanavia
+  owner_id: 1
+  type: public
+  
+privaattikanava:
+  id: channel2
+  name: Privaattikanava
+  description: Tämä testaa privaattikanavia
+  owner_id: test
+  type: private
+  
+invaliidikanava:
+  name: invalid

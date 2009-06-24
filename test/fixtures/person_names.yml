@@ -30,6 +30,12 @@ five:
   family_name: Liimatta
   person_id: 5
 
+dash_name:
+  id: 666
+  given_name: Sepi-Jaakko
+  family_name: Seutula
+  person_id: 1234
+
 <% 20.times do |n| %>
 <%="#{n}:
   id: #{n + 4}

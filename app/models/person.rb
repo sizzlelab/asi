@@ -20,6 +20,9 @@ class Person < ActiveRecord::Base
   has_many :sessions, :dependent => :destroy
   has_many :connections, :dependent => :destroy
   
+  has_many :subscriptions, :through => :user_subscriptions, :source => :channel
+  has_many :messages
+  
   has_many :contacts, 
            :through => :connections,
            :conditions => "status = 'accepted'", 
