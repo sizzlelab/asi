@@ -8,6 +8,8 @@ class Group < ActiveRecord::Base
   has_many :admins, :through => :memberships, :source => :person, :conditions => ['admin_role = ?', true]
   has_many :invited_members, :through => :memberships, :source => :person, :conditions => 'inviter_id IS NOT NULL'
 
+  has_many :subscriptions, :through => :group_subscriptions, :source => :channel
+
   belongs_to :creator, :foreign_key => "created_by", :class_name => "Person"
 
   VALID_GROUP_TYPES =  %w(open closed hidden) #personal (to be implemented)
