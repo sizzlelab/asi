@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+   id: 1
+   condition_type: Logged_in
+   condition_value: True
+
+two:
+   id: 2
+   condition_type: Group
+   condition_value: TKK
+
+three:
+  id: 3
+  condition_type: Is_friend
+  condition_value: True
+
+four:
+  id: 4
+  condition_type: Group
+  condition_value: TML

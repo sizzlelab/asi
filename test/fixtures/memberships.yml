@@ -48,3 +48,10 @@ six:
   group_id: ppiasas
   admin_role: 1
   accepted_at: 2008-09-11 12:36:33
+
+seven:
+  id: 7
+  person_id: 1aa
+  group_id: tkk
+  admin_role: 0
+  accepted_at: 2009-06-25 11:26:25

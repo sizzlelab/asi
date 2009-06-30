@@ -1,0 +1,22 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  person_id: 1
+  rule_id: 1
+
+two:
+  person_id: 1
+  rule_id: 2
+
+three:
+  person_id: 1
+  rule_id: 3
+
+four:
+  person_id: 2
+  rule_id: 3
+
+five:
+  person_id: 2
+  rule_id: 4
+

@@ -1,0 +1,26 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  id: 1
+  rule_number: 1
+  condition_id: 1
+  action_id: 2
+
+two:
+  id: 2
+  rule_number: 1
+  condition_id: 1
+  action_id: 3
+
+three:
+  id: 3
+  rule_number: 1
+  condition_id: 2
+  action_id: 3
+
+four:
+  id: 4
+  rule_number: 2
+  condition_id: 3
+  action_id: 3
+
