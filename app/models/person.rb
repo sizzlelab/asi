@@ -38,6 +38,11 @@ class Person < ActiveRecord::Base
            :source => :contact,
            :conditions => "status = 'pending'"
 
+  #added by tchang
+  has_many :rules,
+           :through => :authorizes
+  # has_many :authorizes
+  
   # Max & min lengths for all fields 
   PASSWORD_MIN_LENGTH = 4
   PASSWORD_MAX_LENGTH = 16
@@ -158,9 +163,16 @@ class Person < ActiveRecord::Base
     
     #TODO Make more sensible check for the clients that are authorized to get email
     # Currently check if client_id matches to Kassi.
-    if connection_person == self || client_id == "acm-TkziGr3z9Tab_ZvnhG"
+    # commented by tchang
+    # if connection_person == self || client_id == "acm-TkziGr3z9Tab_ZvnhG"
+    #  person_hash.merge!({'email' => email})
+    #end
+
+    # should get person id from @session.person_id
+    # now only user testi1 with person_id 1aa can get user1's email address
+   if authorize("1aa", 'person', 'email')
       person_hash.merge!({'email' => email})
-    end
+   end
     
     if self.person_spec
       self.person_spec.attributes.except('status_message', 'status_message_changed').each do |key, value|
@@ -188,6 +200,55 @@ class Person < ActiveRecord::Base
     end
     return person_hash
   end
+
+
+# added by tchang
+# check if subject_person has access right to model and field
+# return: true or false
+  def authorize(subject_person=nil, model=nil, field=nil)
+    print "in models/person/authorize \n"
+
+    result = false
+
+   if (!model && !field)
+     return result
+   elsif (model && field)
+       # both params model and field are not nil, find action_id
+       action = Action.find(:first, :conditions => {'model' => model,'field' => field})
+   elsif (model && !field)
+       # param model is not nil, while field is nil
+       action = Action.find(:first, :condition => ["model = ?", params[model]])
+    end
+
+       print "action_id: \n"
+       print action.id
+       print " \n i am after action.find \n"
+
+       # find all the rules associated with this person and this action
+
+       rules = Rule.find(:all, :joins => :authorizes, :conditions => {'authorizes.person_id' => id, 'rules.action_id' => action.id})
+       print "i am after rule.find \n"
+       rules.each do |rule|
+          condition = Condition.find(rule.condition_id)
+           print "condition_id:"
+           print condition.attributes
+           print "\n"
+
+           if checkCondition(condition, subject_person)
+             result = true
+           end
+       end
+
+
+    return result
+  end
+
+
+  def checkCondition(condition=nil, subject_person=nil)
+    print "in models/person/checkCondition \n"
+    return false
+  end
+
   
   def to_json(client_id=nil, connection_person=nil, *a)
     person_hash = get_person_hash(connection_person, client_id)
