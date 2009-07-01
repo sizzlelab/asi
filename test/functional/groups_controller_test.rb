@@ -153,7 +153,7 @@ class GroupsControllerTest < ActionController::TestCase
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert json["entry"]
-    assert_equal(3, json["entry"].size)
+    assert_equal(4, json["entry"].size)
   end
   
   def test_get_members_of_group

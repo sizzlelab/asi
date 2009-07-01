@@ -1,1 +1,23 @@
-testi
+  <h2><%= profile["username"] %></h2>
+
+  <table border="1">
+  <% profile.each do |label, value| %>
+    <tr>
+      <th scope="rows"><%= label %>:</th>
+      <td><%= 
+case value
+  when String 
+		value
+	when nil
+		"-"
+	when Hash
+		value.map { |a, b| "<strong>#{a}:</strong> #{b.inspect}<br/>" }
+	when Address, PersonName
+		value.unstructured
+	else
+		"(" + value.class.to_s + " value cannot be displayed.)"
+end
+		%></td>
+    </tr>
+  <% end %>
+  </table>

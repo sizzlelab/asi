@@ -13,7 +13,7 @@
     <%= yield %>
     
     <% if @user %>
-      <%= link_to "Logout", "/session", :method=>"delete" %>
+      <p><%= link_to "Logout", "/session", :method=>"delete" %></p>
     <% end %>
 
     <div class="footer">
