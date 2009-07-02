@@ -88,26 +88,26 @@ class ApplicationController < ActionController::Base
     saved_to_ressi = ""
     
     # Trying to save the log data also to Ressi
-    begin
-      if RESSI_URL
-        cos_event = CachedCosEvent.create({
-                                            :user_id =>        @user ? @user.id : nil,
-                                            :application_id => @client ? @client.id : nil, 
-                                            :cos_session_id => session[:cos_session_id],
-                                            :ip_address =>     request.remote_ip, 
-                                            :action =>         controller_class_name + "\#" + action_name, 
-                                            :parameters =>     respond_to?(:filter_parameters) ? 
-                                            filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller 
-                                            :return_value =>   @_response.headers['Status'], 
-                                            :headers =>        Hash.new(request.headers).except("RAW_POST_DATA").to_json
-                                          })
-        saved_to_ressi = cos_event.valid?
-      else
-        saved_to_ressi = "DISABLED"
-      end
-    rescue Exception => e
-      saved_to_ressi = "ERROR " + e.to_s
-    end
+    # begin
+    #   if RESSI_URL
+    #     cos_event = CachedCosEvent.create({
+    #                                         :user_id =>        @user ? @user.id : nil,
+    #                                         :application_id => @client ? @client.id : nil, 
+    #                                         :cos_session_id => session[:cos_session_id],
+    #                                         :ip_address =>     request.remote_ip, 
+    #                                         :action =>         controller_class_name + "\#" + action_name, 
+    #                                         :parameters =>     respond_to?(:filter_parameters) ? 
+    #                                         filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller 
+    #                                         :return_value =>   @_response.headers['Status'], 
+    #                                         :headers =>        Hash.new(request.headers).except("RAW_POST_DATA").to_json
+    #                                       })
+    #     saved_to_ressi = cos_event.valid?
+    #   else
+    #     saved_to_ressi = "DISABLED"
+    #   end
+    # rescue Exception => e
+    #   saved_to_ressi = "ERROR " + e.to_s
+    # end
 
     logger.info { "Session DB id:  #{session[:cos_session_id]}   Ressi: #{saved_to_ressi}" }
 
