@@ -111,14 +111,6 @@ class ApplicationController < ActionController::Base
 
     logger.info { "Session DB id:  #{session[:cos_session_id]}   Ressi: #{saved_to_ressi}" }
 
-    if CachedCosEvent.count > RESSI_UPLOAD_INTERVAL
-     sid = spawn do
-        CachedCosEvent.all.each { |e| e.upload }
-     end
-    end
-
-  # wait(sid)
-
   end
   
   def set_correct_content_type

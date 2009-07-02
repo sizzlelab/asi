@@ -35,5 +35,6 @@ rake db:migrate
 rake test
 rake db:migrate RAILS_ENV=production
 #script/server -d -e production
+script/daemons start
 mongrel_rails cluster::start
 sudo /etc/init.d/apache2 restart
