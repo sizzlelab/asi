@@ -70,7 +70,7 @@ Rails::Initializer.run do |config|
   PURSE_LIMIT = -10
   RESSI_URL = "http://localhost:9000"
   RESSI_TIMEOUT = 5
-  RESSI_UPLOAD_INTERVAL = 1000
+  RESSI_UPLOAD_HOUR = 3
   COS_MAIL_FROM_ADRESS = "tuki@sizl.org"
   
   COREUI_APP_NAME = "coreui"
