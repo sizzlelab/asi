@@ -9,4 +9,6 @@ one:
 
 two:
    id: 2
-   name: "Kassi"
+   name: "kassi"
+   encrypted_password: 4516452e6230c2165df3ea76a86e164f956f5df2e2b317903ac6db190fc86337
+   salt: b5koiO7MFRbX

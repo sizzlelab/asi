@@ -83,8 +83,8 @@ class ApplicationController < ActionController::Base
     request.extend(LoggingHelper)
     
     logger.info("  Session: " + request.to_json({ :session => @application_session }))
-    logger.info("  Headers: " + Hash.new(request.headers).except("RAW_POST_DATA").to_json)
-    
+    logger.info("  Headers: " + request.headers.except("RAW_POST_DATA").to_json)
+
     saved_to_ressi = ""
     
     # Trying to save the log data also to Ressi
@@ -98,8 +98,8 @@ class ApplicationController < ActionController::Base
                                             :action =>         controller_class_name + "\#" + action_name, 
                                             :parameters =>     respond_to?(:filter_parameters) ? 
                                             filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller 
-                                            :return_value =>   @_response.headers['Status'], 
-                                            :headers =>        Hash.new(request.headers).except("RAW_POST_DATA").to_json
+                                            :return_value =>   @_response.status, 
+                                            :headers =>        request.headers.except("RAW_POST_DATA").to_json
                                           })
         saved_to_ressi = cos_event.valid?
       else
