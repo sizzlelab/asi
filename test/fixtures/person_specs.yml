@@ -10,11 +10,13 @@ valid_person_spec:
   irc_nick: "pelle"
   msn_nick: "maison"
   phone_number: "+358 40 834 7176"
+  description: "About me"
+  website: "http://example.com"
 
 blank_person_spec:
   id: 2
   person_id: 1
-  
+
 contact_person_spec:
   id: 3
   person_id: 2
@@ -22,7 +24,7 @@ contact_person_spec:
   status_message_changed: 2008-08-27T10:58:12+03:00
   birthdate: 2000-01-01
   gender: MALE
-  
+
 friends_spec:
   id: 4
   person_id: 4

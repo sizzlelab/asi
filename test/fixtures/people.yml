@@ -10,13 +10,21 @@ valid_person:
   email: working@address.com
   salt: ZB32fj38ueBG
 
+valid_association:
+  id: 2349889
+  username: ttytot
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  email: working-as-well@address.com
+  is_association: true
+  salt: ZB32fj38ueBG
+
 invalid_person:
   id: 2
   username: a/a
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: dsfs
   salt: ZB32fj38ueBG
-  
+
 contact:
   id: 3
   username: contact

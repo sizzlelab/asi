@@ -3,22 +3,22 @@
   A resource for accessing a single user specified by <tt>user_id</tt>
 </p>
 
-<p>All the methods except GET require that the user with <tt>user_id</tt> is logged in &ndash; otherwise, 
+<p>All the methods except GET require that the user with <tt>user_id</tt> is logged in &ndash; otherwise,
 <em>403 forbidden</em> is returned.</p>
 
-<% methods = [ 
-                { :name => "GET", 
+<% methods = [
+                { :name => "GET",
 
                  :description => "Gets the information of the user specified by <tt>user_id</tt>.
                                   Note that the timestamp for status_messages latest update is always in UTC time.
                                   The 'avatar' slot in the returned JSON contains the link to the avatar image and also
-                                  the status of the avatar, which is 'set' or 'not_set' depending on if the user has 
-                                  uploaded an image or not." },                
-               
+                                  the status of the avatar, which is 'set' or 'not_set' depending on if the user has
+                                  uploaded an image or not." },
+
                {
                  :name => "PUT",
                  :description => "Update (or add) information to user's profile. The <em>person</em>-parameter needs to contain only the attributes that need to be changed." +
-									 " If an error occurs, both status code and an array of error messages are returned.",
+                                                                         " If an error occurs, both status code and an array of error messages are returned.",
                  :parameters => [{
                                     :person => [
                                           {:password => "The user's password."},
@@ -26,6 +26,8 @@
                                           {:status_message => "Person's current status message."},
                                           {:birthdate => "Person's birthdate as date. Format yyyy-mm-dd"},
                                           {:gender    => "Person's gender, either MALE or FEMALE."},
+                                          {:description    => "A description of the person, or \"about me\"."},
+                                          {:website    => "A link to this person's website."},
                                           {:name => [
                                             {:given_name  => "Person's given name."},
                                             {:family_name => "Person's family name."}
@@ -36,17 +38,17 @@
                                             {:postal_code => "Person's postal code, e.g. 02150"},
                                             {:locality => "Person's locality, e.g. Espoo"}
                                           ]}
-                                          
-                                          
+
+
                                     ]
                                 }],
-                              
+
                   :error_messages => { "[Attribute] is too long" => "Given name, family name and status message can't be longer than 255 characters.",
                                        "Gender must be MALE or FEMALE" => "If gender is given, it must be male or female.",
-                                       "Birthdate is invalid" => "Birthdate must be of correct form."}              
+                                       "Birthdate is invalid" => "Birthdate must be of correct form."}
                },
-               
-               { :name => "DELETE", 
+
+               { :name => "DELETE",
                   :description => "Deletes the user identified by <tt>user_id</tt>." } ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
