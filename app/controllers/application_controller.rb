@@ -8,17 +8,17 @@ class ApplicationController < ActionController::Base
   layout 'default'
 
   before_filter :maintain_session_and_user
-  
+
   after_filter :log
   after_filter :set_correct_content_type
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   #protect_from_forgery # :secret => '9c4bfc3f5c5b497cf9ce1b29fdea20f5'
-  
-  # See ActionController::Base for details 
+
+  # See ActionController::Base for details
   # Uncomment this to filter the contents of submitted sensitive data parameters
-  # from your application log (in this case, all fields with names like "password"). 
+  # from your application log (in this case, all fields with names like "password").
   filter_parameter_logging :password
 
   DEFAULT_AVATAR_IMAGES = {
@@ -51,54 +51,54 @@ class ApplicationController < ActionController::Base
     unless @user
       render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
     end
-    
+
     unless Role.find_by_user_and_client_id(@user.id, @client.id)
-      render :status => :not_found, :json => "User has never logged into this client service before.".to_json and return 
+      render :status => :not_found, :json => "User has never logged into this client service before.".to_json and return
     end
   end
- 
+
   def ensure_person_logout
     if @user
       render :status => :conflict, :json => "You must logout before you can login or register".to_json and return
     end
   end
-  
+
   def ensure_client_login
     unless @client
       render :status => :unauthorized, :json => "Please login as a client to continue".to_json and return
     end
   end
- 
+
   def ensure_client_logout
     if @client
       render :status => :conflict, :json => "You must logout client before you can login".to_json and return
     end
   end
-  
+
   def ensure_same_as_logged_person(target_person_id)
     return @user && target_person_id == @user.id
   end
-  
+
   def log
     request.extend(LoggingHelper)
-    
+
     logger.info("  Session: " + request.to_json({ :session => @application_session }))
-    logger.info("  Headers: " + request.headers.except("RAW_POST_DATA").to_json)
+#    logger.info("  Headers: " + request.headers.inspect)
 
     saved_to_ressi = ""
-    
+
     # Trying to save the log data also to Ressi
     begin
       if RESSI_URL
         cos_event = CachedCosEvent.create({
                                             :user_id =>        @user ? @user.id : nil,
-                                            :application_id => @client ? @client.id : nil, 
+                                            :application_id => @client ? @client.id : nil,
                                             :cos_session_id => session[:cos_session_id],
-                                            :ip_address =>     request.remote_ip, 
-                                            :action =>         controller_class_name + "\#" + action_name, 
-                                            :parameters =>     respond_to?(:filter_parameters) ? 
-                                            filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller 
-                                            :return_value =>   @_response.status, 
+                                            :ip_address =>     request.remote_ip,
+                                            :action =>         controller_class_name + "\#" + action_name,
+                                            :parameters =>     respond_to?(:filter_parameters) ?
+                                            filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller
+                                            :return_value =>   @_response.status,
                                             :headers =>        request.headers.except("RAW_POST_DATA").to_json
                                           })
         saved_to_ressi = cos_event.valid?
@@ -112,25 +112,25 @@ class ApplicationController < ActionController::Base
     logger.info { "Session DB id:  #{session[:cos_session_id]}   Ressi: #{saved_to_ressi}" }
 
   end
-  
+
   def set_correct_content_type
-    if params["format"] 
-      response.content_type = Mime::Type.lookup_by_extension(params["format"].to_s).to_s 
+    if params["format"]
+      response.content_type = Mime::Type.lookup_by_extension(params["format"].to_s).to_s
     end
   end
-  
+
   #this should be done to all stored params (from Kassi etc.) because Rails seems to mess up parsing utf8 charas encoded in \\u00e4 like form
   def fix_utf8_characters(parameter_hash)
     return HashWithIndifferentAccess.new(JSON.parse(parameter_hash.to_json.gsub(/\\\\u/,'\\u')))
   end
-  
+
   def get_random_string
     chars_for_key = [('a'..'z'),('A'..'Z'),(0..9)].map{|i| i.to_a}.flatten
     return (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
   end
-  
+
   protected
- 
+
   def maintain_session_and_user
     if session[:cos_session_id]
       if @application_session = Session.find_by_id(session[:cos_session_id])
@@ -143,7 +143,7 @@ class ApplicationController < ActionController::Base
       end
     else
       #logger.debug "NO SESSION:" + session[:cos_session_id]
-    end 
+    end
   end
 
   #Feedback functionality
@@ -169,5 +169,5 @@ class ApplicationController < ActionController::Base
   def set_up_feedback_form
     @feedback = Feedback.new
   end
-  
+
 end
