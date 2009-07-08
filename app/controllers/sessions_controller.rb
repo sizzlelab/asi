@@ -50,12 +50,26 @@ class SessionsController < ApplicationController
     if @session.save
       if (! @session.person_match) && (params[:username] || params[:password])
         # inserted username, password -pair is not found in database
-        if (params[:pt])
-          # no destroying of session. Password is missing but pt is provided
-          # ONLY FOR TESTING PERIOID :)
-          @session.person_match = Person.find_by_username(params[:username])
-          @session.person_id = @session.person_match.id
-          @session.save
+        
+        if (params[:pt]) # CAS Proxy Ticket
+          conf = Hash.new()
+          cas_logger = CASClient::Logger.new(RAILS_ROOT+'/log/cas.log')
+          cas_logger.level = Logger::DEBUG
+          conf[:cas_base_url] = CAS_BASE_URL
+          conf[:validate_url] = conf[:cas_base_url] + '/proxyValidate'
+          conf[:logger] = cas_logger
+          cas_client = CASClient::Client.new(conf) 
+          st = CASClient::ServiceTicket.new(params[:pt], "#{request.protocol}#{request.env['HTTP_HOST']}", false)
+          st_resp = cas_client.validate_proxy_ticket(st)
+          
+          if st_resp.is_valid?
+            @session.person_match = Person.find_by_username(params[:username])
+            @session.person_id = @session.person_match.id
+            @session.save
+          else
+            @session.destroy
+          end
+          
         else
           @session.destroy
           if ui_mode
@@ -66,6 +80,7 @@ class SessionsController < ApplicationController
           end
         end
       end
+      
       if VALIDATE_EMAILS && PendingValidation.find_by_person_id(@session.person_id)
          @session.destroy
          if ui_mode
