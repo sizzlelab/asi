@@ -17,7 +17,6 @@ class LocationsController < ApplicationController
   end
 
   def update
-    puts "Update:"
     # The logged user can change only her own location...
     if ! ensure_same_as_logged_person(params['user_id'])
       if !params['username'] and !params['password'] and !params['location_security_token']
@@ -34,8 +33,6 @@ class LocationsController < ApplicationController
       end
       
       #...unless security token is given 
-      puts params['location_security_token']
-      puts Role.find_by_location_security_token(params['location_security_token']).inspect
       role = Role.find_by_location_security_token(params['location_security_token'])
       if !role
         render :status => :forbidden, :json => "Forbidden entry." and return
@@ -71,7 +68,6 @@ class LocationsController < ApplicationController
   
   def fetch_location_security_token 
     role = @user.roles.find_by_client_id(@client.id).first
-    puts role.inspect
     render :status => :ok, :json => { :location_security_token => role.location_security_token }.to_json
   end
   

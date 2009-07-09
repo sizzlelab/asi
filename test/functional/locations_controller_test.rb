@@ -74,9 +74,6 @@ class LocationsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     security_token = json["location_security_token"]
     
-    puts "Test_update_with_security_token:"
-    puts security_token
-    
     put :update, {:latitude => -24.804007068817, 
                   :longitude => -12.804007068817, 
                   :accuracy => 12,
@@ -84,8 +81,6 @@ class LocationsControllerTest < ActionController::TestCase
                   :format => "json" ,
                   :location_security_token => security_token},
                  {:cos_session_id => sessions(:session1).id}
-    
-    puts Role.find_by_location_security_token(security_token).inspect
     
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
