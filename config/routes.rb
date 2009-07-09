@@ -124,7 +124,7 @@ ActionController::Routing::Routes.draw do |map|
                                              :put => 'update',
                                              :post => 'update'
   
-  map.resource 'people/:user_id/@location/@location_security_token', :controller => 'locations',
+  map.resource '/people/:user_id/@location/@location_security_token', :controller => 'locations',
                                                                      :get => 'fetch_location_security_token'
 
   map.resource '/people/:user_id/@transactions/transactions.xml', :controller => 'transactions',
