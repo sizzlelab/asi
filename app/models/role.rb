@@ -26,9 +26,11 @@ class Role < ActiveRecord::Base
   end
   
  # Creates location security token
-  def create_location_security_token
+  def location_security_token
     #Creates new location security token if it is missing
-    self.update_attributes(:location_security_token => UUID.timestamp_create.to_s) unless self.location_security_token
+    self.update_attributes(:location_security_token => UUID.timestamp_create.to_s) unless self[:location_security_token]
+    
+    return self[:location_security_token]
   end
   
   def location_security_token=(value)

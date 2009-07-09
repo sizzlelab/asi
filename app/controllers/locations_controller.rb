@@ -5,6 +5,7 @@ class LocationsController < ApplicationController
   USER_UPDATEABLE_FIELDS = %w(longitude latitude accuracy label)
   
   before_filter :ensure_person_login, :only => :fetch_location_security_token
+  before_filter :ensure_client_login, :only => :update
   
   def get
     @location = Location.find_by_person_id(params['user_id'])
@@ -70,7 +71,6 @@ class LocationsController < ApplicationController
   
   def fetch_location_security_token 
     role = @user.roles.find_by_client_id(@client.id).first
-    role.create_location_security_token unless role.location_security_token
     puts role.inspect
     render :status => :ok, :json => { :location_security_token => role.location_security_token }.to_json
   end
