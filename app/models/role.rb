@@ -37,4 +37,8 @@ class Role < ActiveRecord::Base
     self[:location_security_token] ||= value
   end
 
+  def find_by_location_security_token_and_client_id(token, client_id)
+    role = Role.find_by_location_security_token(token)
+    return role if role.client_id == client_id
+  end
 end
