@@ -5,7 +5,7 @@ class LocationsController < ApplicationController
   USER_UPDATEABLE_FIELDS = %w(longitude latitude accuracy label)
   
   before_filter :ensure_person_login, :only => :fetch_location_security_token
-  before_filter :ensure_client_login, :only => :update
+  #before_filter :ensure_client_login, :only => :update, #TODO Add this when SISSI is corrected
   
   def get
     @location = Location.find_by_person_id(params['user_id'])
@@ -33,15 +33,16 @@ class LocationsController < ApplicationController
       end
       
       #...unless security token is given 
-      role = Role.find_by_location_security_token(params['location_security_token'])
-      if !role
-        render :status => :forbidden, :json => "Forbidden entry." and return
+      role = Role.find_by_location_security_token_and_client_id(params['location_security_token'], @client.id) if params['location_security_token']
+      if !role and !person
+        render :status => :forbidden and return
       end
     end
     
-    user_id = params['user_id'] || role.person_id
+    user_id = params['user_id'] || role.person_id unless person
+    
     if !user_id
-      user_id = person.id
+      user_id = person.id 
     end
     
     @location = Location.find_by_person_id(user_id)
