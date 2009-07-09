@@ -1,8 +1,6 @@
 class Role < ActiveRecord::Base
   belongs_to :person
   belongs_to :client
-
-  attr_protected :location_security_token
   
   validates_presence_of :title, :client_id, :person_id
 
@@ -27,12 +25,14 @@ class Role < ActiveRecord::Base
     Role.find(:all, :conditions => "person_id = '#{user_id}'")
   end
   
- # Creates and returns location security token
-  def location_security_token
+ # Creates location security token
+  def create_location_security_token
     #Creates new location security token if it is missing
-    self[:location_security_token] ||= UUID.timestamp_create
-    
-    return self[:location_security_token]
-  end                    
+    self.update_attributes(:location_security_token => UUID.timestamp_create.to_s) unless self.location_security_token
+  end
+  
+  def location_security_token=(value)
+    self[:location_security_token] ||= value
+  end
 
 end
