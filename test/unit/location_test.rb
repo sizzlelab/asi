@@ -17,10 +17,12 @@ class LocationTest < ActiveSupport::TestCase
     loc = Location.new( :person_id => 1,
                   :latitude => 124.852395
                   )
+
     assert ! loc.valid?
     loc = Location.new( :person_id => 1,
                   :longitude => -184.852395
                   )
     assert ! loc.valid?
   end
+  
 end

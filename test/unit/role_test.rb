@@ -20,5 +20,17 @@ class RoleTest < ActiveSupport::TestCase
     assert ! roles(:missing_client_id).valid?
     assert ! roles(:missing_title).valid?
   end
+  
+  def test_location_security_token
+    role = roles(:valid_user)
+    assert role.valid?
+    
+    security_token = role.location_security_token
+    assert security_token
+    
+    security_token_confirm = role.location_security_token
+    
+    assert_equal security_token, security_token_confirm
+  end
 
 end

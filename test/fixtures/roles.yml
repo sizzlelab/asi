@@ -2,8 +2,8 @@
 
 valid_user:
   id: 1
-  person_id: abc
-  client_id: def
+  person_id: 1
+  client_id: 10
   title: user
 
 valid_moderator:

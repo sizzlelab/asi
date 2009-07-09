@@ -1,8 +1,10 @@
-eclass LocationsController < ApplicationController
+class LocationsController < ApplicationController
 
   before_filter :change_me_to_userid
   
   USER_UPDATEABLE_FIELDS = %w(longitude latitude accuracy label)
+  
+  before_filter :ensure_person_login, :only => :fetch_location_security_token
   
   def get
     @location = Location.find_by_person_id(params['user_id'])
@@ -21,13 +23,20 @@ eclass LocationsController < ApplicationController
       end
 
       # ...unless the correct username and password is given
+      # TODO: DEPRECATED, REMOVE WHEN SISSI IS MODIFIED
       person = Person.find_by_username_and_password(params['username'], params['password'])
       if !person or (params['user_id'] && params['user_id'] != person.id)
         render :status => :unauthorized, :json => "Password and username didn't match the person.".to_json and return
       end
+      
+      #...unless security token is given 
+      role = Role.find_by_location_security_token(params[:location_security_token])
+      if !role
+        render :status => :forbidden, :json => "Forbidden entry." and return
+      end
     end
     
-    user_id = params['user_id']
+    user_id = params['user_id'] || role.person_id
     if !user_id
       user_id = person.id
     end
@@ -54,6 +63,12 @@ eclass LocationsController < ApplicationController
     end
   end
   
+  def fetch_location_security_token
+    puts @user.inspect
+    puts @user.roles.find(:all).inspect
+    render :status => :ok, :json => { :location_security_token => @user.roles.find_by_client_id(@client.id) }.to_json
+  end
+  
   private
   
   def change_me_to_userid
@@ -67,6 +82,5 @@ eclass LocationsController < ApplicationController
       end
     end
   end
-
-
+  
 end
