@@ -1,4 +1,4 @@
-class LocationsController < ApplicationController
+eclass LocationsController < ApplicationController
 
   before_filter :change_me_to_userid
   
