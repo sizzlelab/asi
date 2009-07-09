@@ -2,11 +2,15 @@ class Role < ActiveRecord::Base
   belongs_to :person
   belongs_to :client
 
+  attr_protected :location_security_token
+  
   validates_presence_of :title, :client_id, :person_id
 
   ADMINISTRATOR = "administrator"
   MODERATOR = "moderator"
   USER = "user"
+  
+  validates_uniqueness_of :location_security_token, :allow_nil => true
 
   validates_inclusion_of :title, :in => [ADMINISTRATOR, MODERATOR, USER], 
   :message => "Role title {{value}} is not valid."
@@ -22,5 +26,13 @@ class Role < ActiveRecord::Base
   def self.find_by_user_id(user_id)
     Role.find(:all, :conditions => "person_id = '#{user_id}'")
   end
+  
+ # Creates and returns location security token
+  def location_security_token
+    #Creates new location security token if it is missing
+    self[:location_security_token] ||= UUID.timestamp_create
+    
+    return self[:location_security_token]
+  end                    
 
 end

@@ -66,6 +66,28 @@ class LocationsControllerTest < ActionController::TestCase
     assert_equal test_label, Person.find_by_id( people(:valid_person).id).location.label
   end
   
+  def test_update_with_security_token
+      
+    get :fetch_location_security_token, { :user_id => people(:valid_person).id, :format => "json"},
+                                        { :cos_session_id => sessions(:session1).id }
+    assert_response :ok
+    json = JSON.parse(@response.body)
+    security_token = json[:location_security_token]
+    
+    put :update, {:latitude => -24.804007068817, 
+                  :longitude => -12.804007068817, 
+                  :accuracy => 12,
+                  :label => "Testing",
+                  :format => "json" ,
+                  :location_security_token => security_token},
+                 {:cos_session_id => sessions(:session1).id}
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    
+    
+    
+  end
+  
   # Partial location update no longer possible as of version 2009-02-26:
   
   #def test_update_partial_location
