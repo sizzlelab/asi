@@ -16,21 +16,26 @@ class LocationsController < ApplicationController
   end
 
   def update
+    puts "Update:"
     # The logged user can change only her own location...
     if ! ensure_same_as_logged_person(params['user_id'])
-      if !params['username'] or !params['password']
+      if !params['username'] and !params['password'] and !params['location_security_token']
         render :status => :forbidden and return
       end
-
+          
       # ...unless the correct username and password is given
       # TODO: DEPRECATED, REMOVE WHEN SISSI IS MODIFIED
-      person = Person.find_by_username_and_password(params['username'], params['password'])
-      if !person or (params['user_id'] && params['user_id'] != person.id)
-        render :status => :unauthorized, :json => "Password and username didn't match the person.".to_json and return
+      if params['username'] or params['password']
+        person = Person.find_by_username_and_password(params['username'], params['password'])
+        if !person or (params['user_id'] && params['user_id'] != person.id)
+          render :status => :forbidden, :json => "Password and username didn't match the person.".to_json and return
+        end
       end
       
       #...unless security token is given 
-      role = Role.find_by_location_security_token(params[:location_security_token])
+      puts params['location_security_token']
+      puts Role.find_by_location_security_token(params['location_security_token']).inspect
+      role = Role.find_by_location_security_token(params['location_security_token'])
       if !role
         render :status => :forbidden, :json => "Forbidden entry." and return
       end
@@ -63,10 +68,11 @@ class LocationsController < ApplicationController
     end
   end
   
-  def fetch_location_security_token
-    puts @user.inspect
-    puts @user.roles.find(:all).inspect
-    render :status => :ok, :json => { :location_security_token => @user.roles.find_by_client_id(@client.id) }.to_json
+  def fetch_location_security_token 
+    role = @user.roles.find_by_client_id(@client.id).first
+    role.create_location_security_token unless role.location_security_token
+    puts role.inspect
+    render :status => :ok, :json => { :location_security_token => role.location_security_token }.to_json
   end
   
   private

@@ -3,7 +3,7 @@
 valid_user:
   id: 1
   person_id: 1
-  client_id: 10
+  client_id: 1
   title: user
 
 valid_moderator:
