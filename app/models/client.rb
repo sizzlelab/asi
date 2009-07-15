@@ -2,6 +2,8 @@ class Client < ActiveRecord::Base
   include AuthenticationHelper
   usesguid
 
+  has_many :channels
+
   attr_reader :password
 
   validates_presence_of [:name, :encrypted_password]

@@ -37,7 +37,7 @@ dash_name:
   person_id: 1234
 
 <% 20.times do |n| %>
-<%="#{n}:
+<%="name#{n}:
   id: #{n + 4}
   person_id: #{n}aa
   given_name: Pekka

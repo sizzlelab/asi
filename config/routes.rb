@@ -206,16 +206,21 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resource '/channels/:channel_id/', :controller => 'channels',
                                          :get => 'show',
-                                         :put => 'modify',
+                                         :put => 'edit',
                                          :delete => 'delete'
   
-  map.resource '/channels/:channel_id/@messages', :controller => 'channels',
-                                                  :get => 'list_messages',
-                                                  :post => 'post_message'
+  map.resource '/channels/:channel_id/@subscriptions/', :controller => 'channels',
+                                                        :get => 'list_subscriptions',
+                                                        :post => 'subscribe',
+                                                        :delete => 'unsubscribe'
   
-  map.resource '/channels/:channel_id/@messages/:msg_id', :controller => 'channels',
-                                                          :get => 'show_message',
-                                                          :delete => 'delete_message'
+  map.resource '/channels/:channel_id/@messages', :controller => 'messages',
+                                                  :get => 'list',
+                                                  :post => 'create'
+  
+  map.resource '/channels/:channel_id/@messages/:msg_id', :controller => 'messages',
+                                                          :get => 'show',
+                                                          :delete => 'delete'
   
   # End channels
   

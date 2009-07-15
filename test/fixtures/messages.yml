@@ -7,33 +7,37 @@
 #   column: value
 
 testiviesti1:
-  id: message1
+  id: 1
+  guid: dsgasdhgashgah
   title: Testi1
   content_type: text/plain
   body: Tämä on testiviesti1
   poster_id: 1
-  channel_id: channel1
+  channel_id: 1
   
 testiviesti2:
-  id: message2
+  id: 2
+  guid: pgjaspgjwpoEGHpowegh
   title: Testi2
   content_type: text/plain
   body: Tämä on testiviesti2
   poster_id: 1
-  channel_id: channel1
+  channel_id: 1
 
 testiviesti3:
-  id: message3
+  id: 3
+  guid: psihgoeIHGoihwg
   title: Testi3
   content_type: text/plain
   body: Tämä on testiviesti3
   poster_id: 1
-  channel_id: channel1
+  channel_id: 1
 
 testiviesti4:
-  id: message4
+  id: 4
+  guid: gjoaehigoaiwhrgoahrwg
   title: Testi4
   content_type: text/plain
   body: Tämä on testiviesti4
   poster_id: 1
-  channel_id: channel2
+  channel_id: 2
