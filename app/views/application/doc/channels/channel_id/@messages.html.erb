@@ -4,11 +4,7 @@
 
 <%
 methods = [ { :name => "GET", 
-							:description => "Show messages.",
-							:parameters => [ { :content => "If true, returns full messages as array, otherwise only message ids."},
-															 { :num => "Number of messages to return."},
-															 { :start_index => "Return num messages counting from :start_index."}
-														 ],
+							:description => "Show messages. Currently lists all of the channel's messages' ids.",
 							:returns => { "200" => "Returns messages.",
 														"403" => "User has no access to channel.",
 								 				 		"404" => "Channel not found." } 
@@ -16,12 +12,16 @@ methods = [ { :name => "GET",
 						{	:name => "POST",
 							:description => "Post a message to channel",
 							:parameters => [ { :title => "Message title" },
-															 { :content_type => "Message's content type. Only text/* are currently supported."},
-															 { :content => "Message content." }
+															 { :body => "Message content." },
+															 { :attachment => "Attachment. Support for other types than urls is nonexistent."},
+															 { :content_type => "Message's content type."},
+															 { :reference_to => "Message id that this message is a reply to."}
+
 															],
 							:returns => { "201" => "Created. Response includes created message.",
 								 						"400" => "Malformed request.",
-								 						"403" => "User has no rights to post to channel."} 
+								 						"403" => "User has no rights to post to channel.",
+														"404" => "Channel not found."} 
 							} ]
 
 %>

@@ -29,3 +29,13 @@ six:
   person_id: 5
   contact_id: 1
   status: 'pending'
+  
+seven:
+  person_id: 1
+  contact_id: 'aeCd5wrNir3BOQab_ZvnhG'
+  status: 'accepted'
+  
+eight:
+  person_id: 'aeCd5wrNir3BOQab_ZvnhG'
+  contact_id: 1
+  status: 'accepted'

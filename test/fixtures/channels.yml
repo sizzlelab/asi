@@ -7,18 +7,28 @@
 #   column: value
 
 julkikanava:
-  id: channel1
+  id: 1
+  guid: psodjgpashgapoih
   name: Julkikanava
   description: Tämä testaa kanavia
   owner_id: 1
-  type: public
+  channel_type: public
+  creator_app_id: 1
   
-privaattikanava:
-  id: channel2
-  name: Privaattikanava
-  description: Tämä testaa privaattikanavia
-  owner_id: test
-  type: private
+ryhmakanava:
+  id: 2
+  guid: sdoghasdoghaogh
+  name: Ryhmäkanava
+  description: Tämä testaa ryhmäkanavia
+  owner_id: 5
+  channel_type: group
+  creator_app_id: 1
   
-invaliidikanava:
-  name: invalid
+kaverikanava:
+  id: 3
+  guid: igjasopihgaowrghaowrigh
+  name: Kaverikanava
+  description: Tämä testaa kaverikanavia
+  owner_id: 1
+  channel_type: friend
+  creator_app_id: 1

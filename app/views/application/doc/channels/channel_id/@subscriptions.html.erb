@@ -1,0 +1,41 @@
+<%= doc_title '/channels/&lt;channel_id&gt;/@subscriptions' %>
+
+<p>A resource for subscriptions to a channel in OtaSizzle.</p>
+
+<%
+methods = [ { :name => "GET", 
+							:description => "List subscriptions.",
+							:returns => { "200" => "Returns group and user subscriptions.",
+														"401" => "Login required.",
+														"403" => "User has no access to channel.",
+								 				 		"404" => "Channel not found." } 
+						}, 
+						{	:name => "POST",
+							:description => "Add subscriptions. Post without parameters subscribes current user to the channel. Only channel owner can add other people or groups as subscribers.",
+							:parameters => [ { :user_subscriptions => "Array of user id's.",  },
+															 { :group_subscriptions => "Array of group id's."}
+															],
+							:returns => { "201" => "Succesfully subscribed..",
+								 						"401" => "Login required.",
+								 						"403" => "User has no rights to post to channel."} 
+							},
+							{
+								:name => "DELETE",
+								:description => "Remove subscriptions. If no parameters are given, unsubscribe current user.",
+								:parameters => [ { :user_subscriptions => "Array of user id's.",  },
+																 { :group_subscriptions => "Array of group id's."}
+																],
+								:returns => { "200" => "Succesfully unsubscribed..",
+									 						"401" => "Login required.",
+									 						"403" => "User has no rights to post to channel."}
+							} ]
+
+%>
+
+<%= render :partial => "doc/methods", :locals => { :methods => methods } %>
+
+<h2>Subresources</h2>
+
+<ul>
+	<li><a href="doc/channels/channel_id/@messages/msg_id"><tt>/channels/&lt;channel_id&gt;/@messages/&lt;msg_id&gt;</tt></a> &ndash; Single message</li>
+</ul>

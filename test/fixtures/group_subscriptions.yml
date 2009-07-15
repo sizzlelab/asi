@@ -7,9 +7,9 @@
 #   column: value
 
 g_subscription1:
-  channel_id: channel1
+  channel_id: 1
   group_id: yure23t
   
 g_subscription2:
-  channel_id: channel2
+  channel_id: 2
   group_id: testgroupid
