@@ -1,7 +1,7 @@
 class ChannelAndMessageGuidsAndIds < ActiveRecord::Migration
   def self.up
     add_column :channels, :guid, :string
-    change_column :channels, :id, :integer
+    change_column :channels, :id, :integer, { :default => "0" }
     change_column :group_subscriptions, :channel_id, :integer
     change_column :user_subscriptions, :channel_id, :integer
     change_column :messages, :channel_id, :integer
