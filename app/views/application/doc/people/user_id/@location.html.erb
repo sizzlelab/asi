@@ -7,13 +7,12 @@
 
                  :description => "Sets the location of the user. If only some of the fields are updated, rest will be set to null. The modified user must be logged in OR specify username and password.", 
 
-                 :parameters => [ { :username  => "<p class = 'deprecated'>DEPRECATED, use location_security_token <br/> Username of the person (if not otherwise logged in)</p>" },
-								  { :password  => "<p class = 'deprecated'>DEPRECATED, use location_security_token <br/> Password associated to the username (if not otherwise logged in)</p>" },
+                 :parameters => [ { :username  => "Username of the person (if not otherwise logged in)" },
+								  { :password  => "Password associated to the username (if not otherwise logged in)" },
  								  { :latitude  => "Latitude coordinates in Decimal Degree format" },
                                   { :longitude => "Longitude coordinate sin Decimal Degree format" },
                                   { :label     => "Text label given to current location" },
                                   { :accuracy  => "Accuracy of the location"},
-                                  { :location_security_token => "Security token for updating location without logging in."},
                                 ] },
               {
 				:name => "POST",
@@ -27,11 +26,3 @@
  %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
-
-<h2> Subresources </h2>
-
-<ul>
-  <li>
-    <a href="doc/people/user_id/@location/@location_security_token"><tt>/people/&lt;user_id&gt;/@location/@location_security_token</tt></a> &ndash; a client and user specfic security token for updating location without logging the user in
-  </li>
-</ul>
