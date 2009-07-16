@@ -153,7 +153,7 @@ class GroupsControllerTest < ActionController::TestCase
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert json["entry"]
-    assert_equal(Group.all_public.count, json["entry"].size)
+    assert_equal(Group.all_public.size, json["entry"].size)
   end
 
   def test_search
