@@ -33,9 +33,18 @@ module ActiveRecord
           def set_npuuid
             self.guid ||= UUID.timestamp_create().to_s22
           end
-        end        
+
+          def to_json
+            content = self.attributes
+            content['id'] = content['guid']
+            content.delete('guid')
+            return content.to_json
+          end
+
+        end
         
       end
+    
       
     end
   end
