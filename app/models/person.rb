@@ -243,16 +243,18 @@ class Person < ActiveRecord::Base
     return person_hash.to_json(*a)
   end
 
-  def self.find_with_ferret(query, options={ :limit => :all }, search_options={})
-    if query && query.length > 0
-      query = "*#{query.downcase}*"
-      query.gsub!("-", " ")
-    else
-      query = ""
-    end
-    names = PersonName.find_by_contents(query, options, search_options)
-#    names = PersonName.find_with_ferret(query, options, search_options)
-    return names.collect{|name| name.person}.compact
+  def self.search(query, options={ :limit => :all }, search_options={})
+
+    # if query && query.length > 0
+    #   query = "*#{query.downcase}*"
+    #   query.gsub!("-", " ")
+    # else
+    #   query = ""
+    # end
+
+    return [] if query == ""
+
+    PersonName.search(query).collect{|name| name.person}.compact
   end
 
   def moderator?(client)

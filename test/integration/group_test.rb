@@ -18,6 +18,17 @@ class GroupsTest < ActionController::IntegrationTest
     end
   end
 
+  def test_create_open_group_and_join_by_searching
+    new_session do |ossi|
+      ossi.logs_in_with( {:username => people(:test).username, :password => "testi", :app_name => clients(:one).name, :app_password => "testi"})
+      group_ids = ossi.searches_groups_with "tkk"
+      ossi.joins_group(people(:test).id, group_ids[0])
+      ossi.leaves_group(people(:test).id, group_ids[0])
+      ossi.logs_out
+    end
+  end
+
+
   def test_closed_group
     new_session do |ossi|
       ossi.logs_in_with( { :username => people(:valid_person).username, :password => "testi", :app_name => clients(:one).name, :app_password => "testi" })
@@ -28,7 +39,7 @@ class GroupsTest < ActionController::IntegrationTest
 
       ossi.logs_in_with( {:username => people(:test).username, :password => "testi", :app_name => clients(:one).name, :app_password => "testi"})
       ossi.joins_group(people(:test).id, group_id)
-      ossi.logs_out     
+      ossi.logs_out
 
       ossi.logs_in_with( { :username => people(:valid_person).username, :password => "testi", :app_name => clients(:one).name, :app_password => "testi" })
       requests = ossi.lists_membership_requests(group_id)
@@ -48,7 +59,7 @@ class GroupsTest < ActionController::IntegrationTest
       invites = ossi.lists_membership_invites(people(:test).id, group_id)
       assert_equal 1, invites.size
       ossi.joins_group(people(:test).id, invites[0])
-      ossi.logs_out     
+      ossi.logs_out
     end
   end
 

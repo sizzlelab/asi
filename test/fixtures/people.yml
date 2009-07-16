@@ -71,6 +71,13 @@ name_contains_dash:
   salt: ZB32fj38ueBG
   email: sepi@example.com
 
+name_contains_dvdvkkoset:
+  id: 2899
+  username: jarno
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  salt: ZB32fj38ueBG
+  email: jarno@example.com
+
   #encrypted_password 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c is "testi" in readable form
 <% 20.times do |n| %>
 <%="person#{n}:
