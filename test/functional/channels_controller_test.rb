@@ -33,14 +33,16 @@ class ChannelsControllerTest < ActionController::TestCase
     post :create, {:format => "json", :name => "testikanava", :description => "testausta", 
                    :type => "public"}, { :cos_session_id => sessions(:session1).id }
     assert_response :created, @response.body
+    print @response.body
     json = JSON.parse(@response.body)
+    print json.inspect
     assert_equal json["channel"]["name"], "testikanava"
     
     post :create, {:format => "json", :id => "gfpasdjga", :name => "toinen testi", :description => nil, :type => nil}, { :cos_session_id => sessions(:session1).id}
     assert_response :created, @response.body
     json = JSON.parse(@response.body)
     assert_equal json["channel"]["channel_type"], "public"
-    assert_equal json["channel"]["guid"], "gfpasdjga"
+    assert_equal json["channel"]["id"], "gfpasdjga"
     
     post :create, {:format => "json", :id => nil, :type => "group", :name => nil, :group_subscriptions => groups(:closed).id}, { :cos_session_id => sessions(:session1).id }
     assert_response :created, @response.body
