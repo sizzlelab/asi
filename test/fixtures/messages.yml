@@ -30,7 +30,7 @@ testiviesti3:
   title: Testi3
   content_type: text/plain
   body: Tämä on testiviesti3
-  poster_id: 1
+  poster_id: 3
   channel_id: 1
 
 testiviesti4:

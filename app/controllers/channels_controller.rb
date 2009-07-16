@@ -197,42 +197,4 @@ class ChannelsController < ApplicationController
     render :status => :ok and return 
   end
 
-  private
-  
-  def can_read_channel?(user, channel)
-    if channel.channel_type == "public"
-      return true
-    end 
-    if user
-      if channel.channel_type == "friend"
-        return true if user.contacts.find_by_id(channel.owner.id)
-      end
-      if channel.channel_type == "group"
-        channel.group_subscribers.each do |subscription|
-          return true if user.groups.find_by_id(subscription.id)
-        end
-      end
-    end
-    return false 
-  end
-  
-  def ensure_channel_owner
-    if !ensure_same_as_logged_person(@channel.owner_id)
-      render :status => :forbidden and return
-    end 
-  end
-  
-  def ensure_can_read_channel
-    if !can_read_channel?(@user, @channel)
-      render :status => :forbidden and return
-    end
-  end
-  
-  def get_channel
-    @channel = Channel.find_by_guid( params[:channel_id] )
-    if !@channel
-      render :status => :not_found and return
-    end
-  end  
-
 end
