@@ -38,7 +38,7 @@ module ActiveRecord
             content = self.attributes
             content['id'] = content['guid']
             content.delete('guid')
-            return content.to_json
+            return {self.class.name.downcase => content}.to_json
           end
 
         end
