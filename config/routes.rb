@@ -4,6 +4,10 @@ module COSRoutes
     connect "doc" + route, :controller => 'application',
                            :format => 'html',
                            :action => 'doc'
+    connect "api" + route, :controller => 'api',
+                           :format => "html",
+                           :action => 'api'
+                           
   end
 
   def resource(route, options)
@@ -235,6 +239,9 @@ ActionController::Routing::Routes.draw do |map|
   map.documentation '/appdata'
   
   map.documentation '/tutorial'
+  
+ # map.apidoc '/api', :controller => 'api', :get => 'index', :format => "html"
+ # map.peopleapi '/api/people', :controller => 'api',:action => 'people' ,:get => 'people', :format => 'html'
 
   map.connect '/doc', :controller => 'application', :action => 'index'
   

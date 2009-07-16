@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/classes/apidoc_generator.rb'
+require File.dirname(__FILE__) + '/classes/resource_doc.rb'
+
+# define your resources here
+resources = [   ResourceDoc.new("people", "/people", "people_controller.rb" )]
+
+# generate the apidoc
+ApidocGenerator.new(resources)

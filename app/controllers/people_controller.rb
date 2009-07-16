@@ -5,6 +5,15 @@ class PeopleController < ApplicationController
   before_filter :ensure_person_logout, :only  => [:create, :recover_password]
   #before_filter :fix_utf8_characters, :only => [:create, :update, :index]
 
+=begin rapidoc
+url:: /people
+method:: GET
+access:: FREE
+return:: [JSON|RETURN CODE: 200] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you') 
+param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all characters in the search term are interpreted as literals rather than special regexp characters.
+
+Finds users based on their (real) names.
+=end
   def index
     @people = Person.find_with_ferret(params['search'])
     @people_hash = @people.collect do |person|
@@ -12,6 +21,16 @@ class PeopleController < ApplicationController
     end
   end
 
+=begin rapidoc
+url:: /people
+method:: POST
+access:: FREE
+return_code:: 200 - OK
+return:: [JSON] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you') 
+param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all characters in the search term are interpreted as literals rather than special regexp characters.
+
+Finds users based on their (real) names.
+=end
   def show
     @person = Person.find_by_id(params['user_id'])
     if ! @person

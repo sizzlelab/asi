@@ -1,0 +1,46 @@
+Rails Api Doc Generator
+Author: JPM van der Meer
+=======================
+With API DOC one can generate code for a Restful Rails API. 
+It generates a API controller, by simply invoking... ./generate. It parses the controllers you specify, and generates a ApiController with appropriate views for it. This makes it very easy to document our Rest API. For methods you use, and according to ERB templates it generates the view for you. It doesn't parse your routes.rb, that was not needed for us, but may be a nice extension for it.
+
+=INSTALL
+Please copy this directory into the rails script directory and pass arguments to RAPIDoc into the file ./generate. Then put documentation in your RESFul controllers and start generating api documentation, it will be created into structure.
+
+
+==Templates
+Templates can be used for tuning your method generation and index.html.erb.
+
+==Structure
+In the structure folder one can setup some additional views to be used for the apidoc controller generator.
+
+EXAMPLE Class documentation
+=begin apidoc
+name:: /projects
+json:: <%=Project.find(:first).to_json %>
+xml:: <%=Project.find(:first).to_xml %>
+
+This resource can be used to show edit and list projects. A project is a one floorplanner. A project
+has multiple floors, which can contain multiple designs. 
+=end
+
+
+EXAMPLE Method documentation
+
+=begin apidoc
+url:: /projects
+method:: GET
+access:: FREE
+return:: [JSON|XML] - some project  
+param:: page:int - the page
+param:: per_page:int - max items per page
+
+Get a list of projects. This method uses pagination. If you want to retreive project 1-10 for example:
+/projects?page=1&per_page=10.
+=end
+
+
+
+
+ 
+
