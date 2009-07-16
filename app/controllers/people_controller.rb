@@ -15,9 +15,9 @@ param:: search - the search term. Every user whose name matches the regular expr
 Finds users based on their (real) names.
 =end
   def index
-    @people = Person.find_with_ferret(params['search'])
+    @people = PersonName.search("*" + (params['search'] || "").strip + "*")
     @people_hash = @people.collect do |person|
-      person.get_person_hash(@user)
+      person.person.get_person_hash(@user)
     end
   end
 

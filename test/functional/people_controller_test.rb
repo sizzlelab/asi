@@ -10,7 +10,6 @@ class PeopleControllerTest < ActionController::TestCase
     @controller = PeopleController.new
     @request = ActionController::TestRequest.new
     @response = ActionController::TestResponse.new
-    PersonName.rebuild_index
   end
 
   def test_index
@@ -267,12 +266,12 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_update_invalid_email
-      invalid_email = "newemail(at)oldserv.er"
-      put :update, { :user_id => people(:valid_person).id, :person => {:email => invalid_email }, :format => 'json' },
-                   { :cos_session_id => sessions(:session1).id }
-      assert_response :bad_request
-      json = JSON.parse(@response.body)
-      assert json.to_s =~ /email/i && json.to_s =~ /invalid/i
+    invalid_email = "newemail(at)oldserv.er"
+    put :update, { :user_id => people(:valid_person).id, :person => {:email => invalid_email }, :format => 'json' },
+                 { :cos_session_id => sessions(:session1).id }
+    assert_response :bad_request
+    json = JSON.parse(@response.body)
+    assert json.to_s =~ /email/i && json.to_s =~ /invalid/i
   end
 
   def test_delete
@@ -449,19 +448,24 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_search
+    Person.all.each do |p|
+      search(p.name.unstructured) if p.name
+    end
     search("Matti")
     search("matti")
     search("Kuusinen")
     search("tti")
     search("Juho Makkonen")
     search("a")
-    search("Juho.*onen", false)
+    search("Juho*onen", false)
     search("", false)
     search("stephen")
     search("Liimatta")
     search("sepi")
     search("sepi-jaakko")
     search("Sepi-Jaakko Seutula")
+    search("\"Juho Makkonen\"")
+    #search("Järnö Törnävä") # Latin-1
   end
 
   def test_routing
@@ -586,7 +590,7 @@ class PeopleControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
 
     if not should_find
-      assert_equal 0, json["entry"].length
+      assert_equal 0, json["entry"].length, "Found something with '#{search}'"
       return
     end
 
@@ -596,7 +600,6 @@ class PeopleControllerTest < ActionController::TestCase
 
     json["entry"].each do |person|
       assert_not_nil person["name"]
-      assert person["name"]["unstructured"].downcase =~ reg
       assert_not_nil(person["connection"])
       if (Person.find(sessions(:session1).person_id).contacts.include?(Person.find(person["id"])))
         assert_equal("friend", person["connection"]  )

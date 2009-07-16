@@ -21,7 +21,7 @@ class ActiveSupport::TestCase
   # don't care one way or the other, switching from MyISAM to InnoDB tables
   # is recommended.
   #
-  # The only drawback to using transactional fixtures is when you actually 
+  # The only drawback to using transactional fixtures is when you actually
   # need to test transactions.  Since your test is bracketed by a transaction,
   # any transactions started in your code will be automatically rolled back.
   self.use_transactional_fixtures = true
@@ -48,13 +48,13 @@ class ActiveSupport::TestCase
     assert !object.valid?,
     "#{object[attribute]} (length #{object[attribute].length}) " +
     "should raise a length error"
-    #TODO: better assertion for this; doesn't work now because 
+    #TODO: better assertion for this; doesn't work now because
     #error messages are modified from rails defaults
     #assert_equal correct_error_message(boundary, length), object.errors.on(attribute)
 
     # Test the boundary itself.
-    barely_valid = valid_char * length 
-    object[attribute] = barely_valid 
+    barely_valid = valid_char * length
+    object[attribute] = barely_valid
     assert object.valid?,
     "#{object[attribute]} (length #{object[attribute].length}) " +
     "should be on the boundary of validity"
@@ -62,13 +62,13 @@ class ActiveSupport::TestCase
 
   # Create an attribute that is just barely invalid.
   def barely_invalid_string(boundary, length, valid_char)
-    if boundary == :max 
+    if boundary == :max
       invalid_length = length + 1
     elsif boundary == :min
       invalid_length = length - 1
     else
       raise ArgumentError, "boundary must be :max or :min"
-    end    
+    end
     valid_char * invalid_length
   end
 
@@ -83,9 +83,11 @@ class ActiveSupport::TestCase
       raise ArgumentError, "boundary must be :max or :min"
     end
   end
-  
-  def login_as(person)
-    @request.session[:person_id] = people(person).id
+
+  def login_as(person, client=nil)
+    session = Session.new(:person => person, :client => client)
+    session.save(false)
+    @request.session[:cos_session_id] = session.id
   end
 
 end
@@ -131,7 +133,7 @@ module COSTestingDSL
   end
 
   def adds_text_to_collection(options)
-    post "/appdata/#{options[:client_id]}/@collections/#{options[:id]}", 
+    post "/appdata/#{options[:client_id]}/@collections/#{options[:id]}",
     { :title => "Sleep Tight", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." }
     assert_response :success
     json = JSON.parse(response.body)
@@ -210,12 +212,12 @@ module COSTestingDSL
     put "/people/#{options[:id]}/@avatar", options
     assert_response :success
   end
-  
+
   def creates_user_with(options)
     post "/people", {:person => options}
     assert_response :created, @response.body
   end
-  
+
   def confirms_email_with(options)
     post "/confirmation", options
     assert_response :success, @response.body
@@ -230,6 +232,12 @@ module COSTestingDSL
 
   def lists_public_groups
     get "/groups/@public"
+    assert_response :success, @response.body
+    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+  end
+
+  def searches_groups_with(query)
+    get "/groups/@public", { :query => query }
     assert_response :success, @response.body
     JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
   end

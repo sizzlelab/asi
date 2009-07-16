@@ -14,7 +14,7 @@ invalid_person_name:
 
 three:
   id: 3
-  given_name: matti
+  given_name: Matti
   family_name: k
   person_id: 3
 
@@ -35,6 +35,27 @@ dash_name:
   given_name: Sepi-Jaakko
   family_name: Seutula
   person_id: 1234
+
+dvdvkkoset:
+  id: 777
+  given_name: Järnö
+  family_name: Törnävä
+  person_id: 2899
+
+ttytot:
+  id: 1299
+  given_name: Teekkaritytot
+  person_id: 2349889
+
+not_yet_friend:
+  id: 223
+  given_name: Kake
+  person_id: 6
+
+test:
+  id: 224
+  person_id: aeCd5wrNir3BOQab_ZvnhG
+  family_name: test
 
 <% 20.times do |n| %>
 <%="name#{n}:

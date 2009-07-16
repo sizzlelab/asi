@@ -11,7 +11,7 @@ class GroupsControllerTest < ActionController::TestCase
                         write even a little longer story here to describe the purpose and the
                         ideology of the group... Ja even ääkköset should work here. :)"
       title = "testgroup (#{type})"
-      post :create, {:title => title, :type => type, 
+      post :create, {:title => title, :type => type,
         :description => description_text,
         :format => 'json'}, { :cos_session_id => sessions(:session1).id }
       assert_response :created, @response.body
@@ -21,10 +21,10 @@ class GroupsControllerTest < ActionController::TestCase
       group = Group.find(id)
       assert(group, "Created group not found. (#{type})")
       assert(group.members.include?(sessions(:session1).person), "Creator was not made member of new group (#{type})")
-      assert(group.members.first.is_admin_of?(Group.find_by_id(id)), 
+      assert(group.members.first.is_admin_of?(Group.find_by_id(id)),
              "Creator was not made admin in new group (#{type})")
       assert_equal(description_text, group.description)
-      assert_equal(sessions(:session1).person.id, group.created_by)  
+      assert_equal(sessions(:session1).person.id, group.created_by)
     end
   end
 
@@ -61,7 +61,7 @@ class GroupsControllerTest < ActionController::TestCase
     assert ! person.is_admin_of?(groups(:open)), "Removing of admin rights didn't work."
 
   end
-  
+
   def test_show
     get :show, {:group_id =>  groups(:open).id, :format => 'json'}, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
@@ -85,12 +85,12 @@ class GroupsControllerTest < ActionController::TestCase
     group = groups(:closed)
     session = sessions(:session1)
     assert session.person.is_admin_of?(group)
-    
+
     assert ! groups(:closed).has_member?(people(:friend))
 
     post :add_member, {:group_id =>  groups(:closed), :user_id => people(:friend).id, :format => 'json' },
                       { :cos_session_id => sessions(:session4).id }
-                    
+
     assert_response :accepted
 
     assert groups(:closed).pending_members.include?(people(:friend))
@@ -110,11 +110,11 @@ class GroupsControllerTest < ActionController::TestCase
      put :update_membership_status, {:group_id => groups(:closed), :user_id => people(:friend).id, :accepted => true, :format => 'json'},
                                              {:cos_session_id => sessions(:session4).id }
      assert_response :forbidden
-     
+
      assert ! groups(:closed).has_member?(people(:friend))
    end
 
-  
+
   def test_add_member
     assert ! groups(:open).has_member?(people(:friend))
     post :add_member, {:group_id =>  groups(:open).id, :user_id => people(:friend).id, :format => 'json' },
@@ -138,7 +138,7 @@ class GroupsControllerTest < ActionController::TestCase
                       { :cos_session_id => sessions(:session4).id }
     assert_response :conflict, @response.body
   end
-  
+
   def test_get_groups_of_person
     get :get_groups_of_person, {:user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
@@ -147,15 +147,35 @@ class GroupsControllerTest < ActionController::TestCase
     # check that number of groups match
     assert_equal(people(:valid_person).groups.size,json["entry"].size)
   end
-  
+
   def test_get_public_groups
     get :public_groups, { :format => 'json' }, { :cos_session_id => sessions(:client_only_session).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert json["entry"]
-    assert_equal(4, json["entry"].size)
+    assert_equal(Group.all_public.count, json["entry"].size)
   end
-  
+
+  def test_search
+    get :public_groups, { :query => "group", :format => 'json' }, { :cos_session_id => sessions(:client_only_session).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert json["entry"]
+    assert_not_equal(0, json["entry"].size)
+    json["entry"].each do |group|
+      assert_not_equal "hidden", group["group"]["group_type"]
+    end
+  end
+
+  def test_search_with_own_hidden_group
+    login_as groups(:hidden).creator, clients(:one)
+    get :public_groups, { :query => "hidden", :format => 'json' }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert json["entry"]
+    assert_not_equal(0, json["entry"].size)
+  end
+
   def test_get_members_of_group
     get :get_members, {:group_id =>  groups(:open).id, :format => 'json' },
                       { :cos_session_id => sessions(:session1).id }
@@ -163,15 +183,15 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert json["entry"]
     assert_equal(2, json["entry"].size)
-    assert( json["entry"].first["id"] == people(:valid_person).id || json["entry"].first["id"] == people(:contact).id ) 
-    
+    assert( json["entry"].first["id"] == people(:valid_person).id || json["entry"].first["id"] == people(:contact).id )
+
     # try to get members of unexisting group
     get :get_members, {:group_id =>  "non_existent_id", :format => 'json' },
                       { :cos_session_id => sessions(:session1).id }
     assert_response :not_found, @response.body
-          
+
   end
-  
+
   def test_removing_a_member
     assert groups(:open).has_member?(people(:valid_person))
     delete :remove_person_from_group, {:group_id =>  groups(:open).id, :user_id => people(:valid_person).id, :format => 'json' },
@@ -180,13 +200,13 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert ! groups(:open).has_member?(people(:valid_person)), "Removing a group member failed!"
     assert ! people(:valid_person).is_member_of?(groups(:open))
-    
+
     # Should not be able to remove an other person from a group (session is associated to different person)
     delete :remove_person_from_group, {:group_id =>  groups(:open).id, :user_id => people(:valid_person).id, :format => 'json' },
                       { :cos_session_id => sessions(:session4).id }
     assert_response :forbidden, @response.body
     json = JSON.parse(@response.body)
-    
+
     # Should destroy the group when the last person leaves
     assert groups(:open).has_member?(people(:contact))
     assert_not_nil(Group.find_by_id(groups(:open).id))
@@ -238,7 +258,7 @@ class GroupsControllerTest < ActionController::TestCase
 
     data.each do |key, value|
       assert_not_equal(data[key], json["group"][key.to_s])
-    end    
+    end
   end
 
   def test_try_change_group_info_illegally
@@ -261,7 +281,7 @@ class GroupsControllerTest < ActionController::TestCase
 
     data.each do |key, value|
       assert_not_equal(data[key], json["group"][key.to_s])
-    end    
+    end
   end
 
 
@@ -275,7 +295,7 @@ class GroupsControllerTest < ActionController::TestCase
     put :update, { :group_id => group.id, :group => data, :format => 'json' },
                  { :cos_session_id => session.id }
     assert_response :forbidden, @response.body
-    json = JSON.parse(@response.body)    
+    json = JSON.parse(@response.body)
 
     get :show, { :group_id => group.id, :format => 'json' },
                { :cos_session_id => session.id }
@@ -284,7 +304,7 @@ class GroupsControllerTest < ActionController::TestCase
 
     data.each do |key, value|
       assert_not_equal(data[key], json["group"][key.to_s])
-    end    
+    end
   end
 
   def test_kick
@@ -303,7 +323,7 @@ class GroupsControllerTest < ActionController::TestCase
     assert_response :success, @response.body
 
     json = JSON.parse(@response.body)
-    
+
     assert json["entry"].size < group.members.size
   end
 
@@ -323,20 +343,20 @@ class GroupsControllerTest < ActionController::TestCase
     assert_response :success, @response.body
 
     json = JSON.parse(@response.body)
-    
+
     assert_equal json["entry"].size, group.members.size
   end
 
   def test_duplicate_group
     group = groups(:open)
     session = sessions(:session1)
-    
-    post :create, { :title => group.title, :type => "open", :format => 'json' }, 
+
+    post :create, { :title => group.title, :type => "open", :format => 'json' },
                   { :cos_session_id => session.id }
     assert_response :bad_request, @response.body
     json = JSON.parse(@response.body)
   end
-  
+
   def test_not_found
     assert ! groups(:open).has_member?(people(:friend))
     post :add_member, {:group_id =>  "foo", :user_id => people(:friend).id, :format => 'json' },
@@ -361,7 +381,7 @@ class GroupsControllerTest < ActionController::TestCase
     session = sessions(:session1)
     assert session.person.is_admin_of?(group)
 
-    post :add_member, { :user_id => people(:friend).id, :group_id => group.id, :format => 'json' }, 
+    post :add_member, { :user_id => people(:friend).id, :group_id => group.id, :format => 'json' },
                       { :cos_session_id => session.id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
@@ -373,10 +393,10 @@ class GroupsControllerTest < ActionController::TestCase
     assert session.person.is_member_of?(group)
     assert ! session.person.is_admin_of?(group)
 
-    post :add_member, { :user_id => people(:friend).id, :group_id => group.id, :format => 'json' }, 
+    post :add_member, { :user_id => people(:friend).id, :group_id => group.id, :format => 'json' },
                       { :cos_session_id => session.id }
     assert_response :forbidden, @response.body
-    json = JSON.parse(@response.body)  
+    json = JSON.parse(@response.body)
   end
 
   def test_change_group_type_to_open

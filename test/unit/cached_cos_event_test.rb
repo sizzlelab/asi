@@ -31,8 +31,8 @@ class CachedCosEventTest < ActiveSupport::TestCase
       end
     rescue Errno::ECONNREFUSED => e
       puts "No connection to RESSI at #{RESSI_URL}"
-    rescue ActiveResource::TimeOutError => e
-      assert false, "Ressi timed out at #{RESSI_URL}"
+    rescue
+      assert false,  "Ressi timed out at #{RESSI_URL}"
     end
   end
 
