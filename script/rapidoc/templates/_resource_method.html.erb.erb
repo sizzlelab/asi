@@ -1,0 +1,50 @@
+<div style="padding:30px; padding-top:0px;border-bottom:1px solid #ddd;">
+  
+  <%
+    splitted = @method
+    str = @method
+    str = "<span style='color:#ff6600; width:200px;margin-right:20px;'>#{str}</span>"
+  %>
+  <h2><%=str %></h2>
+  
+  
+  <strong>Access:</strong> <%=@access %><br />
+
+  <% if @codes %>
+  <strong>Return codes:</strong>
+  <ul>
+  <% @codes.each do |c| %><li><%=c %></li><% end %>
+  </ul>
+  <% end %>
+
+  <% if @return %>
+  <strong>Return:</strong><%
+  rep, desc = @return.split("-")
+  %>
+  <% is_list = rep =~ /\[(.)+\]/ %>
+  
+  <% if is_list %>
+    a list of
+    <% end %>
+     
+  <% if rep.downcase =~ /json/ %>
+    <a href="#json" onclick="$('jsonrep').show();">JSON</a>
+  <% end %>
+  
+  <% if rep.downcase =~ /xml/ %>
+    <a href="#xml"  onclick="$('xmlrep').show();">XML</a>
+  <% end %>
+  
+  -
+  <%=desc %>
+  <br />
+  <% end %>
+  
+  <strong>Parameters:</strong>
+  <ul>
+  <% @variables.each do |v| %><li><%=v %></li><% end %>
+  </ul>
+  <p><strong>Description:</strong> <%=@content %></p>
+</div>
+
+
