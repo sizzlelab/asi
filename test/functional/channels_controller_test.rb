@@ -35,7 +35,6 @@ class ChannelsControllerTest < ActionController::TestCase
     assert_response :created, @response.body
     print @response.body
     json = JSON.parse(@response.body)
-    print json.inspect
     assert_equal json["channel"]["name"], "testikanava"
     
     post :create, {:format => "json", :id => "gfpasdjga", :name => "toinen testi", :description => nil, :type => nil}, { :cos_session_id => sessions(:session1).id}

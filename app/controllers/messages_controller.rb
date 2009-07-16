@@ -5,15 +5,19 @@ class MessagesController < ApplicationController
   before_filter :get_message, :only => [ :delete, :edit, :show ]
   
   def list
-    @messages = @channel.messages.find_by_id(:all)
-    render :status => :ok, :json => @messages.to_json
+    @messages = @channel.messages
+    guids = []
+    @messages.each do |msg|
+      guids.push(msg.guid)
+    end
+    render :status => :ok, :json => { :messages => guids }.to_json
   end
 
   def create
-    @message = Message.new( :title => params[:title], :poster_id => @person.id, :channel_id => @channel.id,
+    @message = Message.new( :title => params[:title], :poster_id => @user.id, :channel_id => @channel.id,
                             :body => params[:body], :content_type => params[:content_type],
                             :reference_to => params[:reference_to], :attachment => params[:attachment])
-    if !@message.validate
+    if !@message.valid?
       render :status => :bad_request and return
     end
     if !@message.save
@@ -35,9 +39,20 @@ class MessagesController < ApplicationController
       @message.delete
       render :status => :ok and return
     else
-      ensure_channel_owner
+      if !ensure_same_as_logged_person(@channel.owner.id)
+        render :status => :forbidden and return
+      end
       @message.delete
       render :status => :ok and return
+    end
+  end
+
+  private
+
+  def get_message
+    @message = @channel.messages.find_by_guid(params[:msg_id])
+    if !@message
+      render :status => :not_found and return
     end
   end
 
