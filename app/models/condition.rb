@@ -1,6 +1,6 @@
 class Condition < ActiveRecord::Base
-  has_many :rules
-  has_many :actions, :through => :rules
+  has_many :condition_action_sets
+  has_many :actions, :through => :condition_action_sets
 
-  validates_presence_of :type, :value
+  validates_presence_of [:condition_type, :condition_value]
 end

@@ -3,7 +3,8 @@ class LocationsController < ApplicationController
   before_filter :change_me_to_userid
   
   USER_UPDATEABLE_FIELDS = %w(longitude latitude accuracy label)
-  
+
+  # TODO: authorize
   def get
     @location = Location.find_by_person_id(params['user_id'])
     if ! @location

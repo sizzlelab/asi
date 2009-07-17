@@ -1,15 +1,16 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-   id: 1
-   model: person_name
-   field: family_name
+view_name:
+   id: view_name
+   action: view
+   data: name
 
-two:
-   id: 2
-   model: person_name
+view_address:
+   id: view_address
+   action: view
+   data: address
 
-three:
-   id: 3
-   model: person
-   field: email
+view_email:
+   id: view_email
+   action: view
+   data: email

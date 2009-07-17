@@ -2,6 +2,7 @@ class Coreui::ProfileController < ApplicationController
   layout "coreui"
 
   def index
+    # TODO authorize "Role" = Role::ADMINISTRATOR
     if @user && @client && Role.find_by_user_and_client_id(@user.id, @client.id) == Role::ADMINISTRATOR
       people = Person.find_with_ferret(params['search'])
       people_hash = people.collect do |person|

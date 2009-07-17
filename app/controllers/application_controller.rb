@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
       render :status => :conflict, :json => "You must logout client before you can login".to_json and return
     end
   end
-  
+
   def ensure_same_as_logged_person(target_person_id)
     return @user && target_person_id == @user.id
   end

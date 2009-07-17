@@ -1,21 +1,31 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-   id: 1
+# 1
+private:
+   id: private
+   condition_type: Publicity
+   condition_value: Private
+
+# 2
+logged_in:
+   id: logged_in
    condition_type: Logged_in
    condition_value: True
 
-two:
-   id: 2
-   condition_type: Group
-   condition_value: TKK
+# 3
+group:
+  id: group_tkk
+  condition_type: Group
+  condition_value: tkk
 
-three:
-  id: 3
+# 4
+is_friend:
+  id: is_friend
   condition_type: Is_friend
   condition_value: True
 
-four:
-  id: 4
-  condition_type: Group
-  condition_value: TML
+# 5
+user:
+    id: user_testi1
+    condition_type: User
+    condition_value: testi1

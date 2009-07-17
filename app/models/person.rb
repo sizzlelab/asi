@@ -39,8 +39,7 @@ class Person < ActiveRecord::Base
            :conditions => "status = 'pending'"
 
   #added by tchang
-  has_many :rules,
-           :through => :authorizes
+  has_many :rules
   # has_many :authorizes
   
   # Max & min lengths for all fields 
@@ -169,8 +168,9 @@ class Person < ActiveRecord::Base
     #end
 
     # should get person id from @session.person_id
-    # now only user testi1 with person_id 1aa can get user1's email address
-   if authorize("1aa", 'person', 'email')
+    # now only logged in user who is a member of group tkk (testi1 with person_id 1aa) can get user1's email address
+    # authorize?(subject_person_id, object_person_id, action, object_data)
+   if Rule.authorize?(connection_person.id, id, 'person', 'email')
       person_hash.merge!({'email' => email})
    end
     
@@ -202,52 +202,6 @@ class Person < ActiveRecord::Base
   end
 
 
-# added by tchang
-# check if subject_person has access right to model and field
-# return: true or false
-  def authorize(subject_person=nil, model=nil, field=nil)
-    print "in models/person/authorize \n"
-
-    result = false
-
-   if (!model && !field)
-     return result
-   elsif (model && field)
-       # both params model and field are not nil, find action_id
-       action = Action.find(:first, :conditions => {'model' => model,'field' => field})
-   elsif (model && !field)
-       # param model is not nil, while field is nil
-       action = Action.find(:first, :condition => ["model = ?", params[model]])
-    end
-
-       print "action_id: \n"
-       print action.id
-       print " \n i am after action.find \n"
-
-       # find all the rules associated with this person and this action
-
-       rules = Rule.find(:all, :joins => :authorizes, :conditions => {'authorizes.person_id' => id, 'rules.action_id' => action.id})
-       print "i am after rule.find \n"
-       rules.each do |rule|
-          condition = Condition.find(rule.condition_id)
-           print "condition_id:"
-           print condition.attributes
-           print "\n"
-
-           if checkCondition(condition, subject_person)
-             result = true
-           end
-       end
-
-
-    return result
-  end
-
-
-  def checkCondition(condition=nil, subject_person=nil)
-    print "in models/person/checkCondition \n"
-    return false
-  end
 
   
   def to_json(client_id=nil, connection_person=nil, *a)

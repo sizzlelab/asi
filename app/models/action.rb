@@ -1,6 +1,7 @@
 class Action < ActiveRecord::Base
-  has_many :rules
-  has_many :conditions, :through => :rules
+  has_many :condition_action_sets
+  has_many :conditions, :through => :condition_action_sets
 
-  validates_presence_of :model
+  validates_presence_of [:action, :data]
+
 end
