@@ -163,17 +163,17 @@ class Person < ActiveRecord::Base
     #TODO Make more sensible check for the clients that are authorized to get email
     # Currently check if client_id matches to Kassi.
     # commented by tchang
-    # if connection_person == self || client_id == "acm-TkziGr3z9Tab_ZvnhG"
-    #  person_hash.merge!({'email' => email})
-    #end
+    if connection_person == self || client_id == "acm-TkziGr3z9Tab_ZvnhG"
+      person_hash.merge!({'email' => email})
+    end
 
     # should get person id from @session.person_id
     # now only logged in user who is a member of group tkk (testi1 with person_id 1aa) can get user1's email address
     # authorize?(subject_person_id, object_person_id, action, object_data)
-   if Rule.authorize?(connection_person.id, id, 'person', 'email')
+    if Rule.authorize?(connection_person.id, id, 'person', 'email')
       person_hash.merge!({'email' => email})
-   end
-    
+    end
+
     if self.person_spec
       self.person_spec.attributes.except('status_message', 'status_message_changed').each do |key, value|
         unless PersonSpec::NO_JSON_FIELDS.include?(key)
@@ -186,7 +186,7 @@ class Person < ActiveRecord::Base
       end
       person_hash.merge!({'status' => { :message => person_spec.status_message, :changed => person_spec.status_message_changed}})
     end
-    
+
     if connection_person
       person_hash.merge!({'connection' => get_connection_string(connection_person)})
       # if the asker is a friend (or self), include location
@@ -194,16 +194,13 @@ class Person < ActiveRecord::Base
         person_hash.merge!({:location => location.location_hash})
       end
     end
-    
+
     if !client_id.nil?
       person_hash.merge!({'role' => role_title(client_id)})
     end
     return person_hash
   end
 
-
-
-  
   def to_json(client_id=nil, connection_person=nil, *a)
     person_hash = get_person_hash(connection_person, client_id)
     return person_hash.to_json(*a)

@@ -37,6 +37,7 @@ ActionController::Routing::Routes.draw do |map|
                 :action => 'index',
                 :conditions => { :method => :get }
     coreui.resources :profile
+    coreui.resources :privacy
   end
   
   # Application-specific client data

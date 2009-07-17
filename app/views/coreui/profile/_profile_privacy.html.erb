@@ -1,0 +1,41 @@
+<% 
+  privacy_presets = ["default", "public", "friends_only", "custom"]
+  
+  privacy_preset_options = privacy_presets.collect do |preset|
+    "<option>#{preset}</option>"
+  end
+  
+ %>
+
+  <h2><%= profile["username"] %></h2> 
+
+  <%= form_tag "/coreui/profile/#{profile['id']}", :method => :put  %>
+
+  <table border="1"> 
+    <% profile.each do |label, value| %> 
+    <tr> 
+      <th scope="rows"><%= label %>:</th> 
+      <td><%=  
+      case value 
+      when String  
+        value 
+      when nil 
+        "-" 
+      when Hash 
+        value.map { |a, b| "<strong>#{a}:</strong> #{b.inspect}<br/>" } 
+      when Address, PersonName 
+        value.unstructured 
+      else 
+        "(" + value.class.to_s + " value cannot be displayed.)" 
+      end 
+      %></td> 
+      <td>
+        <%= select_tag "privacy[#{label}]", privacy_preset_options %>
+      </td>
+    </tr>
+    <% end %>
+    <tr>
+      <td></td>
+      <td colspan="2"><%= submit_tag(value = "Save changes") %></td>
+  </table>
+  </form>

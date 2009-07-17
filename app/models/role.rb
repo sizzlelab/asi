@@ -9,7 +9,7 @@ class Role < ActiveRecord::Base
   USER = "user"
 
   validates_inclusion_of :title, :in => [ADMINISTRATOR, MODERATOR, USER], 
-                                 :message => "Role title %s is not valid."
+                                 :message => "Role title {{value}} is not valid."
   
   def self.find_by_user_and_client_id(user_id, client_id)
     Role.find(:all, :conditions => { :person_id => user_id, :client_id => client_id })

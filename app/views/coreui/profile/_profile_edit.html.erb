@@ -1,0 +1,204 @@
+<% form_for @person, :url => { :controller => "profile", :action => "update", :id => @person.id } do |f| %>
+
+  <h3>User account</h3>
+
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      ID:
+    </div>
+    <div class="profile_update_form_center">
+      <%= @person.id %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Username:
+    </div>
+    <div class="profile_update_form_center">
+      <%= f.text_field :username %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      E-mail:
+    </div>
+    <div class="profile_update_form_center">
+      <%= f.text_field :email %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      New password:
+    </div>
+    <div class="profile_update_form_center">
+      <%= f.password_field :password %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Confirm new password:
+    </div>
+    <div class="profile_update_form_center">
+      <%= f.password_field :password %> 
+    </div>
+  </div>
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Avatar:
+    </div>
+    <div class="profile_update_form_right">
+    <% if @person.avatar %>
+      <%= link_to(image_tag("/people/#{@person.id}/@avatar/large_thumbnail"), "/people/#{@person.id}/@avatar") %>
+      <% else %>
+      (no avatar image)
+      <% end %>
+    </div>
+  </div>
+  
+  <h3>Personal information</h3>
+  
+<% f.fields_for :name, @person.name do |name_fields| %>
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Given name:
+    </div>
+    <div class="profile_update_form_right">
+      <%= name_fields.text_field :given_name %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Family name:
+    </div>
+    <div class="profile_update_form_center">
+      <%= name_fields.text_field :family_name %> 
+    </div>
+  </div>
+<% end %>
+
+<% f.fields_for :person_spec, @person.person_spec do |spec_fields| %>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Status message:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec_fields.text_field :status_message %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Birthdate:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec_fields.text_field :birthdate %> (yyyy-mm-dd)
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Phone number:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec_fields.text_field :phone_number %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Website:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec_fields.text_field :website %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Gender:
+    </div>
+    <div class="profile_update_form_center">
+      <%= select_tag 'person[person_spec][gender]', 
+                     options_for_select([""].concat(PersonSpec::VALID_GENDERS), 
+                     @person.person_spec ? @person.person_spec.gender : "") 
+      %>
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Description:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec_fields.text_field :description %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      IRC nickname:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec_fields.text_field :irc_nick %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      MSN nickname:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec_fields.text_field :msn_nick %> 
+    </div>
+  </div>
+<% end %>
+
+<h3>Address and location</h3>
+
+<% f.fields_for :address, @person.address do |address_fields| %>
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Street address:
+    </div>
+    <div class="profile_update_form_right">
+      <%= address_fields.text_field :street_address %>
+    </div>
+  </div>
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Postal code:
+    </div>
+    <div class="profile_update_form_right">
+      <%= address_fields.text_field :postal_code, :class => "update_postal_code" %>
+    </div>
+  </div>
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Locality:
+    </div>
+    <div class="profile_update_form_right">
+      <%= address_fields.text_field :locality %>
+    </div>
+  </div>
+<% end %>
+
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Last location:
+    </div>
+    <% if l = @person.location %>
+    <div class="profile_update_form_two_columns">
+      <div class="left_float">
+        <%= "\"#{@person.location.label}\"<br /> at " unless ! @person.location.label %>
+        <%= link_to("#{l.latitude}, #{l.longitude}", "http://maps.google.com/maps?q=#{l.latitude}+#{l.longitude}") %>
+      </div>
+      <div class="right_float">  
+        <small>(<%= distance_of_time_in_words_to_now(@person.location.updated_at) %> ago)</small>
+      </div>  
+    </div>
+    <% else %>
+    <div class="profile_update_form_right">
+      -
+    </div>
+    <% end %>
+  </div>
+  
+  <hr />
+
+  <div class="profile_update_form_buttons">
+    <%= submit_tag "Save changes" %>
+  </div>  
+<% end %>

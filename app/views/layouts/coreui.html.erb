@@ -1,10 +1,10 @@
 <html>
   <head>
     <title>Core UI for OtaSizzle Common Services</title>
-    <%= stylesheet_link_tag("cos") %>
+    <%= stylesheet_link_tag("coreui") %>
   </head>
   <body>
-    <h1>[Core::UI]</h1>
+    <h1 style="border-bottom: 2px solid black">Core UI</h1>
 
     <p style="color: green"><%= flash[:notice] %></p> 
     <p style="color: orange"><%= flash[:warning] %></p> 
@@ -13,7 +13,7 @@
     <%= yield %>
     
     <% if @user %>
-      <%= link_to "Logout", "/session", :method=>"delete" %>
+      <p><%= link_to "Logout", "/session", :method=>"delete" %></p>
     <% end %>
 
     <div class="footer">
