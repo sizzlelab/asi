@@ -82,12 +82,12 @@ class ApplicationController < ActionController::Base
   def log
     request.extend(LoggingHelper)
 
-    logger.info("  Session: " + request.to_json({ :session => @application_session }))
-#    logger.info("  Headers: " + request.headers.inspect)
+    headers = request.headers.reject do |*a|
+      a[0].starts_with?("rack") or a[0].starts_with?("action_controller")
+    end
 
     saved_to_ressi = ""
 
-    # Trying to save the log data also to Ressi
     begin
       if RESSI_URL
         cos_event = CachedCosEvent.create({
@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
                                             :parameters =>     respond_to?(:filter_parameters) ?
                                             filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller
                                             :return_value =>   @_response.status,
-                                            :headers =>        request.headers.except("RAW_POST_DATA").to_json
+                                            :headers =>        headers
                                           })
         saved_to_ressi = cos_event.valid?
       else
@@ -132,7 +132,7 @@ class ApplicationController < ActionController::Base
   def can_read_channel?(user, channel)
     if channel.channel_type == "public"
       return true
-    end 
+    end
     if user
       if channel.channel_type == "friend"
         return true if user.contacts.find_by_id(channel.owner.id)
@@ -143,21 +143,21 @@ class ApplicationController < ActionController::Base
         end
       end
     end
-    return false 
+    return false
   end
-  
+
   def ensure_channel_owner
     if !ensure_same_as_logged_person(@channel.owner_id)
       render :status => :forbidden and return
-    end 
+    end
   end
-  
+
   def ensure_can_read_channel
     if !can_read_channel?(@user, @channel)
       render :status => :forbidden and return
     end
   end
-  
+
   def get_channel
     @channel = Channel.find_by_guid( params[:channel_id] )
     if !@channel
