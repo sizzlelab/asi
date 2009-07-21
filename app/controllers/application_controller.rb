@@ -80,37 +80,18 @@ class ApplicationController < ActionController::Base
   end
 
   def log
-    request.extend(LoggingHelper)
-
-    headers = request.headers.reject do |*a|
-      a[0].starts_with?("rack") or a[0].starts_with?("action_controller")
-    end
-
-    saved_to_ressi = ""
-
-    begin
-      if RESSI_URL
-        cos_event = CachedCosEvent.create({
-                                            :user_id =>        @user ? @user.id : nil,
-                                            :application_id => @client ? @client.id : nil,
-                                            :cos_session_id => session[:cos_session_id],
-                                            :ip_address =>     request.remote_ip,
-                                            :action =>         controller_class_name + "\#" + action_name,
-                                            :parameters =>     respond_to?(:filter_parameters) ?
-                                            filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller
-                                            :return_value =>   @_response.status,
-                                            :headers =>        headers
-                                          })
-        saved_to_ressi = cos_event.valid?
-      else
-        saved_to_ressi = "DISABLED"
+    CachedCosEvent.create do |e|
+      e.user_id        = @user ? @user.id : nil
+      e.application_id = @client ? @client.id : nil
+      e.cos_session_id = session[:cos_session_id]
+      e.ip_address     = request.remote_ip
+      e.action         = controller_class_name + "\#" + action_name
+      e.parameters     = filter_parameters(params).to_json
+      e.return_value   = @_response.status
+      e.headers        = request.headers.reject do |*a|
+        a[0].starts_with?("rack") or a[0].starts_with?("action_controller")
       end
-    rescue Exception => e
-      saved_to_ressi = "ERROR " + e.to_s
     end
-
-    logger.info { "Session DB id:  #{session[:cos_session_id]}   Ressi: #{saved_to_ressi}" }
-
   end
 
   def set_correct_content_type
