@@ -1,7 +1,7 @@
 #!/bin/sh
-# The last part of the Common Services build script. This is in a separate 
-# file so that the newest version from the repository is always run. 
-# NOTE: This script must be run from the same directory where the COS is 
+# The last part of the Common Services build script. This is in a separate
+# file so that the newest version from the repository is always run.
+# NOTE: This script must be run from the same directory where the COS is
 # located (see COS_PATH from alpha-build.sh)
 
 
@@ -32,8 +32,12 @@ echo $REV > app/views/layouts/_revision.html.erb
 #echo $SERVERNAME > app/views/layouts/_servername.html.erb
 date > app/views/layouts/_build_date.html.erb
 rake db:migrate
-rake test
+rake cruise
 rake db:migrate RAILS_ENV=production
+rake ts:stop RAILS_ENV=production
+rake ts:configure RAILS_ENV=production
+rake ts:index RAILS_ENV=production
+rake ts:start RAILS_ENV=production
 #script/server -d -e production
 script/daemons start
 mongrel_rails cluster::start
