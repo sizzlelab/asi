@@ -91,10 +91,14 @@ class SessionsController < ApplicationController
          end
       end
       
-      #if ! Role.find_by_user_and_client_id(@session_person_id, @session_client_id)
-      #  session[:logged_in] = @session.client_id # TODO: is this ok?
-      #  render :status => :forbidden, :json => "Please submit terms of service agreement".to_json and return
-      #end
+      role = Role.find_by_user_and_client_id(@session.person_id, @session.client_id)
+      if ! role || role.empty?
+        # First time using this service, so let's create a Role with default parameters
+        Role.create(:person_id => @session.person_id, 
+                    :client_id => @session.client_id, 
+                    :title => Role::USER
+                   )
+      end
     
       session[:cos_session_id] = @session.id
       if ui_mode

@@ -51,10 +51,6 @@ class ApplicationController < ActionController::Base
     unless @user
       render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
     end
-
-    unless Role.find_by_user_and_client_id(@user.id, @client.id)
-      render :status => :not_found, :json => "User has never logged into this client service before.".to_json and return
-    end
   end
 
   def ensure_person_logout
