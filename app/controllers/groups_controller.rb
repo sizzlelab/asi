@@ -185,7 +185,7 @@ class GroupsController < ApplicationController
   def change_admin_status
     person = Person.find_by_id(params[:user_id])
 
-    if params[:admin_status]
+    if params[:admin_status] and params[:admin_status].to_s.downcase != "false"
       if @group.grant_admin_status_to(person)
         return {:status => :ok, :message => "Admin status granted."}
       end

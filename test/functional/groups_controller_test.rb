@@ -62,6 +62,36 @@ class GroupsControllerTest < ActionController::TestCase
 
   end
 
+  def test_remove_admin_status_with_string
+    person = people(:friend)
+    admin = groups(:open).members.first;
+    session = sessions(:session1)
+
+    assert admin.is_admin_of?(groups(:open))
+    assert ! person.is_admin_of?(groups(:open))
+
+    assert admin.id == session.person_id
+    assert person != admin
+
+    assert ! groups(:open).has_member?(person)
+    post :add_member, {:group_id =>  groups(:open).id, :user_id => person.id, :format => 'json' },
+                      { :cos_session_id => sessions(:session4).id }
+    assert_response :success, @response.body
+
+    put :update_membership_status, {:group_id => groups(:open).id, :admin_status => true, :user_id => person.id, :format => 'json'},
+                                   {:cos_session_id => session.id}
+    assert_response :success
+
+    assert person.is_admin_of?(groups(:open)), "Granting admin rights failed."
+
+    put :update_membership_status, {:group_id => groups(:open).id, :admin_status => "false", :user_id => person.id, :format => 'json'},
+                                   {:cos_session_id => session.id}
+    assert_response :success
+    assert ! person.is_admin_of?(groups(:open)), "Removing of admin rights with string didn't work."
+
+  end
+
+
   def test_show
     get :show, {:group_id =>  groups(:open).id, :format => 'json'}, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
