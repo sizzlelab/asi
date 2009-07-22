@@ -86,7 +86,7 @@ class ApplicationController < ActionController::Base
       e.return_value   = @_response.status
       e.headers        = request.headers.reject do |*a|
         a[0].starts_with?("rack") or a[0].starts_with?("action_controller")
-      end
+      end.to_json
     end
   end
 
