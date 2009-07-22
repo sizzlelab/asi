@@ -7,7 +7,7 @@ module COSRoutes
     connect "api" + route, :controller => 'api',
                            :format => "html",
                            :action => 'api'
-                           
+
   end
 
   def resource(route, options)
@@ -127,7 +127,7 @@ ActionController::Routing::Routes.draw do |map|
                                              :get => 'get',
                                              :put => 'update',
                                              :post => 'update'
-  
+
   map.resource '/people/:user_id/@location/@location_security_token', :controller => 'locations',
                                                                      :get => 'fetch_location_security_token'
 
@@ -227,7 +227,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/channels/:channel_id/@messages/:msg_id', :controller => 'messages',
                                                           :get => 'show',
                                                           :delete => 'delete'
-  
+
   # End channels
 
 
@@ -243,7 +243,7 @@ ActionController::Routing::Routes.draw do |map|
   map.documentation '/appdata'
 
   map.documentation '/tutorial'
-  
+
  # map.apidoc '/api', :controller => 'api', :get => 'index', :format => "html"
  # map.peopleapi '/api/people', :controller => 'api',:action => 'people' ,:get => 'people', :format => 'html'
 
@@ -251,10 +251,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect '/test', :controller => 'application', :action => 'test'
 
+  map.connect '/system/:action', :controller => 'system'
 
   map.root :controller => 'application',
            :action => 'index',
            :conditions => { :method => :get }
-
-  map.connect '/:controller/:action', :format => 'json'
 end

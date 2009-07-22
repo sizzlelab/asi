@@ -21,8 +21,6 @@ sed -i "s/localhost\:9000/cos\.alpha\.sizl\.org\/ressi\//" config/environment.rb
 #change SERVER_DOMAIN constant to SERVERNAME
 sed -i "s/SERVER_DOMAIN = \"http\:\/\/cos\.sizl\.org\"/SERVER_DOMAIN = \"$ESCAPED_SERVERNAME\"/" config/environments/production.rb
 
-
-
 REV=$((`svn info file:///svn/common-services | \
 grep "^Last Changed Rev" | \
 perl -pi -e "s/Last Changed Rev: //"`-`svn info file:///svn/common-services/tags | \
@@ -39,6 +37,7 @@ rake ts:configure RAILS_ENV=production
 rake ts:index RAILS_ENV=production
 rake ts:start RAILS_ENV=production
 #script/server -d -e production
-script/daemons start
 mongrel_rails cluster::start
 sudo /etc/init.d/apache2 restart
+
+crontab config/crontab
