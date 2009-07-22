@@ -2,83 +2,102 @@ class ChannelsController < ApplicationController
 
   before_filter :ensure_client_login  
   before_filter :ensure_person_login, :except => :list
-  before_filter :get_channel, :except => [:list, :create]
+  before_filter :get_channel, :except => [:index, :create]
   before_filter :ensure_channel_owner, :only => [:edit, :delete]
   before_filter :ensure_can_read_channel, :only => [:list_subscriptions, :show]
-  
-  def list
-    results = []
+    
+  def index
     if params[:search]
-#      results.push Channel.find_by_contents( params[:search] )
-    end
-    if params[:person_id]
-      UserSubscription.find_each(:conditions => {:person_id => params[:person_id]}) do |subscription|
-        results.push Channel.find_by_id(subscription.channel.id)
+      @channels = Channel.search( params[:search], 
+                                  :per_page => params[:per_page],
+                                  :page => params[:page])
+    else
+      options = Hash.new
+      sort_by = 'updated_at'
+      sort_order = 'DESC'
+      if params[:sort_by]
+        if params[:sort_by] == 'created_at'
+          sort_by = 'created_at' 
+        elsif params[:sort_by] == 'name'
+          sort_by = 'name'
+        elsif params[:sort_by] == 'id'
+          sort_by = 'guid'
+        end
       end
-    end
-    if params[:group_id]
-      GroupSubscription.find_each(:conditions => {:group_id => params[:group_id]}) do |subscription|
-        results.push Channel.find_by_id(subscription.channel.id)
+      if params[:sort_order]
+        if params[:sort_order] == 'ascending'
+          sort_order = 'ASC'
+        elsif params[:sort_order] == 'descending'
+          sort_order = 'DESC'
+        end
       end
+      options[:order] = sort_by + " " + sort_order
+
+      if params[:per_page]
+        options[:limit] = params[:per_page].to_i
+        options[:offset] = (params[:page] ? params[:page].to_i * params[:per_page].to_i : 0)
+      end
+      
+      
+      if params[:person_id]
+        options.merge!(:joins => :user_subscriptions, :conditions => {'user_subscriptions.person_id' => params[:person_id]})
+      elsif params[:group_id]
+        options.merge!(:joins => :group_subscriptions, :conditions => {'group_subscriptions.group_id' => params[:group_id]})
+      end
+      @channels = Channel.all(options)
     end
     
-    if !params[:search] && !params[:person_id] && !params[:group_id]
-      results.push Channel.find(:all)
-    end
+    @channels.reject! { |c| !c.can_read?(@user) }
     
-    results.flatten!
-    
-    results.each do |channel|
-      results.delete(channel) if !can_read_channel?(@user, channel)
-    end
-    
-    render :status => :ok, :json => results.uniq.to_json and return
+    render_json :entry => @channels and return
   end
   
   def create
-    @channel = Channel.new( :name => params[:name], :description => params[:description], 
-                            :owner => @user, :creator_app => @client )
-    if params[:type]
-      @channel.channel_type = params[:type]
-    else
-      @channel.channel_type = "public"
-    end
+# Commented out some shitty code.
+#    @channel = Channel.new( :name => params[:name], :description => params[:description], 
+#                           :owner => @user, :creator_app => @client )
+#    if params[:type]
+#      @channel.channel_type = params[:type]
+#    else
+#      @channel.channel_type = "public"
+#    end
+#    
+#    if params[:id] || !params[:id] == ""
+#      @channel.guid = params[:id]
+#    end
+#    
+#    if params[:type] == "group" && ( !params[:name] || params[:name] == "" )
+#      if !params[:group_subscriptions] || params[:group_subscriptions].class == "Array"
+#        render :status => :bad_request and return
+#      end
+#      @channel.name = Group.find_by_id(params[:group_subscriptions]).title
+#    end    
+#        
+#    if params[:channel][:user_subscriptions]
+#      begin
+#        users = Person.find(params[:user_subscriptions])
+#      rescue ActiveRecord::RecordNotFound
+#        render :status => :not_found and return
+#      end
+#      @channel.user_subscribers << users
+#    end
+#    if params[:group_subscriptions]
+#      begin
+#        groups = Group.find(params[:group_subscriptions])
+#      rescue ActiveRecord::RecordNotFound
+#        render :status => :not_found and return
+#      end
+#      @channel.group_subscribers << groups
+#    end
+
+    @channel = Channel.new( params[:channel] )
+    @channel.owner = @user
+    @channel.creator_app = @client
     
-    if params[:id] || !params[:id] == ""
-      @channel.guid = params[:id]
-    end
-    
-    if params[:type] == "group" && ( !params[:name] || params[:name] == "" )
-      if !params[:group_subscriptions] || params[:group_subscriptions].class == "Array"
-        render :status => :bad_request and return
-      end
-      @channel.name = Group.find_by_id(params[:group_subscriptions]).title
-    end    
-    
-    if params[:user_subscriptions]
-      begin
-        users = Person.find(params[:user_subscriptions])
-      rescue ActiveRecord::RecordNotFound
-        render :status => :not_found and return
-      end
-      @channel.user_subscribers << users
-    end
-    if params[:group_subscriptions]
-      begin
-        groups = Group.find(params[:group_subscriptions])
-      rescue ActiveRecord::RecordNotFound
-        render :status => :not_found and return
-      end
-      @channel.group_subscribers << groups
-    end
-    
-    if !@channel.valid?
-      render :status => :bad_request, :message => "Data validation failed." and return
-    end
     if !@channel.save
-      render :status => 500, :message => "Something weird went wrong." and return
+      render_json :status => :bad_request, :messages => @channel.errors.full_messages and return
     end
-    render :status => :created, :json => @channel.to_json and return
+    render_json :status => :created, :entry => @channel and return
   end
 
   def subscribe
@@ -88,11 +107,13 @@ class ChannelsController < ApplicationController
         render :status => :forbidden and return
       end
       begin
-        groups = Group.find(params[:group_subscriptions])
+        groups = [Group.find(params[:group_subscriptions])].flatten
       rescue ActiveRecord::RecordNotFound
         render :status => :not_found and return
       end
-      @channel.group_subscribers << groups
+      groups.each do |group|
+        @channel.group_subscribers << group rescue ActiveRecord::RecordInvalid
+      end
       subscription = true
     end
     if params[:user_subscriptions]
@@ -100,24 +121,26 @@ class ChannelsController < ApplicationController
         render :status => :forbidden and return
       end
       begin
-        users = Person.find(params[:user_subscriptions])
+        users = [Person.find(params[:user_subscriptions])].flatten
       rescue ActiveRecord::RecordNotFound
         render :status => :not_found and return
       end
-      @channel.user_subscribers << users
+      users.each do |user|
+        @channel.user_subscribers << user rescue ActiveRecord::RecordInvalid
+      end
       subscription = true
     end
     if !subscription && ( @channel.channel_type == "friend" || @channel.channel_type == "public" )
-      if !can_read_channel?(@user, @channel)
+      if !@channel.can_read?(@user)
         render :status => :forbidden and return
       end
       @channel.user_subscribers << @user
       subscription = true
     end
     if subscription
-      render :status => :created and return
+      render_json :status => :created and return
     else
-      render :status => :forbidden and return
+      render_json :status => :forbidden, :messages => "Forbidden." and return
     end
   end
 
@@ -157,39 +180,33 @@ class ChannelsController < ApplicationController
   end
   
   def list_subscriptions
-    @group_subscriptions = @channel.group_subscriber_ids
-    @user_subscriptions = @channel.user_subscriber_ids
-    render :status => :ok, :json => {:user_subscriptions => @user_subscriptions, 
-                                     :group_subscriptions => @group_subscriptions}.to_json and return
+    @group_subscriptions = @channel.group_subscribers
+    @user_subscriptions = @channel.user_subscribers
+    render_json :entry => { :user_subscribers => @user_subscriptions, 
+                            :group_subscribers => @group_subscriptions 
+                          } and return
   end
 
   def show
-    render :status => :ok, :json => @channel.to_json and return
+    render_json :entry => @channel and return
   end
 
   def edit
-    if params[:name]
-      @channel.name = params[:name]
-    end
-    if params[:description]
-      @channel.description = params[:description]
-    end
-    if params[:owner]
-      person = Person.find_by_id(params[:owner])
+    if params[:channel][:owner_id]
+      person = Person.find_by_id(params[:channel][:owner_id])
       if !person
-        render :status => :not_found and return
+        render :status => :bad_request and return
       end
       @channel.owner = person
-      @channel.user_subscribers << person
-#      @channel.user_subscribers.delete(@user)
+      @channel.user_subscribers << person rescue ActiveRecord::RecordInvalid
     end
-    if !@channel.valid?
-      render :status => :bad_request and return
-    end
+
+    @channel.update_attributes(params[:channel])
+    
     if !@channel.save
-      render :status => 500, :message => "Something weird went wrong." and return
+      render_json :status => :bad_request, :messages => @channel.errors.full_messages and return
     end
-    render :status => :created, :json => @channel.to_json and return
+    render_json :status => :ok, :entry => @channel and return
   end
 
   def delete
