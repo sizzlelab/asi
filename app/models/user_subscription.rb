@@ -1,7 +1,6 @@
 class UserSubscription < ActiveRecord::Base
   belongs_to :channel
   belongs_to :person
-  
-  validates_associated :channel
-  validates_associated :person
+
+  validates_uniqueness_of :person_id, :scope => :channel_id, :message => "is already subscribed to the channel."
 end

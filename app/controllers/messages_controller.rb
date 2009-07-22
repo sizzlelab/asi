@@ -5,7 +5,11 @@ class MessagesController < ApplicationController
   before_filter :get_message, :only => [ :delete, :edit, :show ]
   
   def list
-    @messages = @channel.messages
+    if params[:search]
+      @messages = Message.search params[:search]
+    else
+      @messages = @channel.messages
+    end
     guids = []
     @messages.each do |msg|
       guids.push(msg.guid)
@@ -50,7 +54,7 @@ class MessagesController < ApplicationController
   private
 
   def get_message
-    @message = @channel.messages.find_by_guid(params[:msg_id])
+    @message = Message.find_by_guid(params[:msg_id])
     if !@message
       render :status => :not_found and return
     end

@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   layout 'default'
 
+  around_filter :catch_no_method_errors
+
   before_filter :maintain_session_and_user
 
   after_filter :log
@@ -106,23 +108,6 @@ class ApplicationController < ActionController::Base
     return (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
   end
 
-  def can_read_channel?(user, channel)
-    if channel.channel_type == "public"
-      return true
-    end
-    if user
-      if channel.channel_type == "friend"
-        return true if user.contacts.find_by_id(channel.owner.id)
-      end
-      if channel.channel_type == "group"
-        channel.group_subscribers.each do |subscription|
-          return true if user.groups.find_by_id(subscription.id)
-        end
-      end
-    end
-    return false
-  end
-
   def ensure_channel_owner
     if !ensure_same_as_logged_person(@channel.owner_id)
       render :status => :forbidden and return
@@ -130,7 +115,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_can_read_channel
-    if !can_read_channel?(@user, @channel)
+    if !@channel.can_read?(@user)
       render :status => :forbidden and return
     end
   end
@@ -144,6 +129,24 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def render_json(options = {})
+    hash = Hash.new
+    if options[:messages]
+      hash[:messages] = [options[:messages]].flatten
+      options.delete(:messages)
+    end
+    if options[:entry]
+      hash[:entry] = options[:entry]
+      options.delete(:entry)
+    end
+    if params[:per_page] && params[:page]
+      hash[:pagination] = { :per_page => params[:per_page].to_i,
+                            :page => params[:page].to_i }
+    end
+    options[:json] = hash
+    render options 
+  end
+  
   def maintain_session_and_user
     if session[:cos_session_id]
       if @application_session = Session.find_by_id(session[:cos_session_id])
@@ -181,6 +184,14 @@ class ApplicationController < ActionController::Base
    # Feedback form is present in every view.
   def set_up_feedback_form
     @feedback = Feedback.new
+  end
+  
+  def catch_no_method_errors
+    begin
+      yield
+    rescue NoMethodError
+      render_json :status => :bad_request, :messages => "Tried to set nonexistent fields." and return
+    end
   end
 
 end

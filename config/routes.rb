@@ -207,7 +207,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # Channels
   map.resource '/channels', :controller => 'channels',
-                            :get => 'list',
+                            :get => 'index',
                             :post => 'create'
 
   map.resource '/channels/:channel_id/', :controller => 'channels',

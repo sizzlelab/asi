@@ -34,12 +34,12 @@ module ActiveRecord
             self.guid ||= UUID.timestamp_create().to_s22
           end
 
-          def to_json
-            content = self.attributes
-            content['id'] = content['guid']
-            content.delete('guid')
-            return {self.class.name.downcase => content}.to_json
-          end
+#          def to_json(*a)
+#            content = self.attributes
+#            content['id'] = content['guid']
+#            content.delete('guid')
+#            return content.to_json(*a)
+#         end
 
         end
         

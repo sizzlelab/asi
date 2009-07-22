@@ -9,6 +9,14 @@ class Message < ActiveRecord::Base
   validates_presence_of :channel_id
   validate :associations_must_exist
   
+  define_index do 
+    indexes :title, :sortable => true
+    indexes :body
+    has :guid
+    has :created_at
+    has :updated_at
+  end
+  
   private
   
   def associations_must_exist
