@@ -19,6 +19,9 @@ class ApplicationControllerTest < ActionController::TestCase
       assert_not_nil event.send(attribute[0]), attribute[0]
       assert_not_equal event.send(attribute[0]).to_s.size, 0
     end
+    assert_nothing_raised do
+      event.upload
+    end
   end
 
 end
