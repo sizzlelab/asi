@@ -1,5 +1,3 @@
-require 'will_paginate'
-
 class Channel < ActiveRecord::Base
 
   usesnpguid
@@ -24,6 +22,7 @@ class Channel < ActiveRecord::Base
   validates_presence_of :name
   validates_length_of :name, :minimum => 2
   validate :associations_must_exist
+  validate :validate_group_count
   
   define_index do
     indexes :name, :sortable => true
@@ -41,11 +40,11 @@ class Channel < ActiveRecord::Base
     end 
     if user
       if channel_type == "friend"
-        return true if user.contacts.include?(owner)
+        return user.contacts.include?(owner)
       end
       if channel_type == "group"
         group_subscribers.each do |subscription|
-          return true if user.groups.include?(subscription)
+          return user.groups.include?(subscription)
         end
       end
     end
@@ -67,6 +66,14 @@ class Channel < ActiveRecord::Base
   
   private
   
+  def validate_group_count
+    if self.channel_type == "group"
+      if self.group_subscribers.size > 1
+        errors.add("of type 'group' can have only one group subscriber.")
+      end
+    end
+  end
+  
   def set_default_type
     if !self.channel_type
       self.channel_type = "public"
@@ -74,7 +81,9 @@ class Channel < ActiveRecord::Base
   end
   
   def subscribe_owner
-    user_subscribers << owner rescue ActiveRecord::RecordInvalid
+    if self.channel_type != "group"
+      user_subscribers << owner rescue ActiveRecord::RecordInvalid
+    end
   end
 
   def associations_must_exist

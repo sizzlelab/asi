@@ -14,6 +14,7 @@ testiviesti1:
   body: Tämä on testiviesti1
   poster_id: 1
   channel_id: 1
+  updated_at: 2009-07-23T14:06:22Z
   
 testiviesti2:
   id: 2
@@ -23,6 +24,8 @@ testiviesti2:
   body: Tämä on testiviesti2
   poster_id: 1
   channel_id: 1
+  updated_at: 2009-07-23T14:09:22Z
+
 
 testiviesti3:
   id: 3
@@ -32,6 +35,7 @@ testiviesti3:
   body: Tämä on testiviesti3
   poster_id: 3
   channel_id: 1
+  updated_at: 2009-07-23T14:08:22Z
 
 testiviesti4:
   id: 4

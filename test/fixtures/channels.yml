@@ -32,3 +32,11 @@ kaverikanava:
   owner_id: 1
   channel_type: friend
   creator_app_id: 1
+  
+testikanava:
+  name: testi
+  guid: sidgjaosigasgjpsgij
+  description: testi
+  owner_id: 15
+  channel_type: group
+  creator_app_id: 1

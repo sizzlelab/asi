@@ -7,24 +7,29 @@ class MessagesControllerTest < ActionController::TestCase
     get :list, {:format => "json", :channel_id => channels(:julkikanava).guid }, {:cos_session_id => sessions(:session1).id}
     assert_response :ok, @response.body
     json = JSON.parse(@response.body)
-    assert_equal 3, json["messages"].length
+    assert_equal 3, json["entry"].length
+    
+    get :list, {:format => "json", :channel_id => channels(:julkikanava).guid, :page => 1, :per_page => 1 }, {:cos_session_id => sessions(:session1).id}
+    assert_response :ok, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal 1, json["entry"].length    
     
     get :list, {:format => "json", :channel_id => channels(:ryhmakanava).guid }, {:cos_session_id => sessions(:session5).id}
     assert_response :forbidden , @response.body
   end
 
   def test_create_message
-    post :create, {:format => "json", :channel_id => channels(:julkikanava).guid, :title => "testiviesti", :body => "viestikenttä" }, {:cos_session_id => sessions(:session1).id}
+    post :create, {:format => "json", :channel_id => channels(:julkikanava).guid, :message => {:title => "testiviesti", :body => "viestikenttä" }}, {:cos_session_id => sessions(:session1).id}
     assert_response :created, @response.body
     json = JSON.parse(@response.body)    
-    assert_equal "testiviesti", json["message"]["title"]
+    assert_equal "testiviesti", json["entry"]["title"]
   end
 
   def test_show_message
     get :show, {:format => "json", :channel_id => channels(:julkikanava).guid, :msg_id => messages(:testiviesti1).guid }, {:cos_session_id => sessions(:session1).id}
     assert_response :ok, @response.body
     json = JSON.parse(@response.body)
-    assert_equal messages(:testiviesti1).body, json["message"]["body"]
+    assert_equal messages(:testiviesti1).body, json["entry"]["body"]
   end
 
   def test_delete_message
