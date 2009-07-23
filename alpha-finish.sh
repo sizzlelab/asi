@@ -32,10 +32,10 @@ date > app/views/layouts/_build_date.html.erb
 rake db:migrate
 rake cruise
 rake db:migrate RAILS_ENV=production
-rake ts:stop RAILS_ENV=production
-rake ts:configure RAILS_ENV=production
-rake ts:index RAILS_ENV=production
-rake ts:start RAILS_ENV=production
+rake thinking_sphinx:stop RAILS_ENV=production
+rake thinking_sphinx:configure RAILS_ENV=production
+rake thinking_sphinx:index RAILS_ENV=production
+rake thinking_sphinx:start RAILS_ENV=production
 #script/server -d -e production
 mongrel_rails cluster::start
 sudo /etc/init.d/apache2 restart
