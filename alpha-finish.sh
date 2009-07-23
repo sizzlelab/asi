@@ -32,7 +32,6 @@ date > app/views/layouts/_build_date.html.erb
 rake db:migrate
 rake cruise
 rake db:migrate RAILS_ENV=production
-rake thinking_sphinx:stop RAILS_ENV=production
 rake thinking_sphinx:configure RAILS_ENV=production
 rake thinking_sphinx:index RAILS_ENV=production
 rake thinking_sphinx:start RAILS_ENV=production
