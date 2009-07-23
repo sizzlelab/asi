@@ -31,5 +31,5 @@ rake thinking_sphinx:index RAILS_ENV=production
 rake thinking_sphinx:start RAILS_ENV=production
 
 mongrel_rails cluster::start
-
+sudo /etc/init.d/apache2 restart
 crontab config/crontab
