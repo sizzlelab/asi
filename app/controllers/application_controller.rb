@@ -108,8 +108,12 @@ class ApplicationController < ActionController::Base
     return (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
   end
 
-  def ensure_channel_owner
-    if !ensure_same_as_logged_person(@channel.owner_id)
+  def ensure_channel_admin
+    if @channel.channel_type == "group" 
+      if @channel.group_subscribers.size != 0 && ! @channel.group_subscribers[0].admins.exists?(@user)
+        render :status => :forbidden and return
+      end
+    elsif !ensure_same_as_logged_person(@channel.owner_id)
       render :status => :forbidden and return
     end
   end

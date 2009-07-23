@@ -39,11 +39,6 @@ class ChannelsControllerTest < ActionController::TestCase
     post :create, {:format => "json", :channel => {:channel_type => "group", :description => "", :name => "1"}}, { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request, @response.body
     
-#    post :create, {:format => "json", :channel => {:type => "group", :name => nil, :group_subscriptions => groups(:closed).id}}, { :cos_session_id => sessions(:session1).id }
-#    assert_response :created, @response.body
-#    json = JSON.parse(@response.body)
-#    assert_equal json["entry"]["name"], groups(:closed).title
-#    assert_equal 1, assigns["channel"].group_subscriptions.length
   end
 
   def test_delete_channel
@@ -51,7 +46,7 @@ class ChannelsControllerTest < ActionController::TestCase
     assert_response :ok, @response.body
     assert !Channel.find_by_guid(channels(:julkikanava).guid)
 
-    delete :delete, {:format => "json", :channel_id => channels(:ryhmakanava).guid}, { :cos_session_id => sessions(:session1).id }
+    delete :delete, {:format => "json", :channel_id => channels(:ryhmakanava).guid}, { :cos_session_id => sessions(:session6).id }
     assert_response :forbidden, @response.body
     assert Channel.find_by_guid(channels(:ryhmakanava).guid)
   end
@@ -75,32 +70,20 @@ class ChannelsControllerTest < ActionController::TestCase
   end
 
   def test_subscribe
-    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :group_subscriptions => groups(:tkk).id }, { :cos_session_id => sessions(:session1).id }
+    post :subscribe, {:format => "json", :channel_id => channels(:testikanava).guid, :subscription => groups(:hidden).id }, { :cos_session_id => sessions(:session1).id }
     assert_response :created, @response.body
-    assert_equal 2, assigns["channel"].group_subscribers.length
+    assert_equal 1, assigns["channel"].group_subscribers.length
 
-    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :group_subscriptions => groups(:open).id }, { :cos_session_id => sessions(:session5).id }
-    assert_response :forbidden, @response.body
-    assert_equal 2, assigns["channel"].group_subscribers.length
+    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :subscription => groups(:open).id }, { :cos_session_id => sessions(:session5).id }
+    assert_response :bad_request, @response.body
+    assert_equal 1, assigns["channel"].group_subscribers.length
 
-    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :group_subscriptions => "agaskdjghasdlgha" }, { :cos_session_id => sessions(:session1).id }
-    assert_response :not_found, @response.body
-    assert_equal 2, assigns["channel"].group_subscribers.length
+    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :subscription => "agaskdjghasdlgha" }, { :cos_session_id => sessions(:session1).id }
+    assert_response :bad_request, @response.body
+    assert_equal 1, assigns["channel"].group_subscribers.length
+    
 
-    post :subscribe, {:format => "json", :channel_id => channels(:ryhmakanava).guid, :group_subscriptions => [groups(:tkk).id, groups(:open).id] }, { :cos_session_id => sessions(:session5).id }
-    assert_response :created, @response.body
-    assert_equal 2, assigns["channel"].group_subscribers.length
-
-
-    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :user_subscriptions => people(:test).id, :group_subscriptions => nil }, { :cos_session_id => sessions(:session1).id }
-    assert_response :created, @response.body
-    assert_equal 3, assigns["channel"].user_subscribers.length
-
-    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :user_subscriptions => [people(:contact).id, people(:person1).id] }, { :cos_session_id => sessions(:session1).id }
-    assert_response :created, @response.body
-    assert_equal 4, assigns["channel"].user_subscribers.length
-
-    post :subscribe, {:format => "json", :channel_id => channels(:kaverikanava).guid, :group_subscriptions => nil, :user_subscriptions => nil }, { :cos_session_id => sessions(:session10).id }
+    post :subscribe, {:format => "json", :channel_id => channels(:kaverikanava).guid, :subscription => nil }, { :cos_session_id => sessions(:session10).id }
     assert_response :created, @response.body
     assert_equal 2, assigns["channel"].user_subscribers.length
 

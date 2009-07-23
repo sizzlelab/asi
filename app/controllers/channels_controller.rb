@@ -3,7 +3,7 @@ class ChannelsController < ApplicationController
   before_filter :ensure_client_login  
   before_filter :ensure_person_login, :except => :list
   before_filter :get_channel, :except => [:index, :create]
-  before_filter :ensure_channel_owner, :only => [:edit, :delete]
+  before_filter :ensure_channel_admin, :only => [:edit, :delete]
   before_filter :ensure_can_read_channel, :only => [:list_subscriptions, :show]
     
   def index
@@ -53,43 +53,6 @@ class ChannelsController < ApplicationController
   end
   
   def create
-# Commented out some shitty code.
-#    @channel = Channel.new( :name => params[:name], :description => params[:description], 
-#                           :owner => @user, :creator_app => @client )
-#    if params[:type]
-#      @channel.channel_type = params[:type]
-#    else
-#      @channel.channel_type = "public"
-#    end
-#    
-#    if params[:id] || !params[:id] == ""
-#      @channel.guid = params[:id]
-#    end
-#    
-#    if params[:type] == "group" && ( !params[:name] || params[:name] == "" )
-#      if !params[:group_subscriptions] || params[:group_subscriptions].class == "Array"
-#        render :status => :bad_request and return
-#      end
-#      @channel.name = Group.find_by_id(params[:group_subscriptions]).title
-#    end    
-#        
-#    if params[:channel][:user_subscriptions]
-#      begin
-#        users = Person.find(params[:user_subscriptions])
-#      rescue ActiveRecord::RecordNotFound
-#        render :status => :not_found and return
-#      end
-#      @channel.user_subscribers << users
-#    end
-#    if params[:group_subscriptions]
-#      begin
-#        groups = Group.find(params[:group_subscriptions])
-#      rescue ActiveRecord::RecordNotFound
-#        render :status => :not_found and return
-#      end
-#      @channel.group_subscribers << groups
-#    end
-
     @channel = Channel.new( params[:channel] )
     @channel.owner = @user
     @channel.creator_app = @client
@@ -101,46 +64,29 @@ class ChannelsController < ApplicationController
   end
 
   def subscribe
-    subscription = false
-    if params[:group_subscriptions]
-      if !ensure_same_as_logged_person(@channel.owner_id)
+    if @channel.channel_type == "group"
+      if !params[:subscription]
+        render :status => :bad_request and return
+      end
+      group = Group.find_by_id(params[:subscription])
+      if !group.admins.exists?(@user)
         render :status => :forbidden and return
       end
-      begin
-        groups = [Group.find(params[:group_subscriptions])].flatten
-      rescue ActiveRecord::RecordNotFound
-        render :status => :not_found and return
+      if @channel.group_subscribers.size >= 1
+        render :status => :bad_request and return
       end
-      groups.each do |group|
-        @channel.group_subscribers << group rescue ActiveRecord::RecordInvalid
-      end
-      subscription = true
-    end
-    if params[:user_subscriptions]
-      if !ensure_same_as_logged_person(@channel.owner_id)
-        render :status => :forbidden and return
-      end
-      begin
-        users = [Person.find(params[:user_subscriptions])].flatten
-      rescue ActiveRecord::RecordNotFound
-        render :status => :not_found and return
-      end
-      users.each do |user|
-        @channel.user_subscribers << user rescue ActiveRecord::RecordInvalid
-      end
-      subscription = true
-    end
-    if !subscription && ( @channel.channel_type == "friend" || @channel.channel_type == "public" )
-      if !@channel.can_read?(@user)
-        render :status => :forbidden and return
-      end
-      @channel.user_subscribers << @user
-      subscription = true
-    end
-    if subscription
-      render_json :status => :created and return
+      @channel.group_subscribers << group 
+      render :status => :created and return
     else
-      render_json :status => :forbidden, :messages => "Forbidden." and return
+      if params[:subscription]
+        render :status => :bad_request and return
+      end
+      if @channel.can_read?(@user)
+        @channel.user_subscribers << @user rescue ActiveRecord::RecordInvalid
+        render :status => :created and return
+      else
+        render :status => :forbidden and return
+      end
     end
   end
 
