@@ -193,11 +193,13 @@ class ApplicationController < ActionController::Base
   def catch_no_method_errors
     begin
       yield
+    rescue ActiveRecord::UnknownAttributeError => e
+      render_json :status => :bad_request, :messages => "#{e.to_s}" and return
     rescue NoMethodError => e
-      if e.name.end_with? "="
-        render_json :status => :bad_request, :messages => "Tried to set unknown field #{e.name}." and return
+      if e.name.to_s.end_with? "="
+        render_json :status => :bad_request, :messages => "unknown attribute #{e.name.chop}" and return
       else
-        render_json :status => :bad_request, :messages => "Tried to access unknown field #{e.name}." and return
+        render_json :status => :bad_request, :messages => "unknown attribute #{e.name}" and return
       end
     rescue ThinkingSphinx::ConnectionError => e
       render_json :status => 500, :messages => "The search daemon is dead." and return
