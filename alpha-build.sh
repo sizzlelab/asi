@@ -6,6 +6,7 @@
 COS_PATH=/var/datat/cos/common-services
 
 mongrel_rails cluster::stop -C $COS_PATH/config/mongrel_cluster.yml
+cd $COS_PATH
 rake thinking_sphinx:stop RAILS_ENV=production
 
 cd /
