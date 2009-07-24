@@ -109,7 +109,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_channel_admin
-    if @channel.channel_type == "group" 
+    if @channel.channel_type == "group"
       if @channel.group_subscribers.size != 0 && ! @channel.group_subscribers[0].admins.exists?(@user)
         render :status => :forbidden and return
       end
@@ -148,9 +148,9 @@ class ApplicationController < ActionController::Base
                             :page => params[:page].to_i }
     end
     options[:json] = hash
-    render options 
+    render options
   end
-  
+
   def maintain_session_and_user
     if session[:cos_session_id]
       if @application_session = Session.find_by_id(session[:cos_session_id])
@@ -189,12 +189,18 @@ class ApplicationController < ActionController::Base
   def set_up_feedback_form
     @feedback = Feedback.new
   end
-  
+
   def catch_no_method_errors
     begin
       yield
-    rescue NoMethodError
-      render_json :status => :bad_request, :messages => "Tried to set nonexistent fields." and return
+    rescue NoMethodError => e
+      if e.name.end_with? "="
+        render_json :status => :bad_request, :messages => "Tried to set unknown field #{e.name}." and return
+      else
+        render_json :status => :bad_request, :messages => "Tried to access unknown field #{e.name}." and return
+      end
+    rescue ThinkingSphinx::ConnectionError => e
+      render_json :status => 500, :messages => "The search daemon is dead." and return
     end
   end
 
