@@ -53,9 +53,16 @@ class ChannelsController < ApplicationController
   end
   
   def create
-    @channel = Channel.new( params[:channel] )
+    @channel = Channel.new( params[:channel].except(:group_id) )
     @channel.owner = @user
     @channel.creator_app = @client
+    if @channel.channel_type == "group" && params[:channel][:group_id]
+      group = Group.find_by_id(params[:channel][:group_id])
+      if !group || !group.admins.exists?(@user)
+        render :status => :bad_request and return
+      end
+      @channel.group_subscribers << group
+    end
     
     if !@channel.save
       render_json :status => :bad_request, :messages => @channel.errors.full_messages and return
@@ -65,10 +72,10 @@ class ChannelsController < ApplicationController
 
   def subscribe
     if @channel.channel_type == "group"
-      if !params[:subscription]
+      if !params[:group_id]
         render :status => :bad_request and return
       end
-      group = Group.find_by_id(params[:subscription])
+      group = Group.find_by_id(params[:group_id])
       if !group.admins.exists?(@user)
         render :status => :forbidden and return
       end
@@ -78,7 +85,7 @@ class ChannelsController < ApplicationController
       @channel.group_subscribers << group 
       render :status => :created and return
     else
-      if params[:subscription]
+      if params[:group_id]
         render :status => :bad_request and return
       end
       if @channel.can_read?(@user)
@@ -91,38 +98,39 @@ class ChannelsController < ApplicationController
   end
 
   def unsubscribe
-    if params[:user_subscriptions]
-      if ensure_same_as_logged_person(@channel.owner.id)
-        begin
-          users = Person.find(params[:user_subscriptions])
-        rescue ActiveRecord::RecordNotFound
-          render :status => :not_found and return
+    if @channel.channel_type == "group"
+      if !params[:group_id]
+        print "goo"
+        render :status => :bad_request and return
+      end
+      group = Group.find_by_id(params[:group_id])
+      if !group || !@channel.group_subscribers.exists?(group)
+        print "foo"
+        render :status => :bad_request and return
+      end
+      if !group.admins.exists?(@user)
+        render :status => :forbidden and return
+      end
+      @channel.group_subscribers.delete(group)
+      render :status => :ok and return
+    else
+      if params[:person_id]
+        if !ensure_same_as_logged_person(@channel.owner.id)
+          render :status => :forbidden and return
         end
-        @channel.user_subscribers.delete(users)
-      else
-        render :status => :forbidden and return
-      end
-    end
-    if params[:group_subscriptions]
-      if ensure_same_as_logged_person(@channel.owner.id)
-        begin
-          groups = Group.find(params[:group_subscriptions])
-        rescue ActiveRecord::RecordNotFound
-          render :status => :not_found and return
+        person = Person.find_by_id(params[:person_id])
+        if !person
+          render :bad_request and return
         end
-        @channel.group_subscribers.delete(groups)
       else
-        render :status => :forbidden and return
+        person = @user
       end
-    end
-     
-    if !params[:user_subscriptions] && !params[:group_subscriptions]
-      if ensure_same_as_logged_person(@channel.owner.id)
-        render :status => :forbidden and return
+      if !@channel.user_subscribers.exists?(person)
+        render :status => :bad_request and return
       end
-      @channel.user_subscribers.delete(@user)
+      @channel.user_subscribers.delete(person)
+      render :status => :ok and return
     end
-    render :status => :ok and return
   end
   
   def list_subscriptions
@@ -144,7 +152,9 @@ class ChannelsController < ApplicationController
         render :status => :bad_request and return
       end
       @channel.owner = person
-      @channel.user_subscribers << person rescue ActiveRecord::RecordInvalid
+      if @channel.channel_type != "group"
+        @channel.user_subscribers << person rescue ActiveRecord::RecordInvalid
+      end
     end
 
     @channel.update_attributes(params[:channel])

@@ -14,7 +14,7 @@ class ChannelsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_not_equal json['entry'], []
 
-    get :index, { :group_id => groups(:closed).id, :format => "json" }, { :cos_session_id => sessions(:session1).id}
+    get :index, { :group_id => groups(:open).id, :format => "json" }, { :cos_session_id => sessions(:session1).id}
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert_not_equal json['entry'], []
@@ -38,6 +38,10 @@ class ChannelsControllerTest < ActionController::TestCase
 
     post :create, {:format => "json", :channel => {:channel_type => "group", :description => "", :name => "1"}}, { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request, @response.body
+
+    post :create, {:format => "json", :channel => {:channel_type => "group", :description => "gsdgsGD", :name => "testiryhmä", :group_id => groups(:open)}}, { :cos_session_id => sessions(:session1).id }
+    assert_response :created, @response.body
+    assert_equal 1, assigns["channel"].group_subscribers.size
     
   end
 
@@ -70,20 +74,20 @@ class ChannelsControllerTest < ActionController::TestCase
   end
 
   def test_subscribe
-    post :subscribe, {:format => "json", :channel_id => channels(:testikanava).guid, :subscription => groups(:hidden).id }, { :cos_session_id => sessions(:session1).id }
+    post :subscribe, {:format => "json", :channel_id => channels(:testikanava).guid, :group_id => groups(:hidden).id }, { :cos_session_id => sessions(:session1).id }
     assert_response :created, @response.body
     assert_equal 1, assigns["channel"].group_subscribers.length
 
-    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :subscription => groups(:open).id }, { :cos_session_id => sessions(:session5).id }
+    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :group_id => groups(:open).id }, { :cos_session_id => sessions(:session5).id }
     assert_response :bad_request, @response.body
-    assert_equal 1, assigns["channel"].group_subscribers.length
+    assert_equal 0, assigns["channel"].group_subscribers.length
 
-    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :subscription => "agaskdjghasdlgha" }, { :cos_session_id => sessions(:session1).id }
+    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :group_id => "agaskdjghasdlgha" }, { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request, @response.body
-    assert_equal 1, assigns["channel"].group_subscribers.length
+    assert_equal 0, assigns["channel"].group_subscribers.length
     
 
-    post :subscribe, {:format => "json", :channel_id => channels(:kaverikanava).guid, :subscription => nil }, { :cos_session_id => sessions(:session10).id }
+    post :subscribe, {:format => "json", :channel_id => channels(:kaverikanava).guid, :group_id => nil }, { :cos_session_id => sessions(:session10).id }
     assert_response :created, @response.body
     assert_equal 2, assigns["channel"].user_subscribers.length
 
@@ -94,24 +98,15 @@ class ChannelsControllerTest < ActionController::TestCase
   end
 
   def test_unsubscribe
-    delete :unsubscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :user_subscriptions => people(:contact).id }, { :cos_session_id => sessions(:session1).id }
+    delete :unsubscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :person_id => people(:contact).id }, { :cos_session_id => sessions(:session1).id }
     assert_response :ok, @response.body
     assert_equal 1, assigns["channel"].user_subscribers.length
 
-    delete :unsubscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :user_subscriptions => nil }, { :cos_session_id => sessions(:session1).id }
-    assert_response :forbidden, @response.body
-    assert_equal 1, assigns["channel"].user_subscribers.length
-
-    post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :user_subscriptions => people(:test).id, :group_subscriptions => nil }, { :cos_session_id => sessions(:session1).id }
-    delete :unsubscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :user_subscriptions => nil }, { :cos_session_id => sessions(:session10).id }
+    delete :unsubscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :person_id => nil }, { :cos_session_id => sessions(:session1).id }
     assert_response :ok, @response.body
-    assert_equal 1, assigns["channel"].user_subscribers.length
+    assert_equal 0, assigns["channel"].user_subscribers.length
 
-    delete :unsubscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :user_subscriptions => nil, :group_subscriptions => groups(:closed).id }, { :cos_session_id => sessions(:session10).id }
-    assert_response :forbidden, @response.body
-    assert_equal 1, assigns["channel"].group_subscribers.length
-
-    delete :unsubscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :group_subscriptions => groups(:closed).id }, { :cos_session_id => sessions(:session1).id }
+    delete :unsubscribe, {:format => "json", :channel_id => channels(:ryhmakanava).guid, :group_id => groups(:open).id }, { :cos_session_id => sessions(:session1).id }
     assert_response :ok, @response.body
     assert assigns["channel"].group_subscribers.empty?
 

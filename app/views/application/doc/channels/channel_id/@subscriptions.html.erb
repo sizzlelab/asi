@@ -5,37 +5,32 @@
 <%
 methods = [ { :name => "GET", 
 							:description => "List subscriptions.",
-							:returns => { "200" => "Returns group and user subscriptions.",
+							:returns => { "200" => "Returns group and user subscriptions in json's entry -field",
 														"401" => "Login required.",
 														"403" => "User has no access to channel.",
 								 				 		"404" => "Channel not found." } 
 						}, 
 						{	:name => "POST",
-							:description => "Add subscriptions. Post without parameters subscribes current user to the channel. Only channel owner can add other people or groups as subscribers.",
-							:parameters => [ { :user_subscriptions => "Array of user id's.",  },
-															 { :group_subscriptions => "Array of group id's."}
-															],
-							:returns => { "201" => "Succesfully subscribed..",
+							:description => "Subscribe to a channel. Post without parameters subscribes current user to the channel. Channel of type group can have only a single group subscriber and no user subscribers. Public and friend channels can have only user subscribers. Only group admins can subscribe the group to a channel.",
+							:parameters => [ { :group_id => "Group's id."}
+														 ],
+							:returns => { "201" => "Succesfully subscribed.",
+														"400" => "Invalid group id or no group id supplied for a group channel or tried to subscribe a group to public or friend channel.",
 								 						"401" => "Login required.",
-								 						"403" => "User has no rights to post to channel."} 
+								 						"403" => "User has no admin rights to channel."} 
 							},
 							{
 								:name => "DELETE",
-								:description => "Remove subscriptions. If no parameters are given, unsubscribe current user.",
-								:parameters => [ { :user_subscriptions => "Array of user id's.",  },
-																 { :group_subscriptions => "Array of group id's."}
-																],
-								:returns => { "200" => "Succesfully unsubscribed..",
+								:description => "Remove subscriptions. Single group can be unsubscribed by that group's admin. Single users can be unsubscribed by friend and public channel admins. If no parameters are given, unsubscribe current user.",
+								:parameters => [ { :group_id => "Group's id."},
+																 { :person_id => "Person's id."}
+															 ],
+								:returns => { "200" => "Succesfully unsubscribed. ",
+															"400" => "Group or person was not subscribed to the channel or parameters missing.",
 									 						"401" => "Login required.",
-									 						"403" => "User has no rights to post to channel."}
+									 						"403" => "User has no admin rights to channel."}
 							} ]
 
 %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>
-
-<h2>Subresources</h2>
-
-<ul>
-	<li><a href="doc/channels/channel_id/@messages/msg_id"><tt>/channels/&lt;channel_id&gt;/@messages/&lt;msg_id&gt;</tt></a> &ndash; Single message</li>
-</ul>
