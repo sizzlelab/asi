@@ -59,7 +59,8 @@ class Channel < ActiveRecord::Base
              :owner_name => owner.name_or_username,
              :created_at => created_at,
              :updated_at => updated_at,
-             :channel_type => channel_type
+             :channel_type => channel_type,
+             :message_count => self.messages.size
            }    
     return hash.to_json(*a)
   end

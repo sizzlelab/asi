@@ -1,20 +1,20 @@
 <%= doc_title '/channels/&lt;channel_id&gt;' %>
 
-<p>A resource for accessing a single channel in OtaSizzle.</p>
+<p>A resource for accessing a single channel in OtaSizzle. See access rights from <a href="/doc/channels">parent resource</a>.</p>
 
 <%
 methods = [ { :name => "GET", 
-							:description => "Show channel.",
-							:returns => { "200" => "Returns channel.",
+							:description => "Shows channel. Updated_at -field shows last message post.",
+							:returns => { "200" => "Returns channel in json's entry -field.",
 														"401" => "Login required.",
 														"403" => "User has no access to channel.",
 								 				 		"404" => "Channel not found" } 
 						}, 
 						{	:name => "DELETE",
-							:description => "Delete channel. Only the owner of the channel can delete it.",
+							:description => "Delete channel. Only the admin of the channel can delete it.",
 							:returns => { "200" => "Succesfully deleted channel.",
 														"401" => "Login required.",
-														"403" => "User has no access to channel.",
+														"403" => "User has no admin rights to channel.",
 								 						"404" => "Channel not found." } 
 						},
 						{	:name => "PUT",
@@ -23,10 +23,10 @@ methods = [ { :name => "GET",
 															 { :description => "Channel description" },
 															 { :owner => "Channel owner."}
 														 ],
-							:returns => { "200" => "Succesfully modified channel. Returns the modified channel.",
-								 						"400" => "Malformed request.",
+							:returns => { "200" => "Succesfully modified channel. Returns the modified channel in json's entry -field.",
+								 						"400" => "Invalid fields. Errors are listed in json's messages -field.",
 														"401" => "Login required.",
-														"403" => "User has no access to channel.",
+														"403" => "User has no admin rights to channel.",
 								 						"404" => "Channel not found." } 
 						}
 					]

@@ -1,25 +1,33 @@
 <%= doc_title '/channels' %>
 
-<p>A resource for accessing channels in OtaSizzle</p>
+<p>A resource for accessing channels in OtaSizzle. Currently channels can be either of type public, friend or group.</p>
+<ul>
+	<li>Group channels can have only one group subscribed to them and are accessible to the members of that group and the group's admins have admin access to channel as well.</li>
+	<li>Public channels are accessible to anyone. Only owner has admin rights.</li>
+	<li>Friend channels can be accessed by the friends of the owner. Only owner has admin rights.</li>
+</ul>
 
 <%
 methods = [ { :name => "GET", 
-							:description => "List channels current user has access to matching any of the parameters.",
-							:parameters => [ { :search => "Search term for text search from channel name and description." },
-								 							 { :group_id => "Group id." },
-															 { :person_id => "Person id." }
+							:description => "Lists channels. Parameters are optional but only one kind of listing (either search or by person id or by group id) is possible at a time. Only channels that current user has access to are listed.",
+							:parameters => [ { :search => "Search term for text search from channel name and description. Results are always sorted in order of relevance." },
+								 							 { :group_id => "List channels this group is subscribed to." },
+															 { :person_id => "List channels this person is subscribed to." },
+															 { :sort_by => "Change sorting field. Defaults to 'updated_at'. Possible values are 'created_at', 'name', 'id'."},
+															 { :sort_order => "Change sort order. Defaults to descending. Possible values are 'ascending' and 'descending'."},
+															 { :page => "Pagination page."},
+															 { :per_page => "Pagination per page."}
 														 ],
-							:returns => { "200" => "List of matching and accessible channels or all channels if search terms are omitted. If no channels match an empty array is returned."} }, 
+							:returns => { "200" => "List of matching and accessible channels or all channels if search terms are omitted in returned json's entry -field. If no channels match an empty array is returned."} }, 
 						{	:name => "POST",
-							:description => "Creates a channel. Parameters are optional. Current user is set to channel owner and subscribed to the channel. If channel type == group, only a single group_subscription must be passed and name defaults to that group's name.",
-							:parameters => [ { :name => "Channel name" },
-															 { :description => "Channel description" },
-															 { :user_subscriptions => "List of user ids subscripted to the channel."},
-															 { :group_subscriptions => "List of group ids subscripted to the channel." },
-															 { :type => "Channel type. Currently public, group and friend channels are supported. Default is public."}
+							:description => "Creates a channel. Parameters are optional except name. Current user is set to channel owner and current client is set to creator_app. Owner is subscribed to the channel (except for group channels).",
+							:parameters => [ :channel => [{ :name => "Channel name. Must be at least two characters long." },
+															 { :description => "Channel description." },
+															 { :channel_type => "Currently public, group and friend channels are supported. Default is public."},
+															 { :group_id => "A single group's id which is then subscribed to the channel if channel_type == 'group'. Current user must have admin rights to that group."}]
 															],
-							:returns => { "201" => "Created. Response contains created channel.",
-														"400" => "Bad request",
+							:returns => { "201" => "Created. Response contains created channel in json's entry -field.",
+														"400" => "Supplied invalid parameters. Errors are listed in json's messages -field.",
 														"401" => "Login required." } 
 							} ]
 

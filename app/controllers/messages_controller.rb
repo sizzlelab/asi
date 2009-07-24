@@ -8,7 +8,8 @@ class MessagesController < ApplicationController
     if params[:search]
       @messages = Message.search( params[:search],
                                   :per_page => params[:per_page],
-                                  :page => params[:page])
+                                  :page => params[:page], 
+                                  :with => { :channel_id => @channel.id})
     else
       options = {}
       if params[:per_page]
@@ -35,7 +36,11 @@ class MessagesController < ApplicationController
   def create
     @message = Message.new(params[:message].except(:reference_to))
     if params[:message][:reference_to]
-      @message.reference_to = Message.find_by_guid( params[:message][:reference_to] ).id rescue NoMethodError
+      ref = Message.find_by_guid( params[:message][:reference_to] )
+      if !ref 
+        render :status => :bad_request and return
+      end
+      @message.reference_to = ref.id
     end
     @message.channel = @channel
     @message.poster = @user

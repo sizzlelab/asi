@@ -4,22 +4,26 @@
 
 <%
 methods = [ { :name => "GET", 
-							:description => "Show messages. Currently lists all of the channel's messages' ids.",
-							:returns => { "200" => "Returns messages.",
+							:description => "List channel's messages. By default the messages are ordered descending by 'updated_at'.",
+							:parameters => [ { :page => "Pagination page." },
+															 { :per_page => "Pagination per page." },
+															 { :search => "Search parameter to search from channel's messages." },
+															 { :sort_order => "Changes the sort order of messages. Allowed values are 'ascending' and 'descending'."}
+														 ],
+							:returns => { "200" => "Returns messages in json's entry -field.",
 														"403" => "User has no access to channel.",
-								 				 		"404" => "Channel not found." } 
+								 				 		"404" => "Channel not found." }
 						}, 
 						{	:name => "POST",
-							:description => "Post a message to channel",
-							:parameters => [ { :title => "Message title" },
-															 { :body => "Message content." },
-															 { :attachment => "Attachment. Support for other types than urls is nonexistent."},
-															 { :content_type => "Message's content type."},
-															 { :reference_to => "Message id that this message is a reply to."}
-
+							:description => "Post a message to channel. Messages poster is set to current user and channel to 'channel_id'.",
+							:parameters => [ :message => [ { :title => "Message title" },
+															 { :body => "Message content. Text only." },
+															 { :attachment => "Attachment. Currently only urls are advised to be used. In any case the handling of the attachment-field's content is left for the client."},
+															 { :content_type => "Message's attachment's content type."},
+															 { :reference_to => "Message id that this message is a reply to."} ]
 															],
-							:returns => { "201" => "Created. Response includes created message.",
-								 						"400" => "Malformed request.",
+							:returns => { "201" => "Created. Response includes created message in json's entry -field.",
+								 						"400" => "Invalid parameters. Errors are listed in json's messages -field.",
 								 						"403" => "User has no rights to post to channel.",
 														"404" => "Channel not found."} 
 							} ]
