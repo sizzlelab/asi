@@ -14,7 +14,7 @@ julkikanava:
   owner_id: 1
   channel_type: public
   creator_app_id: 1
-  
+
 ryhmakanava:
   id: 2
   guid: sdoghasdoghaogh
@@ -23,7 +23,7 @@ ryhmakanava:
   owner_id: 5
   channel_type: group
   creator_app_id: 1
-  
+
 kaverikanava:
   id: 3
   guid: igjasopihgaowrghaowrigh
@@ -32,8 +32,9 @@ kaverikanava:
   owner_id: 1
   channel_type: friend
   creator_app_id: 1
-  
+
 testikanava:
+  id: 4
   name: testi
   guid: sidgjaosigasgjpsgij
   description: testi
