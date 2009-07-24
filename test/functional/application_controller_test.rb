@@ -20,7 +20,11 @@ class ApplicationControllerTest < ActionController::TestCase
       assert_not_equal event.send(attribute[0]).to_s.size, 0
     end
     assert_nothing_raised do
-      event.upload
+      begin
+        event.upload
+      rescue Errno::ECONNREFUSED => e
+        puts "No connection to RESSI at #{RESSI_URL}"
+      end
     end
   end
 
