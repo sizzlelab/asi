@@ -91,8 +91,8 @@ class SessionsController < ApplicationController
          end
       end
       
-      role = Role.find_by_user_and_client_id(@session.person_id, @session.client_id)
-      if ! role || role.empty?
+      role = Role.find_by_person_and_client_id(@session.person_id, @session.client_id)
+      if ! role
         # First time using this service, so let's create a Role with default parameters
         Role.create(:person_id => @session.person_id, 
                     :client_id => @session.client_id, 
