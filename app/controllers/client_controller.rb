@@ -6,15 +6,15 @@ class ClientController < ApplicationController
       role = params['roles'].singularize
       @people = Role.find(:all, :conditions => {:client_id => params['app_id'], :title => role})
     elsif params['user_id']
-      @people = Role.find_by_user_and_client_id(params['user_id'], params['app_id'])
+      @people = Role.find_all_by_person_and_client_id(params['user_id'], params['app_id'])
     else
-      @people = Role.find_by_client_id(params['app_id'])
+      @people = Role.find_all_by_client_id(params['app_id'])
     end
   end
   
   def index_services
     if params['user_id']
-      @services = Role.find_by_user_id(params['user_id'])
+      @services = Role.find_all_by_person_id(params['user_id'])
     end
   end
   
@@ -34,14 +34,14 @@ class ClientController < ApplicationController
   end
   
   def show
-    @role = Role.find_by_user_and_client_id(params['user_id'], params['app_id'])
+    @role = Role.find_by_person_and_client_id(params['user_id'], params['app_id'])
     if ! @role
       render :status => :not_found, :json => ["No role found."].to_json
     end
   end
   
   def update
-    @role = Role.find_by_user_and_client_id(params['user_id'], params['app_id'])
+    @role = Role.find_by_person_and_client_id(params['user_id'], params['app_id'])
     if ! @role
       render :status => :not_found, :json => ["No existing role found. Create one instead of updating."].to_json and return
     end

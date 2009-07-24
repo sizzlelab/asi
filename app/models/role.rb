@@ -13,17 +13,14 @@ class Role < ActiveRecord::Base
   validates_inclusion_of :title, :in => [ADMINISTRATOR, MODERATOR, USER], 
   :message => "Role title {{value}} is not valid."
   
-  def self.find_by_user_and_client_id(user_id, client_id)
-    Role.find(:all, :conditions => { :person_id => user_id, :client_id => client_id })
+  def self.find_all_by_person_and_client_id(person_id, client_id)
+    Role.find(:all, :conditions => { :person_id => person_id, :client_id => client_id })
   end
   
-  def self.find_by_client_id(client_id)
-    Role.find(:all, :conditions => "client_id = '#{client_id}'")
+  def self.find_by_person_and_client_id(person_id, client_id)
+    Role.find(:first, :conditions => { :person_id => person_id, :client_id => client_id })
   end
-  
-  def self.find_by_user_id(user_id)
-    Role.find(:all, :conditions => "person_id = '#{user_id}'")
-  end
+
   
  # Creates location security token
   def location_security_token

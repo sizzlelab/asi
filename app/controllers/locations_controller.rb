@@ -68,7 +68,7 @@ class LocationsController < ApplicationController
   end
   
   def fetch_location_security_token 
-    role = @user.roles.find_by_client_id(@client.id).first
+    role = @user.roles.find_by_client_id(@client.id)
     render :status => :ok, :json => { :location_security_token => role.location_security_token }.to_json
   end
   

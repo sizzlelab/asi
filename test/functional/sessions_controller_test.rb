@@ -23,7 +23,7 @@ class SessionsControllerTest < ActionController::TestCase
     post :create, { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :created
     assert_not_nil session[:cos_session_id]
-    assert ! Role.find_by_user_and_client_id(people(:test).id, sessions(:session10).client_id).empty?, "No Role created on first login."
+    assert Role.find_by_person_and_client_id(people(:test).id, sessions(:session10).client_id), "No Role created on first login."
     json = JSON.parse(@response.body)
 
     delete :destroy, {:format => 'json'}
