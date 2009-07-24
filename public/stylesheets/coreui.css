@@ -1,5 +1,5 @@
 body {
-    width : 600px;
+    width : 700px;
     margin : auto;
     margin-top : 4em;
     font : medium Verdana, sans-serif
@@ -37,6 +37,27 @@ div.footer {
     font-size : x-small;
     text-align : right;
     margin-top : 4em;
+}
+
+div.navigation {
+	text-align: right;
+	margin-bottom: 2em;
+}
+
+/* Links */
+
+a {
+	color: #000080;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #0000c0;
+}
+
+a:hover {
+	color: #0000ff;
+	text-decoration: underline;
 }
 
 
@@ -165,4 +186,36 @@ input.update_profile {
 
 input.update_postal_code {
 	width: 60px;
+}
+
+/* Profile box */
+
+.profile_box {
+	border: 1px dotted black;
+	padding: 0.2em 0.5em 0.2em 1em;
+	width: 400px;
+}
+
+.profile_box .avatar {
+	float: left;
+	padding-top: 1em;
+	width: 64px;
+}
+
+.profile_box img {
+	border: 1px solid black;
+}
+
+.profile_box .name {
+	font-weight: bold;
+	font-size: 110%;
+}
+
+.profile_box .info {
+	float: left;
+	width: 300px;
+}
+
+.profile_box .box_footer {
+	clear: both;
 }

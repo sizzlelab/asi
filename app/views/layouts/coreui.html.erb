@@ -2,18 +2,30 @@
   <head>
     <title>Core UI for OtaSizzle Common Services</title>
     <%= stylesheet_link_tag("coreui") %>
+    <%= javascript_include_tag :defaults %>
   </head>
   <body>
-    <h1 style="border-bottom: 2px solid black">Core UI</h1>
+    <h1 style="border-bottom: 2px solid black">OtaSizzle Core UI</h1>
+
+<% if @user %>
+    <div class="navigation">
+      [ <%= link_to_unless_current "Home", coreui_root_path %> ] 
+      [ <%= link_to_unless_current "Profile", coreui_profile_path(:id => @user.id) %> ]
+      [ <%= link_to_unless_current "Privacy", coreui_privacy_path(:id => @user.id) %> ]
+      [ <%= link_to "Logout", "/session", :method=>"delete" %> ]
+    </div>
+<% end %>
 
     <p style="color: green"><%= flash[:notice] %></p> 
     <p style="color: orange"><%= flash[:warning] %></p> 
     <p style="color: red"><%= flash[:error] %></p> 
     
+    <% if @user %>
+    
     <%= yield %>
     
-    <% if @user %>
-      <p><%= link_to "Logout", "/session", :method=>"delete" %></p>
+    <% else %>
+      <%= render :partial => "/coreui/login" %>
     <% end %>
 
     <div class="footer">

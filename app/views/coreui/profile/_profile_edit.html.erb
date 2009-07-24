@@ -39,7 +39,7 @@
       Confirm new password:
     </div>
     <div class="profile_update_form_center">
-      <%= f.password_field :password %> 
+      <%= password_field_tag "person[password2]", "", :size => 30 %> 
     </div>
   </div>
   <div class="profile_info_field">  
@@ -175,19 +175,24 @@
   </div>
 <% end %>
 
-  <div class="profile_info_field">  
+  <div class="profile_info_field">
     <div class="profile_update_form_left">
       Last location:
     </div>
     <% if l = @person.location %>
-    <div class="profile_update_form_two_columns">
+    <div class="profile_update_form_two_columns" id="location_data">
       <div class="left_float">
-        <%= "\"#{@person.location.label}\"<br /> at " unless ! @person.location.label %>
+        <%= "\"#{l.label}\"<br /> at " unless ! l.label %>
         <%= link_to("#{l.latitude}, #{l.longitude}", "http://maps.google.com/maps?q=#{l.latitude}+#{l.longitude}") %>
       </div>
-      <div class="right_float">  
-        <small>(<%= distance_of_time_in_words_to_now(@person.location.updated_at) %> ago)</small>
-      </div>  
+      <div class="right_float">
+        <small>(<%= distance_of_time_in_words_to_now(l.updated_at) %> ago)</small>
+        <%= button_to_remote "Clear", 
+          :update => "location_data",
+          :url => { :controller => "/locations", :format => "json", :action => "destroy", :user_id => @person.id },
+          :method => :delete
+        %>
+      </div>
     </div>
     <% else %>
     <div class="profile_update_form_right">
@@ -200,5 +205,6 @@
 
   <div class="profile_update_form_buttons">
     <%= submit_tag "Save changes" %>
+    [ <%= link_to "Cancel", coreui_profile_path(:id => @person.id) %> ]
   </div>  
 <% end %>

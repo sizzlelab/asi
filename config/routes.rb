@@ -123,7 +123,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/:user_id/@location', :controller => 'locations',
                                              :get => 'get',
                                              :put => 'update',
-                                             :post => 'update'
+                                             :post => 'update',
+                                             :delete => 'destroy'
 
   map.resource '/people/:user_id/@transactions/transactions.xml', :controller => 'transactions',
                                                                   :get => 'get',

@@ -1,7 +1,21 @@
-<h2>index</h2>
+<% if @person %>
+  <h2>Welcome, <%= @person.username %>!</h2>
+  
+  <p>Here you can view and edit the information in your OtaSizzle profile.</p>
 
-<% if @person != nil %>
-  <%= render :partial => "profile_edit"  %>
-<% else %>
-  <%= render :partial => "/coreui/login" %>
+  <div class="profile_box" id="<%= @person.id %>">
+    <div class="avatar">
+      <%= link_to (image_tag("/people/#{@person.id}/@avatar/small_thumbnail", :align => :left, :alt => "Show full profile"), coreui_profile_path(:id => @person.id)) if @person.avatar %>
+    </div>
+    <div class="info">
+      <p class="name">
+        <%= link_to @person.name ? @person.name.unstructured : @person.username, coreui_profile_path(:id => @person.id) %>
+      </p>
+      <p class="links">
+        <%= link_to "Edit your profile", edit_coreui_profile_path(:id => @person.id) %><br />
+        <%= link_to "Edit your privacy settings", edit_coreui_privacy_path(:id => @person.id) %>
+      </p>
+    </div>
+    <div class="box_footer"></div>
+  </div>
 <% end %>

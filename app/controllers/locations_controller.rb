@@ -55,6 +55,16 @@ class LocationsController < ApplicationController
     end
   end
   
+  def destroy
+    location = Location.find_by_person_id(params['user_id'])
+    if location
+      location.destroy
+      render :status => :ok and return
+    else
+      render :status => :not_found, :json => "No location to delete.".to_json and return
+    end
+  end
+  
   private
   
   def change_me_to_userid

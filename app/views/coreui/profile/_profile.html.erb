@@ -1,1 +1,158 @@
-testi
+  <h3>User account</h3>
+
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      ID:
+    </div>
+    <div class="profile_update_form_center">
+      <%= @person.id %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Username:
+    </div>
+    <div class="profile_update_form_center">
+      <%= @person.username %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      E-mail:
+    </div>
+    <div class="profile_update_form_center">
+      <%= @person.email %> 
+    </div>
+  </div>
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Avatar:
+    </div>
+    <div class="profile_update_form_right">
+    <% if @person.avatar %>
+      <%= link_to(image_tag("/people/#{@person.id}/@avatar/large_thumbnail"), "/people/#{@person.id}/@avatar") %>
+      <% else %>
+      (no avatar image)
+      <% end %>
+    </div>
+  </div>
+  
+  <h3>Personal information</h3>
+  
+<% if name = @person.name %>
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Name:
+    </div>
+    <div class="profile_update_form_right">
+      <%= name.unstructured %> 
+    </div>
+  </div>
+<% end %>
+
+<% if spec = @person.person_spec %>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Status message:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec.status_message %> <small>(<%= distance_of_time_in_words_to_now(spec.status_message_changed) %> ago)</small>
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Birthdate:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec.birthdate %>
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Phone number:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec.phone_number %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Website:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec.website %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Gender:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec.gender %>
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Description:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec.description %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      IRC nickname:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec.irc_nick %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      MSN nickname:
+    </div>
+    <div class="profile_update_form_center">
+      <%= spec.msn_nick %> 
+    </div>
+  </div>
+<% end %>
+
+<h3>Address and location</h3>
+
+<% if address = @person.address %>
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Address:
+    </div>
+    <div class="profile_update_form_right">
+      <%= address.unstructured %>
+    </div>
+  </div>
+<% end %>
+
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Last location:
+    </div>
+    <% if l = @person.location %>
+    <div class="profile_update_form_two_columns" id="location_data">
+      <div class="left_float">
+        <%= "\"#{l.label}\"<br /> at " unless ! l.label %>
+        <%= link_to("#{l.latitude}, #{l.longitude}", "http://maps.google.com/maps?q=#{l.latitude}+#{l.longitude}") %>
+      </div>
+      <div class="right_float">
+        <small>(<%= distance_of_time_in_words_to_now(l.updated_at) %> ago)</small>
+      </div>
+    </div>
+    <% else %>
+    <div class="profile_update_form_right">
+      -
+    </div>
+    <% end %>
+  </div>
+  
+  <hr />
+
+  <div class="profile_update_form_buttons">
+    [ <%= link_to "Edit profile", edit_coreui_profile_path(:id => @person.id) %> ]
+  </div>  
