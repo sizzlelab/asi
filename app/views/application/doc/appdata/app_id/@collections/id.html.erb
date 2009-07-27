@@ -22,7 +22,7 @@
 
                 { :name => "POST",
                   :description => "Adds a new item to the collection.",
-                  :parameters => [ { :content_type => "The content type of the new collection item. The content types currently
+                  :parameters => [ :item => [{ :content_type => "The content type of the new collection item. The content types currently
                                                        supported are <code>text/*</code>, <code>image/*</code> 
                                                        and <code>collection</code> (a reference to an other collection)." },
                                    { :file => "A file to be added to the collection (optional)." },
@@ -31,13 +31,13 @@
                                    { :body => "The body of the item. If a file is given or content_type is not <code>text/*</code>,
                                                this parameter is ignored." },
                                    { :collection_id => "Id of an existing collection where the reference will point to. If content_type
-                                                        is not <code>collection</code> this parameter is ignored.", }           
+                                                        is not <code>collection</code> this parameter is ignored.", } ]          
                                  ],
-                  :returns => returns.merge({ "400" => "A malformed or unsupported image type was uploaded." }) },
+                  :returns => returns.merge({ "201" => "Ok.", "400" => "A malformed or unsupported image type was uploaded." }).except("200") },
 
                 { :name => "PUT",
                   :description => "Updates the submitted attributes of the collection.",
-                  :parameters => [ { :title => "The title describing the collection.", },
+                  :parameters => [ :collection => [{ :title => "The title describing the collection.", },
                                    { :priv => "If collection is set to private only the owner and his friends are able to see it.
                                                   An empty value, '0' or 'false' are interpreted as <code>false</code>.
                                                   All other values are <code>true</code>." },             
@@ -47,7 +47,7 @@
                                                     All other values are <code>true</code>." },
                                     { :tags => "Describing keywords for the collection. Can be a comma-separated list (,), although the search
                                               currently supports only exact string matching, so use of only one tag is currently recommended." },
-                                   { :metadata => [{ :any_key => "Any string" }, { :another_key => "Another string" } ] } ],
+                                   { :metadata => [{ :any_key => "Any string" }, { :another_key => "Another string" } ] } ] ],
                   :returns => returns },
 
                 { :name => "DELETE",

@@ -21,8 +21,8 @@ class Collection < ActiveRecord::Base
     end
   end
 
-  def to_json(user=nil,client=nil, count=nil, start_index=nil, *a)
-    return {}.to_json if client.nil?
+  def to_hash(user=nil, client=nil, count=nil, start_index=nil, *a)
+    return {} if client.nil?
     collection_data = basic_hash(user, client)
     
     collection_data.merge!(get_items_array(user, client, count, start_index))
@@ -34,7 +34,7 @@ class Collection < ActiveRecord::Base
       else
       collection_data.merge!({:startIndex => 0})
     end
-    return collection_data.to_json(*a)
+    return collection_data
   end
 
   # Returns a hash containing only the info about the collection, not the contents

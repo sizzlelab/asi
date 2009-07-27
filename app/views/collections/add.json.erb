@@ -1,5 +1,0 @@
-<% if @item.class == Collection %>
-  <%= @item.to_json(@user, @client) %>
-<% else %>
-  <%= @item.to_json %>
-<% end %>
