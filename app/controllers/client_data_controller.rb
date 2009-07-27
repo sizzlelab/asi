@@ -6,10 +6,12 @@ class ClientDataController < ApplicationController
 
   def show
     # Do nothing
+    render_json :entry => @set and return
   end
 
   def update
     @set.update_attributes({ :data => params[:data] })
+    render_json :entry => @set and return
   end
 
   private
