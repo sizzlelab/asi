@@ -238,7 +238,7 @@ module COSTestingDSL
   end
 
   def creates_group_with(options)
-    post "/groups", options
+    post "/groups", { :group => options }
     assert_response :success, @response.body
     JSON.parse(@response.body)["entry"]["id"]
   end
