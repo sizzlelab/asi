@@ -91,6 +91,20 @@ class ActiveSupport::TestCase
   end
 end
 
+class ActionController::TestCase
+
+  def assert_response(response, message=nil)
+    super
+    if response == :success and @request.format == "application/json"
+      json = JSON.parse(@response.body)
+      unless @response.body.start_with? "{}"
+#        assert json.key?("entry") || json.key?("messages"), "No 'entry' or 'messages' in #{@response.body}"
+      end
+    end
+  end
+
+end
+
 module COSTestingDSL
   def logs_in_with(options)
     if expected_response = options[:expected_response]
@@ -226,19 +240,19 @@ module COSTestingDSL
   def creates_group_with(options)
     post "/groups", options
     assert_response :success, @response.body
-    JSON.parse(@response.body)["group"]["id"]
+    JSON.parse(@response.body)["entry"]["id"]
   end
 
   def lists_public_groups
     get "/groups/@public"
     assert_response :success, @response.body
-    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+    JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
   end
 
   def searches_groups_with(query)
     get "/groups/@public", { :query => query }
     assert_response :success, @response.body
-    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+    JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
   end
 
   def lists_membership_requests(group_id)
@@ -270,7 +284,7 @@ module COSTestingDSL
   def lists_membership_invites(user_id, group_id)
     get "/people/#{user_id}/@groups/@invites"
     assert_response :success, @response.body
-    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+    JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
   end
 
   private

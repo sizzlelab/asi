@@ -16,8 +16,8 @@ class GroupsControllerTest < ActionController::TestCase
         :format => 'json'}, { :cos_session_id => sessions(:session1).id }
       assert_response :created, @response.body
       json = JSON.parse(@response.body)
-      #puts json.inspect
-      assert id = json["group"]["id"]
+
+      assert id = json["entry"]["id"]
       group = Group.find(id)
       assert(group, "Created group not found. (#{type})")
       assert(group.members.include?(sessions(:session1).person), "Creator was not made member of new group (#{type})")
@@ -96,14 +96,14 @@ class GroupsControllerTest < ActionController::TestCase
     get :show, {:group_id =>  groups(:open).id, :format => 'json'}, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    assert_equal(groups(:open).title, json['group']['title'])
-    assert_equal(groups(:open).description, json['group']['description'])
-    assert_equal(groups(:open).id, json['group']['id'])
-    assert_equal(groups(:open).members.count, json['group']['number_of_members'])
-    assert_equal(groups(:open).created_by, json['group']['created_by'])
-    assert_equal(groups(:open).group_type, json['group']['group_type'])
-    #assert_equal(groups(:open).created_at, json['group']['created_at']) #format problems prevent easy testing
-    assert_equal(groups(:open).has_member?(sessions(:session1).person), json['group']['is_member'])
+    assert_equal(groups(:open).title, json['entry']['title'], @response.body)
+    assert_equal(groups(:open).description, json['entry']['description'])
+    assert_equal(groups(:open).id, json['entry']['id'])
+    assert_equal(groups(:open).members.count, json['entry']['number_of_members'])
+    assert_equal(groups(:open).created_by, json['entry']['created_by'])
+    assert_equal(groups(:open).group_type, json['entry']['group_type'])
+    #assert_equal(groups(:open).created_at, json['entry']['created_at']) #format problems prevent easy testing
+    assert_equal(groups(:open).has_member?(sessions(:session1).person), json['entry']['is_member'])
   end
 
   def test_not_found
@@ -193,7 +193,7 @@ class GroupsControllerTest < ActionController::TestCase
     assert json["entry"]
     assert_not_equal(0, json["entry"].size)
     json["entry"].each do |group|
-      assert_not_equal "hidden", group["group"]["group_type"]
+      assert_not_equal "hidden", group["group_type"]
     end
   end
 
@@ -264,7 +264,7 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
 
     data.each do |key, value|
-      assert_equal(data[key], json["group"][key.to_s])
+      assert_equal(data[key], json["entry"][key.to_s])
     end
   end
 
@@ -287,7 +287,7 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
 
     data.each do |key, value|
-      assert_not_equal(data[key], json["group"][key.to_s])
+      assert_not_equal(data[key], json["entry"][key.to_s])
     end
   end
 
@@ -310,7 +310,7 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
 
     data.each do |key, value|
-      assert_not_equal(data[key], json["group"][key.to_s])
+      assert_not_equal(data[key], json["entry"][key.to_s])
     end
   end
 
@@ -333,7 +333,7 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
 
     data.each do |key, value|
-      assert_not_equal(data[key], json["group"][key.to_s])
+      assert_not_equal(data[key], json["entry"][key.to_s])
     end
   end
 
