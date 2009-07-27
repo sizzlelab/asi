@@ -200,6 +200,7 @@ class ApplicationController < ActionController::Base
     rescue ActiveRecord::UnknownAttributeError => e
       render_json :status => :bad_request, :messages => "#{e.to_s}" and return
     rescue NoMethodError => e
+      puts e.inspect
       if e.name.to_s.end_with? "="
         render_json :status => :bad_request, :messages => "unknown attribute #{e.name.chop}" and return
       else

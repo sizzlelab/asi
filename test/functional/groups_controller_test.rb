@@ -11,8 +11,8 @@ class GroupsControllerTest < ActionController::TestCase
                         write even a little longer story here to describe the purpose and the
                         ideology of the group... Ja even ääkköset should work here. :)"
       title = "testgroup (#{type})"
-      post :create, {:title => title, :type => type,
-        :description => description_text,
+      post :create, { :group => { :title => title, :type => type,
+          :description => description_text },
         :format => 'json'}, { :cos_session_id => sessions(:session1).id }
       assert_response :created, @response.body
       json = JSON.parse(@response.body)

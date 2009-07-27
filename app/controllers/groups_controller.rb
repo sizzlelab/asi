@@ -14,10 +14,14 @@ class GroupsController < ApplicationController
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
     params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
 
-    @group = Group.create(:title => params[:title],
-                          :group_type => params[:type],
-                          :description => params[:description],
-                          :created_by => @user)
+    unless params[:group]
+      render_json :status => :bad_request, :messages => "No group supplied. Note that params must be given as group[title] etc." and return
+    end
+
+    params[:group][:group_type] = params[:group][:type]
+    params[:group].delete :type
+
+    @group = Group.create(params[:group].merge({ :created_by => @user }))
 
     if @group.valid?
       render_json :status => :created, :entry => @group and return
