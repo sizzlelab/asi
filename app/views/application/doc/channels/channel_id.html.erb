@@ -19,9 +19,9 @@ methods = [ { :name => "GET",
 						},
 						{	:name => "PUT",
 							:description => "Modify channel. Only given parameters are affected.",
-							:parameters => [ { :name => "Channel name" },
+							:parameters => [ :channel => [{ :name => "Channel name" },
 															 { :description => "Channel description" },
-															 { :owner => "Channel owner."}
+															 { :owner => "Channel owner."}]
 														 ],
 							:returns => { "200" => "Succesfully modified channel. Returns the modified channel in json's entry -field.",
 								 						"400" => "Invalid fields. Errors are listed in json's messages -field.",
