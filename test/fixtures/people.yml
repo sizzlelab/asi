@@ -9,6 +9,15 @@ valid_person:
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: working@address.com
   salt: ZB32fj38ueBG
+  status_message: "Valid person rocks."
+  status_message_changed: 2008-08-28T10:58:12+03:00
+  birthdate: 1940-06-01
+  gender: MALE
+  irc_nick: "pelle"
+  msn_nick: "maison"
+  phone_number: "+358 40 834 7176"
+  description: "About me"
+  website: "http://example.com"
 
 valid_association:
   id: 2349889
@@ -24,6 +33,18 @@ invalid_person:
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: dsfs
   salt: ZB32fj38ueBG
+  status_message: "Contact is a contact."
+  status_message_changed: 2008-08-27T10:58:12+03:00
+  birthdate: 2000-01-01
+  gender: MALE
+
+blank_person:
+  id: aouehcrauoceh
+  username: abbbc
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  email: dsfs
+  salt: ZB32fj38ueBG
+
 
 contact:
   id: 3
@@ -37,6 +58,8 @@ friend:
   username: hawking
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
+  status_message: "On a friendly mood"
+  status_message_changed: 2008-10-28T11:58:12+03:00
 
 requested:
   id: 5

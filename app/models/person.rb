@@ -5,13 +5,13 @@ class Person < ActiveRecord::Base
 
   include_simple_groups
   usesguid
+  usesnpguid
 
   attr_reader :password
   attr_protected :roles
 
   has_one :name, :class_name => "PersonName", :dependent => :destroy
   has_one :address, :as => :owner, :dependent => :destroy
-  has_one :person_spec, :dependent => :destroy
   has_one :location, :dependent => :destroy
   has_one :avatar, :class_name => "Image", :dependent => :destroy
   has_one :pending_validation, :dependent => :destroy
@@ -37,6 +37,36 @@ class Person < ActiveRecord::Base
            :through => :connections,
            :source => :contact,
            :conditions => "status = 'pending'"
+
+  ALL_FIELDS = %w(status_message gender birthdate irc_nick msn_nick phone_number description website id username name address is_association)
+  STRING_FIELDS = %w(status_message irc_nick msn_nick description website)
+  # Fields that need to be translated if the language is changed.
+  LOCALIZED_FIELDS = %w(gender)
+  VALID_GENDERS = ["MALE", "FEMALE"]
+  START_YEAR = 1900
+  VALID_DATES = DateTime.new(START_YEAR)..DateTime.now
+
+  validates_length_of STRING_FIELDS, :maximum => DB_STRING_MAX_LENGTH, :allow_nil => true, :allow_blank => true
+  validates_length_of :phone_number, :maximum => 25, :allow_nil => true, :allow_blank => true
+
+  validates_inclusion_of :gender,
+  :in => VALID_GENDERS,
+  :allow_nil => true,
+  :message => "must be MALE or FEMALE"
+
+  validates_inclusion_of :birthdate,
+  :in => VALID_DATES,
+  :allow_nil => true,
+  :message => "is invalid"
+
+  def status_message=(new_message)
+    self[:status_message] = new_message
+    self[:status_message_changed] = DateTime.now.utc
+  end
+
+  def status_message_changed=(new_date)
+    #Status message time stamp cannot be changed by other means than changing the message text
+  end
 
   #added by tchang
   has_many :rules,
@@ -83,6 +113,7 @@ class Person < ActiveRecord::Base
   before_save :scrub_name
   after_save :flush_passwords
 
+
   def update_attributes(hash)
     if hash[:name]
       if name
@@ -118,10 +149,6 @@ class Person < ActiveRecord::Base
       success = false
       self.address.errors.each{|attr, msg| errors.add(attr, msg)}
     end
-    if  self.person_spec && !self.person_spec.valid?
-      success = false
-      self.person_spec.errors.each{|attr, msg| errors.add(attr, msg)}
-    end
 
     return success
   end
@@ -133,34 +160,21 @@ class Person < ActiveRecord::Base
     end
   end
 
-  # Bring a simple setter to each attribute of PersonSpec in order to simplify the interface
-  # Person_spec is also saved after each of these modifications, because it won't be saved automatically
-  PersonSpec.new.attributes.each do |key, value|
-    unless Person.new.respond_to?("#{key}=") || key.end_with?("_id")
-      Person.class_eval "def #{key}=(value); "+
-          "if ! person_spec; "+
-            "create_person_spec; "+
-          "end; "+
-          "person_spec.#{key}=value; "+
-          "person_spec.save; " +
-        "end;"
-    end
-  end
-
   #creates a hash of person attributes. If connection_person is not nil, adds connection attribute to hash
   # connection_person means the person who is asking to get the hash for current person
-  def get_person_hash(connection_person=nil, client_id=nil)
+  def person_hash(client_id=nil, connection_person=nil, *a)
+
     person_hash = {
-      'id' => id,
-      'username' => username,
-     #email is not shown in normal person hash for spam prevention reasons
-     #'email' => email,
-      'name' => name,
-      'address' => address,
-      'is_association' => is_association,
       'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" },
-                    :status => ( avatar ? "set" : "not_set" ) }
+                    :status => ( avatar ? "set" : "not_set" ) },
+      'status' => { :message => status_message, :changed => status_message_changed },
+      :gender => { "displayvalue" => gender, "key" => gender }
     }
+
+    ALL_FIELDS.each do |field|
+      person_hash.merge!({ field => self.send(field) })
+    end
+
 
     #TODO Make more sensible check for the clients that are authorized to get email
     # Currently check if client_id matches to Kassi.
@@ -168,30 +182,11 @@ class Person < ActiveRecord::Base
       person_hash.merge!({'email' => email})
     end
 
-    # should get person id from @session.person_id
-    # now only user testi1 with person_id 1aa can get user1's email address
-    #if authorize("1aa", 'person', 'email')
-    #  person_hash.merge!({'email' => email})
-    #end
-
-    if self.person_spec
-      self.person_spec.attributes.except('status_message', 'status_message_changed').each do |key, value|
-        unless PersonSpec::NO_JSON_FIELDS.include?(key)
-          if PersonSpec::LOCALIZED_FIELDS.include?(key)
-            person_hash.merge!({key, {"displayvalue" => value, "key" => value}})
-          else
-            person_hash.merge!({key, value})
-          end
-        end
-      end
-      person_hash.merge!({'status' => { :message => person_spec.status_message, :changed => person_spec.status_message_changed}})
-    end
-
     if connection_person
       person_hash.merge!({'connection' => get_connection_string(connection_person)})
       # if the asker is a friend (or self), include location
       if location && (person_hash['connection'] == ACCEPTED_CONNECTION_STRING || connection_person == self)
-        person_hash.merge!({:location => location.location_hash})
+        person_hash.merge!({:location => location})
       end
     end
 
@@ -201,6 +196,9 @@ class Person < ActiveRecord::Base
     return person_hash
   end
 
+  def to_json(client_id=nil, connection=nil, *a)
+    person_hash(client_id, connection).to_json(*a)
+  end
 
 # added by tchang
 # check if subject_person has access right to model and field
@@ -236,11 +234,6 @@ class Person < ActiveRecord::Base
 
   def checkCondition(condition=nil, subject_person=nil)
     return false
-  end
-
-  def to_json(client_id=nil, connection_person=nil, *a)
-    person_hash = get_person_hash(connection_person, client_id)
-    return person_hash.to_json(*a)
   end
 
   def self.search(query, options={ :limit => :all }, search_options={})

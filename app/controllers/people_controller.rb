@@ -9,16 +9,14 @@ class PeopleController < ApplicationController
 url:: /people
 method:: GET
 access:: FREE
-return:: [JSON|RETURN CODE: 200] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you') 
+return:: [JSON|RETURN CODE: 200] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you')
 param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all characters in the search term are interpreted as literals rather than special regexp characters.
 
 Finds users based on their (real) names.
 =end
   def index
     @people = PersonName.search("*" + (params['search'] || "").strip + "*")
-    @people_hash = @people.collect do |person|
-      person.person.get_person_hash(@user)
-    end
+    @people_hash = @people.collect { |p| p.person.person_hash(@client, @user) }
   end
 
 =begin rapidoc
@@ -26,7 +24,7 @@ url:: /people
 method:: POST
 access:: FREE
 return_code:: 200 - OK
-return:: [JSON] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you') 
+return:: [JSON] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you')
 param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all characters in the search term are interpreted as literals rather than special regexp characters.
 
 Finds users based on their (real) names.
@@ -92,12 +90,8 @@ Finds users based on their (real) names.
       render :status  => :not_found and return
     end
     if params[:person]
-      begin
-        if @person.update_attributes(params[:person])
-          render :status => :ok and return
-        end
-      rescue NoMethodError  => e
-        errors = e.to_s
+      if @person.update_attributes(params[:person])
+        render :status => :ok and return
       end
     end
 
@@ -211,7 +205,7 @@ Finds users based on their (real) names.
 
     if params['sortBy'] == "status_changed"
       params['sortOrder'] ||= "ascending"
-      @friends = @person.contacts.find(:all, :include => "person_spec")
+      @friends = @person.contacts.all
       @friends.sort!{|a,b| sort_by_status_message_changed(a, b, params['sortOrder']) }
     else
       @friends = @person.contacts
@@ -331,12 +325,12 @@ Finds users based on their (real) names.
   end
 
   def sort_by_status_message_changed(a, b, sort_order)
-    if a.person_spec.nil? || a.person_spec.status_message_changed.nil?
+    if a.status_message_changed.nil?
       order = -1
-    elsif b.person_spec.nil? || b.person_spec.status_message_changed.nil?
+    elsif b.status_message_changed.nil?
       order = 1
     else
-      order = a.person_spec.status_message_changed <=> b.person_spec.status_message_changed
+      order = a.status_message_changed <=> b.status_message_changed
     end
     if sort_order == "descending" #turn the order
       return order * -1

@@ -22,7 +22,7 @@ class PersonName < ActiveRecord::Base
       :unstructured => self.unstructured,
       :given_name => self.given_name,
       :family_name => self.family_name
-    }.to_json(*a)
+    }.to_json
   end
 
   def unstructured_lowercase

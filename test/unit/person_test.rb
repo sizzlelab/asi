@@ -11,7 +11,6 @@ class PersonTest < ActiveSupport::TestCase
     end
     @valid_person = people(:valid_person)
     @invalid_person = people(:invalid_person)
-    @valid_person_spec = person_specs(:valid_person_spec)
     @valid_person_name = person_names(:valid_person_name)
     @valid_avatar = images(:jpg)
   end
@@ -108,34 +107,49 @@ class PersonTest < ActiveSupport::TestCase
 
   def test_to_json
     person = @valid_person
-    person.person_spec = @valid_person_spec
     person.name = @valid_person_name
     avatar = @valid_avatar
     avatar.person_id = person.id
     assert avatar.valid_file?("image/jpeg", "testfile.jpg")
     assert avatar.convert("testfile.jpg")
     person.avatar = @valid_avatar
-    json = JSON.parse(person.to_json(nil,person))
+    json = JSON.parse(person.to_json(person.roles[0].client.id, person))
     assert_not_nil json["id"]
     assert_not_nil json["username"]
     assert_not_nil json["email"]
     assert_not_nil json["name"]
     assert_not_nil json["name"]["unstructured"]
+    assert_not_nil json["name"]["given_name"]
+    assert_not_nil json["name"]["family_name"]
     assert_nil json["password"]
-    spec_fields = PersonSpec::ALL_FIELDS
+
     #special check for status, because response json is different from model structure
+    spec_fields = PersonSpec::ALL_FIELDS
     spec_fields.delete("status_message")
+
     assert_not_nil json["status"]["message"]
     spec_fields.delete("status_message_changed")
     assert_not_nil json["status"]["changed"]
+
     assert_not_nil(json["location"])
+    assert_not_nil(json["location"]["label"])
     assert(json["location"]["latitude"]<=90)
     assert(json["location"]["latitude"]>=-90)
+
+    assert_not_nil json["role"], "Role is missing"
 
     spec_fields.each do |value|
         assert_not_nil json[value] , "#{value} was nil."
     end
   end
+
+  def test_privacy
+    person = @valid_person
+    json = JSON.parse(person.to_json)
+    assert_nil json["email"], "Email is not private"
+    assert_nil json["location"], "Location is not private"
+  end
+
 
   def test_name_update
     p = Person.new

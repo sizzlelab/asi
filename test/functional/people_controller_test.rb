@@ -6,6 +6,10 @@ class PeopleControllerTest < ActionController::TestCase
   fixtures :sessions
   fixtures :people
 
+  VALID_PERSON_JSON = '
+  {"address":{"street_address":"MyString","postal_code":"MyString","unstructured":"MyString, MyString MyString","locality":"MyString"},"name":{"unstructured":"Juho Makkonen","family_name":"Makkonen","given_name":"Juho"},"birthdate":null,"connection":"you","is_association":null,"role":"user","username":"kusti","gender":{"displayvalue":null,"key":null},"avatar":{"status":"not_set","link":{"rel":"self","href":"\\/people\\/1\\/@avatar"}},"id":"1","phone_number":null,"msn_nick":null,"website":null,"location":{"updated_at":"2008-07-11T12:36:33Z","label":"Otaniemen Alepa","accuracy":58.0,"latitude":60.163389841749,"longitude":24.857125767506},"irc_nick":null,"description":null,"status":{"changed":null,"message":""},"email":"working@address.com"}
+'
+
   def setup
     @controller = PeopleController.new
     @request = ActionController::TestRequest.new
@@ -226,7 +230,7 @@ class PeopleControllerTest < ActionController::TestCase
     put :update, { :user_id => people(:valid_person).id, :person => { :status_message =>  test_status  }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
-    assert_equal(test_status, assigns["person"].person_spec.status_message)
+    assert_equal(test_status, assigns["person"].status_message)
     json = JSON.parse(@response.body)
     # check that same status message is returned with show
     get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
@@ -274,6 +278,14 @@ class PeopleControllerTest < ActionController::TestCase
     assert json.to_s =~ /email/i && json.to_s =~ /invalid/i
   end
 
+  def test_update_invalid_email
+    put :update, { :user_id => people(:valid_person).id, :person => {:email2 => "foo" }, :format => 'json' },
+                 { :cos_session_id => sessions(:session1).id }
+    assert_response :bad_request
+    json = JSON.parse(@response.body)
+  end
+
+
   def test_delete
     #delete person with valid id
     delete :delete, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
@@ -286,7 +298,6 @@ class PeopleControllerTest < ActionController::TestCase
 
     # Check that related objects are removed also
     assert Connection.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
-    assert PersonSpec.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
     assert PersonName.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
     assert Location.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
 
@@ -371,7 +382,7 @@ class PeopleControllerTest < ActionController::TestCase
 
   def test_get_friends_in_order
     # check that statusmessage change dates exist and are in right order
-    assert people(:friend).person_spec.status_message_changed > people(:invalid_person).person_spec.status_message_changed,
+    assert people(:friend).status_message_changed > people(:invalid_person).status_message_changed,
                   "Statusmessages in fixtures are not in the order that the test would expect."
 
     get :get_friends, { :user_id  => people(:valid_person).id, :format  => 'json' }, { :cos_session_id => sessions(:session1).id }
@@ -387,7 +398,7 @@ class PeopleControllerTest < ActionController::TestCase
     get :get_friends, { :user_id  => people(:valid_person).id, :sortBy => "status_changed",
                         :sortOrder => "descending", :format  => 'json' },
                         { :cos_session_id => sessions(:session1).id }
-    assert_response :success
+    assert_response :success, @response.body
     assert_not_nil assigns["person"]
     assert_not_nil assigns["friends"]
     #assert_equal(assigns["person"].contacts, assigns["friends"])
@@ -585,8 +596,9 @@ class PeopleControllerTest < ActionController::TestCase
 
   def search(search, should_find=true)
     get :index, { :format => 'json', :search => search }, { :cos_session_id => sessions(:session1) }
-    assert_response :success
+    assert_response :success, @response.body
     assert_not_nil assigns["people"]
+
     json = JSON.parse(@response.body)
 
     if not should_find
@@ -600,7 +612,8 @@ class PeopleControllerTest < ActionController::TestCase
 
     json["entry"].each do |person|
       assert_not_nil person["name"]
-      assert_not_nil(person["connection"])
+      assert_not_nil person["connection"], "Missing connection"
+
       if (Person.find(sessions(:session1).person_id).contacts.include?(Person.find(person["id"])))
         assert_equal("friend", person["connection"]  )
       elsif (Person.find(sessions(:session1).person_id).pending_contacts.include?(Person.find(person["id"])))
