@@ -89,7 +89,6 @@ class ActiveSupport::TestCase
     session.save(false)
     @request.session[:cos_session_id] = session.id
   end
-
 end
 
 module COSTestingDSL
@@ -154,8 +153,8 @@ module COSTestingDSL
     get "/people/#{options[:id]}/@self"
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
-    assert_equal options[:id], json["id"]
+    assert_not_nil json["entry"]["id"]
+    assert_equal options[:id], json["entry"]["id"]
     return json
   end
 
@@ -163,7 +162,7 @@ module COSTestingDSL
     put "/people/#{options[:id]}/@self", options
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json["entry"]["id"]
     #special handling for status_message
     if (options[:person][:status_message])
       options[:person][:status] = {:message => options[:person][:status_message]}
@@ -171,14 +170,14 @@ module COSTestingDSL
     end
     #Don't expect email to be returned
     options[:person].delete(:email)
-    assert subset(options[:person], json)
+    assert subset(options[:person], json["entry"])
   end
 
   def changes_password_of_person(options)
     put "/people/#{options[:id]}/@self", {:person => { :password => options[:password] } }
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json["entry"]["id"]
   end
 
   def deletes_account(options)
