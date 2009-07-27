@@ -5,23 +5,23 @@ one:
   id: 1
   person_id: 1
   rule_name: Name privacy
-  state: Active
-  logic: Or
+  state: active
+  logic: or
 
 # friends who are members of group tkk can view email of person 1
 two:
   id: 2
   person_id: 1
-  rule_name: Email privacy
-  state: Active
-  logic: And
+  rule_name: email privacy
+  state: active
+  logic: and
 
 # friends can view email of person 2
 three:
   id: 3
   person_id: 2
   rule_name: Address privacy
-  state: Active
-  logic: And
+  state: active
+  logic: and
 
 

@@ -29,3 +29,9 @@ six:
   person_id: 5
   contact_id: 1
   status: 'pending'
+
+privacy:
+  person_id: 1
+  contact_id: 1aa
+  status: 'accepted'
+ 

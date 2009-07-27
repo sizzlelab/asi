@@ -1,31 +1,32 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 # 1
+#condition_value for condition_type publicity can be 'private' or 'public'
 private:
-   id: private
-   condition_type: Publicity
-   condition_value: Private
+   id: 1
+   condition_type: publicity
+   condition_value: private
 
 # 2
 logged_in:
-   id: logged_in
-   condition_type: Logged_in
-   condition_value: True
+   id: 2
+   condition_type: logged_in
+   condition_value: true
 
 # 3
 group:
-  id: group_tkk
-  condition_type: Group
+  id: 3
+  condition_type: group
   condition_value: tkk
 
 # 4
 is_friend:
-  id: is_friend
-  condition_type: Is_friend
-  condition_value: True
+  id: 4
+  condition_type: is_friend
+  condition_value: true
 
 # 5
 user:
-    id: user_testi1
-    condition_type: User
+    id: 5
+    condition_type: user
     condition_value: testi1
