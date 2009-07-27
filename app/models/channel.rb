@@ -40,7 +40,11 @@ class Channel < ActiveRecord::Base
     end 
     if user
       if channel_type == "friend"
-        return user.contacts.include?(owner)
+        if self.owner == user
+          return true
+        else
+          return user.contacts.include?(owner)
+        end
       end
       if channel_type == "group"
         group_subscribers.each do |subscription|
@@ -83,7 +87,7 @@ class Channel < ActiveRecord::Base
   
   def subscribe_owner
     if self.channel_type != "group"
-      user_subscribers << owner rescue ActiveRecord::RecordInvalid
+      selfuser_subscribers << owner rescue ActiveRecord::RecordInvalid
     end
   end
 
