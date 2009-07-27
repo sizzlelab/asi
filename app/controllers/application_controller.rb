@@ -145,7 +145,11 @@ class ApplicationController < ActionController::Base
     end
     if params[:per_page] && params[:page]
       hash[:pagination] = { :per_page => params[:per_page].to_i,
-                            :page => params[:page].to_i }
+                            :page => params[:page].to_i
+                          }
+    end
+    if options[:size]
+      hash[:pagination][:size] = options[:size]
     end
     options[:json] = hash
     render options
