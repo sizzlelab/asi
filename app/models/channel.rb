@@ -87,7 +87,7 @@ class Channel < ActiveRecord::Base
   
   def subscribe_owner
     if self.channel_type != "group"
-      selfuser_subscribers << owner rescue ActiveRecord::RecordInvalid
+      user_subscribers << owner rescue ActiveRecord::RecordInvalid
     end
   end
 
