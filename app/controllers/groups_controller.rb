@@ -20,21 +20,24 @@ class GroupsController < ApplicationController
                           :created_by => @user)
 
     if @group.valid?
-      render :status => :created and return
+      render_json :status => :created, :entry => @group and return
     else
-      render :status => :bad_request, :json => @group.errors.full_messages.to_json and return
+      render_json :status => :bad_request, :messages => @group.errors.full_messages.to_json and return
     end
   end
 
   def show
-    render :status => :forbidden, :json => "You are not allowed to view this group.".to_json and return unless @group.show?(@user)
+    unless @group.show?(@user)
+      render_json :status => :forbidden, :messages => "You are not allowed to view this group." and return
+    end
+    render_json :entry => @group.get_group_hash(@user)
   end
 
   def update
     if @group.update_attributes(params[:group])
-      render :status => :ok, :json => @group.to_json
+      render_json :entry => @group
     else
-      render :status => :bad_request, :json => @group.errors.full_messages.to_json
+      render_json :status => :bad_request, :messages => @group.errors.full_messages.to_json
       @group = nil
     end
   end
@@ -60,31 +63,31 @@ class GroupsController < ApplicationController
       @invitee = Person.find_by_id(params[:user_id])
 
       if @invitee.invited_groups.include?(@group)
-        render :status => :conflict, :json => "That user has already been invited.".to_json and return
+        render_json :status => :conflict, :messages => "That user has already been invited." and return
       end
 
       if @group.invite(@invitee, @user)
-        render :status => :accepted, :json => "Invitation sent.".to_json and return
+        render_json :status => :accepted and return
       else
-        render :status => :forbidden, :json => "You are not an admin of this group.".to_json and return
+        render_json :status => :forbidden, :messages => "You are not an admin of this group." and return
       end
     end
 
     @person = Person.find_by_id(params[:user_id])
     if ! @person
-      render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
+      render_json :status => :not_found, :messages => "Could not find a person with specified id" and return
     end
 
     if @person.is_member_of?(@group)
-      render :status => :conflict, :json => "You are already a member of this group".to_json and return
+      render_json :status => :conflict, :messages => "You are already a member of this group" and return
     end
 
     if @group.group_type == 'open'
       @person.request_membership_of(@group)
-      render :status => :created, :json => "Become member of group succesfully.".to_json and return
+      render_json :status => :created and return
     elsif @group.group_type == 'closed'
       @person.request_membership_of(@group)
-      render :status => :accepted, :json => "Membership requested.".to_json and return
+      render_json :status => :accepted and return
     end
 
   end
@@ -114,21 +117,21 @@ class GroupsController < ApplicationController
       if params[:accepted]
         result = accept_pending_membership_request
       end
-      render :status => result[:status], :json => result[:message].to_json and return
+      render_json :status => result[:status], :messages => result[:message] and return
 
     else
-      render :status => :forbidden, :json => "Changing admin status can be done by admins only.".to_json and return
+      render_json :status => :forbidden, :messages => "Changing admin status can be done by admins only." and return
     end
   end
 
   def remove_person_from_group
     if params[:user_id] != @user.id and not @user.is_admin_of?(@group)
-      render :status => :forbidden, :json  => ["You are not authorized to remove this user from this group."].to_json and return
+      render_json :status => :forbidden, :messages  => "You are not authorized to remove this user from this group." and return
     end
 
     @person = Person.find_by_id(params[:user_id])
     if ! @person
-      render :status => :not_found, :json => ["Could not find a person with specified id"].to_json and return
+      render_json :status => :not_found, :messages => "Could not find a person with specified id" and return
     end
 
     @person.leave(@group)
@@ -157,17 +160,17 @@ class GroupsController < ApplicationController
     begin
       @group = Group.find(params[:group_id])
     rescue ActiveRecord::RecordNotFound
-      render :status => :not_found, :json => "Group with id #{params[:group_id]} not found.".to_json and return
+      render_json :status => :not_found, :messages => "Group with id #{params[:group_id]} not found." and return
     end
     if ! @group.show?(@user)
-      render :status => :forbidden, :json => "You do not have permission to view this group.".to_json
+      render_json :status => :forbidden, :messages => "You do not have permission to view this group."
     end
   end
 
 
   def ensure_admin
     if not @user.is_admin_of?(@group)
-      render :status => :forbidden, :json => "You are not an admin of this group.".to_json
+      render_json :status => :forbidden, :messages => "You are not an admin of this group."
     end
   end
 
@@ -206,7 +209,7 @@ class GroupsController < ApplicationController
         if ses.person
           params[:user_id] = ses.person.id
         else
-          render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
+          render_json :status => :unauthorized, :messages => "Please login as a user to continue" and return
         end
       end
     end
