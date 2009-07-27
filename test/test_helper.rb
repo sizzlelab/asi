@@ -98,7 +98,7 @@ class ActionController::TestCase
     if response == :success and @request.format == "application/json"
       json = JSON.parse(@response.body)
       unless @response.body.start_with? "{}"
-#        assert json.key?("entry") || json.key?("messages"), "No 'entry' or 'messages' in #{@response.body}"
+        assert json.key?("entry") || json.key?("messages"), "No 'entry' or 'messages' in #{@response.body}"
       end
     end
   end
@@ -131,26 +131,26 @@ module COSTestingDSL
   def creates_collection(options)
     post "/appdata/#{options[:client_id]}/@collections"
     assert_response :created
-    assert_template "collections/create"
+#    assert_template "collections/create"
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
-    return json["id"]
+    assert_not_nil json['entry']["id"]
+    return json['entry']["id"]
   end
 
   def gets_collection(options)
     get "/appdata/#{options[:client_id]}/@collections/#{options[:id]}"
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
-    assert_not_nil json["entry"]
+    assert_not_nil json['entry']["id"]
+    assert_not_nil json['entry']["entry"]
   end
 
   def adds_text_to_collection(options)
     post "/appdata/#{options[:client_id]}/@collections/#{options[:id]}",
-    { :title => "Sleep Tight", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." }
+    { :item => {:title => "Sleep Tight", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." }}
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json['entry']["id"]
   end
 
   def deletes_collection(options)
