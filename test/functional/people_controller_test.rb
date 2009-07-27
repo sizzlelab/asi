@@ -27,8 +27,8 @@ class PeopleControllerTest < ActionController::TestCase
     assert_not_nil assigns["person"]
     json = JSON.parse(@response.body)
 
-    assert_equal people(:valid_person).id, json["id"]
-    assert_nil json["password"]
+    assert_equal people(:valid_person).id, json["entry"]["id"]
+    assert_nil json["entry"]["password"]
 
      #try to show a person with invalid id
     get :show, { :user_id => -1, :format => 'json' }
@@ -168,7 +168,7 @@ class PeopleControllerTest < ActionController::TestCase
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_not_equal json["id"], "9999"
+    assert_not_equal json["entry"]["id"], "9999"
 
     # asserts for checking that the updates really stored correctly
     assert_equal(assigns["person"].email, testing_email)
@@ -232,7 +232,7 @@ class PeopleControllerTest < ActionController::TestCase
     get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal test_status, json["status"]["message"]
+    assert_equal test_status, json["entry"]["status"]["message"]
 
     # Check that updating the name doesn't delete old values
     put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Doe" } }, :format => 'json' },
@@ -251,7 +251,7 @@ class PeopleControllerTest < ActionController::TestCase
     get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal valid_date, json["birthdate"]
+    assert_equal valid_date, json["entry"]["birthdate"]
     #try invalid dates
     invalid_dates.each do |birthdate|
       put :update, { :user_id => people(:valid_person).id, :person => { :birthdate =>  birthdate  }, :format => 'json' },
@@ -261,7 +261,7 @@ class PeopleControllerTest < ActionController::TestCase
       get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
       assert_response :success
       json = JSON.parse(@response.body)
-      assert_equal valid_date, json["birthdate"]
+      assert_equal valid_date, json["entry"]["birthdate"]
     end
   end
 
@@ -332,7 +332,7 @@ class PeopleControllerTest < ActionController::TestCase
     get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    assert_equal("set", json["avatar"]["status"])
+    assert_equal("set", json["entry"]["avatar"]["status"])
 
   end
 
@@ -533,7 +533,6 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :bad_request
     json = JSON.parse(@response.body)
     assert_nil assigns["person"]
-    assert_equal("[\"Password is too short\"]", @response.body)
 
     # Try to create user with too long password
     post :create, { :person => {:username  => "failer",
@@ -545,14 +544,12 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :bad_request
     json = JSON.parse(@response.body)
     assert_nil assigns["person"]
-    assert_equal("[\"Password is too long\"]", @response.body)
 
     # Try to update valid users password to too short
     encrypted_password = people(:valid_person).encrypted_password
     put :update, { :user_id => people(:valid_person).id, :person => { :password =>too_short_password }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
-    assert_equal("[\"Password is too short\"]", @response.body)
 
     #check that the stored password was not changed
     assert_equal(encrypted_password, Person.find(people(:valid_person).id).encrypted_password)
@@ -564,7 +561,6 @@ class PeopleControllerTest < ActionController::TestCase
     put :update, { :user_id => people(:valid_person).id, :person => { :password =>too_long_password }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
-    assert_equal("[\"Password is too long\"]", @response.body)
 
     #check that the stored password was not changed
     assert_equal(encrypted_password, Person.find(people(:valid_person).id).encrypted_password)
