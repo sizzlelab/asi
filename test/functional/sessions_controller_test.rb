@@ -10,7 +10,7 @@ class SessionsControllerTest < ActionController::TestCase
     @request = ActionController::TestRequest.new
     @response = ActionController::TestResponse.new
   end
-  
+
   def test_client_login
     #test with client only
     post :create, { :app_name => "ossi", :app_password => "testi", :format => 'json'}
@@ -39,7 +39,7 @@ class SessionsControllerTest < ActionController::TestCase
     delete :destroy, {:format => 'json'}
     assert_response :success
     json = JSON.parse(@response.body)
-    
+
     #test with erroneus login information
     post :create, { :username => "testi", :password => "testia,.u", :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :unauthorized
@@ -48,17 +48,17 @@ class SessionsControllerTest < ActionController::TestCase
     post :create, { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "tesaoeulcrhti", :format => 'json'}
     assert_response :unauthorized
     json = JSON.parse(@response.body)
-    
+
     post :create, { :username => "testi", :password => "testi2513", :app_name => "ossi", :app_password => "t23452esaoeulcrhti", :format => 'json'}
     assert_response :unauthorized
     json = JSON.parse(@response.body)
   end
-  
+
   def test_get
     get :get, { :format => 'json'}, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    assert_equal json["user_id"], sessions(:session1).person_id  
+    assert_equal json["entry"]["user_id"], sessions(:session1).person_id
   end
 
   def test_destroy
@@ -71,7 +71,7 @@ class SessionsControllerTest < ActionController::TestCase
     delete :destroy, {:format => 'json'}
     assert_response :success
     assert_nil session[:cos_session_id]
-    
+
     # create a client only session to destroy
     post :create, { :app_name => "ossi", :app_password => "testi", :format => 'json'}
     assert_response :created
@@ -90,14 +90,14 @@ class SessionsControllerTest < ActionController::TestCase
     assert_response :bad_request
     json = JSON.parse @response.body
   end
-  
+
   def test_routing
     with_options :controller => 'sessions', :format => 'json' do |test|
-      test.assert_routing({ :method => 'post', :path => '/session'}, 
+      test.assert_routing({ :method => 'post', :path => '/session'},
         {  :action => 'create'})
-      test.assert_routing({ :method => 'get', :path => '/session'}, 
-        {  :action => 'get' }) 
-      test.assert_routing({ :method => 'delete', :path => '/session'}, 
+      test.assert_routing({ :method => 'get', :path => '/session'},
+        {  :action => 'get' })
+      test.assert_routing({ :method => 'delete', :path => '/session'},
         {  :action => 'destroy' })
     end
   end
@@ -110,9 +110,9 @@ class SessionsControllerTest < ActionController::TestCase
     post :create, { :format => 'json' }
     assert_response :unauthorized
 
-    post :create, { :username => "testi", :password => "testi", 
+    post :create, { :username => "testi", :password => "testi",
                     :app_name => "ossi", :app_password => "testi", :format => 'json' },
-                  { :cos_session_id => sessions(:session1).id } 
+                  { :cos_session_id => sessions(:session1).id }
     assert_response :conflict
   end
 end
