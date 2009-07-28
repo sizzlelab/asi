@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>ASI / COS Changelog</title>
+	
+	<link rel="stylesheet" href="/stylesheets/cos.css" type="text/css" />
+	
+</head>
+
+<body>
+
+<h1>ASI / COS Changelog</h1>
+
+<h2>Version 0.9 - 28.7.2009</h2>
+
+<ul>
+	<li>Changed return values of every resource. All json-returns are now either:</li>
+	<ul>
+		<li>empty (eg. <code>{ }</code>)</li>
+		<li>contain entry field with returned data (eg. <code>{ 'entry' : [ item1, item2 ] }</code> or <code>{ 'entry' : item }</code>)</li>
+		<li>errors as an array in messages field (eg.<code>{ 'messages' => [ 'Some error', 'Other error' ] } )</li>
+	</ul>
+	<li>Changed parameters of individual resources (mainly POSTs and PUTs):</li>
+	<ul>
+		<li>POST /channels/</li>
+		<ul>
+			<li>New channel's parameters must be wrapped inside channel -hash (eg. channel => { name => 'foo', description => 'bar' } )</li>
+		</ul>
+	</ul>
+</ul>
+
+
+</body>
+</html>
