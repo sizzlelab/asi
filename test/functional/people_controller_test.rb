@@ -21,14 +21,16 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_show
-    #show person with valid id
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    login_as people(:valid_person)
+    get :show, { :user_id => people(:valid_person).id, :format => 'json' }
     assert_response :success
     assert_not_nil assigns["person"]
     json = JSON.parse(@response.body)
 
     assert_equal people(:valid_person).id, json["entry"]["id"]
     assert_nil json["entry"]["password"]
+
+    assert_equal "you", json["entry"]["connection"]
 
      #try to show a person with invalid id
     get :show, { :user_id => -1, :format => 'json' }
