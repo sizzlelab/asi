@@ -122,6 +122,8 @@ class PersonTest < ActiveSupport::TestCase
     assert_not_nil json["name"]
     assert_not_nil json["name"]["unstructured"]
     assert_nil json["password"]
+    assert_not_nil json["connection"]
+
     spec_fields = PersonSpec::ALL_FIELDS
     #special check for status, because response json is different from model structure
     spec_fields.delete("status_message")
@@ -163,5 +165,18 @@ class PersonTest < ActiveSupport::TestCase
     assert_equal "Otaniemi Underground Fishing Academy", json["description"], "Description"
     assert_equal "http://oufa.tky.fi", json["website"], "Website"
   end
+
+  def test_self_connection
+    p = @valid_person
+    json = JSON.parse(p.to_json(clients(:one), p))
+    assert_equal "you", json["connection"]
+  end
+
+  def test_friend_connection
+    p = @valid_person
+    json = JSON.parse(p.to_json(clients(:one), p.contacts[0]))
+    assert_equal "friend", json["connection"]
+  end
+
 
 end

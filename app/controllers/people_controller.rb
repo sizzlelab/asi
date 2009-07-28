@@ -27,8 +27,12 @@ url:: /people
 method:: POST
 access:: FREE
 return_code:: 200 - OK
+return:: 200 -
+return:: 406
 return:: [JSON] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you')
-param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all characters in the search term are interpreted as literals rather than special regexp characters.
+param:: person
+  param::
+  param::
 
 Finds users based on their (real) names.
 =end
@@ -37,7 +41,7 @@ Finds users based on their (real) names.
     if ! @person
       render :status => :not_found and return
     end
-    render_json :entry => @person
+    render_json :entry => @person.get_person_hash(@user)
   end
 
   def create

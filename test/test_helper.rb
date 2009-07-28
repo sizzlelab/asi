@@ -85,6 +85,7 @@ class ActiveSupport::TestCase
   end
 
   def login_as(person, client=nil)
+    client ||= Client.find :first
     session = Session.new(:person => person, :client => client)
     session.save(false)
     @request.session[:cos_session_id] = session.id
