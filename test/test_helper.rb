@@ -112,7 +112,7 @@ module COSTestingDSL
     else
       expected_response = :created
     end
-    post "/session", options
+    post "/session", { :session => options }
     assert_response expected_response
     assert_not_nil session[:cos_session_id] if expected_response == :created
   end

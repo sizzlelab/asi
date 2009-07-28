@@ -2,38 +2,46 @@ class SessionsController < ApplicationController
 
   before_filter :ensure_client_logout, :only => :create
   #skip_before_filter :maintain_session_and_user, :only => [:create]
-  
+
   def get
     @session = @application_session
     if !@session
       render :status => :not_found and return
     end
   end
- 
+
   def create
     # User Interface mode vs. API mode for return values.
     ui_mode = false
-    
+
+
+
+    [ :app_name, :app_password, :username, :password].each do |param|
+      params[param] = nil
+      params[param] = params[:session][param] if params[:session] && params[:session][param]
+    end
+
+
     if (params[:pt])
       params[:password] = params[:pt]
     end
-    
+
     # TODO: Move from @session.save SASSI-version to model and create ticket-field to session.
-    
+
     # If the right Rails authenticity_token is provided, we'll trust it's CoreUI
     if (params[:authenticity_token] && params[:authenticity_token] == form_authenticity_token && params[:app_name] == COREUI_APP_NAME)
       @session = Session.new({ :username => params[:username],
-                               :password => params[:password], 
-                               :client_name => params[:app_name], 
+                               :password => params[:password],
+                               :client_name => params[:app_name],
                                :client_password => COREUI_APP_PASSWORD })
       ui_mode = true
     else
-      @session = Session.new({ :username => params[:username], 
-                               :password => params[:password], 
-                               :client_name => params[:app_name], 
+      @session = Session.new({ :username => params[:username],
+                               :password => params[:password],
+                               :client_name => params[:app_name],
                                :client_password => params[:app_password] })
     end
-  
+
     if (params[:username] || params[:password])
         # If other is present, both need to be
         unless (params[:username] && params[:password] )
@@ -50,7 +58,7 @@ class SessionsController < ApplicationController
     if @session.save
       if (! @session.person_match) && (params[:username] || params[:password])
         # inserted username, password -pair is not found in database
-        
+
         if (params[:pt]) # CAS Proxy Ticket
           conf = Hash.new()
           cas_logger = CASClient::Logger.new(RAILS_ROOT+'/log/cas.log')
@@ -58,10 +66,10 @@ class SessionsController < ApplicationController
           conf[:cas_base_url] = CAS_BASE_URL
           conf[:validate_url] = conf[:cas_base_url] + '/proxyValidate'
           conf[:logger] = cas_logger
-          cas_client = CASClient::Client.new(conf) 
+          cas_client = CASClient::Client.new(conf)
           st = CASClient::ServiceTicket.new(params[:pt], "#{request.protocol}#{request.env['HTTP_HOST']}", false)
           st_resp = cas_client.validate_proxy_ticket(st)
-          
+
           if st_resp.is_valid?
             @session.person_match = Person.find_by_username(params[:username])
             @session.person_id = @session.person_match.id
@@ -69,7 +77,7 @@ class SessionsController < ApplicationController
           else
             @session.destroy
           end
-          
+
         else
           @session.destroy
           if ui_mode
@@ -80,7 +88,7 @@ class SessionsController < ApplicationController
           end
         end
       end
-      
+
       if VALIDATE_EMAILS && PendingValidation.find_by_person_id(@session.person_id)
          @session.destroy
          if ui_mode
@@ -90,16 +98,16 @@ class SessionsController < ApplicationController
            render :status => :forbidden, :json => ["The email address for this user account is not yet confirmed. Login requires confirmation."].to_json and return
          end
       end
-      
+
       role = Role.find_by_person_and_client_id(@session.person_id, @session.client_id)
       if ! role
         # First time using this service, so let's create a Role with default parameters
-        Role.create(:person_id => @session.person_id, 
-                    :client_id => @session.client_id, 
+        Role.create(:person_id => @session.person_id,
+                    :client_id => @session.client_id,
                     :title => Role::USER
                    )
       end
-    
+
       session[:cos_session_id] = @session.id
       if ui_mode
         flash[:notice] = "Logged in."
@@ -116,9 +124,9 @@ class SessionsController < ApplicationController
         render :status => :unauthorized, :json => @session.errors.full_messages.to_json and return
       end
     end
-  
+
   end
- 
+
   def destroy
     ui_mode = (@client && @client == Client.find_by_name(COREUI_APP_NAME))
 
@@ -133,5 +141,5 @@ class SessionsController < ApplicationController
     end
 
   end
-  
+
 end
