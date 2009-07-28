@@ -50,7 +50,7 @@ class SessionsController < ApplicationController
             flash[:error] = "Both username and password are needed."
             redirect_to :back and return
           else
-            render :status => :bad_request, :json => ["Both username and password are needed."].to_json
+            render_json :status => :bad_request, :messages => "Both username and password are needed."
             return
           end
         end
@@ -84,7 +84,7 @@ class SessionsController < ApplicationController
             flash[:warning] = "Password and username didn't match for any person."
             redirect_to :back and return
           else
-            render :status => :unauthorized, :json => ["Password and username didn't match for any person."].to_json and return
+            render_json :status => :unauthorized, :messages => "Password and username didn't match for any person." and return
           end
         end
       end
@@ -95,7 +95,7 @@ class SessionsController < ApplicationController
            flash[:warning] = "The email address for this user account is not yet confirmed. Logging in requires confirmation."
            redirect_to :back and return
          else
-           render :status => :forbidden, :json => ["The email address for this user account is not yet confirmed. Login requires confirmation."].to_json and return
+           render_json :status => :forbidden, :messages => "The email address for this user account is not yet confirmed. Login requires confirmation." and return
          end
       end
 
@@ -113,15 +113,15 @@ class SessionsController < ApplicationController
         flash[:notice] = "Logged in."
         redirect_to coreui_profile_index_path and return
       else
-        render :status => :created, :json => { :user_id => @session.person_id,
-                                               :app_id => @session.client_id }
+        render_json :status => :created, :entry => { :user_id => @session.person_id,
+                                                     :app_id => @session.client_id }
       end
     else
       if ui_mode
         flash[:error] = @session.errors.full_messages
         redirect_to :back and return
       else
-        render :status => :unauthorized, :json => @session.errors.full_messages.to_json and return
+        render_json :status => :unauthorized, :messages => @session.errors.full_messages.to_json and return
       end
     end
 

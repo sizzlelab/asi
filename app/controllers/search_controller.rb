@@ -4,7 +4,7 @@ class SearchController < ApplicationController
 
   def search
     if not params[:query] or params[:query].empty?
-      render :status => :bad_request, :json => "No query parameter provided.".to_json and return
+      render_json :status => :bad_request, :messages => "No query parameter provided." and return
     end
   end
 

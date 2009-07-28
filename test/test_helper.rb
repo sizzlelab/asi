@@ -96,11 +96,17 @@ class ActionController::TestCase
 
   def assert_response(response, message=nil)
     super
-    if response == :success and @request.format == "application/json"
-      json = JSON.parse(@response.body)
-      unless @response.body.start_with? "{}"
-        assert json.key?("entry") || json.key?("messages"), "No 'entry' or 'messages' in #{@response.body}"
+    if @request.format == "application/json"
+      if response == :success
+        json = JSON.parse(@response.body)
+        unless @response.body.start_with? "{}"
+          assert json.key?("entry") || json.key?("messages"), "No 'entry' or 'messages' in #{@response.body}"
+        end
+      elsif @response.body.start_with? "{" && response != :created
+        json = JSON.parse(@response.body)
+        assert_nil json["entry"], "Illegal 'entry' in #{@response.body} with #{response}"
       end
+      assert !(@response.body.start_with? "["), "No 'messages' in #{@response.body}"
     end
   end
 

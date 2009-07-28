@@ -79,7 +79,7 @@ Finds users based on their (real) names.
 
       render :status => :created and return
     else
-      render_json :status => :bad_request, :entry => @person.errors.full_messages.to_json
+      render_json :status => :bad_request, :messages => @person.errors.full_messages.to_json
       @person = nil
       return
     end
