@@ -1,25 +1,23 @@
 <%= doc_title '/people/&lt;user_id&gt;/@location' %>
 <p>
-  A resource for accessing the location of the user specified by <tt>user_id</tt>. 
+  A resource for accessing the location of the user specified by <tt>user_id</tt>.
 </p>
 
-<% methods = [ { :name => "PUT", 
+<% methods = [ { :name => "PUT",
 
-                 :description => "Sets the location of the user. If only some of the fields are updated, rest will be set to null. The modified user must be logged in OR specify username and password.", 
+                 :description => "Sets the location of the user. If only some of the fields are updated, rest will be set to null. The modified user must be logged in OR specify username and password.",
 
-                 :parameters => [ { :username  => "<p class = 'deprecated'>DEPRECATED, use location_security_token <br/> Username of the person (if not otherwise logged in)</p>" },
-								  { :password  => "<p class = 'deprecated'>DEPRECATED, use location_security_token <br/> Password associated to the username (if not otherwise logged in)</p>" },
- 								  { :latitude  => "Latitude coordinates in Decimal Degree format" },
+                 :parameters => [ { :location_security_token => "Security token for updating location without logging in."},
+                                  { :location => [ { :latitude  => "Latitude coordinates in Decimal Degree format" },
                                   { :longitude => "Longitude coordinate sin Decimal Degree format" },
                                   { :label     => "Text label given to current location" },
-                                  { :accuracy  => "Accuracy of the location"},
-                                  { :location_security_token => "Security token for updating location without logging in."},
+                                  { :accuracy  => "Accuracy of the location"} ] },
                                 ] },
               {
-				:name => "POST",
-				:description => "Works the same way as PUT."
-			  },
-			  {
+                                :name => "POST",
+                                :description => "Works the same way as PUT."
+                          },
+                          {
                 :name => "GET",
                 :description => "Gets the location of the user. The returned structure is similar to PUT-methods parameter structure",
               },

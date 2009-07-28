@@ -4,29 +4,30 @@
   A resource for logging in and out.
 </p>
 
-<% methods = [ { :name => "POST", 
+<% methods = [ { :name => "POST",
 
                  :description => "Starts a new session. If you want to start the session only for the application,
-                                  leave the username and password parameters completely out.", 
+                                  leave the username and password parameters completely out.",
 
-                 :parameters => [ { :app_name => "The application's name." },
+                 :parameters => [ {:session => [ { :app_name => "The application's name." },
                                   { :app_password => "The application's password." },
                                   { :username => "The user's name (optional)." },
-                                  { :password => "The user's password (optional)." } ],
+                                  { :password => "The user's password (optional)." } ] }, ],
+
                  :returns => { "201" => "Session created.",
                                "401" => "Erroneuous authentication token(s).",
                                "409" => "A session already exists." }  },
-              
+
               { :name => "GET",
                 :description => "Checks if session exists.",
                 :returns => { "200" => "Session exists. Returns <code>app_id</code> and  <code>user_id</code> for the session.
                               The  <code>user_id</code> will be nil if the session is opened just for the application.",
-                              "404" => "No session was found."},   
-                
+                              "404" => "No session was found."},
+
               },
 
 
-               { :name => "DELETE", 
+               { :name => "DELETE",
                  :description => "Ends the current session." } ] %>
 
 <%= render :partial => "doc/methods", :locals => { :methods => methods } %>

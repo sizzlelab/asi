@@ -17,6 +17,7 @@ class LocationsController < ApplicationController
   end
 
   def update
+
     # The logged user can change only her own location...
     if ! ensure_same_as_logged_person(params['user_id'])
       if !params['username'] and !params['password'] and !params['location_security_token']
@@ -52,16 +53,7 @@ class LocationsController < ApplicationController
       @location.save
     end
 
-    new_values = {}
-    USER_UPDATEABLE_FIELDS.each do |field|
-      if params[field]
-        new_values[field] = params[field]
-      else
-        new_values[field] = nil
-      end
-    end
-
-    if ! @location.update_attributes(new_values)
+    if ! @location.update_attributes(params[:location])
       render :status  => 406, :json => "Problem with parameters.".to_json and  return
       #TODO return more info about which parameter went wrong
     end

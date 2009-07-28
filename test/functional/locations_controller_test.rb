@@ -52,13 +52,14 @@ class LocationsControllerTest < ActionController::TestCase
     test_latitude = -24.804007068817
     test_label = "Experimental grounds \\o/"
     put :update, {:user_id => people(:valid_person).id,
-                  :latitude => test_latitude,
-                  :longitude => -12.1231,
-                  :accuracy => 12,
-                  :label => test_label,
+      :location => {
+                   :latitude => test_latitude,
+                   :longitude => -12.1231,
+                   :accuracy => 12,
+                   :label => test_label },
                   :format => "json" },
                   { :cos_session_id => sessions(:session1).id }
-    assert_response :success
+    assert_response :success, @response.body
     json = JSON.parse(@response.body)
 
     #check that fields updated correctly
@@ -104,11 +105,11 @@ class LocationsControllerTest < ActionController::TestCase
   def test_update_with_username_and_password
     test_latitude =  -24.804007068817
     test_longitude = -12.804007068817
-     put :update, {:latitude => test_latitude,
+     put :update, {:location =>  { :latitude => test_latitude,
                    :longitude => test_longitude,
                    :accuracy => 12,
-                   :label => "Testing",
-                   :format => "json" ,
+        :label => "Testing" },
+        :format => "json",
                    :username => "kusti",
                    :password => "testi"},
                   {:cos_session_id => sessions(:session1).id}
@@ -143,7 +144,7 @@ class LocationsControllerTest < ActionController::TestCase
   def test_time_stamp_update
      timestamp = Person.find_by_id( people(:valid_person).id).location.updated_at
      put :update, {:user_id => people(:valid_person).id,
-                   :label => "New exciting location",
+      :location =>  { :label => "New exciting location" },
                    :format => "json" },
                    { :cos_session_id => sessions(:session1).id }
      assert_response :success
