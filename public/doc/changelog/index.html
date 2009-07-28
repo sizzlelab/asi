@@ -18,19 +18,43 @@
 <h2>Version 0.9 - 28.7.2009</h2>
 
 <ul>
-	<li>Changed return values of every resource. All json-returns are now either:</li>
+	<li>Changed return values of every resource.</li> 
 	<ul>
-		<li>empty (eg. <code>{ }</code>)</li>
-		<li>contain entry field with returned data (eg. <code>{ 'entry' : [ item1, item2 ] }</code> or <code>{ 'entry' : item }</code>)</li>
-		<li>errors as an array in messages field (eg.<code>{ 'messages' => [ 'Some error', 'Other error' ] } )</li>
+		<li>All json-returns are now either:</li>
+		<ul>
+			<li>empty (eg. <code>{ }</code>)</li>
+			<li>contain entry field with returned data (eg. <code>{ 'entry' : [ item1, item2 ] }</code> or <code>{ 'entry' : item }</code>)</li>
+			<li>errors as an array in messages field (eg.<code>{ 'messages' => [ 'Some error', 'Other error' ] } )</li>
+		</ul>
+		<li>Changes are present at least in:</li>
+		<ul>
+			<li>GET / PUT /appdata/user_id/@self/app_id</li>
+			<li>GET / POST /appdata/app_id/@collections</li>
+			<li>GET / POST / PUT / DELETE /appdata/app_id/@collections/id</li>
+			<li>DELETE /appdata/app_id/@collections/id/@items/item_id
+		</ul>
 	</ul>
 	<li>Changed parameters of individual resources (mainly POSTs and PUTs):</li>
 	<ul>
-		<li>POST /channels/</li>
+<!--		<li>POST /channels/</li>
 		<ul>
 			<li>New channel's parameters must be wrapped inside channel -hash (eg. channel => { name => 'foo', description => 'bar' } )</li>
+		</ul> -->
+		<li>POST /appdata/app_id/@collections</li>
+		<ul>
+			<li>New collection's parameters must be wrapped inside collection -hash (eg. collection => { title => 'foo', description => 'bar' } )</li>
 		</ul>
+		<li>PUT /appdata/app_id/@collections/id</li>
+		<ul>
+			<li>Updates to collection must be wrapped inside collection -hash (eg. collection => { title => 'foo', description => 'bar' } )</li>
+		</ul>
+		<li>POST /appdata/app_id/@collections/id</li>
+		<ul>
+			<li>New item's parameters must be wrapped inside item -hash (eg. item => { content_type => 'text/plain', body => 'foo' } )</li>
+		</ul>
+		
 	</ul>
+	
 </ul>
 
 
