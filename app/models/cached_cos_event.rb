@@ -11,6 +11,7 @@ class CachedCosEvent < ActiveRecord::Base
           logger.debug e
           event.destroy # Assume event was erroneus and drop
         end
+        event.destroy
       end
 
       logger.info "Ressi upload finished at #{Time.now}.\n"
