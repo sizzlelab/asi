@@ -57,6 +57,11 @@ test:
   person_id: aeCd5wrNir3BOQab_ZvnhG
   family_name: test
 
+orphan:
+  id: 230932
+  person_id: not_there
+  given_name: orphan
+
 <% 20.times do |n| %>
 <%="name#{n}:
   id: #{n + 4}

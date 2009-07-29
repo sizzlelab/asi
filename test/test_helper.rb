@@ -84,6 +84,11 @@ class ActiveSupport::TestCase
     end
   end
 
+  def login
+    login_as Person.find :first
+  end
+
+
   def login_as(person, client=nil)
     client ||= Client.find :first
     session = Session.new(:person => person, :client => client)

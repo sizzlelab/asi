@@ -16,6 +16,9 @@ Finds users based on their (real) names.
 =end
   def index
     @people = PersonName.search("*" + (params['search'] || "").strip + "*")
+
+    @people.reject! { |p| p.person == nil }
+
     @people_hash = @people.collect do |person|
       person.person.get_person_hash(@user)
     end
@@ -31,8 +34,14 @@ return:: 200 -
 return:: 406
 return:: [JSON] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you')
 param:: person
-  param::
-  param::
+-param:: person[username]
+-param:: person[name]
+--param:: person[name][given_name]
+--param:: family_name
+-param:: address
+param:: street
+__param:: zipcode
+_param:: email
 
 Finds users based on their (real) names.
 =end

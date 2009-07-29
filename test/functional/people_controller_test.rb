@@ -467,6 +467,7 @@ class PeopleControllerTest < ActionController::TestCase
     search("sepi-jaakko")
     search("Sepi-Jaakko Seutula")
     search("\"Juho Makkonen\"")
+    search("te")
     #search("Järnö Törnävä") # Latin-1
   end
 
@@ -578,6 +579,15 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :bad_request
     json = JSON.parse(@response.body)
   end
+
+  def test_orphan_search
+    login
+    get :index, { :search => "orphan", :format => "json" }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal [], json["entry"]
+  end
+
 
   private
 
