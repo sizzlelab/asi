@@ -178,5 +178,13 @@ class PersonTest < ActiveSupport::TestCase
     assert_equal "friend", json["connection"]
   end
 
+  def test_kassi_email_kludge
+    p = @valid_person
+    json = JSON.parse(p.to_json)
+    assert_nil json["email"]
+
+    json = JSON.parse(p.to_json(clients(:kassi).id))
+    assert_equal p.email, json["email"]
+  end
 
 end
