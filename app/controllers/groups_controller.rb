@@ -21,9 +21,16 @@ class GroupsController < ApplicationController
     params[:group][:group_type] = params[:group][:type]
     params[:group].delete :type
 
+
     @group = Group.create(params[:group].merge({ :created_by => @user }))
 
     if @group.valid?
+      if params[:create_channel]
+        @channel = Channel.create( :name => @group.title, 
+                                :owner => @user,
+                                :channel_type => "group",
+                                :creator_app => @client)
+      end
       render_json :status => :created, :entry => @group and return
     else
       render_json :status => :bad_request, :messages => @group.errors.full_messages.to_json and return
