@@ -595,6 +595,13 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal [], json["entry"]
   end
 
+  def test_kassi_email_kludge
+    login_as people(:valid_person).contacts[0], clients(:kassi)
+    get :show, { :user_id => people(:valid_person).id, :format => "json"}
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal people(:valid_person).email, json["entry"]["email"]
+  end
 
   private
 

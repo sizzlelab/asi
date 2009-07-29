@@ -50,7 +50,7 @@ Finds users based on their (real) names.
     if ! @person
       render :status => :not_found and return
     end
-    render_json :entry => @person.get_person_hash(@user)
+    render_json :entry => @person.get_person_hash(@user, @client.id)
   end
 
   def create
