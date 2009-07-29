@@ -18,7 +18,8 @@
 
                  :parameters => [ { :group => [ {:title => "The title (or name) of the group."},
                                   {:type => "Can be <code>open</code>, <code>closed</code>, <code>hidden</code> or <span class='not_implemented'><code>personal</code></span>"},
-                                  {:description => "A descriptive text for the group (optional)"} ] }
+                                  {:description => "A descriptive text for the group (optional)"} ] },
+ 																	{ :create_channel => "If set to <code>true</code> a channel for the group is also created with same name as group's title."}
                                 ],
 
                  :returns => { "201" => "Created. The response includes also the information for the group, for example the group GUID as <code>id</code>.",
