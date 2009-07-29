@@ -16,14 +16,14 @@ class SessionsController < ApplicationController
 
 
 
-    [ :app_name, :app_password, :username, :password].each do |param|
+    [ :app_name, :app_password, :username, :password, :proxy_ticket ].each do |param|
       params[param] = nil
       params[param] = params[:session][param] if params[:session] && params[:session][param]
     end
 
 
-    if (params[:pt])
-      params[:password] = params[:pt]
+    if (params[:proxy_ticket])
+      params[:password] = params[:proxy_ticket]
     end
 
     # TODO: Move from @session.save SASSI-version to model and create ticket-field to session.
@@ -59,7 +59,7 @@ class SessionsController < ApplicationController
       if (! @session.person_match) && (params[:username] || params[:password])
         # inserted username, password -pair is not found in database
 
-        if (params[:pt]) # CAS Proxy Ticket
+        if (params[:proxy_ticket]) # CAS Proxy Ticket
           conf = Hash.new()
           cas_logger = CASClient::Logger.new(RAILS_ROOT+'/log/cas.log')
           cas_logger.level = Logger::DEBUG
@@ -67,7 +67,7 @@ class SessionsController < ApplicationController
           conf[:validate_url] = conf[:cas_base_url] + '/proxyValidate'
           conf[:logger] = cas_logger
           cas_client = CASClient::Client.new(conf)
-          st = CASClient::ServiceTicket.new(params[:pt], "#{request.protocol}#{request.env['HTTP_HOST']}", false)
+          st = CASClient::ServiceTicket.new(params[:proxy_ticket], "#{request.protocol}#{request.env['HTTP_HOST']}", false)
           st_resp = cas_client.validate_proxy_ticket(st)
 
           if st_resp.is_valid?
