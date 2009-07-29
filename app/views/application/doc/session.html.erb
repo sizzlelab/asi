@@ -12,7 +12,8 @@
                  :parameters => [ {:session => [ { :app_name => "The application's name." },
                                   { :app_password => "The application's password." },
                                   { :username => "The user's name (optional)." },
-                                  { :password => "The user's password (optional)." } ] }, ],
+                                  { :password => "The user's password (optional)." },
+                                  { :proxy_ticket => "CAS proxy ticket (optional)." } ] }, ],
 
                  :returns => { "201" => "Session created.",
                                "401" => "Erroneuous authentication token(s).",
