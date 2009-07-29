@@ -345,6 +345,13 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :error
   end
 
+  def test_update_avatar_image_with_all_caps
+    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("LADY.JPG","image/jpeg"),
+                          :format => 'html' },
+                        { :cos_session_id => sessions(:session1).id }
+    assert_response :success
+  end
+
   def test_delete_avatar
     #delete person with valid id
     delete :delete_avatar, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
