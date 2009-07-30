@@ -79,14 +79,15 @@ class ApplicationController < ActionController::Base
 
   def log
     CachedCosEvent.create do |e|
-      e.user_id        = @user ? @user.id : nil
-      e.application_id = @client ? @client.id : nil
-      e.cos_session_id = session[:cos_session_id]
-      e.ip_address     = request.remote_ip
-      e.action         = controller_class_name + "\#" + action_name
-      e.parameters     = filter_parameters(params).to_json
-      e.return_value   = @_response.status
-      e.headers        = request.headers.reject do |*a|
+      e.user_id           = @user ? @user.id : nil
+      e.application_id    = @client ? @client.id : nil
+      e.cos_session_id    = session[:cos_session_id]
+      e.ip_address        = request.remote_ip
+      e.action            = controller_class_name + "\#" + action_name
+      e.parameters        = filter_parameters(params).to_json
+      e.return_value      = @_response.status
+      e.semantic_event_id = params[:event_id]
+      e.headers           = request.headers.reject do |*a|
         a[0].starts_with?("rack") or a[0].starts_with?("action_controller")
       end.to_json
     end

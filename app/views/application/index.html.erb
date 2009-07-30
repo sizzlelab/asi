@@ -22,6 +22,8 @@
   <li><tt>DELETE /session</tt> when finished.</li>
 </ul>
 
+<p>All the calls to COS resources can (and should) be made with an additional <code>event_id</code> parameter. This parameter is intended for the research log to be a semantic identifier of what the user was actually doing when this request was made. So it could be something like <code>"Kassi::ShowItemsListing::2009-07-30_14:17:23::02313"</code> but the message format is not restricted to anything. This identifier should persist for all the COS-requests for the same action, for example when the user loads a single page in a client application, but a new one must be made for the next action. The parameter's format should be somewhat consistent between calls.</p>
+
 <h2>The COS API reference</h2>
 
 <p><a href="/doc/changelog">Changelog</a></p>

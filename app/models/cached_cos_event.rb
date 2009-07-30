@@ -4,12 +4,11 @@ class CachedCosEvent < ActiveRecord::Base
     if CachedCosEvent.count > 0
       logger.info "Uploading #{CachedCosEvent.count} events to Ressi at #{Time.now}.\n"
 
-      CachedCosEvent.all.each do |event|
+      CachedCosEvent.find_each do |event|
         begin
           event.upload
         rescue ActiveResource::ServerError => e
           logger.debug e
-          event.destroy # Assume event was erroneus and drop
         end
         event.destroy
       end
@@ -27,9 +26,9 @@ class CachedCosEvent < ActiveRecord::Base
                               :action =>         action,
                               :parameters =>     parameters,
                               :return_value =>   return_value,
-                              :headers =>        headers
+                              :headers =>        headers,
+                              :semantic_event_id => semantic_event_id
                             })
 
-    self.destroy if event.valid?
   end
 end
