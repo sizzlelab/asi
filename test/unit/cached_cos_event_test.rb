@@ -14,6 +14,7 @@ class CachedCosEventTest < ActiveSupport::TestCase
     :cos_session_id=>"63601",
     :user_id=>"biPssKjrCr3PQyaaWPEYjL",
     :ip_address=>"128.214.20.122",
+    :semantic_event_id => "hololooo",
     :headers => {"foo" => "bar"}.to_json }
 
 
@@ -31,7 +32,7 @@ class CachedCosEventTest < ActiveSupport::TestCase
       end
     rescue Errno::ECONNREFUSED => e
       puts "No connection to RESSI at #{RESSI_URL}"
-    rescue
+    rescue Exception => e
       assert false,  "Ressi timed out at #{RESSI_URL}"
     end
   end
