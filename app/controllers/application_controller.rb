@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_same_as_logged_person(target_person_id)
-    return @user && target_person_id == @user.id
+    return @user && target_person_id == @user.guid
   end
 
   def log

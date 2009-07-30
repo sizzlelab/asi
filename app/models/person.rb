@@ -4,8 +4,15 @@ class Person < ActiveRecord::Base
   include AuthenticationHelper
 
   include_simple_groups
-  usesguid
+#  usesguid
   usesnpguid
+
+  define_index do
+    indexes username
+
+    set_property :enable_star => true
+    set_property :min_infix_len => 1
+  end
 
   attr_reader :password
   attr_protected :roles
@@ -38,7 +45,7 @@ class Person < ActiveRecord::Base
            :source => :contact,
            :conditions => "status = 'pending'"
 
-  ALL_FIELDS = %w(status_message gender birthdate irc_nick msn_nick phone_number description website id username name address is_association)
+  ALL_FIELDS = %w(status_message gender birthdate irc_nick msn_nick phone_number description website username name address is_association)
   STRING_FIELDS = %w(status_message irc_nick msn_nick description website)
   # Fields that need to be translated if the language is changed.
   LOCALIZED_FIELDS = %w(gender)
@@ -165,6 +172,7 @@ class Person < ActiveRecord::Base
   def person_hash(client_id=nil, connection_person=nil, *a)
 
     person_hash = {
+      'id' => guid,
       'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" },
                     :status => ( avatar ? "set" : "not_set" ) },
       'status' => { :message => status_message, :changed => status_message_changed },

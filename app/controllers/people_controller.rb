@@ -16,6 +16,7 @@ Finds users based on their (real) names.
 =end
   def index
     @people = PersonName.search("*" + (params['search'] || "").strip + "*")
+    @people.reject! { |p| p.person == nil }
     @people_hash = @people.collect { |p| p.person.person_hash(@client, @user) }
   end
 
@@ -30,7 +31,7 @@ param:: search - the search term. Every user whose name matches the regular expr
 Finds users based on their (real) names.
 =end
   def show
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
@@ -42,12 +43,10 @@ Finds users based on their (real) names.
 
     @person = Person.new(params[:person])
     if @person.save
-
-      @role = Role.new(:person_id => @person.id,
+      @role = Role.new(:person => @person,
                        :client_id => @client.id,
                        :title => Role::USER,
-                       :terms_version => params[:person][:consent]
-                      )
+                       :terms_version => params[:person][:consent])
       @role.save
 
       if VALIDATE_EMAILS # set in conf/
@@ -85,7 +84,7 @@ Finds users based on their (real) names.
     if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status  => :not_found and return
     end
@@ -101,7 +100,7 @@ Finds users based on their (real) names.
 
 
   def delete
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
@@ -127,11 +126,11 @@ Finds users based on their (real) names.
       render :status => :forbidden and return
     end
 
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
-    @friend = Person.find_by_id(params['friend_id'])
+    @friend = Person.find_by_guid(params['friend_id'])
     if ! @friend
       render :status => :not_found and return
     end
@@ -198,7 +197,7 @@ Finds users based on their (real) names.
   end
 
   def get_friends
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
@@ -245,7 +244,7 @@ Finds users based on their (real) names.
     # if ! ensure_same_as_logged_person(params['user_id'])
     #   render :status => :forbidden and return
     # end
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status  => :not_found and return
     end
@@ -261,7 +260,7 @@ Finds users based on their (real) names.
   end
 
   def delete_avatar
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
@@ -281,11 +280,11 @@ Finds users based on their (real) names.
     if ! ensure_same_as_logged_person(user_id)
       render :status => :forbidden and return
     end
-    @person = Person.find_by_id(user_id)
+    @person = Person.find_by_guid(user_id)
     if ! @person
       render :status => :not_found and return
     end
-    @contact = Person.find_by_id(contact_id)
+    @contact = Person.find_by_guid(contact_id)
     if ! @contact
       render :status => :not_found and return
     end
@@ -293,7 +292,7 @@ Finds users based on their (real) names.
   end
 
   def fetch_avatar(image_type)
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end

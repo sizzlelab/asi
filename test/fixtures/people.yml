@@ -3,8 +3,10 @@
 
 #encrypted_password 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c is "testi" in readable form
 
+
 valid_person:
   id: 1
+  guid: 1
   username: kusti
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: working@address.com
@@ -20,7 +22,8 @@ valid_person:
   website: "http://example.com"
 
 valid_association:
-  id: 2349889
+  id: 99
+  guid: 2349889
   username: ttytot
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: working-as-well@address.com
@@ -29,6 +32,7 @@ valid_association:
 
 invalid_person:
   id: 2
+  guid: 2
   username: a/a
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: dsfs
@@ -39,7 +43,8 @@ invalid_person:
   gender: MALE
 
 blank_person:
-  id: aouehcrauoceh
+  id: 100
+  guid: aouehcrauoceh
   username: abbbc
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: dsfs
@@ -48,6 +53,7 @@ blank_person:
 
 contact:
   id: 3
+  guid: 3
   username: contact
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: contact@address.com
@@ -55,6 +61,7 @@ contact:
 
 friend:
   id: 4
+  guid: 4
   username: hawking
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
@@ -63,25 +70,29 @@ friend:
 
 requested:
   id: 5
+  guid: 5
   username: liimatta
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
 
 not_yet_friend:
   id: 6
+  guid: 6
   username: Kake
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG''
 
 test:
-  id: aeCd5wrNir3BOQab_ZvnhG
+  id: 98
+  guid: aeCd5wrNir3BOQab_ZvnhG
   username: testi
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
   email: testi@tes.ti
 
 not_yet_validated:
-  id: aosfasfju29twf9e
+  id: 10
+  guid: aosfasfju29twf9e
   username: wannabe
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
@@ -89,6 +100,7 @@ not_yet_validated:
 
 name_contains_dash:
   id: 1234
+  guid: 1234
   username: sepijaakko
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
@@ -96,6 +108,7 @@ name_contains_dash:
 
 name_contains_dvdvkkoset:
   id: 2899
+  guid: 2899
   username: jarno
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
@@ -104,7 +117,8 @@ name_contains_dvdvkkoset:
   #encrypted_password 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c is "testi" in readable form
 <% 20.times do |n| %>
 <%="person#{n}:
-  id: #{n}aa
+  id: #{n+20}
+  guid: #{n}aa
   username: testi#{n}
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
