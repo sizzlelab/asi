@@ -1,10 +1,10 @@
 class MessagesController < ApplicationController
   
   before_filter :get_channel
-  before_filter :ensure_can_read_channel, :only => [ :list, :create, :show ]
+  before_filter :ensure_can_read_channel, :only => [ :index, :create, :show ]
   before_filter :get_message, :only => [ :delete, :edit, :show ]
   
-  def list
+  def index
     if params[:search]
       @messages = Message.search( params[:search],
                                   :per_page => params[:per_page],
@@ -14,8 +14,8 @@ class MessagesController < ApplicationController
       options = {}
       if params[:per_page]
         options[:limit] = params[:per_page].to_i
-        if params[:page]
-          options[:offset] = params[:per_page].to_i * params[:page].to_i
+        if params[:page] && params[:page].to_i >= 1
+          options[:offset] = params[:per_page].to_i * (params[:page].to_i-1)
         end
       end
       options[:conditions] = {:channel_id => @channel.id }
