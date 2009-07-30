@@ -35,7 +35,7 @@ class ChannelsController < ApplicationController
 
       if params[:per_page]
         options[:limit] = params[:per_page].to_i
-        options[:offset] = (params[:page] ? params[:page].to_i * params[:per_page].to_i : 0)
+        options[:offset] = (params[:page] && params[:page] >= 1? (params[:page].to_i-1) * params[:per_page].to_i : 0)
       end
       
       
