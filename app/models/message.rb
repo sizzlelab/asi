@@ -25,11 +25,12 @@ class Message < ActiveRecord::Base
   def to_json(*a)
     ref_message = nil
     if self.reference_to
-      ref_message = Message.find_by_id(reference_to).guid rescue NoMethodError
+      ref_message = Message.find_by_id(reference_to).guid rescue NoMethodError nil
     end
     hash = { :id => guid,
              :title => title,
              :body => body,
+             :channel => channel_id,
              :reference_to => ref_message,
              :attachment => attachment,
              :content_type => content_type,
