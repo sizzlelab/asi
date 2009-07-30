@@ -51,25 +51,25 @@ class ApplicationController < ActionController::Base
 
   def ensure_person_login
     unless @user
-      render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
+      render_json :status => :unauthorized, :messages => "Please login as a user to continue" and return
     end
   end
 
   def ensure_person_logout
     if @user
-      render :status => :conflict, :json => "You must logout before you can login or register".to_json and return
+      render_json :status => :conflict, :messages => "You must logout before you can login or register" and return
     end
   end
 
   def ensure_client_login
     unless @client
-      render :status => :unauthorized, :json => "Please login as a client to continue".to_json and return
+      render_json :status => :unauthorized, :messages => "Please login as a client to continue" and return
     end
   end
 
   def ensure_client_logout
     if @client
-      render :status => :conflict, :json => "You must logout client before you can login".to_json and return
+      render_json :status => :conflict, :messages => "You must logout client before you can login" and return
     end
   end
 
@@ -79,7 +79,7 @@ class ApplicationController < ActionController::Base
 
   def log
     CachedCosEvent.create do |e|
-      e.user_id        = @user ? @user.id : nil
+      e.user_id        = @user ? @user.guid : nil
       e.application_id = @client ? @client.id : nil
       e.cos_session_id = session[:cos_session_id]
       e.ip_address     = request.remote_ip
@@ -113,7 +113,7 @@ class ApplicationController < ActionController::Base
       if @channel.group_subscribers.size != 0 && ! @channel.group_subscribers[0].admins.exists?(@user)
         render :status => :forbidden and return
       end
-    elsif !ensure_same_as_logged_person(@channel.owner_id)
+    elsif !ensure_same_as_logged_person(@channel.owner.guid)
       render :status => :forbidden and return
     end
   end
@@ -135,19 +135,25 @@ class ApplicationController < ActionController::Base
 
   def render_json(options = {})
     hash = Hash.new
-    if options[:messages]
-      hash[:messages] = [options[:messages]].flatten
-      options.delete(:messages)
+    if !options[:json]
+      if options[:messages]
+        hash[:messages] = [options[:messages]].flatten
+        options.delete(:messages)
+      end
+      if options[:entry]
+        hash[:entry] = options[:entry]
+        options.delete(:entry)
+      end
+      if params[:per_page] && params[:page]
+        hash[:pagination] = { :per_page => params[:per_page].to_i,
+                              :page => params[:page].to_i
+                            }
+      end
+      if options[:size]
+        hash[:pagination][:size] = options[:size]
+      end
+      options[:json] = hash
     end
-    if options[:entry]
-      hash[:entry] = options[:entry]
-      options.delete(:entry)
-    end
-    if params[:per_page] && params[:page]
-      hash[:pagination] = { :per_page => params[:per_page].to_i,
-                            :page => params[:page].to_i }
-    end
-    options[:json] = hash
     render options
   end
 

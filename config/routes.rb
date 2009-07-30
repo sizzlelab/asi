@@ -221,7 +221,7 @@ ActionController::Routing::Routes.draw do |map|
                                                         :delete => 'unsubscribe'
 
   map.resource '/channels/:channel_id/@messages', :controller => 'messages',
-                                                  :get => 'list',
+                                                  :get => 'index',
                                                   :post => 'create'
 
   map.resource '/channels/:channel_id/@messages/:msg_id', :controller => 'messages',

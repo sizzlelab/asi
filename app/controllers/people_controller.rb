@@ -18,6 +18,7 @@ Finds users based on their (real) names.
     @people = PersonName.search("*" + (params['search'] || "").strip + "*")
     @people.reject! { |p| p.person == nil }
     @people_hash = @people.collect { |p| p.person.person_hash(@client, @user) }
+    render_json :entry => @people_hash
   end
 
 =begin rapidoc
@@ -25,8 +26,18 @@ url:: /people
 method:: POST
 access:: FREE
 return_code:: 200 - OK
+return:: 200 -
+return:: 406
 return:: [JSON] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you')
-param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all characters in the search term are interpreted as literals rather than special regexp characters.
+param:: person
+-param:: person[username]
+-param:: person[name]
+--param:: person[name][given_name]
+--param:: family_name
+-param:: address
+param:: street
+__param:: zipcode
+_param:: email
 
 Finds users based on their (real) names.
 =end
@@ -35,6 +46,7 @@ Finds users based on their (real) names.
     if ! @person
       render :status => :not_found and return
     end
+    render_json :entry => @person.person_hash(@client.id, @user)
   end
 
   def create
@@ -70,7 +82,7 @@ Finds users based on their (real) names.
 
       render :status => :created and return
     else
-      render :status => :bad_request, :json => @person.errors.full_messages.to_json
+      render_json :status => :bad_request, :messages => @person.errors.full_messages
       @person = nil
       return
     end
@@ -86,15 +98,19 @@ Finds users based on their (real) names.
     end
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
-      render :status  => :not_found and return
+      render :status => :not_found and return
     end
     if params[:person]
-      if @person.update_attributes(params[:person])
-        render :status => :ok and return
+      begin
+        if @person.update_attributes(params[:person])
+          render_json :entry => @person and return
+        end
+      rescue NoMethodError  => e
+        errors = e.to_s
       end
     end
 
-    render :status => :bad_request, :json => @person.errors.full_messages.to_json
+    render_json :status => :bad_request, :messages => @person.errors.full_messages.to_json
     @person = nil
   end
 
@@ -119,7 +135,7 @@ Finds users based on their (real) names.
     # change friendship status to accepted.
 
     if (params['user_id'] == params['friend_id'])
-      render :json => "Cannot add yourself to your friend.".to_json, :status => :bad_request
+      render_json :messages => "Cannot add yourself to your friend.", :status => :bad_request
     end
 
     if ! ensure_same_as_logged_person(params['user_id'])
@@ -136,7 +152,7 @@ Finds users based on their (real) names.
     end
 
     if @person.association? or @friend.association?
-      render :json => "Association users cannot have friends.".to_json, :status => :bad_request
+      render_json :messages => "Association users cannot have friends.".to_json, :status => :bad_request
     end
 
     if @person.pending_contacts.include?(@friend) #accept if pending
@@ -155,9 +171,9 @@ Finds users based on their (real) names.
       UserMailer.deliver_recovery(:key => CryptoHelper.encrypt("#{person.id}:#{person.salt}"),
                                   :email => person.email,
                                   :domain => SERVER_DOMAIN)
-      render :json => "Recovery mail sent to specified address.".to_json, :status => :ok and return
+      render_json :messages => "Recovery mail sent to specified address.".to_json, :status => :ok and return
     else
-      render :json => "Record not found.".to_json, :status => :not_found and return
+      render_json :messages => "Record not found.".to_json, :status => :not_found and return
     end
 
   end
@@ -219,7 +235,7 @@ Finds users based on their (real) names.
     if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
-    render :json => { :entry => @user.pending_contacts}.to_json
+    render_json :entry => @user.pending_contacts
   end
 
   def reject_friend_request
@@ -343,9 +359,9 @@ Finds users based on their (real) names.
     if params[:user_id] == "@me"
       if ses = Session.find_by_id(session[:cos_session_id])
         if ses.person
-          params[:user_id] = ses.person.id
+          params[:user_id] = ses.person.guid
         else
-          render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
+          render_json :status => :unauthorized, :messages => "Please login as a user to continue".to_json and return
         end
       end
     end

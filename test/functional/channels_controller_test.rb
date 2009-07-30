@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'test_helper'
 require 'json'
 
@@ -22,7 +23,7 @@ class ChannelsControllerTest < ActionController::TestCase
     get :index, { :search => "testaa", :format => "json"}, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    assert_not_equal json['entry'], []    
+    assert_not_equal json['entry'], []
   end
 
   def test_create_channel
@@ -42,11 +43,12 @@ class ChannelsControllerTest < ActionController::TestCase
     post :create, {:format => "json", :channel => {:channel_type => "group", :description => "gsdgsGD", :name => "testiryhmä", :group_id => groups(:open)}}, { :cos_session_id => sessions(:session1).id }
     assert_response :created, @response.body
     assert_equal 1, assigns["channel"].group_subscribers.size
-    
+
   end
 
   def test_delete_channel
-    delete :delete, {:format => "json", :channel_id => channels(:julkikanava).guid}, { :cos_session_id => sessions(:session1).id }
+    login_as channels(:julkikanava).owner, clients(:one)
+    delete :delete, {:format => "json", :channel_id => channels(:julkikanava).guid}
     assert_response :ok, @response.body
     assert !Channel.find_by_guid(channels(:julkikanava).guid)
 
@@ -85,9 +87,10 @@ class ChannelsControllerTest < ActionController::TestCase
     post :subscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :group_id => "agaskdjghasdlgha" }, { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request, @response.body
     assert_equal 0, assigns["channel"].group_subscribers.length
-    
 
-    post :subscribe, {:format => "json", :channel_id => channels(:kaverikanava).guid, :group_id => nil }, { :cos_session_id => sessions(:session10).id }
+
+    login_as people(:valid_person).contacts[0]
+    post :subscribe, {:format => "json", :channel_id => channels(:kaverikanava).guid, :group_id => nil }
     assert_response :created, @response.body
     assert_equal 2, assigns["channel"].user_subscribers.length
 
@@ -98,7 +101,8 @@ class ChannelsControllerTest < ActionController::TestCase
   end
 
   def test_unsubscribe
-    delete :unsubscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :person_id => people(:contact).id }, { :cos_session_id => sessions(:session1).id }
+    login_as channels(:julkikanava).owner
+    delete :unsubscribe, {:format => "json", :channel_id => channels(:julkikanava).guid, :person_id => people(:contact).guid }
     assert_response :ok, @response.body
     assert_equal 1, assigns["channel"].user_subscribers.length
 

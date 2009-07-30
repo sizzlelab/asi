@@ -1,5 +1,5 @@
 <% if @session %>
-  <%= @session.to_json %>
+  <%= { :entry => @session }.to_json %>
 <% else %>
   <%= {}.to_json %>
 <% end %>

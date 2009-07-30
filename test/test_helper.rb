@@ -84,10 +84,35 @@ class ActiveSupport::TestCase
     end
   end
 
+  def login
+    login_as Person.find :first
+  end
+
+
   def login_as(person, client=nil)
+    client ||= Client.find :first
     session = Session.new(:person => person, :client => client)
     session.save(false)
     @request.session[:cos_session_id] = session.id
+  end
+end
+
+class ActionController::TestCase
+
+  def assert_response(response, message=nil)
+    super
+    if @request.format == "application/json"
+      if response == :success
+        json = JSON.parse(@response.body)
+        unless @response.body.start_with? "{}"
+          assert json.key?("entry") || json.key?("messages"), "No 'entry' or 'messages' in #{@response.body}"
+        end
+      elsif @response.body.start_with? "{" && response != :created
+        json = JSON.parse(@response.body)
+        assert_nil json["entry"], "Illegal 'entry' in #{@response.body} with #{response}"
+      end
+      assert !(@response.body.start_with? "["), "No 'messages' in #{@response.body}"
+    end
   end
 
 end
@@ -99,7 +124,7 @@ module COSTestingDSL
     else
       expected_response = :created
     end
-    post "/session", options
+    post "/session", { :session => options }
     assert_response expected_response
     assert_not_nil session[:cos_session_id] if expected_response == :created
   end
@@ -118,26 +143,26 @@ module COSTestingDSL
   def creates_collection(options)
     post "/appdata/#{options[:client_id]}/@collections"
     assert_response :created
-    assert_template "collections/create"
+#    assert_template "collections/create"
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
-    return json["id"]
+    assert_not_nil json['entry']["id"]
+    return json['entry']["id"]
   end
 
   def gets_collection(options)
     get "/appdata/#{options[:client_id]}/@collections/#{options[:id]}"
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
-    assert_not_nil json["entry"]
+    assert_not_nil json['entry']["id"]
+    assert_not_nil json['entry']["entry"]
   end
 
   def adds_text_to_collection(options)
     post "/appdata/#{options[:client_id]}/@collections/#{options[:id]}",
-    { :title => "Sleep Tight", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." }
+    { :item => {:title => "Sleep Tight", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." }}
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json['entry']["id"]
   end
 
   def deletes_collection(options)
@@ -154,8 +179,8 @@ module COSTestingDSL
     get "/people/#{options[:id]}/@self"
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
-    assert_equal options[:id], json["id"]
+    assert_not_nil json["entry"]["id"]
+    assert_equal options[:id], json["entry"]["id"]
     return json
   end
 
@@ -163,7 +188,7 @@ module COSTestingDSL
     put "/people/#{options[:id]}/@self", options
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json["entry"]["id"]
     #special handling for status_message
     if (options[:person][:status_message])
       options[:person][:status] = {:message => options[:person][:status_message]}
@@ -171,14 +196,14 @@ module COSTestingDSL
     end
     #Don't expect email to be returned
     options[:person].delete(:email)
-    assert subset(options[:person], json)
+    assert subset(options[:person], json["entry"])
   end
 
   def changes_password_of_person(options)
     put "/people/#{options[:id]}/@self", {:person => { :password => options[:password] } }
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json["entry"]["id"]
   end
 
   def deletes_account(options)
@@ -225,21 +250,21 @@ module COSTestingDSL
   end
 
   def creates_group_with(options)
-    post "/groups", options
+    post "/groups", { :group => options }
     assert_response :success, @response.body
-    JSON.parse(@response.body)["group"]["id"]
+    JSON.parse(@response.body)["entry"]["id"]
   end
 
   def lists_public_groups
     get "/groups/@public"
     assert_response :success, @response.body
-    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+    JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
   end
 
   def searches_groups_with(query)
     get "/groups/@public", { :query => query }
     assert_response :success, @response.body
-    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+    JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
   end
 
   def lists_membership_requests(group_id)
@@ -271,7 +296,7 @@ module COSTestingDSL
   def lists_membership_invites(user_id, group_id)
     get "/people/#{user_id}/@groups/@invites"
     assert_response :success, @response.body
-    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+    JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
   end
 
   private

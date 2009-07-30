@@ -44,7 +44,7 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns["collection"]
     json = JSON.parse(@response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json['entry']["id"]
 
     # Should not show a collection belonging to another client
     get :show, { :app_id => clients(:two).id, :id => collections(:one).id, :format => 'json' },
@@ -68,7 +68,7 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns["collection"]
     json = JSON.parse(@response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json['entry']["id"]
 
     # Should not show a private collection beloning to a requested connection
     get :show, { :app_id => clients(:one).id, :id => collections(:four).id, :format => 'json' },
@@ -96,8 +96,8 @@ class CollectionsControllerTest < ActionController::TestCase
                { :cos_session_id => sessions(:session6).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    entry = json["entry"]
-    assert_equal(json["totalResults"], entry.size)
+    entry = json["entry"]['entry']
+    assert_equal(json['entry']["totalResults"], entry.size)
     entry.each do |item|
       assert_not_equal(collections(:three).id, item["id"])
     end
@@ -107,8 +107,8 @@ class CollectionsControllerTest < ActionController::TestCase
                { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    entry = json["entry"]
-    assert_equal(json["totalResults"], entry.size)
+    entry = json["entry"]['entry']
+    assert_equal(json['entry']["totalResults"], entry.size)
     found_ref = false
     entry.each do |item|
       found_ref = true if item["id"] == collections(:three).id
@@ -118,40 +118,40 @@ class CollectionsControllerTest < ActionController::TestCase
 
   def test_create
     # With an owner and a client
-    post :create, { :app_id => clients(:one).id, :format => 'json', :owner => people(:valid_person).id },
+    post :create, { :app_id => clients(:one).id, :format => 'json', :collection => {:owner_id => people(:valid_person).guid }},
                   { :cos_session_id => sessions(:session1).id, :client => clients(:one).id }
     assert_response :created
     assert_not_nil assigns["collection"]
     assert_equal(assigns["collection"].owner, people(:valid_person))
     assert_equal(assigns["collection"].client, clients(:one))
     json = JSON.parse(@response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json["entry"]["id"]
   end
 
   def test_create_with_client
     # With only a client
-    post :create, { :app_id => clients(:one).id, :format => 'json', :title => "test-collection"},
+    post :create, { :app_id => clients(:one).id, :format => 'json', :collection => {:title => "test-collection"}},
                   { :cos_session_id => sessions(:session1).id, :client => clients(:one).id }
     assert_response :created
     assert_not_nil assigns["collection"]
     assert_nil assigns["collection"].owner
     assert_equal(assigns["collection"].client, clients(:one))
     json = JSON.parse(@response.body)
-    assert_not_nil json["id"]
-    assert_not_nil(json["title"])
-    assert_equal("test-collection", json["title"])
+    assert_not_nil json["entry"]["id"]
+    assert_not_nil json["entry"]["title"]
+    assert_equal("test-collection", json["entry"]["title"])
   end
 
   def test_create_with_owner
     # With only an owner
-    post :create, { :app_id => '2', :format => 'json', :owner => people(:valid_person).id },
+    post :create, { :app_id => '2', :format => 'json', :owner_id => people(:valid_person).id },
                   { :cos_session_id => sessions(:session1).id }
     assert_response :forbidden
   end
 
   def test_create_without_owner
     # With neither
-    post :create, { :app_id => '2', :owner => '3', :format => 'json' }, {:cos_session_id => sessions(:session1).id}
+    post :create, { :app_id => '2', :owner_id => '3', :format => 'json' }, {:cos_session_id => sessions(:session1).id}
     assert_response :forbidden
   end
 
@@ -219,7 +219,7 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # Should be able to add to a collection belonging to the client
     post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
-                 :title => "The Engine", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." },
+                 :item => {:title => "The Engine", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." }},
                { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_equal(old_item_count+1, assigns["collection"].items.count)
@@ -245,7 +245,7 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # Should be able to add to a collection belonging to the client
     post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
-                 :file => fixture_file_upload("Bison_skull_pile.png","image/png") },
+                 :item => {:file => fixture_file_upload("Bison_skull_pile.png","image/png") }},
                { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_equal(old_item_count+1, assigns["collection"].items.count)
@@ -254,18 +254,18 @@ class CollectionsControllerTest < ActionController::TestCase
 
   def test_add_collection_reference
     # add
-    post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
-                 :content_type => "collection", :collection_id => collections(:three).id },
+    post :add, { :app_id => clients(:one).id, :format => 'json', :id => collections(:one).id, :item => {
+                 :content_type => "collection", :collection_id => collections(:three).id }},
                { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
 
     #check
-    get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' },
-               { :cos_session_id => sessions(:session1).id }
-    assert_response :success, @response.body
-    json = JSON.parse(@response.body)
-    assert_equal(collections(:three).id, json["entry"][0]["id"])
+#    get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' },
+#               { :cos_session_id => sessions(:session1).id }
+#    assert_response :success, @response.body
+#    json = JSON.parse(@response.body)
+#    assert_equal(collections(:three).id, json["entry"]["id"])
 
     #delete
     try_to_delete_item(collections(:three).id, sessions(:session1).id, true, collections(:one).id)
@@ -287,30 +287,30 @@ class CollectionsControllerTest < ActionController::TestCase
 
   def test_metadata
     post :create, { :app_id => clients(:one).id, :format => 'json',
-                    :metadata => { :created => "right now", :is_nice => "truly" } },
+                    :collection => {:metadata => { :created => "right now", :is_nice => "truly" } }},
                   { :cos_session_id => sessions(:session1).id, :client => clients(:one).id }
     assert_response :created
     json = JSON.parse(@response.body)
-    assert_not_nil json["metadata"]
-    assert_equal("right now", json["metadata"]["created"])
-    assert_equal("truly", json["metadata"]["is_nice"])
+    assert_not_nil json['entry']["metadata"]
+    assert_equal("right now", json['entry']["metadata"]["created"])
+    assert_equal("truly", json['entry']["metadata"]["is_nice"])
 
     put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
-                   :metadata => { :foo => "bar", :bar => "Foobar" } },
+                   :collection => {:metadata => { :foo => "bar", :bar => "Foobar" } }},
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal("bar", json["metadata"]["foo"])
-    assert_equal("Foobar", json["metadata"]["bar"])
+    assert_equal("bar", json['entry']["metadata"]["foo"])
+    assert_equal("Foobar", json['entry']["metadata"]["bar"])
 
     put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
-                   :metadata => { :foo2 => "bar", :bar => "foo" } },
+                   :collection => {:metadata => { :foo2 => "bar", :bar => "foo" } }},
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal("bar", json["metadata"]["foo2"])
-    assert_equal("bar", json["metadata"]["foo"], "Old metadata key was lost while updating")
-    assert_equal("foo", json["metadata"]["bar"])
+    assert_equal("bar", json['entry']["metadata"]["foo2"])
+    assert_equal("bar", json['entry']["metadata"]["foo"], "Old metadata key was lost while updating")
+    assert_equal("foo", json['entry']["metadata"]["bar"])
 
     # Try to update the collection's id and owner
     put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
@@ -318,7 +318,7 @@ class CollectionsControllerTest < ActionController::TestCase
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body #succeeds but doesn't change anything
     json = JSON.parse(@response.body)
-    assert_not_equal("9999", json["id"])
+    assert_not_equal("9999", json['entry']["id"])
 
     # Try to update metadata for a collection belonging to another user
     put :update, { :app_id => clients(:one).id,
@@ -331,19 +331,19 @@ class CollectionsControllerTest < ActionController::TestCase
 
   def test_tags
     post :create, { :app_id => clients(:one).id, :format => 'json',
-                    :tags => "nice, test"},
+                    :collection => {:tags => "nice, test"}},
                   { :cos_session_id => sessions(:session1).id, :client => clients(:one).id }
     assert_response :created
     json = JSON.parse(@response.body)
-    assert_not_nil json["tags"]
-    assert_equal("nice, test", json["tags"])
+    assert_not_nil json['entry']["tags"]
+    assert_equal("nice, test", json['entry']["tags"])
 
     put :update, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
-                   :tags => "important" },
+                   :collection => {:tags => "important" }},
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal("important", json["tags"])
+    assert_equal("important", json['entry']["tags"])
   end
 
   def test_delete_item
@@ -360,19 +360,19 @@ class CollectionsControllerTest < ActionController::TestCase
 
   def test_indestructible
     #create indfestructible and try to delete
-    post :create, { :app_id => clients(:one).id, :indestructible => "true", :format => 'json'},
+    post :create, { :app_id => clients(:one).id, :collection => {:indestructible => "true"}, :format => 'json'},
                   { :cos_session_id => sessions(:session1).id, :client => clients(:one).id }
     assert_response :created
     assert_not_nil assigns["collection"]
     json = JSON.parse(@response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json['entry']["id"]
 
-    delete :delete, { :app_id => clients(:one).id, :id => json["id"], :format => 'json' },
+    delete :delete, { :app_id => clients(:one).id, :id => json['entry']["id"], :format => 'json' },
                     { :cos_session_id => sessions(:session1).id }
     assert_response :forbidden
 
     #try to create indestructible with an owner
-    post :create, { :app_id => clients(:one).id, :indestructible => "true", :format => 'json', :owner => people(:valid_person).id },
+    post :create, { :app_id => clients(:one).id, :format => 'json', :collection => {:indestructible => "true", :owner_id => people(:valid_person).id }},
                   { :cos_session_id => sessions(:session1).id, :client => clients(:one).id }
     assert_response :bad_request
   end
@@ -386,7 +386,7 @@ class CollectionsControllerTest < ActionController::TestCase
 
     # Should not be able to add to a read_only collection belonging to other (non-friend)  user
     post :add, { :app_id => clients(:one).id, :id => collections(:read_only).id, :format => 'json',
-                 :title => "The Engine", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." },
+                 :item => {:title => "The Engine", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." }},
                { :cos_session_id => sessions(:session3).id }
     assert_response :forbidden
 
@@ -397,25 +397,25 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_equal(old_item_count, assigns["collection"].items.count)
 
     #test changing read_only
-    put :update, { :app_id => clients(:one).id, :id => collections(:read_only).id, :format => 'json',
-                   :read_only => "false"},
+    put :update, { :app_id => clients(:one).id, :format => 'json', :id => collections(:read_only).id, :collection => {
+                   :read_only => "false"}},
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal(false, json["read_only"] )
+    assert_equal(false, json['entry']["read_only"] )
     put :update, { :app_id => clients(:one).id, :id => collections(:read_only).id, :format => 'json',
-                   :read_only => "true"},
+                   :collection => {:read_only => "true"}},
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal(true, json["read_only"] )
+    assert_equal(true, json['entry']["read_only"] )
 
   end
 
   def test_error_reporting
     post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
-                 :file => fixture_file_upload("collections.yml","image/png"),
-                 :full_image_size => '240x300'},
+                 :item => {:file => fixture_file_upload("collections.yml","image/png"),
+                 :full_image_size => '240x300'}},
                { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
 
@@ -428,24 +428,24 @@ class CollectionsControllerTest < ActionController::TestCase
     testcollection = collections(:one)
     assert_nil(testcollection.title)
     put :update, { :app_id => clients(:one).id, :id => testcollection.id, :format => 'json',
-                   :title => "first" },
+                   :collection => {:title => "first" }},
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal("first", json["title"])
+    assert_equal("first", json['entry']["title"])
 
     put :update, { :app_id => clients(:one).id, :id => testcollection.id, :format => 'json',
-                   :title => "second" },
+                   :collection => {:title => "second" }},
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal("second", json["title"])
+    assert_equal("second", json['entry']["title"])
 
     put :update, { :app_id => clients(:one).id, :id => testcollection.id, :format => 'json',
-                   :title => "" }, { :cos_session_id => sessions(:session1).id }
+                   :collection => {:title => "" }}, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal("", json["title"])
+    assert_equal("", json['entry']["title"])
   end
 
   def test_pagination_and_visibility
@@ -456,11 +456,11 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns["collection"]
     json = JSON.parse(@response.body)
-    assert_not_nil json["id"]
-    assert_equal(Collection.find_by_id(collections(:three).id).items.count - 1, json["entry"].size)
-    assert_nil(json["itemsPerPage"])
-    assert_equal(0, json["startIndex"])
-    assert_equal(3, json["totalResults"])
+    assert_not_nil json['entry']["id"]
+    assert_equal(Collection.find_by_id(collections(:three).id).items.count - 1, json["entry"]['entry'].size)
+    assert_nil(json['entry']["itemsPerPage"])
+    assert_equal(0, json['entry']["startIndex"])
+    assert_equal(3, json['entry']["totalResults"])
 
     #test with pagination
     get :show, { :app_id => clients(:one).id, :id => collections(:three).id, :count => 2,  :format => 'json' },
@@ -468,11 +468,11 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns["collection"]
     json = JSON.parse(@response.body)
-    assert_not_nil json["id"]
-    assert_equal(2, json["entry"].size)
-    assert_equal(2, json["itemsPerPage"])
-    assert_equal(0, json["startIndex"])
-    assert_equal(3, json["totalResults"])
+    assert_not_nil json['entry']["id"]
+    assert_equal(2, json['entry']["entry"].size)
+    assert_equal(2, json['entry']["itemsPerPage"])
+    assert_equal(0, json['entry']["startIndex"])
+    assert_equal(3, json['entry']["totalResults"])
 
     #get the remaining "page"
     get :show, { :app_id => clients(:one).id, :id => collections(:three).id, :count => 2, :startIndex => 3,  :format => 'json' },
@@ -480,11 +480,11 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns["collection"]
     json = JSON.parse(@response.body)
-    assert_not_nil json["id"]
-    assert_equal(1, json["entry"].size)
-    assert_equal(2, json["itemsPerPage"])
-    assert_equal(3, json["startIndex"])
-    assert_equal(3, json["totalResults"])
+    assert_not_nil json['entry']["id"]
+    assert_equal(1, json['entry']["entry"].size)
+    assert_equal(2, json['entry']["itemsPerPage"])
+    assert_equal(3, json['entry']["startIndex"])
+    assert_equal(3, json['entry']["totalResults"])
 
   end
 
@@ -542,24 +542,24 @@ class CollectionsControllerTest < ActionController::TestCase
   def test_creating_a_collection_with_predefined_id
     test_id = "test_id_with_randomnes"
 
-    post :create, { :app_id => clients(:one).id, :format => 'json', :title => "test-collection", :id => test_id},
+    post :create, { :app_id => clients(:one).id, :format => 'json', :collection => { :title => "test-collection", :id => test_id} },
                   { :client => clients(:one).id, :cos_session_id => sessions(:session1).id }
     assert_response :created, @response.body
     assert_not_nil assigns["collection"]
     assert_nil assigns["collection"].owner
     assert_equal(assigns["collection"].client, clients(:one))
     json = JSON.parse(@response.body)
-    assert_not_nil json["id"]
-    assert_not_nil(json["title"])
-    assert_equal("test-collection", json["title"])
-    assert_equal(test_id, json["id"])
+    assert_not_nil json['entry']["id"]
+    assert_not_nil(json['entry']["title"])
+    assert_equal("test-collection", json['entry']["title"])
+    assert_equal(test_id, json['entry']["id"])
 
     #test that the id of the created collection was set right
     get :show, { :app_id => clients(:one).id, :id => test_id, :format => 'json' },
                { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    assert_equal(test_id, json["id"])
+    assert_equal(test_id, json['entry']["id"])
 
     # Test that can't make an other collection with same id
      post :create, { :app_id => clients(:one).id, :format => 'json', :title => "test-collection", :id => test_id},

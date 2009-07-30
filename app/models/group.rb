@@ -118,20 +118,19 @@ class Group < ActiveRecord::Base
   end
 
   def get_group_hash(asking_person=nil)
-    group_hash = {'group'  => {
+    group_hash = {
       'id' => id,
       'title' => title,
       'description' => description,
       'group_type' => group_type,
       'created_at' => created_at,
-      'created_by' => created_by,
+      'created_by' => creator.guid,
       'number_of_members' => members.count
       }
-    }
 
     if asking_person
-      group_hash['group'].merge!({'is_member' => (has_member?(asking_person))})
-      group_hash['group'].merge!({'is_admin' => asking_person.is_admin_of?(self)}) if has_member?(asking_person)
+      group_hash.merge!({'is_member' => (has_member?(asking_person))})
+      group_hash.merge!({'is_admin' => asking_person.is_admin_of?(self)}) if has_member?(asking_person)
     end
     return group_hash
   end

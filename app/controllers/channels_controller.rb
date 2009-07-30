@@ -1,14 +1,14 @@
 class ChannelsController < ApplicationController
 
-  before_filter :ensure_client_login  
+  before_filter :ensure_client_login
   before_filter :ensure_person_login, :except => :list
   before_filter :get_channel, :except => [:index, :create]
   before_filter :ensure_channel_admin, :only => [:edit, :delete]
   before_filter :ensure_can_read_channel, :only => [:list_subscriptions, :show]
-    
+
   def index
     if params[:search]
-      @channels = Channel.search( params[:search], 
+      @channels = Channel.search( params[:search],
                                   :per_page => params[:per_page],
                                   :page => params[:page])
     else
@@ -17,7 +17,7 @@ class ChannelsController < ApplicationController
       sort_order = 'DESC'
       if params[:sort_by]
         if params[:sort_by] == 'created_at'
-          sort_by = 'created_at' 
+          sort_by = 'created_at'
         elsif params[:sort_by] == 'name'
           sort_by = 'name'
         elsif params[:sort_by] == 'id'
@@ -35,10 +35,10 @@ class ChannelsController < ApplicationController
 
       if params[:per_page]
         options[:limit] = params[:per_page].to_i
-        options[:offset] = (params[:page] ? params[:page].to_i * params[:per_page].to_i : 0)
+        options[:offset] = (params[:page] && params[:page] >= 1? (params[:page].to_i-1) * params[:per_page].to_i : 0)
       end
-      
-      
+
+
       if params[:person_id]
         options.merge!(:joins => :user_subscriptions, :conditions => {'user_subscriptions.person_id' => params[:person_id]})
       elsif params[:group_id]
@@ -46,12 +46,12 @@ class ChannelsController < ApplicationController
       end
       @channels = Channel.all(options)
     end
-    
+
     @channels.reject! { |c| !c.can_read?(@user) }
-    
+
     render_json :entry => @channels and return
   end
-  
+
   def create
     @channel = Channel.new( params[:channel].except(:group_id) )
     @channel.owner = @user
@@ -63,7 +63,7 @@ class ChannelsController < ApplicationController
       end
       @channel.group_subscribers << group
     end
-    
+
     if !@channel.save
       render_json :status => :bad_request, :messages => @channel.errors.full_messages and return
     end
@@ -82,7 +82,7 @@ class ChannelsController < ApplicationController
       if @channel.group_subscribers.size >= 1
         render :status => :bad_request and return
       end
-      @channel.group_subscribers << group 
+      @channel.group_subscribers << group
       render :status => :created and return
     else
       if params[:group_id]
@@ -115,8 +115,8 @@ class ChannelsController < ApplicationController
       render :status => :ok and return
     else
       if params[:person_id]
-        if !ensure_same_as_logged_person(@channel.owner.id)
-          render :status => :forbidden and return
+        if !ensure_same_as_logged_person(@channel.owner.guid)
+          render_json :status => :forbidden, :messages => "You are not the channel owner" and return
         end
         person = Person.find_by_id(params[:person_id])
         if !person
@@ -132,12 +132,12 @@ class ChannelsController < ApplicationController
       render :status => :ok and return
     end
   end
-  
+
   def list_subscriptions
     @group_subscriptions = @channel.group_subscribers
     @user_subscriptions = @channel.user_subscribers
-    render_json :entry => { :user_subscribers => @user_subscriptions, 
-                            :group_subscribers => @group_subscriptions 
+    render_json :entry => { :user_subscribers => @user_subscriptions,
+                            :group_subscribers => @group_subscriptions
                           } and return
   end
 
@@ -158,7 +158,7 @@ class ChannelsController < ApplicationController
     end
 
     @channel.update_attributes(params[:channel])
-    
+
     if !@channel.save
       render_json :status => :bad_request, :messages => @channel.errors.full_messages and return
     end
@@ -167,7 +167,7 @@ class ChannelsController < ApplicationController
 
   def delete
     @channel.delete
-    render :status => :ok and return 
+    render :status => :ok and return
   end
 
 end

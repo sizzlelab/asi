@@ -12,8 +12,8 @@
 
                { :name => "POST",
                  :description => "Creates a new collection. All the parameters below are optional.",
-                 :parameters => [ { :title => "The title describing the collection. (optional)", },
-                                  { :owner => "The id of the user owning the new collection (optional). If this is not
+                 :parameters => [ :collection => [{ :title => "The title describing the collection. (optional)", },
+                                  { :owner_id => "The id of the user owning the new collection (optional). If this is not
                                                specified, the collection will belong only to the application." },
                                   { :priv => "If collection is set to private (optional) only the owner and his friends are able to see it." },             
                                   { :read_only => "Whether the new collection is read only (optional). Read only collections can be written
@@ -31,7 +31,7 @@
                                               currently supports only exact string matching, so use of only one tag is currently recommended." },
                                   { :metadata => [{ :any_key => "Any string" }, { :another_key => "Another string" } ] },
                                   { :id => "You can set the id for the collection yourself if you want. Must be a globally unique (GUID) string,
-                                            8-22 characters (preferably 22), and only letters, numbers and underscores allowed. (optional)"}
+                                            8-22 characters (preferably 22), and only letters, numbers and underscores allowed. (optional)"}]
                                    ],
                  :returns => { "201" => "Created successfully. The return body includes the created collection." } } ] %>
 
