@@ -85,7 +85,7 @@ class ActiveSupport::TestCase
   end
 
   def login
-    login_as Person.find :first
+    login_as(Person.first)
   end
 
 

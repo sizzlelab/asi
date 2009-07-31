@@ -24,7 +24,7 @@ class ChangePersonIdToInteger < ActiveRecord::Migration
 
     execute "ALTER TABLE people CHANGE id id INTEGER AUTO_INCREMENT;"
 
-    change_column :memberships, :person_id, :integer
+    change_column :memberships, :person_id, :integer, { :default => 0 }
     change_column :memberships, :inviter_id, :integer
     change_column :addresses, :owner_id, :integer
     change_column :authorizes, :person_id, :integer
