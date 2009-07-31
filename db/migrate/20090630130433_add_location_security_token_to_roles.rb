@@ -4,6 +4,6 @@ class AddLocationSecurityTokenToRoles < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :roles, :location_security_token, :string
+    remove_column :roles, :location_security_token
   end
 end

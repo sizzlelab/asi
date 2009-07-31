@@ -26,7 +26,7 @@ class GroupsController < ApplicationController
 
     if @group.valid?
       if params[:create_channel]
-        @channel = Channel.create( :name => @group.title, 
+        @channel = Channel.create( :name => @group.title,
                                 :owner => @user,
                                 :channel_type => "group",
                                 :creator_app => @client)
@@ -70,8 +70,8 @@ class GroupsController < ApplicationController
   end
 
   def add_member
-    if params[:user_id] != @user.id
-      @invitee = Person.find_by_id(params[:user_id])
+    if params[:user_id] != @user.guid
+      @invitee = Person.find_by_guid(params[:user_id])
 
       if @invitee.invited_groups.include?(@group)
         render_json :status => :conflict, :messages => "That user has already been invited." and return
@@ -84,7 +84,7 @@ class GroupsController < ApplicationController
       end
     end
 
-    @person = Person.find_by_id(params[:user_id])
+    @person = Person.find_by_guid(params[:user_id])
     if ! @person
       render_json :status => :not_found, :messages => "Could not find a person with specified id" and return
     end
@@ -105,7 +105,7 @@ class GroupsController < ApplicationController
 
   # Returns a list of the public groups of the person specified by user_id
   def get_groups_of_person
-    @groups = Person.find_by_id(params[:user_id]).groups
+    @groups = Person.find_by_guid(params[:user_id]).groups
     @groups_hash = @groups.find_all{|g| g.show?(@user)}.collect do |group|
       group.get_group_hash(@user)
     end
@@ -136,11 +136,11 @@ class GroupsController < ApplicationController
   end
 
   def remove_person_from_group
-    if params[:user_id] != @user.id and not @user.is_admin_of?(@group)
+    if params[:user_id] != @user.guid and not @user.is_admin_of?(@group)
       render_json :status => :forbidden, :messages  => "You are not authorized to remove this user from this group." and return
     end
 
-    @person = Person.find_by_id(params[:user_id])
+    @person = Person.find_by_guid(params[:user_id])
     if ! @person
       render_json :status => :not_found, :messages => "Could not find a person with specified id" and return
     end
@@ -186,7 +186,7 @@ class GroupsController < ApplicationController
   end
 
   def accept_pending_membership_request
-    person = Person.find_by_id(params[:user_id])
+    person = Person.find_by_guid(params[:user_id])
 
     if @user.accept_member(person, @group)
       return {:status => :ok, :message => "Pending request accepted"}
@@ -197,14 +197,14 @@ class GroupsController < ApplicationController
   end
 
   def change_admin_status
-    person = Person.find_by_id(params[:user_id])
+    person = Person.find_by_guid(params[:user_id])
 
     if params[:admin_status] and params[:admin_status].to_s.downcase != "false"
       if @group.grant_admin_status_to(person)
         return {:status => :ok, :message => "Admin status granted."}
       end
     else
-      if @user.id != person.id && @group.remove_admin_status_from(person)
+      if @user != person && @group.remove_admin_status_from(person)
         return {:status => :ok, :message => "Admin status removed."}
       end
     end

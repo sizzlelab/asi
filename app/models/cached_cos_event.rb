@@ -6,6 +6,8 @@ class CachedCosEvent < ActiveRecord::Base
 
       CachedCosEvent.find_each do |event|
         event.upload
+        event.destroy
+        event.destroy
       end
 
       logger.info "Ressi upload finished at #{Time.now}.\n"

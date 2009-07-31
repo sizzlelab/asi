@@ -1,18 +1,5 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-valid_person_spec:
-  id: 1
-  person_id: 2
-  status_message: "Valid person rocks."
-  status_message_changed: 2008-08-28T10:58:12+03:00
-  birthdate: 1940-06-01
-  gender: MALE
-  irc_nick: "pelle"
-  msn_nick: "maison"
-  phone_number: "+358 40 834 7176"
-  description: "About me"
-  website: "http://example.com"
-
 blank_person_spec:
   id: 2
   person_id: 1

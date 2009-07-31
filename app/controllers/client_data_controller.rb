@@ -1,11 +1,11 @@
 class ClientDataController < ApplicationController
 
   before_filter :ensure_person_login
+  before_filter :ensure_client_login
   before_filter :authorize
   before_filter :get_or_create
 
   def show
-    # Do nothing
     render_json :entry => @set and return
   end
 
@@ -15,17 +15,15 @@ class ClientDataController < ApplicationController
   end
 
   private
+
   def get_or_create
-    begin
-      @set = ClientDataSet.find(:first, :conditions => { :client_id => @client.id, :person_id => @user.id })
-    rescue ActiveRecord::RecordNotFound
-      @set = ClientDataSet.new(:client_id => @client.id, :person_id => @person.id)
-    end
+      @set = ClientDataSet.find(:first, :conditions => { :client_id => @client.id, :person_id => @user.id }) ||
+             ClientDataSet.new(:client => @client, :person => @user)
   end
 
   def authorize
-    if @client.id != params[:user_id] || @user.id != params[:app_id]
+    if @client.id != params[:app_id] || @user.guid != params[:user_id]
       render :status => :forbidden and return
     end
-  end 
+  end
 end

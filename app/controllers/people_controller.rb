@@ -16,12 +16,8 @@ Finds users based on their (real) names.
 =end
   def index
     @people = PersonName.search("*" + (params['search'] || "").strip + "*")
-
     @people.reject! { |p| p.person == nil }
-
-    @people_hash = @people.collect do |person|
-      person.person.get_person_hash(@user)
-    end
+    @people_hash = @people.collect { |p| p.person.person_hash(@client, @user) }
     render_json :entry => @people_hash
   end
 
@@ -46,11 +42,11 @@ _param:: email
 Finds users based on their (real) names.
 =end
   def show
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
-    render_json :entry => @person.get_person_hash(@user, @client.id)
+    render_json :entry => @person.person_hash(@client.id, @user)
   end
 
   def create
@@ -59,12 +55,10 @@ Finds users based on their (real) names.
 
     @person = Person.new(params[:person])
     if @person.save
-
-      @role = Role.new(:person_id => @person.id,
+      @role = Role.new(:person => @person,
                        :client_id => @client.id,
                        :title => Role::USER,
-                       :terms_version => params[:person][:consent]
-                      )
+                       :terms_version => params[:person][:consent])
       @role.save
 
       if VALIDATE_EMAILS # set in conf/
@@ -102,7 +96,7 @@ Finds users based on their (real) names.
     if ! ensure_same_as_logged_person(params['user_id'])
       render :status => :forbidden and return
     end
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
@@ -122,7 +116,7 @@ Finds users based on their (real) names.
 
 
   def delete
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
@@ -148,11 +142,11 @@ Finds users based on their (real) names.
       render :status => :forbidden and return
     end
 
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
-    @friend = Person.find_by_id(params['friend_id'])
+    @friend = Person.find_by_guid(params['friend_id'])
     if ! @friend
       render :status => :not_found and return
     end
@@ -219,14 +213,14 @@ Finds users based on their (real) names.
   end
 
   def get_friends
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
 
     if params['sortBy'] == "status_changed"
       params['sortOrder'] ||= "ascending"
-      @friends = @person.contacts.find(:all, :include => "person_spec")
+      @friends = @person.contacts.all
       @friends.sort!{|a,b| sort_by_status_message_changed(a, b, params['sortOrder']) }
     else
       @friends = @person.contacts
@@ -239,14 +233,15 @@ Finds users based on their (real) names.
 
   def pending_friend_requests
     if ! ensure_same_as_logged_person(params['user_id'])
-      render :status => :forbidden and return
+      render_json :status => :forbidden and return
     end
     render_json :entry => @user.pending_contacts
   end
 
   def reject_friend_request
-    remove_any_connection_between(params['user_id'], params['friend_id'])
-    render :json => {}.to_json
+    if remove_any_connection_between(params['user_id'], params['friend_id'])
+      render :json => {}.to_json
+    end
   end
 
   def get_avatar
@@ -266,7 +261,7 @@ Finds users based on their (real) names.
     # if ! ensure_same_as_logged_person(params['user_id'])
     #   render :status => :forbidden and return
     # end
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status  => :not_found and return
     end
@@ -282,7 +277,7 @@ Finds users based on their (real) names.
   end
 
   def delete_avatar
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
@@ -300,21 +295,22 @@ Finds users based on their (real) names.
 
   def remove_any_connection_between(user_id, contact_id)
     if ! ensure_same_as_logged_person(user_id)
-      render :status => :forbidden and return
+      render_json :status => :forbidden and return false
     end
-    @person = Person.find_by_id(user_id)
+    @person = Person.find_by_guid(user_id)
     if ! @person
-      render :status => :not_found and return
+      render_json :status => :not_found and return false
     end
-    @contact = Person.find_by_id(contact_id)
+    @contact = Person.find_by_guid(contact_id)
     if ! @contact
-      render :status => :not_found and return
+      render_json :status => :not_found and return false
     end
     Connection.breakup(@person, @contact)
+    return true
   end
 
   def fetch_avatar(image_type)
-    @person = Person.find_by_id(params['user_id'])
+    @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render :status => :not_found and return
     end
@@ -346,12 +342,12 @@ Finds users based on their (real) names.
   end
 
   def sort_by_status_message_changed(a, b, sort_order)
-    if a.person_spec.nil? || a.person_spec.status_message_changed.nil?
+    if a.status_message_changed.nil?
       order = -1
-    elsif b.person_spec.nil? || b.person_spec.status_message_changed.nil?
+    elsif b.status_message_changed.nil?
       order = 1
     else
-      order = a.person_spec.status_message_changed <=> b.person_spec.status_message_changed
+      order = a.status_message_changed <=> b.status_message_changed
     end
     if sort_order == "descending" #turn the order
       return order * -1
@@ -365,7 +361,7 @@ Finds users based on their (real) names.
     if params[:user_id] == "@me"
       if ses = Session.find_by_id(session[:cos_session_id])
         if ses.person
-          params[:user_id] = ses.person.id
+          params[:user_id] = ses.person.guid
         else
           render_json :status => :unauthorized, :messages => "Please login as a user to continue".to_json and return
         end

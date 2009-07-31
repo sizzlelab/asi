@@ -118,7 +118,7 @@ class CollectionsControllerTest < ActionController::TestCase
 
   def test_create
     # With an owner and a client
-    post :create, { :app_id => clients(:one).id, :format => 'json', :collection => {:owner_id => people(:valid_person).id }},
+    post :create, { :app_id => clients(:one).id, :format => 'json', :collection => {:owner_id => people(:valid_person).guid }},
                   { :cos_session_id => sessions(:session1).id, :client => clients(:one).id }
     assert_response :created
     assert_not_nil assigns["collection"]
@@ -152,7 +152,7 @@ class CollectionsControllerTest < ActionController::TestCase
   def test_create_without_owner
     # With neither
     post :create, { :app_id => '2', :owner_id => '3', :format => 'json' }, {:cos_session_id => sessions(:session1).id}
-    assert_response :forbidden    
+    assert_response :forbidden
   end
 
   def test_delete

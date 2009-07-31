@@ -6,6 +6,10 @@ class PeopleControllerTest < ActionController::TestCase
   fixtures :sessions
   fixtures :people
 
+  VALID_PERSON_JSON = '
+  {"address":{"street_address":"MyString","postal_code":"MyString","unstructured":"MyString, MyString MyString","locality":"MyString"},"name":{"unstructured":"Juho Makkonen","family_name":"Makkonen","given_name":"Juho"},"birthdate":null,"connection":"you","is_association":null,"role":"user","username":"kusti","gender":{"displayvalue":null,"key":null},"avatar":{"status":"not_set","link":{"rel":"self","href":"\\/people\\/1\\/@avatar"}},"id":"1","phone_number":null,"msn_nick":null,"website":null,"location":{"updated_at":"2008-07-11T12:36:33Z","label":"Otaniemen Alepa","accuracy":58.0,"latitude":60.163389841749,"longitude":24.857125767506},"irc_nick":null,"description":null,"status":{"changed":null,"message":""},"email":"working@address.com"}
+'
+
   def setup
     @controller = PeopleController.new
     @request = ActionController::TestRequest.new
@@ -22,12 +26,12 @@ class PeopleControllerTest < ActionController::TestCase
 
   def test_show
     login_as people(:valid_person)
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }
+    get :show, { :user_id => people(:valid_person).guid, :format => 'json' }
     assert_response :success
     assert_not_nil assigns["person"]
     json = JSON.parse(@response.body)
 
-    assert_equal people(:valid_person).id, json["entry"]["id"]
+    assert_equal people(:valid_person).guid, json["entry"]["id"]
     assert_nil json["entry"]["password"]
 
     assert_equal "you", json["entry"]["connection"]
@@ -159,14 +163,14 @@ class PeopleControllerTest < ActionController::TestCase
   def test_update
     # update valid user
     testing_email = "newemail@oldserv.er"
-    put :update, { :user_id => people(:valid_person).id, :person => {:email => testing_email }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => {:email => testing_email }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
 
     json = JSON.parse(@response.body)
     assert_response :success
 
     # try to update the id
-    put :update, { :user_id => people(:valid_person).id, :person => {:id => "9999" }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => {:id => "9999" }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
@@ -178,31 +182,31 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal(assigns["person"].username, people(:valid_person).username)
 
     # try to update other user than self
-    put :update, { :user_id => people(:friend).id, :person => {:email => testing_email }, :format => 'json' },
+    put :update, { :user_id => people(:friend).guid, :person => {:email => testing_email }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :forbidden
 
     # update name
-    put :update, { :user_id => people(:valid_person).id, :person => { :name => { :given_name => "Joe" } }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => { :name => { :given_name => "Joe" } }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_equal("Joe", assigns["person"].name.given_name)
     json = JSON.parse(@response.body)
 
-    put :update, { :user_id => people(:valid_person).id, :person => { :address => { :street_address => "Jämeräntaival" } }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => { :address => { :street_address => "Jämeräntaival" } }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_equal("Jämeräntaival", assigns["person"].address.street_address)
     json = JSON.parse(@response.body)
 
     #try to update too long name
-    put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa" } }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => { :name => { :family_name => "Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa" } }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
     json = JSON.parse(@response.body)
 
     #try to update too long phone number
-    put :update, { :user_id => people(:valid_person).id, :person => { :phone_number => "123456789012345678901234567890" }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => { :phone_number => "123456789012345678901234567890" }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
     #assert_not_equal("Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa", assigns["person"].name.given_name)
@@ -212,7 +216,7 @@ class PeopleControllerTest < ActionController::TestCase
 
     # try to update with too long given name
     put :update, {
-                   :user_id => people(:valid_person).id,
+                   :user_id => people(:valid_person).guid,
                    :person => {
                      :name => { :given_name => "JoeJoeJoeJoeJoeJoeJoeJoeJoeJoeJoe" }
                    },
@@ -225,19 +229,19 @@ class PeopleControllerTest < ActionController::TestCase
 
     # update status_message
     test_status = "Testing hard..."
-    put :update, { :user_id => people(:valid_person).id, :person => { :status_message =>  test_status  }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => { :status_message =>  test_status  }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
-    assert_equal(test_status, assigns["person"].person_spec.status_message)
+    assert_equal(test_status, assigns["person"].status_message)
     json = JSON.parse(@response.body)
     # check that same status message is returned with show
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    get :show, { :user_id => people(:valid_person).guid, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
     assert_equal test_status, json["entry"]["status"]["message"]
 
     # Check that updating the name doesn't delete old values
-    put :update, { :user_id => people(:valid_person).id, :person => { :name => { :family_name => "Doe" } }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => { :name => { :family_name => "Doe" } }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_equal("Joe", assigns["person"].name.given_name)
@@ -247,20 +251,20 @@ class PeopleControllerTest < ActionController::TestCase
     # update birthdate
     valid_date = "1945-12-24"
     invalid_dates = ["asdasdasdasdfasf", "1999-11-111", "1999-31-31"]
-    put :update, { :user_id => people(:valid_person).id, :person => { :birthdate =>  valid_date  }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => { :birthdate =>  valid_date  }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    get :show, { :user_id => people(:valid_person).guid, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
     assert_equal valid_date, json["entry"]["birthdate"]
     #try invalid dates
     invalid_dates.each do |birthdate|
-      put :update, { :user_id => people(:valid_person).id, :person => { :birthdate =>  birthdate  }, :format => 'json' },
+      put :update, { :user_id => people(:valid_person).guid, :person => { :birthdate =>  birthdate  }, :format => 'json' },
                    { :cos_session_id => sessions(:session1).id }
       assert_response :bad_request
       #check that stored date didn't change
-      get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+      get :show, { :user_id => people(:valid_person).guid, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
       assert_response :success
       json = JSON.parse(@response.body)
       assert_equal valid_date, json["entry"]["birthdate"]
@@ -269,26 +273,33 @@ class PeopleControllerTest < ActionController::TestCase
 
   def test_update_invalid_email
     invalid_email = "newemail(at)oldserv.er"
-    put :update, { :user_id => people(:valid_person).id, :person => {:email => invalid_email }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => {:email => invalid_email }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
     json = JSON.parse(@response.body)
     assert json.to_s =~ /email/i && json.to_s =~ /invalid/i
   end
 
+  def test_update_invalid_email
+    put :update, { :user_id => people(:valid_person).guid, :person => {:email2 => "foo" }, :format => 'json' },
+                 { :cos_session_id => sessions(:session1).id }
+    assert_response :bad_request
+    json = JSON.parse(@response.body)
+  end
+
+
   def test_delete
     #delete person with valid id
-    delete :delete, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    delete :delete, { :user_id => people(:valid_person).guid, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
 
     # Check that deleted user is really removed
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session4).id }
+    get :show, { :user_id => people(:valid_person).guid, :format => 'json' }, { :cos_session_id => sessions(:session4).id }
     assert_response :missing
 
     # Check that related objects are removed also
     assert Connection.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
-    assert PersonSpec.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
     assert PersonName.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
     assert Location.find(:all, :conditions => { :person_id =>  people(:valid_person).id}).empty?
 
@@ -298,40 +309,40 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :missing
 
     #try to delete other user than self
-    delete :delete, { :user_id => people(:contact).id, :format => 'json' },  { :cos_session_id => sessions(:session4).id }
+    delete :delete, { :user_id => people(:contact).guid, :format => 'json' },  { :cos_session_id => sessions(:session4).id }
     assert_response :forbidden
 
   end
 
   def test_update_and_get_avatar
     # try to show the default large thumbnail
-    get :get_large_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
+    get :get_large_thumbnail, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
 
     # try to show the default small thumbnail
-    get :get_small_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
+    get :get_small_thumbnail, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
 
     # try to upload an avatar
-    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("Australian_painted_lady.jpg","image/jpeg"),
+    put :update_avatar, { :user_id => people(:valid_person).guid, :file => fixture_file_upload("Australian_painted_lady.jpg","image/jpeg"),
                           :format => 'html' },
                         { :cos_session_id => sessions(:session1).id }
     assert_response :success
 
     # try to show the uploaded avatar
-    get :get_avatar, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
+    get :get_avatar, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
 
     # try to show the large thumbnail of the avatar
-    get :get_large_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
+    get :get_large_thumbnail, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
 
     # try to show the small thumbnail of the avatar
-    get :get_small_thumbnail, { :user_id => people(:valid_person).id, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
+    get :get_small_thumbnail, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
 
     # check that avatar info is changed to 'set'
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    get :show, { :user_id => people(:valid_person).guid, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert_equal("set", json["entry"]["avatar"]["status"])
@@ -339,14 +350,14 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_update_avatar_image_without_suffix
-    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("kuva_ilman_paatetta","image/jpeg"),
+    put :update_avatar, { :user_id => people(:valid_person).guid, :file => fixture_file_upload("kuva_ilman_paatetta","image/jpeg"),
                           :format => 'html' },
                         { :cos_session_id => sessions(:session1).id }
     assert_response :error
   end
 
   def test_update_avatar_image_with_all_caps
-    put :update_avatar, { :user_id => people(:valid_person).id, :file => fixture_file_upload("LADY.JPG","image/jpeg"),
+    put :update_avatar, { :user_id => people(:valid_person).guid, :file => fixture_file_upload("LADY.JPG","image/jpeg"),
                           :format => 'html' },
                         { :cos_session_id => sessions(:session1).id }
     assert_response :success
@@ -354,14 +365,14 @@ class PeopleControllerTest < ActionController::TestCase
 
   def test_delete_avatar
     #delete person with valid id
-    delete :delete_avatar, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    delete :delete_avatar, { :user_id => people(:valid_person).guid, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
   end
 
   def test_add_friend
     #add friend to a valid person (as a request at first)
-    post :add_friend, { :user_id  => people(:valid_person).id, :friend_id => people(:not_yet_friend).id, :format  => 'json' }, { :cos_session_id => sessions(:session1).id }
+    post :add_friend, { :user_id  => people(:valid_person).guid, :friend_id => people(:not_yet_friend).guid, :format  => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
 
@@ -369,7 +380,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert  assigns["person"].requested_contacts.include?(assigns["friend"])
 
     # add the friendship also in other direction == accept the request
-    post :add_friend, { :user_id  => people(:not_yet_friend).id, :friend_id => people(:valid_person).id, :format  => 'json' },  { :cos_session_id => sessions(:session3).id }
+    post :add_friend, { :user_id  => people(:not_yet_friend).guid, :friend_id => people(:valid_person).guid, :format  => 'json' },  { :cos_session_id => sessions(:session3).id }
     assert_response :success
     json = JSON.parse(@response.body)
 
@@ -380,10 +391,10 @@ class PeopleControllerTest < ActionController::TestCase
 
   def test_get_friends_in_order
     # check that statusmessage change dates exist and are in right order
-    assert people(:friend).person_spec.status_message_changed > people(:invalid_person).person_spec.status_message_changed,
+    assert people(:friend).status_message_changed > people(:invalid_person).status_message_changed,
                   "Statusmessages in fixtures are not in the order that the test would expect."
 
-    get :get_friends, { :user_id  => people(:valid_person).id, :format  => 'json' }, { :cos_session_id => sessions(:session1).id }
+    get :get_friends, { :user_id  => people(:valid_person).guid, :format  => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["person"]
     assert_not_nil assigns["friends"]
@@ -393,10 +404,10 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal people(:friend).username, json["entry"][1]["username"]
 
     # Check that the order is reversed because of the sorting parameters.
-    get :get_friends, { :user_id  => people(:valid_person).id, :sortBy => "status_changed",
+    get :get_friends, { :user_id  => people(:valid_person).guid, :sortBy => "status_changed",
                         :sortOrder => "descending", :format  => 'json' },
                         { :cos_session_id => sessions(:session1).id }
-    assert_response :success
+    assert_response :success, @response.body
     assert_not_nil assigns["person"]
     assert_not_nil assigns["friends"]
     #assert_equal(assigns["person"].contacts, assigns["friends"])
@@ -408,13 +419,13 @@ class PeopleControllerTest < ActionController::TestCase
   def test_remove_friend
     #test that friendship exists both ways
 
-    get :show, { :user_id => people(:valid_person).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    get :show, { :user_id => people(:valid_person).guid, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     assert_not_nil assigns["person"]
     user = assigns["person"]
     json = JSON.parse(@response.body)
 
-    get :show, { :user_id => people(:friend).id, :format => 'json' }
+    get :show, { :user_id => people(:friend).guid, :format => 'json' }
     assert_response :success
     assert_not_nil assigns["person"]
     friend = assigns["person"]
@@ -424,7 +435,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert friend.contacts.include?(user)
 
     # breakup friendship
-    delete :remove_friend, { :user_id => people(:valid_person).id, :friend_id => people(:friend).id, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    delete :remove_friend, { :user_id => people(:valid_person).guid, :friend_id => people(:friend).guid, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
 
@@ -434,7 +445,7 @@ class PeopleControllerTest < ActionController::TestCase
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
     #Same testing with a requested (not yet accepted) friend
-    get :show, { :user_id => people(:requested).id, :format => 'json' }
+    get :show, { :user_id => people(:requested).guid, :format => 'json' }
     assert_response :success
     requested = assigns["person"]
     json = JSON.parse(@response.body)
@@ -443,11 +454,11 @@ class PeopleControllerTest < ActionController::TestCase
     assert requested.pending_contacts.include?(user)
 
     #Try to breakup from wrong firection (unauthorized)
-    delete :remove_friend, { :user_id => people(:requested).id, :friend_id => people(:valid_person).id , :format => 'json' }
+    delete :remove_friend, { :user_id => people(:requested).guid, :friend_id => people(:valid_person).guid , :format => 'json' }
     assert_response :forbidden
 
     # breakup friendship
-    delete :remove_friend, { :user_id => people(:valid_person).id, :friend_id => people(:requested).id, :format => 'json' }
+    delete :remove_friend, { :user_id => people(:valid_person).guid, :friend_id => people(:requested).guid, :format => 'json' }
     assert_response :success
     json = JSON.parse(@response.body)
 
@@ -501,12 +512,12 @@ class PeopleControllerTest < ActionController::TestCase
 
   def test_pending_contacts
     person = people(:requested)
-    get :pending_friend_requests, { :user_id => person.id, :format => 'json' }, { :cos_session_id => sessions(:session5) }
+    get :pending_friend_requests, { :user_id => person.guid, :format => 'json' }, { :cos_session_id => sessions(:session5) }
     assert_response :success
     json = JSON.parse(@response.body)
     assert json.size > 0
     json["entry"].each do |p|
-      contact = Person.find_by_id(p["id"])
+      contact = Person.find_by_guid(p["id"])
       assert person.pending_contacts.include?(contact)
     end
   end
@@ -514,7 +525,7 @@ class PeopleControllerTest < ActionController::TestCase
   def test_reject_pending_contact
     person = people(:requested)
     assert !person.pending_contacts.empty?
-    delete :reject_friend_request, { :user_id => person.id, :friend_id => people(:valid_person).id,  :format => 'json' },
+    delete :reject_friend_request, { :user_id => person.guid, :friend_id => people(:valid_person).guid,  :format => 'json' },
                                    { :cos_session_id => sessions(:session5) }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
@@ -557,7 +568,7 @@ class PeopleControllerTest < ActionController::TestCase
 
     # Try to update valid users password to too short
     encrypted_password = people(:valid_person).encrypted_password
-    put :update, { :user_id => people(:valid_person).id, :person => { :password =>too_short_password }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => { :password =>too_short_password }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
 
@@ -568,7 +579,7 @@ class PeopleControllerTest < ActionController::TestCase
 
     # Try to update valid users password to too long
     encrypted_password = people(:valid_person).encrypted_password
-    put :update, { :user_id => people(:valid_person).id, :person => { :password =>too_long_password }, :format => 'json' },
+    put :update, { :user_id => people(:valid_person).guid, :person => { :password =>too_long_password }, :format => 'json' },
                  { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
 
@@ -578,11 +589,11 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_association_friendship
-    post :add_friend, { :user_id  => people(:valid_association).id, :friend_id => people(:not_yet_friend).id, :format  => 'json' }, { :cos_session_id => sessions(:session19).id }
+    login_as people(:valid_association), clients(:one)
+    post :add_friend, { :user_id  => people(:valid_association).guid, :friend_id => people(:not_yet_friend).guid, :format  => 'json' }
     assert_response :bad_request
-    json = JSON.parse(@response.body)
 
-    post :add_friend, { :user_id  => people(:valid_person).id, :friend_id => people(:valid_association).id, :format  => 'json' }, { :cos_session_id => sessions(:session1).id }
+    post :add_friend, { :user_id  => people(:valid_person).guid, :friend_id => people(:valid_association).guid, :format  => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :bad_request
     json = JSON.parse(@response.body)
   end
@@ -597,7 +608,7 @@ class PeopleControllerTest < ActionController::TestCase
 
   def test_kassi_email_kludge
     login_as people(:valid_person).contacts[0], clients(:kassi)
-    get :show, { :user_id => people(:valid_person).id, :format => "json"}
+    get :show, { :user_id => people(:valid_person).guid, :format => "json"}
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert_equal people(:valid_person).email, json["entry"]["email"]
@@ -607,8 +618,9 @@ class PeopleControllerTest < ActionController::TestCase
 
   def search(search, should_find=true)
     get :index, { :format => 'json', :search => search }, { :cos_session_id => sessions(:session1) }
-    assert_response :success
+    assert_response :success, @response.body
     assert_not_nil assigns["people"]
+
     json = JSON.parse(@response.body)
 
     if not should_find
@@ -622,14 +634,15 @@ class PeopleControllerTest < ActionController::TestCase
 
     json["entry"].each do |person|
       assert_not_nil person["name"]
-      assert_not_nil(person["connection"])
-      if (Person.find(sessions(:session1).person_id).contacts.include?(Person.find(person["id"])))
+      assert_not_nil person["connection"], "Missing connection"
+
+      if (Person.find(sessions(:session1).person_id).contacts.include?(Person.find_by_guid(person["id"])))
         assert_equal("friend", person["connection"]  )
-      elsif (Person.find(sessions(:session1).person_id).pending_contacts.include?(Person.find(person["id"])))
+      elsif (Person.find(sessions(:session1).person_id).pending_contacts.include?(Person.find_by_guid(person["id"])))
         assert_equal("pending", person["connection"]  )
-      elsif (Person.find(sessions(:session1).person_id).requested_contacts.include?(Person.find(person["id"])))
+      elsif (Person.find(sessions(:session1).person_id).requested_contacts.include?(Person.find_by_guid(person["id"])))
         assert_equal("requested", person["connection"]  )
-      elsif (sessions(:session1).person_id == person["id"])
+      elsif (sessions(:session1).person == Person.find_by_guid(person["id"]))
         assert_equal("you", person["connection"]  )
       else
         assert_equal("none", person["connection"]  )

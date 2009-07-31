@@ -11,10 +11,10 @@ class LocationsControllerTest < ActionController::TestCase
    end
 
   def test_get
-    get :get, {:user_id => people(:valid_person).id,
+    get :get, {:user_id => people(:valid_person).guid,
                   :format => "json" },
                   { :cos_session_id => sessions(:client_only_session).id }
-    assert_response :success
+    assert_response :success, @response.body
     assert_not_nil assigns["location"]
     json = JSON.parse(@response.body)
     assert_equal locations(:full).longitude, BigDecimal.new(json["entry"]["longitude"].to_s)
@@ -24,10 +24,10 @@ class LocationsControllerTest < ActionController::TestCase
     assert_not_nil(json["entry"]["updated_at"])
 
     #get location of person without a set location
-    get :get, {:user_id => people(:test).id,
+    get :get, {:user_id => people(:test).guid,
                   :format => "json" },
                   { :cos_session_id => sessions(:client_only_session).id }
-    assert_response :success
+    assert_response :success, @response.body
     json = JSON.parse(@response.body)
     assert_nil(assigns["label"])
     assert_nil(assigns["latitude"])
@@ -36,7 +36,7 @@ class LocationsControllerTest < ActionController::TestCase
   end
 
   def test_update_unauthorized_location
-    put :update, {:user_id => people(:valid_person).id,
+    put :update, {:user_id => people(:valid_person).guid,
                   :latitude => 24.852395,
                   :longitude => -12.1231,
                   :accuracy => 12,
@@ -51,7 +51,7 @@ class LocationsControllerTest < ActionController::TestCase
   def test_update_full_location
     test_latitude = -24.804007068817
     test_label = "Experimental grounds \\o/"
-    put :update, {:user_id => people(:valid_person).id,
+    put :update, {:user_id => people(:valid_person).guid,
       :location => {
                    :latitude => test_latitude,
                    :longitude => -12.1231,
@@ -69,20 +69,21 @@ class LocationsControllerTest < ActionController::TestCase
 
   def test_update_with_security_token
 
-    get :fetch_location_security_token, { :user_id => people(:valid_person).id, :format => "json"},
-                                        { :cos_session_id => sessions(:session1).id }
+    login_as people(:valid_person)
+    get :fetch_location_security_token, { :user_id => people(:valid_person).id, :format => "json"}
+
 
     assert_response :ok
     json = JSON.parse(@response.body)
     security_token = json["location_security_token"]
 
-    put :update, {:latitude => -24.804007068817,
+    put :update, { :location => { :latitude => -24.804007068817,
                   :longitude => -12.804007068817,
                   :accuracy => 12,
-                  :label => "Testing",
-                  :format => "json" ,
-                  :location_security_token => security_token},
-                 {:cos_session_id => sessions(:session1).id}
+        :label => "Testing" },
+        :format => "json" ,
+                  :location_security_token => security_token}
+
 
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
@@ -143,7 +144,7 @@ class LocationsControllerTest < ActionController::TestCase
 
   def test_time_stamp_update
      timestamp = Person.find_by_id( people(:valid_person).id).location.updated_at
-     put :update, {:user_id => people(:valid_person).id,
+     put :update, {:user_id => people(:valid_person).guid,
       :location =>  { :label => "New exciting location" },
                    :format => "json" },
                    { :cos_session_id => sessions(:session1).id }
