@@ -8,7 +8,7 @@ class LocationsController < ApplicationController
   #before_filter :ensure_client_login, :only => :update, #TODO Add this when SISSI is corrected
 
   def get
-    @location = Location.find_by_person_id(params['user_id'])
+    @location = Person.find_by_guid(params['user_id']).location
     if ! @location
       #if location is not set, return just nils
       @location = Location.new
@@ -28,7 +28,7 @@ class LocationsController < ApplicationController
       # TODO: DEPRECATED, REMOVE WHEN SISSI IS MODIFIED
       if params['username'] or params['password']
         person = Person.find_by_username_and_password(params['username'], params['password'])
-        if !person or (params['user_id'] && params['user_id'] != person.id)
+        if !person or (params['user_id'] && params['user_id'] != person.guid)
           render :status => :forbidden, :json => "Password and username didn't match the person.".to_json and return
         end
       end
@@ -40,16 +40,18 @@ class LocationsController < ApplicationController
       end
     end
 
-    user_id = params['user_id'] || role.person_id unless person
+    user_id = params['user_id'] || role.person.guid unless person
 
     if !user_id
-      user_id = person.id
+      user_id = person.guid
     end
 
-    @location = Location.find_by_person_id(user_id)
+    user = Person.find_by_guid(user_id)
+
+    @location = user.location
 
     if ! @location
-      @location = Location.new(:person_id => user_id)
+      @location = Location.new(:person => user)
       @location.save
     end
 
@@ -70,7 +72,7 @@ class LocationsController < ApplicationController
     if params[:user_id] == "@me"
       if ses = Session.find_by_id(session[:cos_session_id])
         if ses.person
-          params[:user_id] = ses.person.id
+          params[:user_id] = ses.person.guid
         else
           render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
         end

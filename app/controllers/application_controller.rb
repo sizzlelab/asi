@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   layout 'default'
 
-  around_filter :catch_no_method_errors
+#  around_filter :catch_no_method_errors
 
   before_filter :maintain_session_and_user
 
@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_same_as_logged_person(target_person_id)
-    return @user && target_person_id == @user.id
+    return @user && target_person_id == @user.guid
   end
 
   def log
@@ -114,7 +114,7 @@ class ApplicationController < ActionController::Base
       if @channel.group_subscribers.size != 0 && ! @channel.group_subscribers[0].admins.exists?(@user)
         render :status => :forbidden and return
       end
-    elsif !ensure_same_as_logged_person(@channel.owner_id)
+    elsif !ensure_same_as_logged_person(@channel.owner.guid)
       render :status => :forbidden and return
     end
   end

@@ -3,7 +3,7 @@ class Coreui::ProfileController < ApplicationController
 
   def index
     if @user
-      @profile = Person.find_by_id(@user.id).get_person_hash(@user)
+      @profile = Person.find_by_id(@user.id).person_hash(@user)
     end
   end
 

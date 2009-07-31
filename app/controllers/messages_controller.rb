@@ -1,14 +1,14 @@
 class MessagesController < ApplicationController
-  
+
   before_filter :get_channel
   before_filter :ensure_can_read_channel, :only => [ :index, :create, :show ]
   before_filter :get_message, :only => [ :delete, :edit, :show ]
-  
+
   def index
     if params[:search]
       @messages = Message.search( params[:search],
                                   :per_page => params[:per_page],
-                                  :page => params[:page], 
+                                  :page => params[:page],
                                   :with => { :channel_id => @channel.id})
     else
       options = {}
@@ -37,7 +37,7 @@ class MessagesController < ApplicationController
     @message = Message.new(params[:message].except(:reference_to))
     if params[:message][:reference_to]
       ref = Message.find_by_guid( params[:message][:reference_to] )
-      if !ref 
+      if !ref
         render :status => :bad_request and return
       end
       @message.reference_to = ref.id
@@ -45,7 +45,7 @@ class MessagesController < ApplicationController
     @message.channel = @channel
     @message.poster = @user
     if !@message.save
-      render_json :status => :bad_request, 
+      render_json :status => :bad_request,
                   :messages => @message.errors.full_messages and return
     end
     render_json :status => :created, :entry => @message and return
@@ -60,10 +60,10 @@ class MessagesController < ApplicationController
   end
 
   def delete
-    if ensure_same_as_logged_person(@message.poster.id)
+    if ensure_same_as_logged_person(@message.poster.guid)
       @message.delete
       render :status => :ok and return
-    elsif ensure_same_as_logged_person(@channel.owner.id)
+    elsif ensure_same_as_logged_person(@channel.owner.guid)
       @message.delete
       render :status => :ok and return
     end
