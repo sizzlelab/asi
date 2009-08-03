@@ -172,6 +172,11 @@ class Person < ActiveRecord::Base
     end
   end
 
+  def to_hash(user, client)
+    person_hash(client.andand.id, user)
+  end
+
+
   #creates a hash of person attributes. If connection_person is not nil, adds connection attribute to hash
   # connection_person means the person who is asking to get the hash for current person
   def person_hash(client_id=nil, connection_person=nil, *a)
