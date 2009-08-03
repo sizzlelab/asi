@@ -25,10 +25,10 @@ class ChannelsControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_not_equal 0, json['entry'].length
     
-    get :index, { :format => "json", :page => 1, :per_page => 2 }, {:cos_session_id => sessions(:session1).id }
+    get :index, { :format => "json", :page => 2, :per_page => 3 }, {:cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    assert_equal 2, json['entry'].length
+    assert_equal 3, json['entry'].length
   end
 
   def test_create_channel

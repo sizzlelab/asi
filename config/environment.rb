@@ -86,6 +86,7 @@ Rails::Initializer.run do |config|
 end
 
 require 'render_extend'
+require 'filtered_pagination'
 require 'casclient'
 require 'casclient/frameworks/rails/filter'
 require 'casclient/frameworks/rails/cas_proxy_callback_controller'

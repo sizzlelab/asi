@@ -8,9 +8,7 @@ class ChannelsController < ApplicationController
 
   def index
     if params[:search]
-      @channels = Channel.search( params[:search],
-                                  :per_page => params[:per_page],
-                                  :page => params[:page] )
+      @channels = Channel.search( params[:search])
     else
       options = Hash.new
       sort_by = 'updated_at'
@@ -33,12 +31,6 @@ class ChannelsController < ApplicationController
       end
       options[:order] = sort_by + " " + sort_order
 
-      if params[:per_page]
-        options[:limit] = params[:per_page].to_i
-        options[:offset] = (params[:page] && params[:page].to_i >= 1 ? (params[:page].to_i-1) * params[:per_page].to_i : 0)
-      end
-
-
       if params[:person_id]
         options.merge!(:joins => :user_subscriptions, :conditions => {'user_subscriptions.person_id' => params[:person_id]})
       elsif params[:group_id]
@@ -47,9 +39,11 @@ class ChannelsController < ApplicationController
       @channels = Channel.all(options)
     end
 
-    @channels.reject! { |c| !c.can_read?(@user) }
+    @channels.filter_paginate!(params[:per_page], params[:page]) { |c| c.can_read?(@user) }
 
-    render_json :entry => @channels and return
+    size = @channels.count_available
+
+    render_json :entry => @channels, :size => size and return
   end
 
   def create
