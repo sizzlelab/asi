@@ -487,6 +487,7 @@ class PeopleControllerTest < ActionController::TestCase
     search("Sepi-Jaakko Seutula")
     search("\"Juho Makkonen\"")
     search("te")
+    search("kusti")
     #search("Järnö Törnävä") # Latin-1
   end
 
