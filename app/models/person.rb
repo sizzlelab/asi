@@ -49,7 +49,7 @@ class Person < ActiveRecord::Base
     set_property :min_infix_len => 1
   end
 
-  ALL_FIELDS = %w(status_message gender birthdate irc_nick msn_nick phone_number description website username name address is_association)
+  ALL_FIELDS = %w(status_message birthdate irc_nick msn_nick phone_number description website username name address is_association)
   STRING_FIELDS = %w(status_message irc_nick msn_nick description website)
   # Fields that need to be translated if the language is changed.
   LOCALIZED_FIELDS = %w(gender)

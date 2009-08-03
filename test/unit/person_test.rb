@@ -113,7 +113,13 @@ class PersonTest < ActiveSupport::TestCase
     assert avatar.valid_file?("image/jpeg", "testfile.jpg")
     assert avatar.convert("testfile.jpg")
     person.avatar = @valid_avatar
-    json = JSON.parse(person.to_json(person.roles[0].client.id, person))
+
+    raw_json = person.to_json(person.roles[0].client.id, person)
+
+    assert_equal raw_json.gsub("gender", ""), raw_json.sub("gender", ""), "Duplicate gender key"
+
+    json = JSON.parse(raw_json)
+
     assert_not_nil json["id"]
     assert_not_nil json["username"]
     assert_not_nil json["email"]
