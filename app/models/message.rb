@@ -7,7 +7,7 @@ class Message < ActiveRecord::Base
 
   validates_presence_of :poster_id
   validates_presence_of :channel_id
-  validate :associations_must_exist
+  validate_on_create :associations_must_exist
 
   # Messages shouldn't be changed but in the future could, so protect some
   attr_readonly :poster_id, :channel_id, :guid, :id
@@ -17,9 +17,14 @@ class Message < ActiveRecord::Base
   define_index do
     indexes :title, :sortable => true
     indexes :body
+    
     has :guid
     has :created_at
     has :updated_at
+    
+    set_property :field_weights => { 'title' => 5, 
+                                     'body' => 2 }
+    
   end
 
   def to_json(*a)
@@ -49,13 +54,14 @@ class Message < ActiveRecord::Base
   private
 
   def touch_channel_timestamp
+    self.channel.updated_at = Time.now
     self.channel.save
   end
 
   def associations_must_exist
-#    errors.add("Poster #{poster.id} does not exist.") if poster && !Person.exists?(poster.id)
+    errors.add("Poster #{poster.id} does not exist.") if poster && !Person.exists?(poster.id)
     errors.add("Channel #{channel.id} does not exist") if channel && !Channel.exists?(channel.id)
-#    errors.add("Message #{reference_to.id} does not exist") if reference_to && !Message.exists?(reference_to.id)
+    errors.add("Message #{reference_to.id} does not exist") if reference_to && !Message.exists?(reference_to.id)
   end
 
 end
