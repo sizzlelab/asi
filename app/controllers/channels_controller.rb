@@ -10,7 +10,7 @@ class ChannelsController < ApplicationController
     if params[:search]
       @channels = Channel.search( params[:search],
                                   :per_page => params[:per_page],
-                                  :page => params[:page])
+                                  :page => params[:page] )
     else
       options = Hash.new
       sort_by = 'updated_at'
@@ -35,7 +35,7 @@ class ChannelsController < ApplicationController
 
       if params[:per_page]
         options[:limit] = params[:per_page].to_i
-        options[:offset] = (params[:page] && params[:page] >= 1? (params[:page].to_i-1) * params[:per_page].to_i : 0)
+        options[:offset] = (params[:page] && params[:page].to_i >= 1 ? (params[:page].to_i-1) * params[:per_page].to_i : 0)
       end
 
 
@@ -59,7 +59,7 @@ class ChannelsController < ApplicationController
     if @channel.channel_type == "group" && params[:channel][:group_id]
       group = Group.find_by_id(params[:channel][:group_id])
       if !group || !group.admins.exists?(@user)
-        render :status => :bad_request and return
+        render_json :status => :bad_request, :messages => "Group does not exist or not group admin." and return
       end
       @channel.group_subscribers << group
     end
@@ -73,20 +73,20 @@ class ChannelsController < ApplicationController
   def subscribe
     if @channel.channel_type == "group"
       if !params[:group_id]
-        render :status => :bad_request and return
+        render_json :status => :bad_request, :messages => "Must pass explicit group id to subscribe." and return
       end
       group = Group.find_by_id(params[:group_id])
       if !group.admins.exists?(@user)
         render :status => :forbidden and return
       end
       if @channel.group_subscribers.size >= 1
-        render :status => :bad_request and return
+        render_json :status => :bad_request, :messages => "Channel can have only one group subscribed." and return
       end
       @channel.group_subscribers << group
       render :status => :created and return
     else
       if params[:group_id]
-        render :status => :bad_request and return
+        render_json :status => :bad_request, :messages => "Cannot subscribe groups to channels not of type 'group'." and return
       end
       if @channel.can_read?(@user)
         @channel.user_subscribers << @user rescue ActiveRecord::RecordInvalid
@@ -100,13 +100,11 @@ class ChannelsController < ApplicationController
   def unsubscribe
     if @channel.channel_type == "group"
       if !params[:group_id]
-        print "goo"
-        render :status => :bad_request and return
+        render_json :status => :bad_request, :messages => "Must declare explicit group id to unsubscribe." and return
       end
       group = Group.find_by_id(params[:group_id])
       if !group || !@channel.group_subscribers.exists?(group)
-        print "foo"
-        render :status => :bad_request and return
+        render_json :status => :bad_request, :messages => "Group id does not exist or is not subscribed to the channel." and return
       end
       if !group.admins.exists?(@user)
         render :status => :forbidden and return
@@ -126,7 +124,7 @@ class ChannelsController < ApplicationController
         person = @user
       end
       if !@channel.user_subscribers.exists?(person)
-        render :status => :bad_request and return
+        render_json :status => :bad_request, :messages => "Person is not subscribed to channel." and return
       end
       @channel.user_subscribers.delete(person)
       render :status => :ok and return
@@ -149,7 +147,7 @@ class ChannelsController < ApplicationController
     if params[:channel][:owner_id]
       person = Person.find_by_id(params[:channel][:owner_id])
       if !person
-        render :status => :bad_request and return
+        render_json :status => :bad_request, :messages => "Person does not exist." and return
       end
       @channel.owner = person
       if @channel.channel_type != "group"

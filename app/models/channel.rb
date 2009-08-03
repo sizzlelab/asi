@@ -27,11 +27,19 @@ class Channel < ActiveRecord::Base
   define_index do
     indexes :name, :sortable => true
     indexes :description
+    
     indexes messages(:body), :as => :posts
     indexes messages(:title), :as => :msg_title, :sortable => true
+    
     has :guid
     has :created_at
     has :updated_at
+    
+    set_property :field_wights => { 'name' => 10,
+                                    'description' => 5,
+                                    'posts' => 2,
+                                    'msg_title' => 1 }
+    
   end
 
   def can_read?(user)

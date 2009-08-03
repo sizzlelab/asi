@@ -42,9 +42,17 @@ class MessagesControllerTest < ActionController::TestCase
       end
     end
     get :index, {:format => "json", :channel_id => channels(:julkikanava).guid, :per_page => 8, :page => 1}, {:cos_session_id => sessions(:session1).id}
-    assert_response :ok
+    assert_response :ok, @response.body
     json = JSON.parse(@response.body)
     assert_equal 8, json["entry"].length
+  end
+
+  def test_touch_channel_timestamp
+    old_timestamp = Channel.find_by_id(channels(:julkikanava).id).updated_at
+    post :create, {:format => "json", :channel_id => channels(:julkikanava).guid, :message => {:title => "Timestamp-testi", :body => "Testitekstiä" }}, {:cos_session_id => sessions(:session1).id}
+    assert_response :created, @response.body
+    json = JSON.parse(@response.body)
+    assert_not_equal old_timestamp, Channel.find_by_id(channels(:julkikanava).id).updated_at
   end
 
   def test_show_message
