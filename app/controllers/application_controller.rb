@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   layout 'default'
 
-#  around_filter :catch_no_method_errors
+  around_filter :catch_no_method_errors
 
   before_filter :maintain_session_and_user
 

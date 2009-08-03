@@ -11,6 +11,12 @@ class SessionsControllerTest < ActionController::TestCase
     @response = ActionController::TestResponse.new
   end
 
+  def test_deprecated_login
+    post :create, { :app_name => "ossi", :app_password => "testi", :format => "json"}
+    assert_response :bad_request
+    assert @json["messages"].size == 1
+  end
+
   def test_client_login
     #test with client only
     post :create, { :session => { :app_name => "ossi", :app_password => "testi"}, :format => 'json'}
@@ -18,12 +24,6 @@ class SessionsControllerTest < ActionController::TestCase
     assert_not_nil session[:cos_session_id]
     json = JSON.parse(@response.body)
     assert_nil json["entry"]["user_id"]
-  end
-
-  def test_old_create
-    post :create, { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "testi", :format => 'json'}
-    assert_response :unauthorized
-    assert_nil session[:cos_session_id]
   end
 
   def test_create
