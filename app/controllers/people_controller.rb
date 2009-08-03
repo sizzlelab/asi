@@ -15,10 +15,13 @@ param:: search - the search term. Every user whose name matches the regular expr
 Finds users based on their (real) names.
 =end
   def index
-    @people = Person.search("*" + (params['search'] || "").strip + "*")
-    @people.reject! { |p| ! p.name }
-    @people_hash = @people.collect { |p| p.person_hash(@client, @user) }
-    render_json :entry => @people_hash
+    if not params[:search]
+      @people = Person.all
+    else
+      query = (params['search'] || "").strip
+      @people = Person.search("*#{query}*", :without => { :name_id => 0 })
+    end
+    render_json :entry => @people.collect { |p| p.person_hash(@client, @user) }
   end
 
 =begin rapidoc
