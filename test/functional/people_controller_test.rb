@@ -17,11 +17,10 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_index
-    # Should find nothing
     get :index, { :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
-    assert_not_nil assigns(:people)
     json = JSON.parse(@response.body)
+    assert_equal Person.count, json["entry"].size
   end
 
   def test_show

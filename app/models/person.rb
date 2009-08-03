@@ -44,6 +44,7 @@ class Person < ActiveRecord::Base
     indexes name(:family_name), :as => :family_name
 
     has created_at, updated_at
+    has name(:id), :as => :name_id
 
     set_property :enable_star => true
     set_property :min_infix_len => 1
