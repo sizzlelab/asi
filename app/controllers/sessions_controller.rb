@@ -11,9 +11,14 @@ class SessionsController < ApplicationController
   end
 
   def create
+
     # User Interface mode vs. API mode for return values.
     ui_mode = false
 
+
+    if params[:app_name]
+      render_json :status => :bad_request, :messages => "You are using a deprecated piece of API. See the changelog for details." and return
+    end
 
 
     [ :app_name, :app_password, :username, :password, :proxy_ticket ].each do |param|
