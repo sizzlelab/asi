@@ -117,6 +117,10 @@ class Group < ActiveRecord::Base
     return group_hash.to_json(*a)
   end
 
+  def to_hash(user, client)
+    get_group_hash(user)
+  end
+
   def get_group_hash(asking_person=nil)
     group_hash = {
       'id' => id,

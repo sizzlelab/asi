@@ -19,4 +19,14 @@ class GroupSearchHandle < ActiveRecord::Base
     result.collect {|g| g.group }
   end
 
+  def to_hash(user, client)
+    group.to_hash(user, client)
+  end
+
+
+  def to_json
+    group.to_json
+  end
+
+
 end
