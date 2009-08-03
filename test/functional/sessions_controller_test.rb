@@ -14,7 +14,8 @@ class SessionsControllerTest < ActionController::TestCase
   def test_deprecated_login
     post :create, { :app_name => "ossi", :app_password => "testi", :format => "json"}
     assert_response :bad_request
-    assert @json["messages"].size == 1
+    json = JSON.parse(@response.body)
+    assert json["messages"].size == 1
   end
 
   def test_client_login

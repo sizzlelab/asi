@@ -124,7 +124,7 @@ class Group < ActiveRecord::Base
       'description' => description,
       'group_type' => group_type,
       'created_at' => created_at,
-      'created_by' => creator.guid,
+      'created_by' => creator.andand.guid,
       'number_of_members' => members.count
       }
 
