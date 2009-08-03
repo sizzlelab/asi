@@ -16,6 +16,8 @@ class SessionsControllerTest < ActionController::TestCase
     post :create, { :session => { :app_name => "ossi", :app_password => "testi"}, :format => 'json'}
     assert_response :created
     assert_not_nil session[:cos_session_id]
+    json = JSON.parse(@response.body)
+    assert_nil json["entry"]["user_id"]
   end
 
   def test_old_create
@@ -56,7 +58,7 @@ class SessionsControllerTest < ActionController::TestCase
     get :get, { :format => 'json'}, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    assert_equal json["entry"]["user_id"], sessions(:session1).person_id
+    assert_equal json["entry"]["user_id"], sessions(:session1).person.guid
   end
 
   def test_destroy
