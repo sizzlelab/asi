@@ -7,13 +7,6 @@ class Person < ActiveRecord::Base
 #  usesguid
   usesnpguid
 
-  define_index do
-    indexes username
-
-    set_property :enable_star => true
-    set_property :min_infix_len => 1
-  end
-
   attr_reader :password
   attr_protected :roles
 
@@ -44,6 +37,17 @@ class Person < ActiveRecord::Base
            :through => :connections,
            :source => :contact,
            :conditions => "status = 'pending'"
+
+  define_index do
+    indexes username
+    indexes name(:given_name), :as => :given_name
+    indexes name(:family_name), :as => :family_name
+
+    has created_at, updated_at
+
+    set_property :enable_star => true
+    set_property :min_infix_len => 1
+  end
 
   ALL_FIELDS = %w(status_message gender birthdate irc_nick msn_nick phone_number description website username name address is_association)
   STRING_FIELDS = %w(status_message irc_nick msn_nick description website)
@@ -242,20 +246,6 @@ class Person < ActiveRecord::Base
 
   def checkCondition(condition=nil, subject_person=nil)
     return false
-  end
-
-  def self.search(query, options={ :limit => :all }, search_options={})
-
-    # if query && query.length > 0
-    #   query = "*#{query.downcase}*"
-    #   query.gsub!("-", " ")
-    # else
-    #   query = ""
-    # end
-
-    return [] if query == ""
-
-    PersonName.search(query).collect{|name| name.person}.compact
   end
 
   def moderator?(client)

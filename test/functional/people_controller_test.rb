@@ -479,7 +479,8 @@ class PeopleControllerTest < ActionController::TestCase
     search("a")
     search("Juho*onen", false)
     search("", false)
-    search("stephen")
+    search("Juho")
+    search("Stephen")
     search("Liimatta")
     search("sepi")
     search("sepi-jaakko")
@@ -633,6 +634,7 @@ class PeopleControllerTest < ActionController::TestCase
     reg = Regexp.new(search.downcase.tr("*", ""))
 
     json["entry"].each do |person|
+
       assert_not_nil person["name"]
       assert_not_nil person["connection"], "Missing connection"
 

@@ -15,9 +15,9 @@ param:: search - the search term. Every user whose name matches the regular expr
 Finds users based on their (real) names.
 =end
   def index
-    @people = PersonName.search("*" + (params['search'] || "").strip + "*")
-    @people.reject! { |p| p.person == nil }
-    @people_hash = @people.collect { |p| p.person.person_hash(@client, @user) }
+    @people = Person.search("*" + (params['search'] || "").strip + "*")
+    @people.reject! { |p| ! p.name }
+    @people_hash = @people.collect { |p| p.person_hash(@client, @user) }
     render_json :entry => @people_hash
   end
 
