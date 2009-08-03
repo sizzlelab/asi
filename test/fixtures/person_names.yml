@@ -65,7 +65,7 @@ orphan:
 <% 20.times do |n| %>
 <%="name#{n}:
   id: #{n + 4}
-  person_id: #{n}aa
+  person_id: #{n + 20}
   given_name: Pekka
   family_name: Kuusinen#{n}
 "
