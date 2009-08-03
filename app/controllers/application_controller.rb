@@ -79,7 +79,7 @@ class ApplicationController < ActionController::Base
 
   def log
     CachedCosEvent.create do |e|
-      e.user_id           = @user ? @user.id : nil
+      e.user_id           = @user ? @user.guid : nil
       e.application_id    = @client ? @client.id : nil
       e.cos_session_id    = session[:cos_session_id]
       e.ip_address        = request.remote_ip
