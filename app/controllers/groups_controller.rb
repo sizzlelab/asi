@@ -105,8 +105,8 @@ class GroupsController < ApplicationController
 
   # Returns a list of the public groups of the person specified by user_id
   def get_groups_of_person
-    @groups = Person.find_by_id(params[:user_id]).groups
-    @groups = @groups.find_all{|g| g.show?(@user)}.collect do |group|
+    @groups = Person.find_by_guid(params[:user_id]).groups
+    @groups_hash = @groups.find_all{|g| g.show?(@user)}.collect do |group|
       group.get_group_hash(@user)
     end
     render :template => 'groups/list_groups'
