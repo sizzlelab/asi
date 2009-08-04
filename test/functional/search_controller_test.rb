@@ -14,6 +14,7 @@ class SearchControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     json["entry"].each do |e|
       assert_not_nil e["type"]
+      assert(%w(Group Person Channel Message).include?(e["type"]), "Unknown result type #{e['type']}")
       assert_not_nil e["result"]
     end
   end

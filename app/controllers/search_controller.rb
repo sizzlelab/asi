@@ -9,7 +9,7 @@ class SearchController < ApplicationController
     query = (params['search'] || "").strip
     result = ThinkingSphinx::Search.search("*#{query}*")
     result.collect! do |r|
-      { :type => r.class.name, :result => r.to_hash(@user, @client) }
+      { :type => r.type, :result => r.to_hash(@user, @client) }
     end
     render_json :entry => result
   end

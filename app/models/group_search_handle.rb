@@ -1,5 +1,7 @@
+#
+# A kludge to accommodate searching of groups
+#
 class GroupSearchHandle < ActiveRecord::Base
-
   belongs_to :group
 
   define_index do
@@ -23,10 +25,11 @@ class GroupSearchHandle < ActiveRecord::Base
     group.to_hash(user, client)
   end
 
-
   def to_json
     group.to_json
   end
 
-
+  def type
+    "Group"
+  end
 end
