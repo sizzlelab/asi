@@ -23,7 +23,7 @@ Finds users based on their (real) names.
     end
     render_json :entry => @people.collect { |p| p.person_hash(@client, @user) }
   end
-  
+
   def show
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
