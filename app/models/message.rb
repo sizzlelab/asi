@@ -17,38 +17,37 @@ class Message < ActiveRecord::Base
   define_index do
     indexes :title, :sortable => true
     indexes :body
-    
+
     has :guid
     has :created_at
     has :updated_at
-    
-    set_property :field_weights => { 'title' => 5, 
+
+    set_property :field_weights => { 'title' => 5,
                                      'body' => 2 }
-    
+
+  end
+
+  def to_hash
+    ref_message = nil
+    if self.reference_to
+      ref_message = Message.find_by_id(reference_to).andand.guid
+    end
+    { :id => guid,
+      :title => title,
+      :body => body,
+      :channel => channel_id,
+      :reference_to => ref_message,
+      :attachment => attachment,
+      :content_type => content_type,
+      :poster_id => poster.guid,
+      :poster_name => poster.name_or_username,
+      :updated_at => updated_at,
+      :created_at => created_at
+    }
   end
 
   def to_json(*a)
-    ref_message = nil
-    if self.reference_to
-      begin
-        ref_message = Message.find_by_id(reference_to).guid
-      rescue NoMethodError
-        ref_message = nil
-      end
-    end
-    hash = { :id => guid,
-             :title => title,
-             :body => body,
-             :channel => channel_id,
-             :reference_to => ref_message,
-             :attachment => attachment,
-             :content_type => content_type,
-             :poster_id => poster.guid,
-             :poster_name => poster.name_or_username,
-             :updated_at => updated_at,
-             :created_at => created_at
-           }
-    return hash.to_json(*a)
+    return to_hash.to_json(*a)
   end
 
   private

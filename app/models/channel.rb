@@ -63,18 +63,22 @@ class Channel < ActiveRecord::Base
     return false
   end
 
+  def to_hash
+    { :id => guid,
+      :name => name,
+      :description => description,
+      :owner_id => owner.guid,
+      :owner_name => owner.name_or_username,
+      :created_at => created_at,
+      :updated_at => updated_at,
+      :channel_type => channel_type,
+      :message_count => self.messages.size
+    }
+  end
+
+
   def to_json(*a)
-    hash = { :id => guid,
-             :name => name,
-             :description => description,
-             :owner_id => owner.guid,
-             :owner_name => owner.name_or_username,
-             :created_at => created_at,
-             :updated_at => updated_at,
-             :channel_type => channel_type,
-             :message_count => self.messages.size
-           }
-    return hash.to_json(*a)
+    return to_hash.to_json(*a)
   end
 
   private
