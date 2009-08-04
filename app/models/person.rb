@@ -163,16 +163,17 @@ class Person < ActiveRecord::Base
     #TODO Make more sensible check for the clients that are authorized to get email
     # Currently check if client_id matches to Kassi.
     # commented by tchang
-    if connection_person == self || client_id == "acm-TkziGr3z9Tab_ZvnhG"
-      person_hash.merge!({'email' => email})
-    end
+    #if connection_person == self || client_id == "acm-TkziGr3z9Tab_ZvnhG"
+    #  person_hash.merge!({'email' => email})
+    # end
 
     # should get person id from @session.person_id
     # now only logged in user who is a member of group tkk (testi1 with person_id 1aa) can get user1's email address
     # authorize?(subject_person_id, object_person_id, action, object_data)
-    #if Rule.authorize?(connection_person.id, id, 'person', 'email')
+    print "******************in person/ authorize email view access*************************\n"
+    if connection_person == self || Rule.authorize?(connection_person, id, 'view', 'email')
       person_hash.merge!({'email' => email})
-    #end
+    end
 
     if self.person_spec
       self.person_spec.attributes.except('status_message', 'status_message_changed').each do |key, value|

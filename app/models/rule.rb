@@ -1,21 +1,43 @@
 class Rule < ActiveRecord::Base
-  has_many :condition_action_sets
- belongs_to :creator, :foreign_key => "person_id", :class_name => "Person" 
+ has_many :condition_action_sets, :dependent => :destroy
+ belongs_to :owner, :foreign_key => "person_id", :class_name => "Person"
 
-  validates_presence_of :person
+  validates_presence_of :owner
   validates_presence_of [:rule_name, :state, :logic]
 
   VALID_RULE_STATES = %w(active inactive) # an array
   VALID_RULE_LOGICS = %w(or and)
-  TITLE_MIN_LENGTH = 2
-  TITLE_MAX_LENGTH = 70
+  NAME_MIN_LENGTH = 2
+  NAME_MAX_LENGTH = 70
 
+   validates_length_of :rule_name, :within => NAME_MIN_LENGTH..NAME_MAX_LENGTH
+   validates_uniqueness_of :rule_name, :scope => [:person_id]
+   validates_inclusion_of :state,
+                         :in => VALID_RULE_STATES,
+                         :allow_nil => false,
+                         :message => "must be 'active' or 'inactive'"
+
+   validates_inclusion_of :logic,
+                         :in => VALID_RULE_LOGICS,
+                         :allow_nil => false,
+                         :message => "must be 'or' or 'and'"
+
+  
+  
+   class << self
+    alias :orig_create :create
+    #alias :orig_update_attributes :update_attributes
+  end
+  
   # create a new rule
   def Rule.create(options)
-    
+    r = orig_create(options)
+    if r.valid?
+      
+    end
   end
 
-
+  
   # check if subject_person has the right do a certain ation to data
   # syntax: authorize?(subject_person, object_person_id, action, data)
   # return: true or false
@@ -61,7 +83,7 @@ class Rule < ActiveRecord::Base
 
   # update the rule
   def updated_attributes(attributes)
-    
+    orig_update_attributes attributes
   end
 
   # check if the rule is active
@@ -69,14 +91,18 @@ class Rule < ActiveRecord::Base
     return true if self.state == "active"
   end
 
-  # activate(enable) the rule
-  def activate_rule
+  # enable the rule
+  def enable_rule
     self.updated_attributes(:state => "active")
   end
 
-  # inactivate(disable) the rule
-  def inactivate_rule
+  # disable the rule
+  def disable_rule
     self.updated_attributes(:state => 'inactive')
+  end
+
+  def set_owner
+    
   end
 
 

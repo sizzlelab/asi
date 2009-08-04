@@ -7,29 +7,44 @@ class RulesController < ApplicationController
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
     params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
 
-    @rule = Rule.create(:person_id => @user,
-
-      :rule_name => params[:rule_name],
-                          :state => params[:state],
-                          :logic => params[:logic])
+    @rule = Rule.create(:person_id => @user.id,
+                       :rule_name => params[:rule_name],
+                       :state => params[:state],
+                       :logic => params[:logic])
 
     if @rule.valid?
+
+      
       render :status => :created and return
     else
       render :status => :bad_request, :json => @rule.errors.full_messages.to_json and return
     end
   end
 
+
   # show a rule
   def show
-    
+    @rule = Rule.find_by_id(params['rule_id'])
+    if ! @rule
+      render :status => :not_found and return
+    end
   end
 
-  # update a rule
+
+  # update a rule, and associated conditon_action_sets
   def update
-
+    @rule = Rule.find_by_id(params['rule_id'])
+    if @rule.update_attributes(params[:rule])
+      ##### update associated condition_action_sets, delete sets first, then add new sets #########
+      
+      render :status => :ok, :json => @rule.to_json
+    else
+      render :status => :bad_request, :json => @rule.errors.full_messages.to_json
+      @rule = nil
+    end
   end
 
+  
   # get all the rules belong to a person
   def get_rules_of_person
     @rules = Rule.find_by_id(params[:user_id]).rules
@@ -39,21 +54,7 @@ class RulesController < ApplicationController
     render :template => 'rules/list_rules'
   end
 
-  # get all the active rules belong to a person
-  def get_active_rules_of_person
-    @rules = Rule.find_by_id(params[:user_id]).rules
-    @active_rules_hash = @rules.find_all{|r| r.active?}.collect do |rule|
-      rule.get_rule_hash(@user)
-    end
-    render :template => 'rules/list_rules'
-  end
 
-  # get all the condition_action_sets belong to a rule
-  def get_condition_action_sets
-    if @rule
-      @condition_action_sets = @rule.get_condition_action_sets
-    end
-  end
 
 
 end

@@ -28,3 +28,15 @@ friends_spec:
   person_id: 4
   status_message: "On a friendly mood"
   status_message_changed: 2008-10-28T11:58:12+03:00
+
+
+privacy_person_spec:
+  id: 5
+  person_id: 1aa
+  status_message: "privacy person rocks."
+  status_message_changed: 2009-08-03T10:58:12+03:00
+  birthdate: 1980-06-01
+  gender: MALE
+  irc_nick: "privacy"
+  msn_nick: "privacy msn"
+  phone_number: "+358 44 111 1111"

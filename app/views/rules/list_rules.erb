@@ -1,3 +1,34 @@
-<%=
-{:entry  => @rules_hash }.to_json()
-%>
+
+<html>
+  <head>
+    <title>Core UI for OtaSizzle Common Services - Privacy Management: List Rules </title>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <th>Rule Name</th>
+        <th>State</th>
+        <th>Logic</th>
+        <th>Created</th>
+        <th>Updated</th>
+      </tr>
+      <% for rule in @rules_hash %>
+        <tr>
+          <td><%=h rule["rule_name"] %></td>
+          <td><%= rule["state"]%></td>
+          <td><%= rule["logic"]%></td>
+          <td><%= rule["created_at"].strftime("%I:%M %p %d-%b-%y") %></td>
+          <td><%= rule["updated_at"].strftime("%I:%M %p %d-%b-%y") %></td>
+          <td><%= link_to 'Edit', :action => 'update_attributes', :id => rule %></td>
+          <td><%= link_to 'Delete', {:action => 'destroy', :id => rule},
+            :confirm => "Are you sure you want to delete this rule?" %></td>
+        </tr>
+      <% end %>
+    </table>
+    <br />
+    <%= link_to 'New Rule', :action => 'create' %>
+  </body>
+</html>
+
+
+

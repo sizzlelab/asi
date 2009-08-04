@@ -4,7 +4,7 @@ class Action < ActiveRecord::Base
 
   validates_presence_of [:action, :data]
 
-  def get_action_id_or_create
+  def get_or_create
     
   end
 

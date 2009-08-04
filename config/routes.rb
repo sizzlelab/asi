@@ -190,6 +190,20 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/location/single_update', :controller => 'locations',
                                           :post => 'update'
 
+
+  #Rules
+  map.resource '/people/:user_id/@rules', :controller => 'rules',
+                                           :get => 'get_rules_of_person',
+                                           :post => 'create'
+                                         
+   map.resource '/people/:user_id/@rules/:group_id', :controller => 'rules',
+                                                     :get => 'show',
+                                                     :put => 'update',
+                                                     :delete => 'destroy'
+
+
+
+  
   # Others
 
   map.resource '/session', :controller => 'sessions',
