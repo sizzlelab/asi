@@ -23,27 +23,7 @@ Finds users based on their (real) names.
     end
     render_json :entry => @people.collect { |p| p.person_hash(@client, @user) }
   end
-
-=begin rapidoc
-url:: /people
-method:: POST
-access:: FREE
-return_code:: 200 - OK
-return:: 200 -
-return:: 406
-return:: [JSON] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you')
-param:: person
--param:: person[username]
--param:: person[name]
---param:: person[name][given_name]
---param:: family_name
--param:: address
-param:: street
-__param:: zipcode
-_param:: email
-
-Finds users based on their (real) names.
-=end
+  
   def show
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
