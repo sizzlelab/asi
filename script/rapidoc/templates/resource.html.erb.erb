@@ -1,12 +1,37 @@
-<a href="/api">&laquo; Back to index</a>
-<%= DocUtil.print_erb "doc_title '#{@url}'", true if @url%>
+<%= DocUtil.print_erb "doc_title '#{@path}'", true if @path%>
+  
+<% @documentation.each_pair do |method, comment| %>
+  <h2><span style='color:#ff6600; width:200px;margin-right:20px;'><%= method.to_s.upcase %></span></h2>
 
-<%=@header_code %>
+  <%if comment%>
+    <p><strong>Access:</strong> <%= comment.access %> </p>
 
-<% @method_codes.each do |mc| %>
-  <%=mc %>
+    <p><strong>Parameters:</strong></p>
+    <% unless comment.parameters.empty? %>
+      <table>
+        <% comment.parameters.each do |p| %><%=p.to_table %><% end %>
+      </table>
+    <% end %> 
+
+    <p><strong>Return codes:</strong></p>
+    <ul><%comment.return_codes.each do |r| %><li> <%= r %></li><%end%></ul>
+
+    <p><strong>Returned JSON:</strong><p>
+    <pre><%=comment.json%></pre>
+
+    <p><strong>Description:</strong></p>
+    <p><%= comment.description %></p>
+  <%else%>
+    <p> Documentation is not yet written for this method. </p>
+  <%end%>
 <% end %>
 
-<%=
-#DocUtil.print_erb "render :partial => \"sidebar\" ", true 
-%>
+<% unless @childs.empty?%>
+  <h1> Subresources </h1>
+  <ul>
+    <% @childs.each do |c| %>
+      <%= c.subresource_paths_as_ul_items %>
+    <% end %>
+  </ul>
+<% end %>
+

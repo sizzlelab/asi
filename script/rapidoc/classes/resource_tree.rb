@@ -20,21 +20,23 @@ class ResourceTree
   end
   
   def generate_doc
+    puts "Generating documentation"
     self.resources.each do |r|
       r.generate_resource_doc
     end
+    puts "Done!"
   end
   
   private
   def init_structure
-    puts 'init structure'
+    puts 'Initializing structure'
     read_routes_into_nodes
     create_hierarchy
   end
   
   
   def read_routes_into_nodes
-    puts 'read routes into nodes'
+    puts 'Reading routes into nodes'
     @routes.routes.each do |d|
       
       path = d.segments.inject("") { |str,s| str << s.to_s }
@@ -51,7 +53,7 @@ class ResourceTree
   end
   
   def create_hierarchy
-    puts 'create hierarchy'
+    puts 'Creating hierarchy'
     self.resources.sort!
     
     #create parents

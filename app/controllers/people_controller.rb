@@ -5,14 +5,24 @@ class PeopleController < ApplicationController
   before_filter :ensure_person_logout, :only  => [:create, :recover_password]
   #before_filter :fix_utf8_characters, :only => [:create, :update, :index]
 
+#example of documentation, presents all valid fields and syntax
 =begin rapidoc
-url:: /people
-method:: GET
 access:: FREE
-return:: [JSON|RETURN CODE: 200] - The returned JSON contains always an 'entry' slot, which contains a list of found people or an empty list if no user was found. Returned people JSON:s are similar to normal person JSON with extra information about the connection between the searcher and the person in the result list. (key: 'connection', possible values: 'none'/'friend'/'requested'/'pending'/'you')
-param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all characters in the search term are interpreted as literals rather than special regexp characters.
+return_code:: 200 - OK
+return_code:: 401 - UNAUTHORIZED 
+json:: {'entry':{'user_id':null,
+'app_id':'coAS-Cf48r3OZ-aaWPEYjL'}}
 
-Finds users based on their (real) names.
+param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. 
+param:: people
+  param:: subparam
+    param:: subsubparam - Subparameters are marked with two spaces per each level in the beginning of the line.
+    param:: subsubparam - Description here.
+    param:: subsubparam
+      param:: subsubsubparam - Description for this third level parameter.
+param:: new - foobar
+
+description:: Finds users based on their (real) names.
 =end
   def index
     if not params[:search]

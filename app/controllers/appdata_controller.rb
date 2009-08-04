@@ -1,0 +1,2 @@
+class AppdataController < ApplicationController
+end
