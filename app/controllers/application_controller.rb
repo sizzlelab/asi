@@ -46,7 +46,6 @@ class ApplicationController < ActionController::Base
   end
 
   def doc
-    puts params.clone.class.inspect
     render :action => request.path[1..-1].gsub(/\/$/, ""), :layout => "doc"
   end
 
@@ -110,25 +109,12 @@ class ApplicationController < ActionController::Base
     return (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
   end
 
-  def can_read_channel?(user, channel)
-    if channel.channel_type == "public"
-      return true
-    end
-    if user
-      if channel.channel_type == "friend"
-        return true if user.contacts.find_by_id(channel.owner.id)
+  def ensure_channel_admin
+    if @channel.channel_type == "group"
+      if @channel.group_subscribers.size != 0 && ! @channel.group_subscribers[0].admins.exists?(@user)
+        render :status => :forbidden and return
       end
-      if channel.channel_type == "group"
-        channel.group_subscribers.each do |subscription|
-          return true if user.groups.find_by_id(subscription.id)
-        end
-      end
-    end
-    return false
-  end
-
-  def ensure_channel_owner
-    if !ensure_same_as_logged_person(@channel.owner_id)
+    elsif !ensure_same_as_logged_person(@channel.owner.guid)
       render :status => :forbidden and return
     end
   end
