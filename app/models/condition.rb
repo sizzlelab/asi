@@ -4,7 +4,7 @@ class Condition < ActiveRecord::Base
 
   validates_presence_of [:condition_type, :condition_value]
 
-  def get_condition_id_or_create
+  def get_or_create
     
   end
 end
