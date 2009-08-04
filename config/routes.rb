@@ -44,6 +44,8 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   # Application-specific client data
+  map.resource '/appdata', :controller => 'appdata',
+                            :get => 'index'
 
   map.resource '/appdata/:user_id/@self/:app_id', :controller => 'client_data',
                                                   :get => 'show',

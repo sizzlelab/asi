@@ -1,0 +1,2 @@
+module AppdataHelper
+end

@@ -50,8 +50,8 @@ module ApplicationHelper
     text.split("/").inject do |sum, part|
       parturl = part.gsub("&lt;", "").gsub("&gt;", "")
       begin
-        ActionController::Routing::Routes.recognize_path("/doc" + "#{sum}/#{parturl}")
-        link += "/" + link_to_unless_current(part, "/doc" + "#{sum}/#{parturl}")
+        ActionController::Routing::Routes.recognize_path("/api" + "#{sum}/#{parturl}")
+        link += "/" + link_to_unless_current(part, "/api" + "#{sum}/#{parturl}")
         sum + "/" + parturl
       rescue ActionController::RoutingError
         link += "/#{part}"

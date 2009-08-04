@@ -1,44 +1,34 @@
 Rails Api Doc Generator
-Author: JPM van der Meer
+Author: Sampo Toiva, based on JPM van der Meer's initial work on rapidoc
 =======================
 With API DOC one can generate code for a Restful Rails API. 
-It generates a API controller, by simply invoking... ./generate. It parses the controllers you specify, and generates a ApiController with appropriate views for it. This makes it very easy to document our Rest API. For methods you use, and according to ERB templates it generates the view for you. It doesn't parse your routes.rb, that was not needed for us, but may be a nice extension for it.
+It generates a API controller, by simply invoking... ./generate. It first parses routes to generate documentation structure for each of the resources. It then parses the controllers based on the data parsed from routes, and generates an ApiControllert. This makes it very easy to document our Rest API. For methods you use, and according to ERB templates it generates the view for you
 
 =INSTALL
-Please copy this directory into the rails script directory and pass arguments to RAPIDoc into the file ./generate. Then put documentation in your RESFul controllers and start generating api documentation, it will be created into structure.
-
+Please copy this directory into the rails script directory and pass arguments to RAPIDoc into the file ./generate. Then put documentation in your RESFul controllers and start generating api documentation, it will be created into app/views/api.
 
 ==Templates
-Templates can be used for tuning your method generation and index.html.erb.
-
-==Structure
-In the structure folder one can setup some additional views to be used for the apidoc controller generator.
-
-EXAMPLE Class documentation
-=begin apidoc
-name:: /projects
-json:: <%=Project.find(:first).to_json %>
-xml:: <%=Project.find(:first).to_xml %>
-
-This resource can be used to show edit and list projects. A project is a one floorplanner. A project
-has multiple floors, which can contain multiple designs. 
-=end
-
+Templates can be used for tuning your method generation.
 
 EXAMPLE Method documentation
-
-=begin apidoc
-url:: /projects
-method:: GET
+=begin rapidoc
 access:: FREE
-return:: [JSON|XML] - some project  
-param:: page:int - the page
-param:: per_page:int - max items per page
+return_code:: 200 - OK
+return_code:: 401 - UNAUTHORIZED 
+json:: {'entry':{'user_id':null,
+'app_id':'app-id'}}
 
-Get a list of projects. This method uses pagination. If you want to retreive project 1-10 for example:
-/projects?page=1&per_page=10.
+param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. 
+param:: people
+  param:: subparam
+    param:: subsubparam - Subparameters are marked with two spaces per each level in the beginning of the line.
+    param:: subsubparam - Description here.
+    param:: subsubparam
+      param:: subsubsubparam - Description for this third level parameter.
+param:: new - foobar
+
+description:: Finds users based on their (real) names.
 =end
-
 
 
 

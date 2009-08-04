@@ -1,9 +1,11 @@
-#!/usr/bin/env ruby
-require File.dirname(__FILE__) + '/classes/apidoc_generator.rb'
-require File.dirname(__FILE__) + '/classes/resource_doc.rb'
+#!/usr/bin/ruby
+require 'fileutils'
 
-# define your resources here
-resources = [   ResourceDoc.new("people", "/people", "people_controller.rb" )]
+require File.join(File.dirname(__FILE__), 'classes', 'resource_tree.rb')
+require File.join(File.dirname(__FILE__), 'classes', 'doc_util.rb')
 
-# generate the apidoc
-ApidocGenerator.new(resources)
+tree = ResourceTree.new ['/', 'api', 'doc', 'admin', 'coreui', 'tutorial', 'test', 'transactions']
+
+FileUtils.rm_rf(File.join(FileUtils.pwd, 'app', 'views', 'api'))
+
+tree.generate_doc
