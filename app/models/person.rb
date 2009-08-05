@@ -183,7 +183,7 @@ class Person < ActiveRecord::Base
 
     person_hash = {
       'id' => guid,
-      'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" },
+      'avatar' => { :link => { :rel => "self", :href => "/people/#{guid}/@avatar" },
                     :status => ( avatar ? "set" : "not_set" ) },
       'status' => { :message => status_message, :changed => status_message_changed },
       :gender => { "displayvalue" => gender, "key" => gender }
