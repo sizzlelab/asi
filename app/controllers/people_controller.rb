@@ -7,7 +7,7 @@ class PeopleController < ApplicationController
 
 =begin rapidoc
 access:: Client login
-return_code:: 200 - OK 
+return_code:: 200 - OK
 json:: {"entry":
 [{"name":{"given_name":"Tauno","unstructured":"Tauno Testilapio","family_name":"Testilapio"},
 "status":{"message":"","changed":"2009-08-03T07:21:58Z"},
@@ -20,7 +20,7 @@ json:: {"entry":
             unstructured":"Testaajankatu 1, 02150 Espoo","street_address":"Testaajankatu 1"}}]
 }
 
-param:: search - The search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all charactersin the search term are interpreted as literals rather than special regexp characters. 
+param:: search - The search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all charactersin the search term are interpreted as literals rather than special regexp characters.
 
 description:: Finds users based on their (real) names.
 =end
@@ -43,9 +43,6 @@ description:: Finds users based on their (real) names.
   end
 
   def create
-    parameters_hash = HashWithIndifferentAccess.new(params.clone)
-    params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
-
     @person = Person.new(params[:person])
     if @person.save
       @role = Role.new(:person => @person,
@@ -54,23 +51,7 @@ description:: Finds users based on their (real) names.
                        :terms_version => params[:person][:consent])
       @role.save
 
-      if VALIDATE_EMAILS # set in conf/
-        key = get_random_string
-        @person.pending_validation = PendingValidation.new({:key =>  key})
-        @person.pending_validation.save
-        if VALIDATE_EMAILS && RAILS_ENV != "development"
-          #address = confirmation_url({:key  => @person.pending_validation.key})
-          #TODO Make above-like dynamic address creation to work
-          #!campussourcing_2009-02-18.log:16:07:00 <@thierry> Gnomet:
-          #                 "#{request.protocol}#{request.host}#{request.request_uri}"
-          #COULD BE ABOVE solution?? ^
-          address = "http://cos.alpha.sizl.org/confirmation?key=#{@person.pending_validation.key}"
-          UserMailer.deliver_registration_confirmation(@person, address)
-        end
-      end
-      # assosiating created user to current session
-      # (this first login is allowed even though the mail is not yet confirmed)
-      @application_session.person_id = @person.id
+      @application_session.person = @person
       @application_session.save
 
       render_json :status => :created, :entry => @person
