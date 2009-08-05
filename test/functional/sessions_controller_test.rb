@@ -33,17 +33,17 @@ class SessionsControllerTest < ActionController::TestCase
     assert_not_nil session[:cos_session_id]
     assert Role.find_by_person_and_client_id(people(:test).id, sessions(:session10).client_id), "No Role created on first login."
 
-    delete :destroy, {:format => 'json'}
-    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal Person.first(:conditions => {:username => "testi"}).guid, json["entry"]["user_id"]
+  end
 
+  def test_user_only
     #test with user only
     post :create, { :session => { :username => "testi", :password => "testia,.u"}, :format => 'json'}
     assert_response :unauthorized
+  end
 
-
-    delete :destroy, {:format => 'json'}
-    assert_response :success
-
+  def test_unauthorized
     #test with erroneus login information
     post :create, { :session => { :username => "testi", :password => "testia,.u", :app_name => "ossi", :app_password => "testi"}, :format => 'json'}
     assert_response :unauthorized
@@ -52,6 +52,11 @@ class SessionsControllerTest < ActionController::TestCase
     assert_response :unauthorized
 
     post :create, { :session => { :username => "testi", :password => "testi2513", :app_name => "ossi", :app_password => "t23452esaoeulcrhti"}, :format => 'json'}
+    assert_response :unauthorized
+  end
+
+  def test_no_person
+    post :create, { :session => { :username => "not-there", :password => "not-there", :app_name => "ossi", :app_password => "testi"}, :format => 'json'}
     assert_response :unauthorized
   end
 
