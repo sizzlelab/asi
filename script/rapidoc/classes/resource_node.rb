@@ -94,12 +94,12 @@ class ResourceNode
         current_state = :find_action
         
       elsif current_state == :read_comment
+        line.gsub!(/[']/, '\\\\\'')
         if result = /( *\w+)\:\:\s*(.+)/.match(line)
           @last_variable = result[1].strip
           current_api_block.add_variable(result[1], result[2])
         elsif line.strip != ""
           unless @last_variable == "param"
-            line.gsub!(/[']/, '\\\\\'')
             eval "current_api_block.#{@last_variable} << '#{line}'"
           else
             puts "ERROR: Parameter description cannot span to multiple lines. Check your syntax." 

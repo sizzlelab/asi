@@ -32,7 +32,7 @@ class Parameter
       end
       retval += "</table></td>\n"
     else
-      retval = "<tr>\n<th class='inner_parameters'>#{name}</th>\n"
+      retval = "<tr>\n<th>#{name}</th>\n"
       retval += "<td>#{desc}</td>\n"
     end
     
