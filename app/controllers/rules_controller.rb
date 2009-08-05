@@ -47,7 +47,7 @@ class RulesController < ApplicationController
   
   # get all the rules belong to a person
   def get_rules_of_person
-    @rules = Rule.find_by_id(params[:user_id]).rules
+    @rules = Rule.find_all_by_person_id(params[:user_id])
     @rules_hash = @rules.collect do |rule|
       rule.get_rule_hash(@user)
     end
