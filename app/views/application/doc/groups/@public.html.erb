@@ -6,7 +6,9 @@
 <% methods = [
                 { :name => "GET",
                   :description => "Returns an array of all the public groups.",
-                  :parameters => [ {:query => "A query to limit the group listing (optional). If this parameter is present, only groups whose title or description match the query are returned. The returned groups are sorted by relevance. Hidden groups that the possible logged-in user is a member of are present in the list."} ]},
+                  :parameters => [ {:query => "A query to limit the group listing (optional). If this parameter is present, only groups whose title or description match the query are returned. The returned groups are sorted by relevance. Hidden groups that the possible logged-in user is a member of are present in the list."},
+																	 {:per_page => "Number of entries to display."},
+	 																 {:page => "Page to display." }]},
 
                 ] %>
 
