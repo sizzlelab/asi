@@ -73,7 +73,7 @@ description:: Finds users based on their (real) names.
       @application_session.person_id = @person.id
       @application_session.save
 
-      render :status => :created and return
+      render_json :status => :created, :entry => @person
     else
       render_json :status => :bad_request, :messages => @person.errors.full_messages
       @person = nil
