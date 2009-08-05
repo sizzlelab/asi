@@ -58,10 +58,11 @@ class GroupsController < ApplicationController
 
     if params[:query]
       groups = Group.search("*" + params[:query].strip + "*")
-      groups.reject! { |g| ! (g.public? || g.show?(@user)) }
     else
       groups = Group.all_public
     end
+
+    groups.filter_paginate!(params[:per_page], params[:page]) { |g| g.show?(@user) }
 
     @groups = groups.collect do |group|
       group.get_group_hash(@user)
