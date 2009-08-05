@@ -16,7 +16,7 @@ config.action_controller.perform_caching             = false
 # Don't care if the mailer can't send
 config.action_mailer.raise_delivery_errors = false
 
-SERVER_DOMAIN = "http://localhost:3001"
+SERVER_DOMAIN = "http://localhost:3000"
 
 ActionMailer::Base.smtp_settings = {
   :address => 'smtp.hut.fi', #if needed change to own smtp server
