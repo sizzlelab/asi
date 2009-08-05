@@ -20,8 +20,10 @@
                  :parameters => [{ :sortBy => "(Optional) A field according to which the results should be sorted. Currently only supported is
                                                 <code>status_changed</code> that will sort the results based on the date of last
                                                 status message change."},
-                                   { :sortOrder => "(Optional) Valid values are <code>ascending</code> (default) and <code>descending</code>." }
-                                   ], 
+                                 { :sortOrder => "(Optional) Valid values are <code>ascending</code> (default) and <code>descending</code>." },
+                                 { :per_page => "Number of items to show."},
+																 { :page => "Page to show."}
+  ], 
                  :returns => { "200" => "The returned JSON contains always an 'entry' slot, which contains a list of friends
                                          or an empty list if user has no confirmed friends."}
                  
