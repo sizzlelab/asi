@@ -73,7 +73,7 @@ class Rule < ActiveRecord::Base
       'state' => state,
       'logic' => logic,
       'created_at' => created_at,
-      'created_by' => created_by
+      'updated_at' => updated_at
       }
     }
     end
