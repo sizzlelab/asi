@@ -68,6 +68,8 @@ class PeopleControllerTest < ActionController::TestCase
     end
     assert_not_nil(Session.find(sessions(:client_only_session).id).person_id)
 
+    assert_not_nil json["entry"]
+    assert_not_nil json["entry"]["id"]
 
     # check that the created user can be found
     created_user = Person.find_by_username("newbie")
