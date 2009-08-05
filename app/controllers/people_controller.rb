@@ -25,13 +25,24 @@ param:: search - The search term. Every user whose name matches the regular expr
 description:: Finds users based on their (real) names.
 =end
   def index
+    options = {}
+    if params[:per_page]
+      options[:limit] = params[:per_page].to_i
+      if params[:page] && params[:page].to_i >= 1
+        options[:offset] = params[:per_page].to_i * (params[:page].to_i-1)
+      end
+    end
     if not params[:search]
-      @people = Person.all
+      @people = Person.all(options)
+      size = Person.count
     else
       query = (params['search'] || "").strip
-      @people = Person.search("*#{query}*", :without => { :name_id => 0 })
+      @people = Person.search("*#{query}*", :without => { :name_id => 0 },
+                              :per_page => params[:per_page] ? params[:per_page].to_i : nil,
+                              :page => params[:page] ? params[:page].to_i : nil)
+      size = @people.total_entries
     end
-    render_json :entry => @people.collect { |p| p.person_hash(@client, @user) }
+    render_json :entry => @people.collect { |p| p.person_hash(@client, @user)  }, :size => size 
   end
 
   def show
@@ -199,6 +210,8 @@ description:: Finds users based on their (real) names.
     else
       @friends = @person.contacts
     end
+    @friends.filter_paginate!(params[:per_page], params[:page]){true}
+    render_json :entry => @friends, :size => @friends.count_available and return
   end
 
   def remove_friend

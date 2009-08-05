@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   layout 'default'
 
-  around_filter :catch_no_method_errors
+#  around_filter :catch_no_method_errors
 
   before_filter :maintain_session_and_user
 
@@ -149,9 +149,10 @@ class ApplicationController < ActionController::Base
         hash[:pagination] = { :per_page => params[:per_page].to_i,
                               :page => params[:page].to_i
                             }
-      end
-      if options[:size]
-        hash[:pagination][:size] = options[:size]
+        if options[:size]
+          hash[:pagination][:size] = options[:size]
+        end
+
       end
       options[:json] = hash
     end
