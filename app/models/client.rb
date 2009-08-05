@@ -7,6 +7,7 @@ class Client < ActiveRecord::Base
   attr_reader :password
 
   validates_presence_of [:name, :encrypted_password]
+  validates_uniqueness_of :name
 
   def self.find_by_name_and_password(username, password)
     model = self.find_by_name(username)

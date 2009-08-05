@@ -70,12 +70,23 @@ class PeopleControllerTest < ActionController::TestCase
 
     assert_not_nil json["entry"]
     assert_not_nil json["entry"]["id"]
+    assert json["entry"]["id"].length > 5
 
     # check that the created user can be found
     created_user = Person.find_by_username("newbie")
     assert_equal created_user.username, user.username
     assert_equal created_user.consent, user.consent
   end
+
+  def test_create2
+    login_as nil, clients(:one)
+
+    post :create, { :person => {:username  => "newbie", :password => "newbie", :email => "t@example.com" }, :format => "json" }
+    assert_response :created
+    json = JSON.parse @response.body
+    assert json["entry"]["id"].length > 0
+  end
+
 
   def test_create_association
     assert_nil(Session.find(sessions(:client_only_session).id).person_id)
@@ -637,7 +648,7 @@ class PeopleControllerTest < ActionController::TestCase
 
     json["entry"].each do |person|
 
-      assert_not_nil person["name"]
+#      assert_not_nil person["name"]
       assert_not_nil person["connection"], "Missing connection"
 
       if (Person.find(sessions(:session1).person_id).contacts.include?(Person.find_by_guid(person["id"])))
