@@ -43,7 +43,7 @@ class MethodDoc
     
     @return_codes << value and return if name == 'return_code'
     
-    eval("@#{name}= \"#{value}\"")
+    eval("@#{name}= '#{value}\n'")
   end
   
   def make_child(param)

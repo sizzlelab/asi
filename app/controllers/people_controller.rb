@@ -5,22 +5,22 @@ class PeopleController < ApplicationController
   before_filter :ensure_person_logout, :only  => [:create, :recover_password]
   #before_filter :fix_utf8_characters, :only => [:create, :update, :index]
 
-#example of documentation, presents all valid fields and syntax
 =begin rapidoc
-access:: FREE
-return_code:: 200 - OK
-return_code:: 401 - UNAUTHORIZED 
-json:: {'entry':{'user_id':null,
-'app_id':'coAS-Cf48r3OZ-aaWPEYjL'}}
+access:: Client login
+return_code:: 200 - OK 
+json:: {"entry":
+[{"name":{"given_name":"Tauno","unstructured":"Tauno Testilapio","family_name":"Testilapio"},
+"status":{"message":"","changed":"2009-08-03T07:21:58Z"},
+"birthdate":null,"gender":{"displayvalue":null,"key":null},
+"role":null,"username":"testilapio","phone_number":"0501234567","is_association":null,
+"website":null,"id":"b401CUzHur3R2baaWPEYjL","description":null,
+"avatar":{"status":"not_set","link":{"rel":"self","href":"\/people\/106\/@avatar"}},
+"msn_nick":null,"irc_nick":null,"status_message":"",
+"address":{"postal_code":"02150","locality":"Espoo","
+            unstructured":"Testaajankatu 1, 02150 Espoo","street_address":"Testaajankatu 1"}}]
+}
 
-param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. 
-param:: people
-  param:: subparam
-    param:: subsubparam - Subparameters are marked with two spaces per each level in the beginning of the line.
-    param:: subsubparam - Description here.
-    param:: subsubparam
-      param:: subsubsubparam - Description for this third level parameter.
-param:: new - foobar
+param:: search - The search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all charactersin the search term are interpreted as literals rather than special regexp characters. 
 
 description:: Finds users based on their (real) names.
 =end
