@@ -55,11 +55,21 @@ class GroupsController < ApplicationController
 
   def public_groups
     groups = []
-
+    options = {}
     if params[:query]
       groups = Group.search("*" + params[:query].strip + "*")
     else
-      groups = Group.all_public
+      options[:conditions] = "group_type = 'open' OR group_type = 'closed'"
+      order_by = 'updated_at'
+      order = 'ASC'
+      if params[:sort_by] && %w{ updated_at created_at title owner description }.include?(params[:sort_by])
+        order_by = params[:sort_by]
+      end
+      if params[:sort_order] == 'descending'
+        order = 'DESC'
+      end
+      options[:order] = order_by + " " + order
+      groups = Group.all(options)
     end
 
     groups.filter_paginate!(params[:per_page], params[:page]) { |g| g.show?(@user) }

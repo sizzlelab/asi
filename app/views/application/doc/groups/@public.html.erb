@@ -8,7 +8,9 @@
                   :description => "Returns an array of all the public groups.",
                   :parameters => [ {:query => "A query to limit the group listing (optional). If this parameter is present, only groups whose title or description match the query are returned. The returned groups are sorted by relevance. Hidden groups that the possible logged-in user is a member of are present in the list."},
 																	 {:per_page => "Number of entries to display."},
-	 																 {:page => "Page to display." }]},
+	 																 {:page => "Page to display." },
+																	 {:sort_by => "Field to sort results by. Defaults to <code>updated_at</code>. Possible values are <code>created_at, updated_at, title, description, owner</code>."},
+																	 {:sort_order => "Possible values are <code>ascending</code> and <code>descending</code>."}]},
 
                 ] %>
 
