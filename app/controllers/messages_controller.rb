@@ -10,6 +10,7 @@ class MessagesController < ApplicationController
                                   :per_page => params[:per_page],
                                   :page => params[:page],
                                   :with => { :channel_id => @channel.id})
+      size = @messages.total_entries
     else
       options = {}
       if params[:per_page]
@@ -29,8 +30,9 @@ class MessagesController < ApplicationController
       end
       options[:order] = 'updated_at ' + sort_order
       @messages = Message.all(options)
+      size = Message.count(:conditions => options[:conditions])
     end
-    render_json :entry => @messages and return
+    render_json :entry => @messages, :size => size and return
   end
 
   def create

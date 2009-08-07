@@ -67,7 +67,7 @@ class GroupsController < ApplicationController
     @groups = groups.collect do |group|
       group.get_group_hash(@user)
     end
-    render :template => 'groups/list_groups'
+    render_json :entry => @groups, :size => groups.count_available and return
   end
 
   def add_member
