@@ -250,7 +250,7 @@ module COSTestingDSL
   end
 
   def creates_group_with(options)
-    post "/groups", { :group => options }
+    post "/groups", options 
     assert_response :success, @response.body
     JSON.parse(@response.body)["entry"]["id"]
   end
@@ -259,6 +259,12 @@ module COSTestingDSL
     get "/groups/@public"
     assert_response :success, @response.body
     JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
+  end
+  
+  def lists_channels
+    get "/channels/"
+    assert_response :success, @response.body
+    JSON.parse(@response.body)["entry"].collect {|c| c["name"]}
   end
 
   def searches_groups_with(query)
