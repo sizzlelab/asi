@@ -24,7 +24,7 @@ class GroupsController < ApplicationController
     @group = Group.create(params[:group].merge({ :creator => @user }))
 
     if @group.valid?
-      if params[:create_channel]
+      if params[:create_channel] == 'true'
         @channel = Channel.create( :name => @group.title,
                                 :owner => @user,
                                 :channel_type => "group",
@@ -228,7 +228,7 @@ class GroupsController < ApplicationController
     if params[:user_id] == "@me"
       if ses = Session.find_by_id(session[:cos_session_id])
         if ses.person
-          params[:user_id] = ses.person.id
+          params[:user_id] = ses.person.guid
         else
           render_json :status => :unauthorized, :messages => "Please login as a user to continue" and return
         end

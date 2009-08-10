@@ -29,11 +29,11 @@ class GroupsControllerTest < ActionController::TestCase
   end
 
   def test_create_group_and_channel
-
+   
     assert_difference 'Channel.count' do
-      post :create, { :group => { :title => "kanavallinen ryhmä", :description => "lalalalalaa kekekekeke die usa", :type => "open" }, :create_channel => true, :format => "json" }, { :cos_session_id => sessions(:session1).id }
+      post :create, { :group => { :title => "uraa", :description => "lalalalalaa kekekekeke die usa", :type => "open" }, :create_channel => 'true', :format => "json" }, { :cos_session_id => sessions(:session2).id }
       assert_response :created, @response.body
-    end
+    end  
   end
 
   def test_grant_and_remove_admin_status
