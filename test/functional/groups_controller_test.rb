@@ -13,18 +13,18 @@ class GroupsControllerTest < ActionController::TestCase
       title = "testgroup (#{type})"
       post :create, { :group => { :title => title, :type => type,
           :description => description_text },
-        :format => 'json'}, { :cos_session_id => sessions(:session1).id }
+        :format => 'json'}, { :cos_session_id => sessions(:session2).id }
       assert_response :created, @response.body
       json = JSON.parse(@response.body)
 
       assert id = json["entry"]["id"]
       group = Group.find(id)
       assert(group, "Created group not found. (#{type})")
-      assert(group.members.include?(sessions(:session1).person), "Creator was not made member of new group (#{type})")
+      assert(group.members.include?(sessions(:session2).person), "Creator was not made member of new group (#{type})")
       assert(group.members.first.is_admin_of?(Group.find_by_id(id)),
              "Creator was not made admin in new group (#{type})")
       assert_equal(description_text, group.description)
-      assert_equal(sessions(:session1).person.id, group.created_by)
+      assert_equal(sessions(:session2).person.id, group.creator_id)
     end
   end
 
@@ -304,7 +304,7 @@ class GroupsControllerTest < ActionController::TestCase
     session = sessions(:session1)
     assert session.person.is_admin_of?(group)
 
-    data =  { :created_by => "foo",
+    data =  { :creator_id => "foo",
               :updated_at => "01-01-1950 10:10:10" }
 
     put :update, { :group_id => group.id, :group => data, :format => 'json' },

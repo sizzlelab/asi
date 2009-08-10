@@ -21,8 +21,7 @@ class GroupsController < ApplicationController
     params[:group][:group_type] = params[:group][:type]
     params[:group].delete :type
 
-
-    @group = Group.create(params[:group].merge({ :created_by => @user }))
+    @group = Group.create(params[:group].merge({ :creator => @user }))
 
     if @group.valid?
       if params[:create_channel]
