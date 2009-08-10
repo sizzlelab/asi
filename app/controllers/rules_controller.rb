@@ -40,6 +40,8 @@ class RulesController < ApplicationController
     end
   end
 
+  
+
 #   update a rule, and associated conditon_action_sets
   def update
     @rule = Rule.find_by_id(params['id'])
@@ -51,14 +53,15 @@ class RulesController < ApplicationController
     end
   end
 
+
+
   def destroy
+    @rule = Rule.find_by_id(params['id'])
+    @rule.destroy
     if ! @rule
-      render :status => :not_found and return  
-    else
-      @rule = Rule.find_by_id(params['id'])
-      @rule.destroy
-      redirect_to rules_path and return
+      render :status => :not_found and return
     end
+    redirect_to rules_path
   end
 
   def enable
@@ -70,7 +73,7 @@ class RulesController < ApplicationController
         flash[:notice] = 'Error.'
     end
   end
-
+#
     def disable
     flash[:notice] = 'disabled method.'
     @rule = Rule.find_by_id(params['rule_id'])
