@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title>COS Privacy Management: Rule Create</title>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td><b>Name: </b></td>
+        <td><%= text_field "rule", "name", "size" => 40, "maxlength" => 40%></td>
+      </tr>
+      <tr>
+        <td><b>State: </b></td>
+        <td><%= select "rule", "state", ["Active", "Inactive"] %></td>
+      </tr>
+      <tr>
+        <td><b>Logic: </b></td>
+        <td><%= select "rule", "logic", ["And", "Or"] %></td>
+      </tr>
+
+      <tr>
+        <td><b>Condition: </b></td>
+        <td><%= select "rule", "condition1", ["Public", "Private", "Friends Only"] %></td>
+      </tr>
+      <tr>
+        <td><b>Can view your: </b></td>
+        <td><%= select "rule", "action1", ["All Profile Information", "Address", "Name", "Birthdate", "Gender", "Avatar", "Phone_Number", "MSN_nick", "IRC_nick"] %></td>
+      </tr>
+
+    </table>
+    <%= submit_tag "Add more condition and action set" %>
+    <%= submit_tag "Create" %>
+    <%= submit_tag "Cancel", {:type => 'button', :onClick=>"parent.location='" + url_for(
+        :action => 'list_rules' ) + "'" } %>
+
+  </body>
+</html>

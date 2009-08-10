@@ -1,7 +1,7 @@
 class RulesController < ApplicationController
-
+  layout "rules"
   before_filter :ensure_client_login
-  
+
   # create a new rule
   def create
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
@@ -14,13 +14,23 @@ class RulesController < ApplicationController
 
     if @rule.valid?
 
-      
+
       render :status => :created and return
     else
       render :status => :bad_request, :json => @rule.errors.full_messages.to_json and return
     end
   end
 
+  def index
+    if @user
+      @person = Person.find_by_id(@user.id)
+
+      @rules = Rule.find_all_by_person_id(params[:user_id])
+      @rules_hash = @rules.collect do |rule|
+        rule.get_rule_hash(@user)
+      end
+    end
+  end
 
   # show a rule
   def show
@@ -30,31 +40,59 @@ class RulesController < ApplicationController
     end
   end
 
-
-  # update a rule, and associated conditon_action_sets
+#   update a rule, and associated conditon_action_sets
   def update
-    @rule = Rule.find_by_id(params['rule_id'])
+    @rule = Rule.find_by_id(params['id'])
+    @rule.state = params['state']
     if @rule.update_attributes(params[:rule])
-      ##### update associated condition_action_sets, delete sets first, then add new sets #########
-      
-      render :status => :ok, :json => @rule.to_json
+      flash[:notice] = 'Rule was successfully updated.'
     else
-      render :status => :bad_request, :json => @rule.errors.full_messages.to_json
-      @rule = nil
+      flash[:notice] = 'Rule was successfully updated.'
     end
   end
 
-  
-  # get all the rules belong to a person
-  def get_rules_of_person
-    @rules = Rule.find_all_by_person_id(params[:user_id])
-    @rules_hash = @rules.collect do |rule|
-      rule.get_rule_hash(@user)
+  def destroy
+    if ! @rule
+      render :status => :not_found and return  
+    else
+      @rule = Rule.find_by_id(params['id'])
+      @rule.destroy
+      redirect_to rules_path and return
     end
-    render :template => 'rules/list_rules'
   end
 
+  def enable
+    @rule = Rule.find_by_id(params['rule_id'])
+    if @rule.update_attribute(:state, 'active')
+        flash[:notice] = 'Rule was successfully updated.'
+        redirect_to rules_path and return
+    else
+        flash[:notice] = 'Error.'
+    end
+  end
 
+    def disable
+    flash[:notice] = 'disabled method.'
+    @rule = Rule.find_by_id(params['rule_id'])
+    if @rule.update_attribute(:state, 'inactive')
+        flash[:notice] = 'Rule was successfully updated.'
+        redirect_to rules_path and return
+    else
+        flash[:notice] = 'Error.'
+    end
+  end
+
+#  # get all the rules belong to a person
+#  def get_rules_of_person
+#    @rules = Rule.find_all_by_person_id(params[:user_id])
+#    @rules_hash = @rules.collect do |rule|
+#      rule.get_rule_hash(@user)
+#    end
+
+#    redirect_to coreui_profile_index_path
+#     render 'list_rules.erb'
+#    render :action => 'list_rules'
+#  end
 
 
 end

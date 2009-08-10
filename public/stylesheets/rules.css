@@ -1,0 +1,245 @@
+/* Active rule box */
+.active_rule_box {
+	border: 1px dotted black;
+	padding: 0.2em 0.5em 0.2em 1em;
+	width: 200px;
+        background: green;
+}
+
+.active_rule_box .box_footer {
+	clear: both;
+}
+
+/* Inactive rule box */
+.inactive_rule_box {
+	border: 1px dotted black;
+	padding: 0.2em 0.5em 0.2em 1em;
+	width: 200px;
+        background: red;
+}
+
+.inactive_rule_box .box_footer {
+	clear: both;
+}
+
+body {
+    width : 700px;
+    margin : auto;
+    margin-top : 4em;
+    font : medium Verdana, sans-serif
+}
+
+h1, h2 {
+    font-family : Helvetica, Arial, sans-serif
+}
+
+h1 {
+    text-align : center;
+    margin-bottom : 1em;
+}
+
+h2, h3 {
+    margin-top : 1.5em;
+}
+
+table {
+    font-size : small
+}
+
+tt {
+    background-color : #eeeeee;
+    padding : 2px;
+}
+
+th {
+    text-align : left;
+    vertical-align : top;
+    padding-right : 1em;
+}
+
+div.footer {
+    font-size : x-small;
+    text-align : right;
+    margin-top : 4em;
+}
+
+div.navigation {
+	text-align: right;
+	margin-bottom: 2em;
+}
+
+/* Links */
+
+a {
+	color: #000080;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #0000c0;
+}
+
+a:hover {
+	color: #0000ff;
+	text-decoration: underline;
+}
+
+
+/* Profile forms */
+
+#profile_picture {
+	width: 200px;
+}
+
+#profile_left {
+	float: left;
+	width: 200px;
+	margin: 10px;
+}
+
+div.profile_left_link a {
+	border-bottom: 1px dashed #000;
+	padding: 7px;
+	display: block;
+}
+
+#profile_right {
+	margin-top: 10px;
+	float: right;
+	width: 495px;
+}
+
+div.profile_small_header {
+	font-size: 12px;
+	background: #c0e783;
+	padding: 5px 7px;
+	margin-bottom: 5px;
+	margin-right: 10px;
+	height: 14px;
+}
+
+div.profile_info {
+	width: 465px;
+	padding: 1px 10px 7px 10px;
+}
+
+div.profile_info_field {
+	overflow: hidden;
+	width: 100%;
+	margin: 3px 0px;
+}
+
+div.profile_info_field_title {
+	float: left;
+	width: 300px;
+}
+
+div.profile_info_field_links {
+	float: right;
+	width: 160px;
+}
+
+div.profile_add_form {
+	margin: 0 10px 14px 22px;
+}
+
+div.profile_update_form_left {
+	margin-top: 2px;
+	padding: 2px 0 9px 0;
+	font-weight: bold;
+	float: left;
+	width: 175px;
+}
+
+div.profile_update_form_center {
+	float: left;
+	margin: 4px 0px 0 0px;
+}
+
+div.profile_update_form_two_columns {
+	float: left;
+	overflow: hidden;
+	width: 280px;
+	margin: 4px 0 0 0;
+}
+
+div.profile_update_form_right {
+	float: left;
+	margin: 0 10px 0 0;
+}
+
+div.profile_update_form_buttons {
+	clear: both;
+	margin: 10px 0;
+}
+
+div#profile_add_item {
+	margin: 0px 5px 10px 10px;
+}
+
+div#profile_add_favor {
+	margin: 0px 5px 10px 10px;
+}
+
+div.form_extra_padding {
+	width: 400px;
+	padding: 0px 10px;
+}
+
+input {
+	font-size: 12px;
+	size: 25;
+}
+
+textarea {
+	font-size: 12px;
+	padding: 5px;
+}
+
+img {
+	border: 0;
+}
+
+input.button {
+	width: 75px;
+}
+
+input.update_profile {
+	width: 274px;
+}
+
+input.update_postal_code {
+	width: 60px;
+}
+
+/* Profile box */
+
+.profile_box {
+	border: 1px dotted black;
+	padding: 0.2em 0.5em 0.2em 1em;
+	width: 400px;
+}
+
+.profile_box .avatar {
+	float: left;
+	padding-top: 1em;
+	width: 64px;
+}
+
+.profile_box img {
+	border: 1px solid black;
+}
+
+.profile_box .name {
+	font-weight: bold;
+	font-size: 110%;
+}
+
+.profile_box .info {
+	float: left;
+	width: 300px;
+}
+
+.profile_box .box_footer {
+	clear: both;
+}

@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>Core UI for OtaSizzle Common Services - Privacy Management: List Rules </title>
+  </head>
+  <body>
+    <h1>Rules of the user "<%= @person.username %>"</h1>
+    <table>
+      <% @rules.each do |rule| %>
+      <%# form_for(rule) do |r| %>
+        <tr>
+          <% if rule.state == "active" %>
+            <td bgcolor="green">
+              <%=h rule.rule_name%>
+            </td>
+            <td>
+              <%=button_to "Disable rule", rule_path(@person,rule.id)+'/disable', :method => :put %>
+              <%#=link_to "Delete", rules_path+'/'+rule.id, :method => %>
+            </td>
+          <% else %>
+            <td bgcolor="red">
+              <%=h rule.rule_name%>
+            </td>
+            <td>
+              <%#=button_to "Enable rule", rule_path(@person,rule.id), :method => "enable"%>
+              <%=button_to "Enable rule", rule_path(@person,rule.id)+'/enable', :method => :put%>
+            </td>
+          <% end %>
+          <td>
+            <%#=link_to "Delete", rules_path+'/'+rule.id, :method => :delete %>
+            <%=button_to "Delete", rule_path(@person,rule.id), :method => :delete %>
+          </td>
+        </tr>
+      <%# end %>
+      <% end %>
+    </table>
+    <br />
+    <%#= link_to 'New Rule', :action => 'create' %>
+  </body>
+</html>
+
+

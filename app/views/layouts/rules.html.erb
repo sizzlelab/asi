@@ -1,0 +1,7 @@
+<%= stylesheet_link_tag("rules") %>
+
+<% if @user %>
+  <%= yield %>
+<% else %>
+  <%= render :partial => "/coreui/login" %>
+<% end %>

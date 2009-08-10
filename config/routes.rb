@@ -192,16 +192,28 @@ ActionController::Routing::Routes.draw do |map|
 
 
   #Rules
-  map.resource '/people/:user_id/@rules', :controller => 'rules',
-                                           :get => 'get_rules_of_person',
-                                           :post => 'create'
-                                         
-   map.resource '/people/:user_id/@rules/:group_id', :controller => 'rules',
-                                                     :get => 'show',
-                                                     :put => 'update',
-                                                     :delete => 'destroy'
+#  map.resource '/people/:user_id/@rules', :controller => 'rules',
+#                                           :get => 'get_rules_of_person',
+#                                           :post => 'create'
+#
+#   map.resource '/people/:user_id/@rules/:group_id', :controller => 'rules',
+#                                                     :get => 'show',
+#                                                     :put => 'update',
+#                                                     :delete => 'destroy'
 
+  #Rails will create the default routes like http://guides.rubyonrails.org/routing.html 3.2 CRUD, Verbs, and Actions
+  map.resources :rules, :path_prefix => '/people/:user_id'
 
+  #Define ways to access the enable and disable from the view with the put method
+  map.connect '/people/:user_id/rules/:rule_id/enable',  :controller => 'rules',
+                                                         :action => 'enable',
+                                                         :method => 'put'
+
+  map.connect '/people/:user_id/rules/:rule_id/disable',  :controller => 'rules',
+                                                          :action => 'disable',
+                                                          :method => 'put'
+                                  
+                                 
 
   
   # Others
@@ -254,4 +266,8 @@ ActionController::Routing::Routes.draw do |map|
            :conditions => { :method => :get }
 
   map.connect '/:controller/:action', :format => 'json'
+  map.connect '/:controller/:action/:id', :format => 'json'
+  map.connect '/:controller/:action/:id'
+  map.connect '/:controller/:action'
+
 end
