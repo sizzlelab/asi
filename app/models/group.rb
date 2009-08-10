@@ -10,7 +10,7 @@ class Group < ActiveRecord::Base
 
   has_many :subscriptions, :through => :group_subscriptions, :source => :channel
 
-  belongs_to :creator, :foreign_key => "created_by", :class_name => "Person"
+  belongs_to :creator, :foreign_key => "creator_id", :class_name => "Person"
 
   has_one :group_search_handle
   after_save :create_search_handle
@@ -140,8 +140,8 @@ class Group < ActiveRecord::Base
   end
 
   # Disallow changes to group creator
-  def created_by=(created_by)
-    self[:created_by] ||= created_by
+  def creator_id=(creator_id)
+    self[:creator_id] ||= creator_id
   end
 
   #Disallow changes to group type
