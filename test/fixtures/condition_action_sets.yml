@@ -1,7 +1,7 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-   condition_id: 3 # 3:  group tkk
+   condition_id: 5 # 5:  group tkk
    action_id: view_name
    rule_id: 1
 
@@ -11,7 +11,7 @@ two:
   rule_id: 1
 
 three:
-  condition_id: 3 # 3: group tkk
+  condition_id: 5 # 5: group tkk
   action_id: view_email
   rule_id: 2
 
@@ -20,7 +20,57 @@ four:
   action_id: view_email
   rule_id: 2
 
-five:
-   condition_id: 4 # is_friend - true
+rule3_email:
+   condition_id: 1 # publicity - private
+   action_id: view_email
+   rule_id: 3
+
+rule3_name:
+   condition_id: 1 # publicity - private
+   action_id: view_name
+   rule_id: 3
+
+rule3_status_message:
+   condition_id: 1 # publicity - private
+   action_id: view_status_message
+   rule_id: 3
+
+rule3_birthdate:
+   condition_id: 1 # publicity - private
+   action_id: view_birthdate
+   rule_id: 3
+
+rule3_phone_number:
+   condition_id: 1 # publicity - private
+   action_id: view_phone_number
+   rule_id: 3
+
+rule3_gender:
+   condition_id: 1 # publicity - private
+   action_id: view_gender
+   rule_id: 3
+
+rule3_irc_nick:
+   condition_id: 1 # publicity - private
+   action_id: view_irc_nick
+   rule_id: 3
+
+rule3_msn_nick:
+   condition_id: 1 # publicity - private
+   action_id: view_msn_nick
+   rule_id: 3
+
+rule3_avatar:
+   condition_id: 1 # publicity - private
+   action_id: view_avatar
+   rule_id: 3
+
+rule3_address:
+   condition_id: 1 # publicity - private
    action_id: view_address
+   rule_id: 3
+
+rule3_location:
+   condition_id: 1 # publicity - private
+   action_id: view_location
    rule_id: 3

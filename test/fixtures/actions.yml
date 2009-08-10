@@ -1,16 +1,57 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-view_name:
-   id: view_name
-   action: view
-   data: name
-
-view_address:
-   id: view_address
-   action: view
-   data: address
 
 view_email:
    id: view_email
    action: view
    data: email
+
+view_name:
+   id: view_name
+   action: view
+   data: name
+
+view_statusMessage:
+  id: view_status_message
+  action: view
+  data: satatus_message
+
+view_birthdate:
+  id: view_birthdate
+  action: view
+  data: birthdate
+
+view_phone_number:
+  id: view_phone_number
+  action: view
+  data: phone_number
+
+view_gender:
+  id: view_gender
+  action: view
+  data: gender
+
+view_irc_nick:
+  id: view_irc_nick
+  action: view
+  data: irc_nick
+
+view_msn_nick:
+  id: view_msn_nick
+  action: view
+  data: msn_nick
+
+view_avatar:
+  id: view_avatar
+  action: view
+  data: avatar
+  
+view_address:
+   id: view_address
+   action: view
+   data: address
+
+view_location:
+  id: view_location
+  action: view
+  data: location
