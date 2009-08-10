@@ -13,7 +13,7 @@ class Channel < ActiveRecord::Base
   attr_accessible :name, :description, :channel_type, :owner, :creator_app
   attr_readonly :channel_type, :creator_app
 
-  before_save :subscribe_owner
+  before_save :subscribe
   before_validation_on_create :set_default_type
 
   validates_inclusion_of :channel_type, :in => %w( public friend group), :message => "must be public, friend or group."
@@ -97,10 +97,12 @@ class Channel < ActiveRecord::Base
     end
   end
 
-  def subscribe_owner
-    if self.channel_type != "group"
-      user_subscribers << owner rescue ActiveRecord::RecordInvalid
+  def subscribe
+    if self.channel_type == 'group'
+      group_subscribers << Group.find_by_title(self.name) rescue ActiveRecord::RecordInvalid
     end
+    
+    user_subscribers << owner rescue ActiveRecord::RecordInvalid
   end
 
   def associations_must_exist
