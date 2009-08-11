@@ -39,7 +39,6 @@ class Channel < ActiveRecord::Base
                                     'description' => 5,
                                     'posts' => 2,
                                     'msg_title' => 1 }
-
   end
 
   def can_read?(user)
@@ -63,7 +62,8 @@ class Channel < ActiveRecord::Base
     return false
   end
 
-  def to_hash
+  #user and client parameters are required for sphinx
+  def to_hash(user=nil, client=nil)
     { :id => guid,
       :name => name,
       :description => description,
