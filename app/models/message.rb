@@ -24,6 +24,7 @@ class Message < ActiveRecord::Base
 
     set_property :field_weights => { 'title' => 5,
                                      'body' => 2 }
+    set_property :delta => true
 
   end
 

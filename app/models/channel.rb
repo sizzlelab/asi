@@ -39,6 +39,7 @@ class Channel < ActiveRecord::Base
                                     'description' => 5,
                                     'posts' => 2,
                                     'msg_title' => 1 }
+    set_property :delta => true
   end
 
   def can_read?(user)
