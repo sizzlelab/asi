@@ -10,6 +10,7 @@ class GroupSearchHandle < ActiveRecord::Base
 
     set_property :enable_star => true
     set_property :min_infix_len => 1
+    set_property :delta => true
   end
 
   class << self
