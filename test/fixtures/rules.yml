@@ -19,7 +19,7 @@ active_and_rule:
 # profile rule for person 1aa
 profile_rule_for_1aa:
   id: 3
-  person_id: 1aa
+  person_id: 3
   rule_name: profile privacy
   state: active
   logic: and

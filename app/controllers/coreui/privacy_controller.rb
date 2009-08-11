@@ -9,22 +9,15 @@ class Coreui::PrivacyController < ApplicationController
     end
   end
 
-  def new
-    redirect_to coreui_root_path and return
-  end
-
-  def create
-    redirect_to coreui_root_path and return
-  end
-
   def show
-    id = @user ? @user.id : nil
-    redirect_to edit_coreui_privacy_path(:id => id) and return
+    index
   end
 
   def edit
-    if @user 
-      @person = Person.find_by_id(@user.id)
+    if @user
+      @rule = @user.profile_rule #TODO create profile rule if it's not there
+      @rule_sets = @rule.to_hash_by_data
+      @person = @user
     else
       flash[:warning] = "Please login to edit your profile privacy."
       redirect_to coreui_root_path and return
@@ -33,36 +26,29 @@ class Coreui::PrivacyController < ApplicationController
 
   def update
     @person = Person.find_by_id(params[:id])
-    
+
     if @person.id != @user.id
       flash[:warning] = "You can only update your own privacy settings."
       redirect_to coreui_root_path and return
     end
 
-    # TODO Create some privacy rules according to params
-    
-    params[:privacy].each do |field, setting|
-      case setting # To change these values, see also coreui/privacy_helper.rb
-      when "public"
-        
-      when "logged_in"
-        
-      when "friends_only"
-        
-      when "private"
-        
-      when "default"
-        # Remove privacy rules for this profile field to revert to default setting?
-      else
-        # No changes (for example "custom")
-      end
-    end
-    
-    flash[:notice] = "Privacy information updated."
-    redirect_to coreui_privacy_index_path and return
-  end
+    @rule = @person.profile_rule #TODO create profile rule if it's not there
 
-  def destroy
+    if @rule
+
+      @rule_sets = @rule.to_hash_by_data
+      params[:privacy].each do |field, setting|
+        set = @rule_sets[field] #TODO create condition_action_set if it's not there
+        if set
+          condition = Condition.find_by_keyword(setting)
+          set.condition = condition
+          set.save
+        end
+      end
+
+      flash[:notice] = "Privacy information updated."
+    end
+    redirect_to edit_coreui_privacy_path(:id => @user.id) and return
   end
 
 end

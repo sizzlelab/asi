@@ -14,4 +14,16 @@ class Condition < ActiveRecord::Base
     end
     return condition
   end
+
+  def Condition.find_by_keyword(word)
+    regex = "^#{word}$"
+    all.detect do |c|
+      c.condition_type.match(regex) || c.condition_value.match(regex)
+    end
+  end
+
+  def to_s
+    "#{condition_type}: #{condition_value}"
+  end
+
 end

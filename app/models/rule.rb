@@ -1,6 +1,7 @@
 class Rule < ActiveRecord::Base
- has_many :condition_action_sets, :dependent => :destroy
- belongs_to :owner, :foreign_key => "person_id", :class_name => "Person"
+  has_many :condition_action_sets, :dependent => :destroy
+
+  belongs_to :owner, :foreign_key => "person_id", :class_name => "Person"
 
   validates_presence_of :owner
   validates_presence_of [:rule_name, :state, :logic]
@@ -10,34 +11,19 @@ class Rule < ActiveRecord::Base
   NAME_MIN_LENGTH = 2
   NAME_MAX_LENGTH = 70
 
-   validates_length_of :rule_name, :within => NAME_MIN_LENGTH..NAME_MAX_LENGTH
-   validates_uniqueness_of :rule_name, :scope => [:person_id]
-   validates_inclusion_of :state,
-                         :in => VALID_RULE_STATES,
-                         :allow_nil => false,
-                         :message => "must be 'active' or 'inactive'"
+  validates_length_of :rule_name, :within => NAME_MIN_LENGTH..NAME_MAX_LENGTH
+  validates_uniqueness_of :rule_name, :scope => [:person_id]
+  validates_inclusion_of :state,
+  :in => VALID_RULE_STATES,
+  :allow_nil => false,
+  :message => "must be 'active' or 'inactive'"
 
-   validates_inclusion_of :logic,
-                         :in => VALID_RULE_LOGICS,
-                         :allow_nil => false,
-                         :message => "must be 'or' or 'and'"
+  validates_inclusion_of :logic,
+  :in => VALID_RULE_LOGICS,
+  :allow_nil => false,
+  :message => "must be 'or' or 'and'"
 
-  
-  
-   class << self
-    alias :orig_create :create
-    #alias :orig_update_attributes :update_attributes
-  end
-  
-  # create a new rule
-  def Rule.create(options)
-    r = orig_create(options)
-    if r.valid?
-      
-    end
-  end
 
-  
   # check if subject_person has the right do a certain ation to data
   # syntax: authorize?(subject_person, object_person_id, action, data)
   # return: true or false
@@ -61,7 +47,19 @@ class Rule < ActiveRecord::Base
 
     return false
   end
-   
+
+  def to_hash_by_data
+    h = Hash.new
+    condition_action_sets.each do |set|
+      h[set.action.data] = set
+    end
+    return h
+  end
+
+
+  def condition_action_sets_concerning(data)
+    condition_action_sets.find(:all, :conditions => { :actions => { :data => data } }, :joins => [:action] ).inspect
+  end
 
   # get the rule
   def get_rule_hash(asking_person)
@@ -77,7 +75,7 @@ class Rule < ActiveRecord::Base
       }
     }
     end
-    
+
     return rule_hash
   end
 
@@ -102,7 +100,7 @@ class Rule < ActiveRecord::Base
   end
 
   def set_owner
-    
+
   end
 
 
@@ -128,7 +126,7 @@ class Rule < ActiveRecord::Base
     if condition_action_sets.length != 0
       condition_action_sets.each do |condition_action_set|
         condition_id = condition_action_set.condition_id
-        condition = Condition.find_by_id(condition_id)      
+        condition = Condition.find_by_id(condition_id)
         print "condition.id: #{condition.id}, condition.type: #{condition.condition_type}, condition.value: #{condition.condition_value} \n"
         if self.logic == "and"
           if check_condition(connection_person, object_person_id, condition)
@@ -159,7 +157,7 @@ class Rule < ActiveRecord::Base
     print "condition_value:  #{condition_value} \n"
 
     result = false
- 
+
     case condition_type
     when "logged_in"
       result = check_condition_logged_in(connection_person, condition_value)
@@ -259,7 +257,7 @@ class Rule < ActiveRecord::Base
         return true
       end
     end
-    
+
     return false
   end
 

@@ -2,7 +2,7 @@ require 'digest/sha2'
 
 class Person < ActiveRecord::Base
   include AuthenticationHelper
-  
+
   include_simple_groups
   usesguid
 
@@ -15,69 +15,70 @@ class Person < ActiveRecord::Base
   has_one :location, :dependent => :destroy
   has_one :avatar, :class_name => "Image", :dependent => :destroy
   has_one :pending_validation, :dependent => :destroy
-  
+
   has_many :roles, :dependent => :destroy
   has_many :sessions, :dependent => :destroy
   has_many :connections, :dependent => :destroy
-  
+
   has_many :subscriptions, :through => :user_subscriptions, :source => :channel
   has_many :messages
-  
-  has_many :contacts, 
+
+  has_many :contacts,
            :through => :connections,
-           :conditions => "status = 'accepted'", 
+           :conditions => "status = 'accepted'",
            :order => :username
 
-  has_many :requested_contacts, 
-           :through => :connections, 
+  has_many :requested_contacts,
+           :through => :connections,
            :source => :contact,
-           :conditions => "status = 'requested'" 
+           :conditions => "status = 'requested'"
 
-  has_many :pending_contacts, 
-           :through => :connections, 
+  has_many :pending_contacts,
+           :through => :connections,
            :source => :contact,
            :conditions => "status = 'pending'"
 
   #added by tchang
   has_many :rules
+  has_one :profile_rule, :class_name => "Rule", :conditions => { :rule_name => "profile privacy" }
   # has_many :authorizes
-  
-  # Max & min lengths for all fields 
+
+  # Max & min lengths for all fields
   PASSWORD_MIN_LENGTH = 4
   PASSWORD_MAX_LENGTH = 16
-  USERNAME_MIN_LENGTH = 3 
-  USERNAME_MAX_LENGTH = 20 
-  USERNAME_RANGE = USERNAME_MIN_LENGTH..USERNAME_MAX_LENGTH 
-  EMAIL_MAX_LENGTH = 50 
+  USERNAME_MIN_LENGTH = 3
+  USERNAME_MAX_LENGTH = 20
+  USERNAME_RANGE = USERNAME_MIN_LENGTH..USERNAME_MAX_LENGTH
+  EMAIL_MAX_LENGTH = 50
 
-  # Text box sizes for display in the views 
-  USERNAME_SIZE = 20 
-  
+  # Text box sizes for display in the views
+  USERNAME_SIZE = 20
+
   # Constant to present the "accepted" connection in returned JSONs
   ACCEPTED_CONNECTION_STRING = "friend"
-  
+
   validates_presence_of :username
   #validates_presence_of :password, :unless  => :encrypted_password
   validates_uniqueness_of :username, :email, :case_sensitive => false
   #validates_length_of :username, :within => USERNAME_RANGE
-  validates_length_of :password, :minimum => PASSWORD_MIN_LENGTH, :message => "is too short", :unless =>  :password_is_not_being_updated? 
-  validates_length_of :password, :maximum => PASSWORD_MAX_LENGTH, :message => "is too long", :unless =>  :password_is_not_being_updated? 
+  validates_length_of :password, :minimum => PASSWORD_MIN_LENGTH, :message => "is too short", :unless =>  :password_is_not_being_updated?
+  validates_length_of :password, :maximum => PASSWORD_MAX_LENGTH, :message => "is too long", :unless =>  :password_is_not_being_updated?
   #Password length is validated in AuthenticationHelper
   validates_length_of :username, :minimum => USERNAME_MIN_LENGTH, :message => "is too short"
   validates_length_of :username, :maximum => USERNAME_MAX_LENGTH, :message => "is too long"
   validates_length_of :email, :maximum => EMAIL_MAX_LENGTH, :message => "is too long"
-  
-  validates_format_of :username, 
-                      :with => /^[A-Z0-9_]*$/i, 
+
+  validates_format_of :username,
+                      :with => /^[A-Z0-9_]*$/i,
                       :message => "is invalid"
-  
+
   validates_format_of :password, :with => /^([\x20-\x7E])+$/,
                       :message => "is invalid",
-                      :unless => :password_is_not_being_updated?                    
+                      :unless => :password_is_not_being_updated?
 
-  validates_format_of :email, 
-                      :with => /^[A-Z0-9._%-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i, 
-                      :message => "is invalid"               
+  validates_format_of :email,
+                      :with => /^[A-Z0-9._%-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i,
+                      :message => "is invalid"
 
   before_save :scrub_name
   after_save :flush_passwords
@@ -97,7 +98,7 @@ class Person < ActiveRecord::Base
         create_address(hash[:address])
       end
     end
-    if hash[:birthdate] && ! hash[:birthdate].blank? 
+    if hash[:birthdate] && ! hash[:birthdate].blank?
       #Check the format of the birthday parameter
       begin
         Date.parse(hash[:birthdate])
@@ -106,9 +107,9 @@ class Person < ActiveRecord::Base
         return false
       end
     end
-    
+
     success = super(hash.except(:name, :address))
-    
+
     if self.name && !self.name.valid?
       success = false
       self.name.errors.each{|attr, msg| errors.add(attr, msg)}
@@ -121,8 +122,8 @@ class Person < ActiveRecord::Base
       success = false
       self.person_spec.errors.each{|attr, msg| errors.add(attr, msg)}
     end
-    
-    return success    
+
+    return success
   end
 
   def self.find_by_username_and_password(username, password)
@@ -151,7 +152,7 @@ class Person < ActiveRecord::Base
   def get_person_hash(connection_person=nil, client_id=nil)
     person_hash = {
       'id' => id,
-      'username' => username, 
+      'username' => username,
      #email is not shown in normal person hash for spam prevention reasons
      #'email' => email,
       'name' => name,
@@ -159,7 +160,7 @@ class Person < ActiveRecord::Base
       'avatar' => { :link => { :rel => "self", :href => "/people/#{id}/@avatar" },
                     :status => ( avatar ? "set" : "not_set" ) }
     }
-    
+
     #TODO Make more sensible check for the clients that are authorized to get email
     # Currently check if client_id matches to Kassi.
     # commented by tchang
@@ -218,10 +219,10 @@ class Person < ActiveRecord::Base
 #    names = PersonName.find_with_ferret(query, options, search_options)
     return names.collect{|name| name.person}.compact
   end
-  
+
   def moderator?(client)
     return false if client.nil?
-    
+
     self.roles.each do |role|
       if role.client_id == client.id && role.title == Role::MODERATOR
         return true
@@ -229,10 +230,10 @@ class Person < ActiveRecord::Base
     end
     return false #no moderator role found
   end
-  
+
   def role_title(client_id)
     return nil if client_id.nil?
-    
+
     self.roles.each do |role|
       if role.client_id == client_id
         return role.title
@@ -240,7 +241,7 @@ class Person < ActiveRecord::Base
     end
     return nil # not registered to the client service
   end
-  
+
   # Create a new avatar image to a person
   def save_avatar?(options)
     if options[:file] && options[:file].content_type.start_with?("image")
@@ -250,9 +251,9 @@ class Person < ActiveRecord::Base
         return true
       end
     end
-    return false  
+    return false
   end
-  
+
   def name_or_username
     if !name.nil?
       name.unstructured
@@ -260,7 +261,7 @@ class Person < ActiveRecord::Base
       username
     end
   end
-  
+
   # Methods provided by include_simple_groups:
   # user.groups
   # user.pending_groups
@@ -271,9 +272,9 @@ class Person < ActiveRecord::Base
   # user.membership(group)
   # user.leave(group)
   # user.become_member_of(group)
-  
+
   private
-  
+
   #returns a string representing the connection between the user and the asker
   def get_connection_string(asker)
     type = Connection.type(asker, self)
@@ -282,5 +283,5 @@ class Person < ActiveRecord::Base
     end
     return type
   end
-  
+
 end
