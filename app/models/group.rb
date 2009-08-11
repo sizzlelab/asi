@@ -12,7 +12,7 @@ class Group < ActiveRecord::Base
 
   belongs_to :creator, :foreign_key => "creator_id", :class_name => "Person"
 
-  has_one :group_search_handle
+  has_one :group_search_handle, :dependent => :destroy
   after_save :create_search_handle
 
   VALID_GROUP_TYPES =  %w(open closed hidden) #personal (to be implemented)
