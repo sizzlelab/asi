@@ -7,8 +7,6 @@
     <p><strong>Description:</strong></p>
     <p><%= comment.description %></p>
 
-    <p><strong>Access:</strong> <%= comment.access %> </p>
-
     <p><strong>Parameters:</strong></p>
     <% unless comment.parameters.empty? %>
       <table>
@@ -16,14 +14,16 @@
       </table>
     <% end %>
 
+    <p><strong>Access:</strong> <%= comment.access %> </p>
+
     <p><strong>Return codes:</strong></p>
     <ul><%comment.return_codes.each do |r| %><li> <%= r %> <%= DocUtil.print_erb "http_status( #{r}.to_s )", true %></li><%end%></ul>
 
-    <p><strong>Returned JSON:</strong><p>
+    <p><strong>Returns:</strong><p>
     <pre><%=comment.json%></pre>
 
   <%else%>
-    <p> Documentation is not yet written for this method. </p>
+    <p> (Documentation missing) </p>
   <%end%>
 <% end %>
 

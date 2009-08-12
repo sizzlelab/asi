@@ -22,4 +22,13 @@ class SearchControllerTest < ActionController::TestCase
     end
     all_types.each { |t| assert types.include?(t), "No test result of type #{t}" }
   end
+
+  test "pagination" do
+    login
+    get :search, { :search => 'te', :per_page => 3, :page => 1, :format => 'json' }
+    assert_response :success
+    assert_equal 3, @json["entry"].size
+    assert @json["pagination"]["size"] > 3
+  end
+
 end

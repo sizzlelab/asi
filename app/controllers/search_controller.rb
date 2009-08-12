@@ -5,7 +5,12 @@ class SearchController < ApplicationController
 =begin rapidoc
 access:: Client login
 return_code:: 200
-json:: { "entry": [
+json:: { "pagination": {
+    "size": 42,
+    "per_page": 4,
+    "page": 1
+  },
+  "entry": [
  { "type": "Channel",
    "result": { See <%= link_to_api("/channels/channel_id") %> }
  },
@@ -16,10 +21,12 @@ json:: { "entry": [
    "result": { See <%= link_to_api("/groups/group_id/@public") %> }
  },
  { "type":"Person",
-   "result":{ See <%= link_to_api("/people/user_id/@self") %> }
+   "result": { See <%= link_to_api("/people/user_id/@self") %> }
  }
 ] }
 param:: search - The search term.
+param:: per_page - How many results to show per page.
+param:: page - Which page to show. Indexing starts at 1.
 
 description:: Performs a fulltext search spanning people, channels, messages and groups.
 
@@ -30,9 +37,9 @@ description:: Performs a fulltext search spanning people, channels, messages and
     end
     query = (params['search'] || "").strip
     result = ThinkingSphinx::Search.search("*#{query}*")
-    result.reject! { |r| ! r.show?(@user, @client) }
+    result.filter_paginate!(params[:per_page], params[:page]) { |r| r.show?(@user, @client) }
     result.collect! { |r| { :type => r.type, :result => r.to_hash(@user, @client) } }
-    render_json :entry => result
+    render_json :entry => result, :size => result.count_available
   end
 
 end
