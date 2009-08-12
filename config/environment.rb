@@ -81,7 +81,6 @@ Rails::Initializer.run do |config|
   COREUI_APP_PASSWORD = "8IJHk!-()a"
 
   #If following is true, created users must validate their emails before they can log in.
-  #VALIDATE_EMAILS = true
   VALIDATE_EMAILS = false
   REQUIRE_SSL_LOGIN = false
 end

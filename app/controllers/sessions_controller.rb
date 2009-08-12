@@ -30,7 +30,7 @@ with an application only or with an application and a user. To start a session w
   def create
 
     if REQUIRE_SSL_LOGIN
-      unless (@request.ssl? or local_request?)
+      unless (request.ssl? or local_request?)
         redirect_to :protocol => "https://" and return
       end
     end
