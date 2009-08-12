@@ -35,11 +35,17 @@ class Channel < ActiveRecord::Base
     has :created_at
     has :updated_at
 
-    set_property :field_wights => { 'name' => 10,
-                                    'description' => 5,
-                                    'posts' => 2,
-                                    'msg_title' => 1 }
+    set_property :field_weights => { 'name' => 10,
+                                     'description' => 5,
+                                     'posts' => 2,
+                                     'msg_title' => 1 }
+    set_property :enable_star => true
+    set_property :min_infix_len => 1
     set_property :delta => true
+  end
+
+  def show?(user, client=nil)
+    can_read?(user)
   end
 
   def can_read?(user)
@@ -102,7 +108,7 @@ class Channel < ActiveRecord::Base
     if self.channel_type == 'group'
       group_subscribers << Group.find_by_title(self.name) rescue ActiveRecord::RecordInvalid
     end
-    
+
     user_subscribers << owner rescue ActiveRecord::RecordInvalid
   end
 

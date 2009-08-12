@@ -22,6 +22,10 @@ class GroupSearchHandle < ActiveRecord::Base
     result.collect {|g| g.group }
   end
 
+  def show?(person, client=nil)
+    group.show?(person, client)
+  end
+
   def to_hash(user, client)
     group.to_hash(user, client)
   end

@@ -14,7 +14,7 @@ json:: {"entry":
 "birthdate":null,"gender":{"displayvalue":null,"key":null},
 "role":null,"username":"testilapio","phone_number":"0501234567","is_association":null,
 "website":null,"id":"b401CUzHur3R2baaWPEYjL","description":null,
-"avatar":{"status":"not_set","link":{"rel":"self","href":"\/people\/106\/@avatar"}},
+"avatar":{"status":"not_set","link":{"rel":"self","href":"\/people\/b401CUzHur3R2baaWPEYjL\/@avatar"}},
 "msn_nick":null,"irc_nick":null,"status_message":"",
 "address":{"postal_code":"02150","locality":"Espoo","
             unstructured":"Testaajankatu 1, 02150 Espoo","street_address":"Testaajankatu 1"}}]
