@@ -27,6 +27,7 @@ Rails::Initializer.run do |config|
   # config.gem "aws-s3", :lib => "aws/s3"
 
   config.gem "andand"
+  config.gem "javan-whenever", :lib => false, :source => 'http://gems.github.com'
 
   # Only load the plugins named here, in the order given. By default, all plugins
   # in vendor/plugins are loaded in alphabetical order.
@@ -90,6 +91,7 @@ require 'filtered_pagination'
 require 'casclient'
 require 'casclient/frameworks/rails/filter'
 require 'casclient/frameworks/rails/cas_proxy_callback_controller'
+require 'whenever'
 
 # enable detailed CAS logging for easier troubleshooting
 cas_logger = CASClient::Logger.new(RAILS_ROOT+'/log/cas.log')

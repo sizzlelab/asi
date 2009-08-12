@@ -1,2 +1,0 @@
-0 3 * * * wget http://localhost:3000/system/upload
-0 * * * * wget http://localhost:3000/system/reindex
