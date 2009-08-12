@@ -1,8 +1,8 @@
 class Array
-  
+
   attr_accessor :count_available
-  
-  def filter_paginate!( per_page, page )
+
+  def filter_paginate!( per_page, page = 1 )
     if !per_page || !page || per_page.to_i < 1 || page.to_i < 1
       return self.reject!{ |a| ! yield a }
     end
@@ -20,12 +20,12 @@ class Array
         self.delete a
       end
     end
-    if !self.count_available 
+    if !self.count_available
       self.count_available = count
     end
     return self
   end
-    
+
 #    def self.filter_paginate!(function = nil, options = {})
 #      self = filter_paginage(function, options)
 #    end
