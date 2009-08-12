@@ -28,7 +28,7 @@ param:: search - The search term.
 param:: per_page - How many results to show per page.
 param:: page - Which page to show. Indexing starts at 1.
 
-description:: Performs a fulltext search spanning people, channels, messages and groups.
+description:: Performs a fulltext search spanning people, channels, messages and groups. Results are sorted by relevance.
 
 =end
   def search

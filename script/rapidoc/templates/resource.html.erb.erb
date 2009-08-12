@@ -1,7 +1,7 @@
 <%= DocUtil.print_erb "doc_title '#{@path}'", true if @path%>
 
 <% @documentation.each_pair do |method, comment| %>
-  <h2><span style='color:#ff6600; width:200px;margin-right:20px;'><%= method.to_s.upcase %></span></h2>
+  <h3><%= method.to_s.upcase %></h3>
 
   <%if comment%>
     <p><strong>Description:</strong></p>
@@ -17,8 +17,16 @@
     <p><strong>Access:</strong> <%= comment.access %> </p>
 
     <p><strong>Return codes:</strong></p>
-    <ul><%comment.return_codes.each do |r| %><li> <%= r %> <%= DocUtil.print_erb "http_status( #{r}.to_s )", true %></li><%end%></ul>
 
+<table>
+
+<%comment.return_codes.each do |r| %>
+  <tr>
+    <th><%= r[0] %>&nbsp;<span class="status-code"><%= DocUtil.print_erb "http_status( #{r[0]}.to_s )", true %></span></th>
+    <td><%= r[1] %></td>
+  </tr>
+  <%end%>
+</table>
     <p><strong>Returns:</strong><p>
     <pre><%=comment.json%></pre>
 
