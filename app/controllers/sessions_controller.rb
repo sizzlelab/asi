@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
 
 
     if params[:app_name]
-      render_json :status => :bad_request, :messages => "You are using a deprecated piece of API. See the changelog for details." and return
+      render_json :status => :bad_request, :messages => "You are using a deprecated piece of API. See the changelog (/doc/changel/og) for details." and return
     end
 
 
@@ -126,7 +126,7 @@ class SessionsController < ApplicationController
         flash[:error] = @session.errors.full_messages
         redirect_to :back and return
       else
-        render_json :status => :unauthorized, :messages => @session.errors.full_messages.to_json and return
+        render_json :status => :unauthorized, :messages => @session.errors.full_messages and return
       end
     end
 

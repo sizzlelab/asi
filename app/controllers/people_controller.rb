@@ -42,7 +42,7 @@ description:: Finds users based on their (real) names.
                               :page => params[:page] ? params[:page].to_i : nil)
       size = @people.total_entries
     end
-    render_json :entry => @people.collect { |p| p.person_hash(@client, @user)  }, :size => size 
+    render_json :entry => @people.collect { |p| p.person_hash(@client, @user)  }, :size => size
   end
 
 =begin rapidoc
@@ -58,9 +58,9 @@ json:: {"entry":
 "avatar":{"status":"not_set","link":{"rel":"self","href":"\/people\/cU6ZhispWr3PmvaaWPEYjL\/@avatar"}},
 "msn_nick":null,"irc_nick":null,"status_message":"","address":null,"email":"testman@example.com"}}
 
-description::  Gets the information of the user specified by user_id. Note that the timestamp for status_messages 
-latest update is always in UTC time. The 'avatar' slot in the returned JSON contains the link to the avatar 
-image and also the status of the avatar, which is 'set' or 'not_set' depending on if the user has uploaded an image or not. 
+description::  Gets the information of the user specified by user_id. Note that the timestamp for status_messages
+latest update is always in UTC time. The 'avatar' slot in the returned JSON contains the link to the avatar
+image and also the status of the avatar, which is 'set' or 'not_set' depending on if the user has uploaded an image or not.
 =end
   def show
     @person = Person.find_by_guid(params['user_id'])
@@ -89,7 +89,7 @@ param:: person
   param:: is_association - 'true' if this user is an association. Associations may be displayed differently by applications, and they cannot send or receive friend requests.
   param:: consent - The version of the consent that the user has agreed to. For example: 'FI1'/'EN1.5'/'SE4'
 
-description:: Creates a new user. If creation is succesful the current app-only session is changed to be associated also to the user that was just created. 
+description:: Creates a new user. If creation is succesful the current app-only session is changed to be associated also to the user that was just created.
 =end
   def create
     @person = Person.new(params[:person])
@@ -133,7 +133,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
       end
     end
 
-    render_json :status => :bad_request, :messages => @person.errors.full_messages.to_json
+    render_json :status => :bad_request, :messages => @person.errors.full_messages
     @person = nil
   end
 
@@ -198,7 +198,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
     else
       render_json :messages => "Record not found.".to_json, :status => :not_found and return
     end
-    
+
   end
 
   def reset_password
