@@ -11,4 +11,5 @@ end
 
 every 1.day, :at => '3am' do
   command 'wget http://localhost:3000/system/reindex'
+  command 'wget http://localhost:3000/system/clean_sessions'
 end
