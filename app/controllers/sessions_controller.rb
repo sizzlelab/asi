@@ -10,7 +10,30 @@ class SessionsController < ApplicationController
     end
   end
 
+=begin rapidoc
+access:: Free
+return_code:: 201 - Successfully logged in.
+return_code:: 401 - Invalid login details.
+return_code:: 409 - A session already exists.
+param:: session
+  param:: app_name - The application's name.
+  param:: app_password - The application's password.
+  param:: username - The user's username (optional).
+  param:: password - The user's password (optional).
+  param:: proxy_ticket - A CAS proxy ticket (optional).
+
+description:: Starts a new session. Sessions can be associated either
+with an application only or with an application and a user. To start a session without logging a user in, provide no <tt>username</tt> or <tt>password</tt>.</p>
+<p>Using HTTPS for logging in is recommended.
+
+=end
   def create
+
+    if REQUIRE_SSL_LOGIN
+      unless (@request.ssl? or local_request?)
+        redirect_to :protocol => "https://" and return
+      end
+    end
 
     # User Interface mode vs. API mode for return values.
     ui_mode = false
