@@ -28,12 +28,22 @@ class GroupsControllerTest < ActionController::TestCase
     end
   end
 
+  def test_create_invalid
+    login_as people(:valid_person)
+    post :create, { :group => { :title => "foo", :type => "open", :description => "foo" }, :format => "json" }
+    assert_response :success
+
+    post :create, { :group => { :title => "foo", :type => "open", :description => "foo" }, :format => "json" }
+    assert_response :bad_request
+  end
+
+
   def test_create_group_and_channel
-   
+
     assert_difference 'Channel.count' do
       post :create, { :group => { :title => "uraa", :description => "lalalalalaa kekekekeke die usa", :type => "open" }, :create_channel => 'true', :format => "json" }, { :cos_session_id => sessions(:session2).id }
       assert_response :created, @response.body
-    end  
+    end
   end
 
   def test_grant_and_remove_admin_status

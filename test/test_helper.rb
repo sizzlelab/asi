@@ -112,6 +112,14 @@ class ActionController::TestCase
         assert_nil json["entry"], "Illegal 'entry' in #{@response.body} with #{response}"
       end
       assert !(@response.body.start_with? "["), "No 'messages' in #{@response.body}"
+      if @response.body.start_with? "{"
+        @json = JSON.parse(@response.body)
+        if @json.key?("messages")
+          @json["messages"].each do |m|
+            assert !m.start_with?("["), "Nested array in messages: #{@json.inspect}"
+          end
+        end
+      end
     end
   end
 
@@ -250,7 +258,7 @@ module COSTestingDSL
   end
 
   def creates_group_with(options)
-    post "/groups", options 
+    post "/groups", options
     assert_response :success, @response.body
     JSON.parse(@response.body)["entry"]["id"]
   end
@@ -260,7 +268,7 @@ module COSTestingDSL
     assert_response :success, @response.body
     JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
   end
-  
+
   def lists_channels
     get "/channels/"
     assert_response :success, @response.body
