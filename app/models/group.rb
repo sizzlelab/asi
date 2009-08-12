@@ -103,7 +103,7 @@ class Group < ActiveRecord::Base
     person.membership(self).update_attribute("admin_role", false) if person.is_member_of?(self)
   end
 
-  def show?(person)
+  def show?(person, client=nil)
     return true if group_type == "open" || group_type == "closed"
     return false if not person
     return true if person == creator

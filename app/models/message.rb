@@ -25,10 +25,11 @@ class Message < ActiveRecord::Base
     set_property :field_weights => { 'title' => 5,
                                      'body' => 2 }
     set_property :delta => true
-
+    set_property :enable_star => true
+    set_property :min_infix_len => 1
   end
 
-  def to_hash
+  def to_hash(user=nil, client=nil)
     ref_message = nil
     if self.reference_to
       ref_message = Message.find_by_id(reference_to).andand.guid
@@ -49,6 +50,10 @@ class Message < ActiveRecord::Base
 
   def to_json(*a)
     return to_hash.to_json(*a)
+  end
+
+  def show?(user, client=nil)
+    channel.show? user, client
   end
 
   private

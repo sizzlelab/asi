@@ -29,7 +29,7 @@ module ApplicationHelper
         links << value
       else
         path = admin_feedbacks_path(params.merge({:per_page => value}))
-       
+
         links << link_to(value, path)
       end
     end
@@ -61,4 +61,9 @@ module ApplicationHelper
 
     link += "</code></h1>"
   end
+
+  def link_to_api(api)
+    "<a href=\"/api#{api}\">#{api}</a>"
+  end
+
 end

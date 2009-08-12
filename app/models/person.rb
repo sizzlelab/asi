@@ -4,7 +4,6 @@ class Person < ActiveRecord::Base
   include AuthenticationHelper
 
   include_simple_groups
-#  usesguid
   usesnpguid
 
   attr_reader :password
@@ -287,6 +286,10 @@ class Person < ActiveRecord::Base
       end
     end
     return false
+  end
+
+  def show?(user, client=nil)
+    true
   end
 
   def name_or_username

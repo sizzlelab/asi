@@ -1,9 +1,12 @@
 <%= DocUtil.print_erb "doc_title '#{@path}'", true if @path%>
-  
+
 <% @documentation.each_pair do |method, comment| %>
   <h2><span style='color:#ff6600; width:200px;margin-right:20px;'><%= method.to_s.upcase %></span></h2>
 
   <%if comment%>
+    <p><strong>Description:</strong></p>
+    <p><%= comment.description %></p>
+
     <p><strong>Access:</strong> <%= comment.access %> </p>
 
     <p><strong>Parameters:</strong></p>
@@ -11,16 +14,14 @@
       <table>
         <% comment.parameters.each do |p| %><%=p.to_table %><% end %>
       </table>
-    <% end %> 
+    <% end %>
 
     <p><strong>Return codes:</strong></p>
-    <ul><%comment.return_codes.each do |r| %><li> <%= r %></li><%end%></ul>
+    <ul><%comment.return_codes.each do |r| %><li> <%= r %> <%= DocUtil.print_erb "http_status( #{r}.to_s )", true %></li><%end%></ul>
 
     <p><strong>Returned JSON:</strong><p>
     <pre><%=comment.json%></pre>
 
-    <p><strong>Description:</strong></p>
-    <p><%= comment.description %></p>
   <%else%>
     <p> Documentation is not yet written for this method. </p>
   <%end%>
