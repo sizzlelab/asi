@@ -166,11 +166,6 @@ class CollectionsControllerTest < ActionController::TestCase
                { :cos_session_id => sessions(:session1).id }
     assert_response :not_found
 
-    # Should not allow POST
-    post :delete, { :app_id => clients(:one).id, :id => collections(:two).id, :format => 'json' },
-                  { :cos_session_id => sessions(:session1).id }
-    assert_response :method_not_allowed
-
     # Should not delete a collection belonging to another client
     delete :delete, { :app_id => '2', :id => collections(:two).id, :format => 'json' },
                     { :cos_session_id => sessions(:session1).id }

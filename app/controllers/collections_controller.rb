@@ -7,21 +7,6 @@ class CollectionsController < ApplicationController
 
   after_filter :update_updated_at_and_by, :except => [ :create, :index, :show, :delete ]
 
-  verify :method => :post,
-         :only => :create,
-         :render => { :status => :method_not_allowed },
-         :add_headers => { 'Allow' => 'POST' }
-
-  verify :method => :delete,
-         :only => [ :delete ],
-         :render => { :status => :method_not_allowed },
-         :add_headers => { 'Allow' => 'DELETE' }
-
-  verify :method => :put,
-         :only => [ :update ],
-         :render => { :status => :method_not_allowed },
-         :add_headers => { 'Allow' => 'PUT' }
-
   def index
     conditions = { :client_id => @client.id }
     if params["tags"]
@@ -30,12 +15,20 @@ class CollectionsController < ApplicationController
 
     @collections = Collection.find(:all, :conditions => conditions, :order => 'updated_at DESC' )
     @collections.reject! { |item| ! item.read?(@user, @client) }
+    
+    entries = Array.new
+    if @collections
+      @collections.each do |item|
+        entries << item.info_hash(@user, @client)
+      end
+    end
+    render_json :entry => entries and return
   end
 
   def show
     if ! @collection.read?(@user, @client)
       @collection = nil
-      render :status => :forbidden and return
+      render_json :status => :forbidden and return
     end
     if params[:startIndex] == "0"
       @collection = nil
@@ -79,7 +72,7 @@ class CollectionsController < ApplicationController
   end
 
   def update
-    render :status => :forbidden and return unless @collection.write?(@user, @client)
+    render_json :status => :forbidden and return unless @collection.write?(@user, @client)
     if !params[:collection]
       render_json :status => :bad_request, :messages => "Tried to update collection with no data." and return
     end
@@ -89,7 +82,7 @@ class CollectionsController < ApplicationController
 
   def delete
     if ! @collection.delete?(@user, @client)
-      render :status => :forbidden and return
+      render_json :status => :forbidden and return
     end
     @collection.destroy
     render_json :entry => @collection.to_hash(@user, @client)
@@ -134,7 +127,7 @@ class CollectionsController < ApplicationController
 
   def verify_client
     if @client == nil or params["app_id"].to_s != @client.id.to_s
-      render :status => :forbidden and return
+      render_json :status => :forbidden and return
     end
   end
 

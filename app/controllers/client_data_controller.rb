@@ -23,7 +23,7 @@ class ClientDataController < ApplicationController
 
   def authorize
     if @client.id != params[:app_id] || @user.guid != params[:user_id]
-      render :status => :forbidden and return
+      render_json :status => :forbidden and return
     end
   end
 end
