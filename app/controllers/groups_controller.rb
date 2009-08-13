@@ -110,7 +110,7 @@ class GroupsController < ApplicationController
       @person.request_membership_of(@group)
       render_json :status => :accepted and return
     end
-
+    render_json :status => :ok and return
   end
 
   # Returns a list of the public groups of the person specified by user_id
@@ -119,13 +119,12 @@ class GroupsController < ApplicationController
     @groups_hash = @groups.find_all{|g| g.show?(@user)}.collect do |group|
       group.get_group_hash(@user)
     end
-    render :template => 'groups/list_groups'
+    render_json :entry => @groups and return
   end
 
   def get_members
-    if @group
-      @members = @group.members
-    end
+    @members = @group.members
+    render_json :entry => @members and return
   end
 
   def update_membership_status
@@ -161,10 +160,13 @@ class GroupsController < ApplicationController
     if @group.members.count < 1
       @group.destroy
     end
+    
+    render_json :status => :ok
   end
 
   def get_pending_members
     @requests = @group.pending_members
+    render_json :entry => @requests
   end
 
   def get_invites
@@ -172,7 +174,7 @@ class GroupsController < ApplicationController
     @groups_hash = @groups.collect do |group|
       group.get_group_hash(@user)
     end
-    render :template => 'groups/list_groups'
+    render_json :entry => @groups and return
   end
 
   private
