@@ -26,11 +26,14 @@ description:: Starts a new session. Sessions can be associated either
 with an application only or with an application and a user. To start a session without logging a user in, provide no <tt>username</tt> or <tt>password</tt>.</p>
 <p>Using HTTPS for logging in is recommended.
 
+json:: { "entry" :
+  { "user_id" : "tmoCBomrl993MCurh",
+    "app_id" : "aNfxPwHXmr3PkIacr-fEfL" } }
 =end
   def create
 
     if REQUIRE_SSL_LOGIN
-      unless (request.ssl? or local_request?)
+      unless request.ssl? || local_request?
         redirect_to :protocol => "https://" and return
       end
     end

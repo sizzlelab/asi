@@ -1,17 +1,19 @@
 <html>
   <head>
-    <title>COS tester</title>
+    <title>ASI Console</title>
     <script type="text/javascript" src="javascripts/jsontest.js"></script>
     <link rel="stylesheet" href="stylesheets/cos.css" type="text/css" media="screen" />
   </head>
   <body>
-    <h1>COS tester</h1>
+    <h1>ASI Console</h1>
     <p>The URL must be absolute and start with a slash, e.g. <code>/session</code>.</p>
     <p>The parameters should be in same format as in URL query parameters, for example:</p>
-    <code>app_name=tussi&app_password=secret</code><br/>
+    <code>session[app_name]=tussi&session[app_password]=secret</code><br/><br/>
     <code>person[username]=testman&person[password]=sercret&person[email]=testman@example.com</code><br/>
    <code>title=testCollection&metadata[someKey]=someValue</code><br/>
-   <br/>
+
+   <p>Note that GET parameters must be given as a query string in the URL, e.g. <code>/search?search=test</code>.</p>
+
     <select id="method">
       <option>GET</option>
       <option>POST</option>
