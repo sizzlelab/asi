@@ -112,10 +112,10 @@ json:: { "entry" :
         else
           @session.destroy
           if ui_mode
-            flash[:warning] = "Password and username didn't match for any person."
+            flash[:warning] = "User login failed."
             redirect_to :back and return
           else
-            render_json :status => :unauthorized, :messages => "Password and username didn't match for any person." and return
+            render_json :status => :unauthorized, :messages => "User login failed." and return
           end
         end
       end
