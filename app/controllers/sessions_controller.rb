@@ -5,8 +5,9 @@ class SessionsController < ApplicationController
 
   def get
     @session = @application_session
+    render_json :status => :ok, :entry => @session and return
     if !@session
-      render :status => :not_found and return
+      render_json :status => :not_found and return
     end
   end
 
@@ -161,10 +162,12 @@ json:: { "entry" :
   def destroy
     ui_mode = (@client && @client == Client.find_by_name(COREUI_APP_NAME))
 
-    render :status => :not_found and return unless @application_session
+    render_json :status => :not_found and return unless @application_session
 
     @application_session.destroy
     session[:cos_session_id] = @user = @client = nil
+    
+    render_json :status => :ok
 
     if ui_mode
       flash[:notice] = "Successfully logged out."
