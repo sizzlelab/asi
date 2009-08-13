@@ -140,7 +140,6 @@ module COSTestingDSL
   def finds_collections(options)
     get "/appdata/#{options[:client_id]}/@collections"
     assert_response :success
-    assert_template "collections/index"
     json = JSON.parse(response.body)
     assert_not_nil json["entry"]
     assert_not_nil json["entry"][0]
