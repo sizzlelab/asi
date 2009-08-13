@@ -1,12 +1,12 @@
 class Session < ActiveRecord::Base
-  attr_accessor :username, :password, :client_name, :client_password, :person_match, :client_match
+  attr_accessor :username, :password, :client_name, :client_password, :person_match, :application_login
   belongs_to :person
   belongs_to :client
 
   before_validation :authenticate_person
   before_validation :authenticate_client
 
-  validates_presence_of :client_match, :message => 'for your client\'s name and password could not be found',
+  validates_presence_of :application_login, :message => 'failed',
                                        :unless => :session_has_been_associated_with_client?
 
   before_save :associate_session_to_person
@@ -30,7 +30,7 @@ class Session < ActiveRecord::Base
   end
 
   def authenticate_client
-    self.client_match = Client.find_by_name_and_password(self.client_name, self.client_password) unless session_has_been_associated_with_client?
+    self.application_login = Client.find_by_name_and_password(self.client_name, self.client_password) unless session_has_been_associated_with_client?
   end
 
   def associate_session_to_person
@@ -40,7 +40,7 @@ class Session < ActiveRecord::Base
   end
 
   def associate_session_to_client
-    self.client_id ||= self.client_match.id
+    self.client_id ||= self.application_login.id
   end
 
   def session_has_been_associated_with_person?
