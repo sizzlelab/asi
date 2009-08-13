@@ -14,6 +14,7 @@ class LocationsController < ApplicationController
       @location = Location.new
       @location.updated_at = nil
     end
+    render_json :entry => @location
   end
 
   def update
@@ -21,7 +22,7 @@ class LocationsController < ApplicationController
     # The logged user can change only her own location...
     if ! ensure_same_as_logged_person(params['user_id'])
       if !params['username'] and !params['password'] and !params['location_security_token']
-        render :status => :forbidden and return
+        render_json :status => :forbidden and return
       end
 
       # ...unless the correct username and password is given
@@ -29,14 +30,14 @@ class LocationsController < ApplicationController
       if params['username'] or params['password']
         person = Person.find_by_username_and_password(params['username'], params['password'])
         if !person or (params['user_id'] && params['user_id'] != person.guid)
-          render :status => :forbidden, :json => "Password and username didn't match the person.".to_json and return
+          render_json :status => :forbidden, :json => "Password and username didn't match the person.".to_json and return
         end
       end
 
       #...unless security token is given
       role = Role.find_by_location_security_token_and_client_id(params['location_security_token'], @client.id) if params['location_security_token']
       if !role and !person
-        render :status => :forbidden and return
+        render_json :status => :forbidden and return
       end
     end
 
@@ -56,14 +57,16 @@ class LocationsController < ApplicationController
     end
 
     if ! @location.update_attributes(params[:location])
-      render :status  => 406, :json => "Problem with parameters.".to_json and  return
+      render_json :status  => 406, :json => "Problem with parameters.".to_json and  return
       #TODO return more info about which parameter went wrong
     end
+    
+    render_json :status => :ok
   end
 
   def fetch_location_security_token
     role = @user.roles.find_by_client_id(@client.id)
-    render :status => :ok, :json => { :location_security_token => role.location_security_token }.to_json
+    render_json :status => :ok, :json => { :location_security_token => role.location_security_token }.to_json
   end
 
   private
@@ -74,7 +77,7 @@ class LocationsController < ApplicationController
         if ses.person
           params[:user_id] = ses.person.guid
         else
-          render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
+          render_json :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
         end
       end
     end
