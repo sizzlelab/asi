@@ -329,7 +329,7 @@ class PeopleControllerTest < ActionController::TestCase
     put :update_avatar, { :user_id => people(:valid_person).guid, :file => fixture_file_upload("Australian_painted_lady.jpg","image/jpeg"),
                           :format => 'html' },
                         { :cos_session_id => sessions(:session1).id }
-    assert_response :success
+    assert_response :success, @response.body
 
     # try to show the uploaded avatar
     get :get_avatar, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
@@ -355,7 +355,7 @@ class PeopleControllerTest < ActionController::TestCase
     put :update_avatar, { :user_id => people(:valid_person).guid, :file => fixture_file_upload("kuva_ilman_paatetta","image/jpeg"),
                           :format => 'html' },
                         { :cos_session_id => sessions(:session1).id }
-    assert_response :error
+    assert_response :bad_request
   end
 
   def test_update_avatar_image_with_all_caps
@@ -366,8 +366,8 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_delete_avatar
-    #delete person with valid id
-    delete :delete_avatar, { :user_id => people(:valid_person).guid, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    login_as people:valid_association
+    delete :delete_avatar, { :user_id => people(:valid_association).guid, :format => 'json' }
     assert_response :success
     json = JSON.parse(@response.body)
   end

@@ -109,10 +109,7 @@ class PersonTest < ActiveSupport::TestCase
     person = @valid_person
     person.name = @valid_person_name
     avatar = @valid_avatar
-    avatar.person_id = person.id
-    assert avatar.valid_file?("image/jpeg", "testfile.jpg")
-    assert avatar.convert("testfile.jpg")
-    person.avatar = @valid_avatar
+    avatar.person = @valid_person
 
     raw_json = person.to_json(person.roles[0].client.id, person)
 

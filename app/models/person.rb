@@ -276,16 +276,13 @@ class Person < ActiveRecord::Base
     return nil # not registered to the client service
   end
 
-  # Create a new avatar image to a person
-  def save_avatar?(options)
-    if options[:file] && options[:file].content_type.start_with?("image")
-      image = Image.new
-      if (image.save_to_db?(options, self))
-        self.avatar = image
-        return true
-      end
+  def create_avatar(options)
+    image = Image.new(:file => options[:file], :person => self)
+    if image.valid?
+      self.avatar.andand.destroy
+      image.save
     end
-    return false
+    return image
   end
 
   def show?(user, client=nil)
