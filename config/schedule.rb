@@ -6,10 +6,10 @@
 # Learn more: http://github.com/javan/whenever
 
 every 1.hour do
-  command 'wget http://localhost:3000/system/upload'
+  command 'wget http://localhost:3000/system/reindex'
+  command 'wget http://localhost:3000/system/clean_sessions'
 end
 
 every 1.day, :at => '3am' do
-  command 'wget http://localhost:3000/system/reindex'
-  command 'wget http://localhost:3000/system/clean_sessions'
+  command 'wget http://localhost:3000/system/upload'
 end
