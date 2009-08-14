@@ -299,7 +299,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
       if avatar.valid?
         render_json :status  => :ok and return
       else
-        render_jsot :status  => :bad_request, :messages => avatar.errors.full_messages and return
+        render_json :status  => :bad_request, :messages => avatar.errors.full_messages and return
       end
     else
       render_json :status  => :bad_request and return
