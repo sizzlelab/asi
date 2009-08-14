@@ -4,6 +4,8 @@ require 'logging_helper'
 require 'json'
 
 class ApplicationController < ActionController::Base
+  include ExceptionNotifiable
+
   helper :all # include all helpers, all the time
   layout 'default'
 
