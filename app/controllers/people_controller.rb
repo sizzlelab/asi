@@ -65,7 +65,7 @@ image and also the status of the avatar, which is 'set' or 'not_set' depending o
   def show
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
-      render :status => :not_found and return
+      render_json :status => :not_found and return
     end
     render_json :entry => @person.person_hash(@client.id, @user)
   end
@@ -117,11 +117,11 @@ description:: Creates a new user. If creation is succesful the current app-only 
 
     errors = {}
     if ! ensure_same_as_logged_person(params['user_id'])
-      render :status => :forbidden and return
+      render_json :status => :forbidden and return
     end
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
-      render :status => :not_found and return
+      render_json :status => :not_found and return
     end
     if params[:person]
       begin
@@ -141,13 +141,14 @@ description:: Creates a new user. If creation is succesful the current app-only 
   def delete
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
-      render :status => :not_found and return
+      render_json :status => :not_found and return
     end
     if ! ensure_same_as_logged_person(params['user_id'])
-      render :status => :forbidden and return
+      render_json :status => :forbidden and return
     end
     @person.destroy
     session[:cos_session_id] = @user = nil
+    render_json :status => :ok
   end
 
 
@@ -158,24 +159,24 @@ description:: Creates a new user. If creation is succesful the current app-only 
     # change friendship status to accepted.
 
     if (params['user_id'] == params['friend_id'])
-      render_json :messages => "Cannot add yourself to your friend.", :status => :bad_request
+      render_json :messages => "Cannot add yourself to your friend.", :status => :bad_request and return
     end
 
     if ! ensure_same_as_logged_person(params['user_id'])
-      render :status => :forbidden and return
+      render_json :status => :forbidden and return
     end
 
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
-      render :status => :not_found and return
+      render_json :status => :not_found and return
     end
     @friend = Person.find_by_guid(params['friend_id'])
     if ! @friend
-      render :status => :not_found and return
+      render_json :status => :not_found and return
     end
 
     if @person.association? or @friend.association?
-      render_json :messages => "Association users cannot have friends.".to_json, :status => :bad_request
+      render_json :messages => "Association users cannot have friends.".to_json, :status => :bad_request and return
     end
 
     if @person.pending_contacts.include?(@friend) #accept if pending
@@ -185,6 +186,8 @@ description:: Creates a new user. If creation is succesful the current app-only 
         Connection.request(@person, @friend)        #request if didn't exist
       end
     end
+    
+    render_json :status => :ok
   end
 
   def recover_password
@@ -208,7 +211,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
   def change_password
     if(!params[:id] || params[:id].empty?)
       flash[:notice] = "Access forbidden"
-      render :status => :unauthorized and return
+      render_json :status => :unauthorized and return
     end
 
     begin
@@ -230,7 +233,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
 
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "Access forbidden."
-      render :status => :unauthorized and return
+      render_json :status => :unauthorized and return
     end
 
   end
@@ -238,7 +241,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
   def get_friends
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
-      render :status => :not_found and return
+      render_json :status => :not_found and return
     end
 
     if params['sortBy'] == "status_changed"
@@ -253,7 +256,8 @@ description:: Creates a new user. If creation is succesful the current app-only 
   end
 
   def remove_friend
-    remove_any_connection_between(params['user_id'], params['friend_id'])
+    return if !remove_any_connection_between(params['user_id'], params['friend_id'])
+    render_json :status => :ok and return
   end
 
   def pending_friend_requests
@@ -265,7 +269,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
 
   def reject_friend_request
     if remove_any_connection_between(params['user_id'], params['friend_id'])
-      render :json => {}.to_json
+      render_json :entry => {}
     end
   end
 
@@ -288,32 +292,33 @@ description:: Creates a new user. If creation is succesful the current app-only 
     # end
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
-      render :status  => :not_found and return
+      render_json :status  => :not_found and return
     end
     if params[:file]
       avatar = @person.create_avatar(:file => params[:file])
       if avatar.valid?
-        render :status  => :ok and return
+        render_json :status  => :ok and return
       else
-        render :status  => :bad_request, :messages => avatar.errors.full_messages and return
+        render_jsot :status  => :bad_request, :messages => avatar.errors.full_messages and return
       end
     else
-      render :status  => :bad_request and return
+      render_json :status  => :bad_request and return
     end
   end
 
   def delete_avatar
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
-      render :status => :not_found and return
+      render_json :status => :not_found and return
     end
     if ! @person.avatar
-      render :status => :not_found and return
+      render_json :status => :not_found and return
     end
     if ! ensure_same_as_logged_person(params['user_id'])
-      render :status => :forbidden and return
+      render_json :status => :forbidden and return
     end
     @person.avatar.destroy
+    render_json :status => :ok
   end
 
   private
@@ -337,7 +342,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
   def fetch_avatar(image_type)
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
-      render :status => :not_found and return
+      render_json :status => :not_found and return
     end
     if @person.avatar
       case image_type

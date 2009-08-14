@@ -1,5 +1,0 @@
-<% if @person %>
-  <%= @person.to_json(@client.id, @user) %>
-<% else %>
-  <%= {}.to_json %>
-<% end %>
