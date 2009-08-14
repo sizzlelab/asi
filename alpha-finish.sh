@@ -29,6 +29,8 @@ rake db:migrate RAILS_ENV=production
 rake thinking_sphinx:index RAILS_ENV=production
 rake thinking_sphinx:start RAILS_ENV=production
 
+script/rapidoc/generate
+
 mongrel_rails cluster::start
 sudo /etc/init.d/apache2 restart
 whenever --update-crontab
