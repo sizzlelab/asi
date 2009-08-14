@@ -22,7 +22,7 @@ json:: {"entry":
 
 param:: search - The search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all charactersin the search term are interpreted as literals rather than special regexp characters.
 
-description:: Finds users based on their (real) names.
+description:: Finds users based on their real names and usernames.
 =end
   def index
     options = {}
@@ -291,10 +291,11 @@ description:: Creates a new user. If creation is succesful the current app-only 
       render :status  => :not_found and return
     end
     if params[:file]
-      if (@person.save_avatar?(params))
+      avatar = @person.create_avatar(:file => params[:file])
+      if avatar.valid?
         render :status  => :ok and return
       else
-        render :status  => :internal_server_error and return
+        render :status  => :bad_request, :messages => avatar.errors.full_messages and return
       end
     else
       render :status  => :bad_request and return
@@ -306,7 +307,6 @@ description:: Creates a new user. If creation is succesful the current app-only 
     if ! @person
       render :status => :not_found and return
     end
-    @person.avatar = Image.new
     if ! @person.avatar
       render :status => :not_found and return
     end

@@ -231,21 +231,21 @@ class CollectionsControllerTest < ActionController::TestCase
   end
 
 
-  def test_add_image
-    get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' },
-               { :cos_session_id => sessions(:session1).id }
-    assert_response :success
-    old_item_count = assigns["collection"].items.count
-    json = JSON.parse(@response.body)
+  # def test_add_image
+  #   get :show, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json' },
+  #              { :cos_session_id => sessions(:session1).id }
+  #   assert_response :success
+  #   old_item_count = assigns["collection"].items.count
+  #   json = JSON.parse(@response.body)
 
-    # Should be able to add to a collection belonging to the client
-    post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
-                 :item => {:file => fixture_file_upload("Bison_skull_pile.png","image/png") }},
-               { :cos_session_id => sessions(:session1).id }
-    assert_response :success
-    assert_equal(old_item_count+1, assigns["collection"].items.count)
-    json = JSON.parse(@response.body)
-  end
+  #   # Should be able to add to a collection belonging to the client
+  #   post :add, { :app_id => clients(:one).id, :id => collections(:one).id, :format => 'json',
+  #                :item => {:file => fixture_file_upload("Bison_skull_pile.png","image/png") }},
+  #              { :cos_session_id => sessions(:session1).id }
+  #   assert_response :success
+  #   assert_equal(old_item_count+1, assigns["collection"].items.count)
+  #   json = JSON.parse(@response.body)
+  # end
 
   def test_add_collection_reference
     # add

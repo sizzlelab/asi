@@ -15,6 +15,7 @@ jpg:
 
 png:
   id: 2
+  person_id: 99
   data: <%= fixture_data("Bison_skull_pile.png") %>
 
 paatteeton:

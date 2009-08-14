@@ -14,19 +14,59 @@ class Image < ActiveRecord::Base
   DIRECTORY = "tmp/images"
 
   validates_presence_of :person_id
+  validate :valid_file
 
-  def save_to_db?(options, person)
-    self.data = options[:file].read
-    self.person_id = person.id
-    if valid_file?(options[:file].content_type, options[:file].original_filename) and convert(options[:file].original_filename)
-      self.save
-      return true
-    end
-    return false
+  attr_accessor :file
+
+  before_create :file_to_db
+
+
+  def to_json(*a)
+    {
+      :id => id,
+      :filename => filename,
+      :data => data,
+      :small_thumb => small_thumb,
+      :large_thumb => large_thumb
+    }.to_json(*a)
+  end
+
+  def data
+    return Base64.encode64(super)
+  end
+
+  def raw_data
+    return Base64.decode64(data)
+  end
+
+  def small_thumb
+    return Base64.encode64(super)
+  end
+
+  def raw_small_thumb
+    return Base64.decode64(small_thumb)
+  end
+
+  def large_thumb
+    return Base64.encode64(super)
+  end
+
+  def raw_large_thumb
+    return Base64.decode64(large_thumb)
+  end
+
+  private
+
+  def file_to_db
+    self.data = self.file.read
+    convert(self.file.original_filename)
   end
 
   # Return true for a valid, nonempty image file.
-  def valid_file?(content_type, filename)
+  def valid_file
+
+    filename = self.file.original_filename
+    content_type = self.file.content_type
 
     #The upload should be nonempty.
     if filename == nil
@@ -45,13 +85,6 @@ class Image < ActiveRecord::Base
       errors.add(:content_type, "is not a recognized format")
       return false
     end
-
-    #The file shouldn't be bigger than 10 megabytes.
-    if raw_data.size > 10.megabytes
-      errors.add("Image can't be bigger than 10 megabytes")
-      return false
-    end
-
     return true
   end
 
@@ -103,39 +136,4 @@ class Image < ActiveRecord::Base
     File.delete(small_thumbnail_file) if File.exists?(small_thumbnail_file)
     return true
   end
-
-  def to_json(*a)
-    {
-      :id => id,
-      :filename => filename,
-      :data => data,
-      :small_thumb => small_thumb,
-      :large_thumb => large_thumb
-    }.to_json(*a)
-  end
-
-  def data
-    return Base64.encode64(super)
-  end
-
-  def raw_data
-    return Base64.decode64(data)
-  end
-
-  def small_thumb
-    return Base64.encode64(super)
-  end
-
-  def raw_small_thumb
-    return Base64.decode64(small_thumb)
-  end
-
-  def large_thumb
-    return Base64.encode64(super)
-  end
-
-  def raw_large_thumb
-    return Base64.decode64(large_thumb)
-  end
-
 end
