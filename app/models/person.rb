@@ -114,11 +114,11 @@ class Person < ActiveRecord::Base
 
   # Max & min lengths for all fields
   PASSWORD_MIN_LENGTH = 4
-  PASSWORD_MAX_LENGTH = 16
+  PASSWORD_MAX_LENGTH = 255
   USERNAME_MIN_LENGTH = 3
   USERNAME_MAX_LENGTH = 20
   USERNAME_RANGE = USERNAME_MIN_LENGTH..USERNAME_MAX_LENGTH
-  EMAIL_MAX_LENGTH = 50
+  EMAIL_MAX_LENGTH = 255
 
   # Text box sizes for display in the views
   USERNAME_SIZE = 20
