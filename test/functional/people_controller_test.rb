@@ -555,7 +555,8 @@ class PeopleControllerTest < ActionController::TestCase
   def test_password_constraints
 
     too_short_password = "shw"
-    too_long_password = "abcdefghijklmnopq"
+    too_long_password = ""
+    300.times { too_long_password << 'a'}
     # Try to create user with too short password
     post :create, { :person => {:username  => "failer",
                     :password => too_short_password,
