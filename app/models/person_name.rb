@@ -1,6 +1,20 @@
+# == Schema Information
+#
+# Table name: person_names
+#
+#  id          :integer(4)      not null, primary key
+#  given_name  :string(255)     default("")
+#  family_name :string(255)     default("")
+#  created_at  :datetime
+#  updated_at  :datetime
+#  person_id   :integer(4)
+#
+
 class PersonName < ActiveRecord::Base
 
   belongs_to :person
+
+  attr_protected :created_at, :updated_at
 
   GIVEN_NAME_MAX_LENGTH = 30
   FAMILY_NAME_MAX_LENGTH = 30

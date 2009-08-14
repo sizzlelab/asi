@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: groups
+#
+#  id          :string(255)     default(""), not null, primary key
+#  title       :string(255)
+#  creator_id  :integer(4)
+#  group_type  :string(255)
+#  created_at  :datetime
+#  updated_at  :datetime
+#  description :text
+#
+
 # -*- coding: utf-8 -*-
 class Group < ActiveRecord::Base
   usesguid

@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: client_data_sets
+#
+#  id         :integer(4)      not null, primary key
+#  client_id  :string(255)
+#  person_id  :integer(4)
+#  created_at :datetime
+#  updated_at :datetime
+#  data       :text
+#
+
 require 'test_helper'
 
 class ClientDataSetTest < ActiveSupport::TestCase

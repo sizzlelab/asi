@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: roles
+#
+#  id                      :integer(4)      not null, primary key
+#  person_id               :integer(4)
+#  client_id               :string(255)
+#  title                   :string(255)
+#  created_at              :datetime
+#  updated_at              :datetime
+#  terms_version           :string(255)
+#  location_security_token :string(255)
+#
+
 class Role < ActiveRecord::Base
   belongs_to :person
   belongs_to :client

@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: collections
+#
+#  id             :string(255)     default(""), not null, primary key
+#  read_only      :boolean(1)
+#  client_id      :string(255)
+#  created_at     :datetime
+#  updated_at     :datetime
+#  owner_id       :integer(4)
+#  title          :string(255)
+#  metadata       :text
+#  indestructible :boolean(1)
+#  tags           :string(255)
+#  updated_by     :string(255)
+#  priv           :boolean(1)
+#
+
 class Collection < ActiveRecord::Base
   usesguid
 

@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: connections
+#
+#  id         :integer(4)      not null, primary key
+#  person_id  :integer(4)
+#  contact_id :integer(4)
+#  status     :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 require 'test_helper'
 
 class ConnectionTest < ActiveSupport::TestCase

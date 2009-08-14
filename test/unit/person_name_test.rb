@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: person_names
+#
+#  id          :integer(4)      not null, primary key
+#  given_name  :string(255)     default("")
+#  family_name :string(255)     default("")
+#  created_at  :datetime
+#  updated_at  :datetime
+#  person_id   :integer(4)
+#
+
 require 'test_helper'
 
 class PersonNameTest < ActiveSupport::TestCase

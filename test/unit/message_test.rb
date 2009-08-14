@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: messages
+#
+#  id           :integer(4)      not null, primary key
+#  title        :string(255)
+#  content_type :string(255)
+#  body         :text
+#  poster_id    :integer(4)
+#  channel_id   :integer(4)
+#  created_at   :datetime
+#  updated_at   :datetime
+#  reference_to :integer(4)
+#  attachment   :string(255)
+#  guid         :string(255)
+#  delta        :boolean(1)      default(TRUE), not null
+#
+
 require 'test_helper'
 
 class MessageTest < ActiveSupport::TestCase

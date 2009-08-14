@@ -1,3 +1,30 @@
+# == Schema Information
+#
+# Table name: people
+#
+#  id                     :integer(4)      not null, primary key
+#  username               :string(255)
+#  encrypted_password     :string(255)
+#  created_at             :datetime
+#  updated_at             :datetime
+#  email                  :string(255)
+#  salt                   :string(255)
+#  consent                :string(255)
+#  coin_amount            :integer(4)      default(0), not null
+#  is_association         :boolean(1)
+#  status_message         :string(255)
+#  status_message_changed :datetime
+#  gender                 :string(255)
+#  irc_nick               :string(255)
+#  msn_nick               :string(255)
+#  phone_number           :string(255)
+#  description            :string(255)
+#  website                :string(255)
+#  birthdate              :date
+#  guid                   :string(255)
+#  delta                  :boolean(1)      default(TRUE), not null
+#
+
 require 'digest/sha2'
 
 class Person < ActiveRecord::Base
@@ -7,7 +34,7 @@ class Person < ActiveRecord::Base
   usesnpguid
 
   attr_reader :password
-  attr_protected :roles
+  attr_protected :roles, :encrypted_password, :salt, :delta, :guid, :coin_amount
 
   has_one :name, :class_name => "PersonName", :dependent => :destroy
   has_one :address, :as => :owner, :dependent => :destroy

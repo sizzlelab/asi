@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: addresses
+#
+#  id             :integer(4)      not null, primary key
+#  street_address :string(255)
+#  postal_code    :string(255)
+#  locality       :string(255)
+#  owner_id       :integer(4)
+#  owner_type     :string(255)
+#  created_at     :datetime
+#  updated_at     :datetime
+#
+
 class Address < ActiveRecord::Base
   
   belongs_to :owner, :polymorphic => true

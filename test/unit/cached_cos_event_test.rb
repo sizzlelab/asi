@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: cached_cos_events
+#
+#  id                :integer(4)      not null, primary key
+#  user_id           :string(255)
+#  application_id    :string(255)
+#  cos_session_id    :string(255)
+#  ip_address        :string(255)
+#  action            :string(255)
+#  parameters        :string(255)
+#  return_value      :string(255)
+#  headers           :text
+#  created_at        :datetime
+#  updated_at        :datetime
+#  semantic_event_id :string(255)
+#
+
 require 'test_helper'
 
 class CachedCosEventTest < ActiveSupport::TestCase

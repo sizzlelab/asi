@@ -1,6 +1,22 @@
+# == Schema Information
+#
+# Table name: locations
+#
+#  id         :integer(4)      not null, primary key
+#  person_id  :integer(4)
+#  latitude   :decimal(15, 12)
+#  longitude  :decimal(15, 12)
+#  label      :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#  accuracy   :decimal(15, 3)
+#
+
 class Location < ActiveRecord::Base
 
   belongs_to :person
+
+  attr_protected :created_at, :updated_at
 
   validates_numericality_of [:latitude, :longitude, :accuracy], :allow_nil => true
   validates_presence_of [:latitude, :longitude], :unless => :no_lat_long?
@@ -18,11 +34,11 @@ class Location < ActiveRecord::Base
   # Return true if both latitude and longitude are missing
   def no_lat_long?
     !self.latitude && !self.longitude
-  end  
-                         
-  def to_json(*a)                    
+  end
+
+  def to_json(*a)
     location_hash.to_json(*a)
-  end                      
+  end
 
   def location_hash
     {
