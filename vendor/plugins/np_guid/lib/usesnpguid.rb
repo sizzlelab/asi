@@ -33,7 +33,6 @@ module ActiveRecord
           def set_npuuid
             self.guid ||= UUID.timestamp_create().to_s22 rescue NoMethodError
           end
-
 #          def to_json(*a)
 #            content = self.attributes
 #            content['id'] = content['guid']

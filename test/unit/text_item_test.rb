@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: text_items
+#
+#  id         :string(255)     default(""), not null, primary key
+#  text       :text
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 require 'test_helper'
 
 class TextItemTest < ActiveSupport::TestCase

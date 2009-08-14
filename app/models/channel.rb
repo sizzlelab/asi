@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: channels
+#
+#  id             :integer(4)      not null, primary key
+#  name           :string(255)
+#  description    :string(255)
+#  owner_id       :integer(4)
+#  channel_type   :string(255)
+#  created_at     :datetime
+#  updated_at     :datetime
+#  creator_app_id :string(255)
+#  guid           :string(255)
+#  delta          :boolean(1)      default(TRUE), not null
+#
+
 class Channel < ActiveRecord::Base
 
   usesnpguid

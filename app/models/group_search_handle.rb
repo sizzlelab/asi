@@ -1,3 +1,12 @@
+# == Schema Information
+#
+# Table name: group_search_handles
+#
+#  id       :integer(4)      not null, primary key
+#  group_id :string(255)
+#  delta    :boolean(1)      default(TRUE), not null
+#
+
 #
 # A kludge to accommodate searching of groups
 #

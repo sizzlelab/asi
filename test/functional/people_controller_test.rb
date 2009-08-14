@@ -273,6 +273,14 @@ class PeopleControllerTest < ActionController::TestCase
     end
   end
 
+  def test_mass_assignment
+    login_as people(:valid_person)
+    put :update, { :user_id => people(:valid_person).guid, :person => { :guid => "booX" }, :format => 'json' }
+    assert_response :success
+    assert_not_equal "booX", @json["entry"]["id"]
+  end
+
+
   def test_update_invalid_email
     invalid_email = "newemail(at)oldserv.er"
     put :update, { :user_id => people(:valid_person).guid, :person => {:email => invalid_email }, :format => 'json' },

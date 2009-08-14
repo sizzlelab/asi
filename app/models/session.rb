@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: sessions
+#
+#  id         :integer(4)      not null, primary key
+#  person_id  :integer(4)
+#  ip_address :string(255)
+#  path       :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#  client_id  :string(255)
+#
+
 class Session < ActiveRecord::Base
   attr_accessor :username, :password, :client_name, :client_password, :person_match, :application_login
   belongs_to :person

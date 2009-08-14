@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: images
+#
+#  id          :string(255)     default(""), not null, primary key
+#  filename    :string(255)
+#  data        :binary(21474836
+#  created_at  :datetime
+#  updated_at  :datetime
+#  person_id   :integer(4)
+#  small_thumb :binary
+#  large_thumb :binary
+#
+
 require 'test_helper'
 
 class ImageTest < ActiveSupport::TestCase

@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: person_specs
+#
+#  id                     :integer(4)      not null, primary key
+#  person_id              :integer(4)
+#  status_message         :string(255)     default("")
+#  birthdate              :date
+#  gender                 :string(255)
+#  created_at             :datetime
+#  updated_at             :datetime
+#  status_message_changed :datetime
+#  irc_nick               :string(255)
+#  msn_nick               :string(255)
+#  phone_number           :string(255)
+#  description            :string(255)
+#  website                :string(255)
+#
+
 require 'test_helper'
 
 class PersonSpecTest < ActiveSupport::TestCase
