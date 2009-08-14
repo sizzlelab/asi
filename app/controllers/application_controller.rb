@@ -16,6 +16,9 @@ class ApplicationController < ActionController::Base
   after_filter :log
   after_filter :set_correct_content_type
 
+  PARAMETERS_NOT_TO_BE_ESCAPED = ["password", "confirm_password", "search", "query"]
+  before_filter :escape_parameters
+  
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   #protect_from_forgery # :secret => '9c4bfc3f5c5b497cf9ce1b29fdea20f5'
@@ -77,6 +80,14 @@ class ApplicationController < ActionController::Base
 
   def ensure_same_as_logged_person(target_person_id)
     return @user && target_person_id == @user.guid
+  end
+  
+  def escape_parameters
+    params.each_pair do |key, value|
+      unless PARAMETERS_NOT_TO_BE_ESCAPED.include? key
+        params[key] = escape_html(value)
+      end
+    end
   end
 
   def log
@@ -216,4 +227,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  private
+  
+  def escape_html(value)
+    return CGI.escapeHTML(value) if value.class == String
+    return value if value.class != Array && value.class != Hash && value.class != HashWithIndifferentAccess
+    
+    if value.class == Array
+      value.collect! do |v|
+        escape_html v
+      end
+    elsif value.class == Hash || value.class == HashWithIndifferentAccess
+      value.each_pair do |k, v|
+        value[k] = escape_html(v)
+      end
+    end
+  end
 end

@@ -46,6 +46,13 @@ class GroupsControllerTest < ActionController::TestCase
     end
   end
 
+  def test_html_escaping
+    post :create, { :group => { :title => "html", :description => '<a href="testi">', :type => 'open'}, :format => 'json'}, { :cos_session_id => sessions(:session2).id}
+    assert_response :created, @response.body
+    json = JSON.parse @response.body
+    assert ! (json["entry"]["description"] =~ /[<>"]/)
+  end
+  
   def test_grant_and_remove_admin_status
     person = people(:friend)
     admin = groups(:open).members.first;
