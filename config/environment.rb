@@ -91,6 +91,7 @@ require 'casclient'
 require 'casclient/frameworks/rails/filter'
 require 'casclient/frameworks/rails/cas_proxy_callback_controller'
 require 'whenever'
+require 'actionpack_extend'
 
 # enable detailed CAS logging for easier troubleshooting
 cas_logger = CASClient::Logger.new(RAILS_ROOT+'/log/cas.log')
