@@ -1,11 +1,21 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
+view_id:
+  id: view_id
+  action: view
+  data: id
+  
+
+view_username:
+  id: view_username
+  action: view
+  data: username
 
 view_email:
    id: view_email
    action: view
    data: email
-
+   
 view_name:
    id: view_name
    action: view
@@ -14,7 +24,7 @@ view_name:
 view_statusMessage:
   id: view_status_message
   action: view
-  data: satatus_message
+  data: status_message
 
 view_birthdate:
   id: view_birthdate

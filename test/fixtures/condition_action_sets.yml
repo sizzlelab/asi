@@ -20,6 +20,16 @@ four:
   action_id: view_email
   rule_id: 2
 
+rule3_id:
+  condition_id: 1 # publicity - private
+  action_id: view_id
+  rule_id: 3
+
+rule3_usernmae:
+  condition_id: 2 # publicity - public
+  action_id: view_username
+  rule_id: 3
+  
 rule3_email:
    condition_id: 1 # publicity - private
    action_id: view_email
