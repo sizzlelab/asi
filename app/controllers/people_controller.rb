@@ -4,6 +4,7 @@ class PeopleController < ApplicationController
   before_filter :ensure_client_login, :except => [:update_avatar, :get_avatar, :get_small_thumbnail, :get_large_thumbnail, :reset_password, :change_password]
   before_filter :ensure_person_logout, :only  => [:create, :recover_password]
   #before_filter :fix_utf8_characters, :only => [:create, :update, :index]
+  after_filter :set_cache_control, :only => [:get_avatar, :get_small_thumbnail, :get_large_thumbnail]
 
 =begin rapidoc
 access:: Client login
@@ -384,6 +385,10 @@ description:: Creates a new user. If creation is succesful the current app-only 
     else
       return order    #the default is "ascending"
     end
+  end
+
+  def set_cache_control
+    response.headers['Cache-control'] = 'public s-maxage=3600'
   end
 
   # If request is using /people/@me/xxxxxxx, change user_id from @me to real userid
