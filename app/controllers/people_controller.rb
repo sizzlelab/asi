@@ -177,7 +177,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
     end
 
     if @person.association? or @friend.association?
-      render_json :messages => "Association users cannot have friends.".to_json, :status => :bad_request and return
+      render_json :messages => "Association users cannot have friends.", :status => :bad_request and return
     end
 
     if @person.pending_contacts.include?(@friend) #accept if pending
@@ -187,7 +187,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
         Connection.request(@person, @friend)        #request if didn't exist
       end
     end
-    
+
     render_json :status => :ok
   end
 
@@ -198,9 +198,9 @@ description:: Creates a new user. If creation is succesful the current app-only 
       UserMailer.deliver_recovery(:key => CryptoHelper.encrypt("#{person.id}:#{person.salt}"),
                                   :email => person.email,
                                   :domain => SERVER_DOMAIN)
-      render_json :messages => "Recovery mail sent to specified address.".to_json, :status => :ok and return
+      render_json :messages => "Recovery mail sent to specified address.", :status => :ok and return
     else
-      render_json :messages => "Record not found.".to_json, :status => :not_found and return
+      render_json :messages => "Record not found.", :status => :not_found and return
     end
 
   end
@@ -398,7 +398,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
         if ses.person
           params[:user_id] = ses.person.guid
         else
-          render_json :status => :unauthorized, :messages => "Please login as a user to continue".to_json and return
+          render_json :status => :unauthorized, :messages => "Please login as a user to continue" and return
         end
       end
     end
