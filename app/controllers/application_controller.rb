@@ -230,7 +230,7 @@ class ApplicationController < ActionController::Base
   private
   
   def escape_html(value)
-    return CGI.escapeHTML(value) if value.class == String
+    return escape_once(value) if value.class == String
     return value if value.class != Array && value.class != Hash && value.class != HashWithIndifferentAccess
     
     if value.class == Array
