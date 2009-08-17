@@ -1,13 +1,7 @@
 http = new XMLHttpRequest();
 
 function test(token, base) {
-    var url = "";
-    if (document.domain == "localhost") {
-        url = document.getElementById('url').value;
-    } else {
-        url = "https://" + location.host + document.getElementById('url').value;
-    }
-
+    var url = document.getElementById('url').value;
     var method = document.getElementById('method').value;
     var params = "authenticity_token=" + token + "&" + document.getElementById('params').value;
 
