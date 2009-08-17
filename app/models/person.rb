@@ -126,15 +126,15 @@ class Person < ActiveRecord::Base
   # Constant to present the "accepted" connection in returned JSONs
   ACCEPTED_CONNECTION_STRING = "friend"
 
-  validates_presence_of :username
-  validates_uniqueness_of :username, :email, :case_sensitive => false
+  validates_presence_of :email
+  validates_uniqueness_of :username, :email, :case_sensitive => false, :allow_nil => true
   #validates_length_of :username, :within => USERNAME_RANGE
   validates_length_of :password, :minimum => PASSWORD_MIN_LENGTH, :message => "is too short", :unless =>  :password_is_not_being_updated?
   validates_length_of :password, :maximum => PASSWORD_MAX_LENGTH, :message => "is too long", :unless =>  :password_is_not_being_updated?
   #Password length is validated in AuthenticationHelper
   validates_length_of :username, :minimum => USERNAME_MIN_LENGTH, :message => "is too short"
   validates_length_of :username, :maximum => USERNAME_MAX_LENGTH, :message => "is too long"
-  validates_length_of :email, :maximum => EMAIL_MAX_LENGTH, :message => "is too long"
+  validates_length_of :email, :maximum => EMAIL_MAX_LENGTH, :message => "is too long", :allow_nil => true
 
   validates_format_of :username,
                       :with => /^[A-Z0-9_]*$/i,
@@ -143,11 +143,14 @@ class Person < ActiveRecord::Base
   validates_format_of :password, :with => /^([\x20-\x7E])+$/,
                       :message => "is invalid",
                       :unless => :password_is_not_being_updated?,
-                      :allow_blank => true
+                      :allow_blank => true,
+                      :allow_nil => true
 
   validates_format_of :email,
                       :with => /^[A-Z0-9._%-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i,
-                      :message => "is invalid"
+                      :message => "is invalid",
+                      :allow_blank => true,
+                      :allow_nil => true
 
   before_save :scrub_name
   after_save :flush_passwords
