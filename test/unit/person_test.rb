@@ -18,7 +18,7 @@
 #  irc_nick               :string(255)
 #  msn_nick               :string(255)
 #  phone_number           :string(255)
-#  description            :string(255)
+#  description            :text
 #  website                :string(255)
 #  birthdate              :date
 #  guid                   :string(255)
@@ -229,6 +229,14 @@ class PersonTest < ActiveSupport::TestCase
 
     json = JSON.parse(p.to_json(clients(:kassi).id))
     assert_equal p.email, json["email"]
+  end
+
+  def test_description_length
+    p = @valid_person
+    p.description = (1..1000).map.join
+    assert p.save
+    p.reload
+    assert_equal (1..1000).map.join, p.description
   end
 
 end
