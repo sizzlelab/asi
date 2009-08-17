@@ -26,7 +26,7 @@ class GroupTest < ActiveSupport::TestCase
     assert(g.valid?, g.errors.full_messages)
     assert(g.save, "Saving failed!")
   end
-  
+
   def test_add_member_open
     g = Group.create(:title => "testiryhma", :group_type => "open", :creator => people(:valid_person))
     assert(g.valid?, "created group was not valid")
@@ -40,12 +40,12 @@ class GroupTest < ActiveSupport::TestCase
   end
 
   def test_add_member_closed
-    [ "closed" ].each do |type| 
+    [ "closed" ].each do |type|
       g = Group.create(:title => "#{type} test group", :group_type => type, :creator => people(:valid_person))
       assert(g.valid?, g.errors.full_messages.inspect)
       assert(g.save, "Saving failed!")
 
-      assert_no_difference 'g.members.count' do 
+      assert_no_difference 'g.members.count' do
         people(:friend).request_membership_of(g)
         assert !people(:friend).is_member_of?(g), "Shouldn't be member."
       end
@@ -58,10 +58,10 @@ class GroupTest < ActiveSupport::TestCase
       end
     end
   end
-  
+
   def test_granting_admin
     groups(:open).grant_admin_status_to(people(:contact))
-    assert people(:contact).is_admin_of?(groups(:open)), "Granting admin status failed"    
+    assert people(:contact).is_admin_of?(groups(:open)), "Granting admin status failed"
   end
 
   def test_remove_admin
@@ -77,9 +77,9 @@ class GroupTest < ActiveSupport::TestCase
     groups(:closed).accept_member(people(:contact))
 
     groups(:closed).grant_admin_status_to(people(:contact))
-    assert people(:contact).is_admin_of?(groups(:closed)), "Granting admin status failed"    
+    assert people(:contact).is_admin_of?(groups(:closed)), "Granting admin status failed"
   end
-  
+
   def test_length_boundaries
     assert_length :min, groups(:open), :title, Group::TITLE_MIN_LENGTH
     assert_length :max, groups(:open), :title, Group::TITLE_MAX_LENGTH
@@ -178,9 +178,24 @@ class GroupTest < ActiveSupport::TestCase
     group = groups(:hidden)
     assert group.show?(group.members[0]), "Show to member"
     assert ! people(:friend).is_member_of?(group)
-    assert ! group.show?(people(:friend)), "Don't show to non-member" 
+    assert ! group.show?(people(:friend)), "Don't show to non-member"
     assert ! Group.all_public.include?(group), "Don't show in public listing"
     group.creator.invite(people(:friend), group)
     assert group.show?(people(:friend)), "Show to invited"
+  end
+
+  def test_creator_protection
+    group = Group.create(:group_type => "open", :creator => people(:valid_person), :title => "foobaar")
+    creator = group.creator
+
+    group.creator = nil
+    group.save
+    group.reload
+    assert_equal creator, group.creator
+
+    group.creator = people(:friend)
+    group.save
+    group.reload
+    assert_equal creator, group.creator
   end
 end
