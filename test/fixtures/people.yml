@@ -18,7 +18,7 @@
 #  irc_nick               :string(255)
 #  msn_nick               :string(255)
 #  phone_number           :string(255)
-#  description            :string(255)
+#  description            :text
 #  website                :string(255)
 #  birthdate              :date
 #  guid                   :string(255)

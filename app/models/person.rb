@@ -18,7 +18,7 @@
 #  irc_nick               :string(255)
 #  msn_nick               :string(255)
 #  phone_number           :string(255)
-#  description            :string(255)
+#  description            :text
 #  website                :string(255)
 #  birthdate              :date
 #  guid                   :string(255)
@@ -78,7 +78,7 @@ class Person < ActiveRecord::Base
   end
 
   ALL_FIELDS = %w(status_message birthdate irc_nick msn_nick phone_number description website username name address is_association)
-  STRING_FIELDS = %w(status_message irc_nick msn_nick description website)
+  STRING_FIELDS = %w(status_message irc_nick msn_nick website)
   # Fields that need to be translated if the language is changed.
   LOCALIZED_FIELDS = %w(gender)
   VALID_GENDERS = ["MALE", "FEMALE"]
