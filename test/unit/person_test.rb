@@ -239,4 +239,13 @@ class PersonTest < ActiveSupport::TestCase
     assert_equal (1..1000).map.join, p.description
   end
 
+  def test_password_validation
+    p = Person.create(:username => "foo", :email => "bar@c.com", :password => "")
+    assert_equal 1, p.errors.full_messages.size
+
+    p = Person.create(:username => "foo", :email => "bar@c.com", :password => "\x19\x19\x19\x19\x19\x19\x19\x19")
+    assert_equal 1, p.errors.full_messages.size
+  end
+
+
 end

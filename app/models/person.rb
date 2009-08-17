@@ -127,7 +127,6 @@ class Person < ActiveRecord::Base
   ACCEPTED_CONNECTION_STRING = "friend"
 
   validates_presence_of :username
-  #validates_presence_of :password, :unless  => :encrypted_password
   validates_uniqueness_of :username, :email, :case_sensitive => false
   #validates_length_of :username, :within => USERNAME_RANGE
   validates_length_of :password, :minimum => PASSWORD_MIN_LENGTH, :message => "is too short", :unless =>  :password_is_not_being_updated?
@@ -143,7 +142,8 @@ class Person < ActiveRecord::Base
 
   validates_format_of :password, :with => /^([\x20-\x7E])+$/,
                       :message => "is invalid",
-                      :unless => :password_is_not_being_updated?
+                      :unless => :password_is_not_being_updated?,
+                      :allow_blank => true
 
   validates_format_of :email,
                       :with => /^[A-Z0-9._%-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i,
