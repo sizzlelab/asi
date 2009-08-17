@@ -52,7 +52,7 @@ class GroupsControllerTest < ActionController::TestCase
     json = JSON.parse @response.body
     assert ! (json["entry"]["description"] =~ /[<>"]/)
   end
-  
+
   def test_grant_and_remove_admin_status
     person = people(:friend)
     admin = groups(:open).members.first;
@@ -326,7 +326,7 @@ class GroupsControllerTest < ActionController::TestCase
 
     put :update, { :group_id => group.id, :group => data, :format => 'json' },
                  { :cos_session_id => session.id }
-    assert_response :success, @response.body
+    assert_response :bad_request, @response.body
     json = JSON.parse(@response.body)
 
     get :show, { :group_id => group.id, :format => 'json' },

@@ -160,7 +160,7 @@ class GroupsController < ApplicationController
     if @group.members.count < 1
       @group.destroy
     end
-    
+
     render_json :status => :ok
   end
 

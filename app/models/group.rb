@@ -28,6 +28,8 @@ class Group < ActiveRecord::Base
   has_one :group_search_handle, :dependent => :destroy
   after_save :create_search_handle
 
+  attr_readonly :creator_id
+
   VALID_GROUP_TYPES =  %w(open closed hidden) #personal (to be implemented)
   TITLE_MIN_LENGTH = 2
   TITLE_MAX_LENGTH = 70
@@ -44,19 +46,11 @@ class Group < ActiveRecord::Base
 
   validates_uniqueness_of :title, :case_sensitive => false
 
-  alias_method :orig_update_attributes, :update_attributes
+  after_create :make_creator_member
 
-  class << self
-    alias :orig_create :create
-  end
-
-  def Group.create(options)
-    g = orig_create(options)
-    if g.valid?
-      g.accept_member(g.creator)
-      g.grant_admin_status_to(g.creator)
-    end
-    g
+  def make_creator_member
+    accept_member(creator)
+    grant_admin_status_to(creator)
   end
 
   def Group.all_public
@@ -152,28 +146,15 @@ class Group < ActiveRecord::Base
     return group_hash
   end
 
-  # Disallow changes to group creator
-  def creator_id=(creator_id)
-    self[:creator_id] ||= creator_id
-  end
-
-  #Disallow changes to group type
-  #def group_type=(group_type)
-  #  self[:group_type] ||= group_type
-  #end
-
   #Overwritten update_attributes method that updates pending members if
   #group type is changed to open
   def update_attributes(attributes)
-
     if attributes[:group_type] == 'open'
       pending_members.each do |pending|
         accept_member pending
       end
     end
-
-    orig_update_attributes attributes
-
+    super
   end
 
   private
