@@ -213,7 +213,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/people/:user_id/rules/create_default_profile_rule',  :controller => 'rules',
                                                                      :action => 'create_default_profile_rule',
                                                                      :method => 'post'
-                                 
+                                                                   
   #Rails will create the default routes like http://guides.rubyonrails.org/routing.html 3.2 CRUD, Verbs, and Actions
   map.resources :rules, :path_prefix => '/people/:user_id'
 

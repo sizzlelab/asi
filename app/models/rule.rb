@@ -117,18 +117,29 @@ class Rule < ActiveRecord::Base
   end
 
   # get all the condition_action_sets belong to this rule
-  # return an array of sets, empty array if there is no set
-  def get_condition_action_sets_hash
+  # return a hash of sets, empty hash if there is no set belong to this rule
+  # return value: hash {action_obj1 => [condition_obj1, condition_obj2,...], action_obj2 => conditions_array, ...}
+  def get_condition_action_sets_belong_to_the_rule
     sets = ConditionActionSet.find_all_by_rule_id(self.id)
     sets_hash = {}
-    if sets.length != 0
+
+    if !(sets.empty?)
       sets.each do |item|
         action = Action.find_by_id(item.action_id)
         condition = Condition.find_by_id(item.condition_id)
-        sets_hash.merge({action => condition})
+        if sets_hash.has_key?(action)
+          conditions_array = sets_hash.fetch(action)
+          conditions_array = conditions_array.push(condition)
+          sets_hash[action] = conditions_array
+        else
+          conditions_array = []
+          conditions_array = conditions_array.push(condition)
+          sets_hash.merge!({action => conditions_array})
+        end
       end
     end
-    return sets.hash
+    
+    return sets_hash
   end
 
 

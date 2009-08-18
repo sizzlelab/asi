@@ -50,9 +50,9 @@ class RulesController < ApplicationController
     sets_hash = {}
     PROFILE_FIELDS.each do |field|
       if field == "username"
-        sets_hash = sets_hash.merge({field => "public"})
+        sets_hash.merge!({field => "public"})
       else
-        sets_hash = sets_hash.merge({field => "private"})
+        sets_hash.merge!({field => "private"})
       end
     end
     
@@ -93,20 +93,16 @@ class RulesController < ApplicationController
   end
 
   # show a rule
+  # @condition_action_sets_hash = {action1=>conditions_array, action2=>conditions_array}
   def show
-    @rule = Rule.find_by_id(params['rule_id'])
-    if ! @rule
+    @rule = Rule.find_by_id(params['id'])
+    if @rule
+      @condition_action_sets = @rule.get_condition_action_sets_belong_to_the_rule
+    else
       render :status => :not_found and return
     end
   end
 
-  # get associated condition_action_sets
-  def get_condition_action_sets_hash
-    @rule = Rule.find_by_id(params[:id])
-    if @rule
-      @condition_action_sets_hash = @rule.get_condition_action_sets_hash
-    end
-  end
 
   #   update a rule, and associated conditon_action_sets
   def update

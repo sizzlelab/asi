@@ -29,6 +29,9 @@
             <%#=link_to "Delete", rules_path+'/'+rule.id, :method => :delete %>
             <%=button_to "Delete", rule_path(@person,rule.id), :method => :delete %>
           </td>
+          <td>
+            <%=button_to "Show", rule_path(@person, rule.id), :method => :get %>
+          </td>
         </tr>
       <%# end %>
       <% end %>
