@@ -6,10 +6,10 @@ config.cache_classes = true
 
 # Use a different logger for distributed setups
 # config.logger = SyslogLogger.new
-config.log_path = RAILS_ROOT + "../../shared/log"
+config.log_path = RAILS_ROOT + "/../../shared/log"
 
 require 'casclient'
-cas_logger = CASClient::Logger.new(RAILS_ROOT+'../../shared/log/cas.log')
+cas_logger = CASClient::Logger.new(RAILS_ROOT+'/../../shared/log/cas.log')
 cas_logger.level = Logger::DEBUG
 
 # Full error reports are disabled and caching is turned on
