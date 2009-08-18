@@ -33,7 +33,6 @@ namespace :deploy do
   after "deploy:cold", "deploy:finalize"
 
   task :finalize do
-    run "cd #{current_path} && cp config/environments/#{server_config}.rb config/environments/server.rb"
     whenever.update_crontab
     sudo "/etc/init.d/apache2 restart"
   end
@@ -44,6 +43,7 @@ namespace :deploy do
 
   task :after_update do
     symlink_sphinx_indexes
+    run "cd #{current_path} && cp config/environments/#{server_config}.rb config/environments/server.rb"
     thinking_sphinx.configure
     thinking_sphinx.start
   end
