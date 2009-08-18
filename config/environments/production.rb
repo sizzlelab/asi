@@ -6,7 +6,10 @@ config.cache_classes = true
 
 # Use a different logger for distributed setups
 # config.logger = SyslogLogger.new
-config.log_path = "../sizzle_logs/common-services.log"
+config.log_path = "../../shared/log"
+
+cas_logger = CASClient::Logger.new(RAILS_ROOT+'../../shared/log/cas.log')
+cas_logger.level = Logger::DEBUG
 
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false
@@ -35,3 +38,5 @@ ActionMailer::Base.default_charset = "utf-8"
 # ActionController::AbstractRequest.relative_url_root = "http://cos.sizl.org"
 
 SERVER_DOMAIN = "http://cos.sizl.org"
+
+require 'server' rescue nil
