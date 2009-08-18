@@ -36,4 +36,3 @@ ActionMailer::Base.default_charset = "utf-8"
 
 SERVER_DOMAIN = "http://cos.sizl.org"
 
-require 'server' rescue nil

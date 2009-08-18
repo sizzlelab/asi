@@ -43,7 +43,7 @@ namespace :deploy do
 
   task :after_update do
     symlink_sphinx_indexes
-    run "cd #{current_path} && cp config/environments/#{server_config}.rb config/environments/server.rb"
+    run "cd #{current_path} && cp config/#{server_config}.rb config/initializers"
     thinking_sphinx.configure
     thinking_sphinx.start
   end
