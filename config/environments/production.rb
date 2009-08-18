@@ -8,9 +8,6 @@ config.cache_classes = true
 # config.logger = SyslogLogger.new
 config.log_path = "../../shared/log"
 
-cas_logger = CASClient::Logger.new(RAILS_ROOT+'../../shared/log/cas.log')
-cas_logger.level = Logger::DEBUG
-
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false
 config.action_controller.perform_caching             = true
@@ -39,4 +36,4 @@ ActionMailer::Base.default_charset = "utf-8"
 
 SERVER_DOMAIN = "http://cos.sizl.org"
 
-#require 'server' rescue nil
+require 'server' rescue nil
