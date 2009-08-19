@@ -31,9 +31,16 @@ set :mongrel_conf, "#{shared_path}/config/mongrel_cluster.yml"
 
 namespace :deploy do
 
+  task :setup do
+    run "mkdir -p #{shared_path}/db/sphinx"
+    run "mkdir -p #{shared_path}/tmp/pids"
+    run "mkdir -p #{shared_path}/log"
+    run "mkdir -p #{shared_path}/config"
+  end
+
   [ :stop, :start, :restart ].each do |t|
     task t, :roles => :app do
-      deploy.mongrel.send(t)
+      mongrel.send(t)
     end
   end
 
@@ -45,20 +52,28 @@ namespace :deploy do
   end
 
   before "deploy:migrate", "db:backup"
-  after "deploy:update", "deploy:sphinx"
+
+  task :after_symlink do
+    run "mv #{current_path}/REVISION #{current_path}/app/views/layouts/_revision.html.erb"
+    run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
+    rapidoc.generate
+    run "cd #{current_path} && cp config/#{server_config}.rb config/initializers"
+  end
+
+  task :before_start do
+    mongrel.configure
+    symlink_sphinx_indexes
+    thinking_sphinx.configure
+    thinking_sphinx.index
+    thinking_sphinx.start
+  end
+
+  before "deploy:restart", "deploy:sphinx"
 
   task :sphinx do
     symlink_sphinx_indexes
     thinking_sphinx.configure
     thinking_sphinx.start
-  end
-
-  task :after_symlink do
-    run "rm -rf #{current_path}/log && ln -s #{shared_path}/log #{current_path}/log"
-    run "mv #{current_path}/REVISION #{current_path}/app/views/layouts/_revision.html.erb"
-    run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
-    rapidoc.generate
-    run "cd #{current_path} && cp config/#{server_config}.rb config/initializers"
   end
 
   after %w(deploy deploy:migrations deploy:cold), "deploy:finalize"
