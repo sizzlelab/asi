@@ -1,19 +1,33 @@
 set :application, "cos"
 set :repository_root, "svn+ssh://cos@alpha.sizl.org/svn/common-services"
+
+set :user, "cos"
+set :host, "localhost"
+
+if ENV['DEPLOY_ENV'] == "alpha"
+  set :server_config, "alpha"
+elsif ENV['DEPLOY_ENV'] == "beta"
+  set :server_config, "beta"
+  set :host, "beta.sizl.org"
+else
+  set :server_config, "localhost"
+  set :host, "localhost"
+end
+
+
+role :app, "#{user}@#{host}"
+role :db, "#{user}@#{host}", :primary => true
+
+
 set :repository,  "#{repository_root}/trunk"
 
-set :server_config, "alpha"
 
 set :deploy_to, "/var/datat/cos/common-services"
 set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
 set :rails_env, :production
-set :user, "cos"
 
 set :path, "$PATH:/var/lib/gems/1.8/bin"
 set :mongrel_conf, "#{shared_path}/config/mongrel_cluster.yml"
-
-role :app, "#{user}@localhost"
-role :db, "#{user}@localhost", :primary => true
 
 namespace :deploy do
 
@@ -23,29 +37,35 @@ namespace :deploy do
     end
   end
 
-  task :after_update do
-    run "mv #{current_path}/REVISION #{current_path}/app/views/layouts/_revision.html.erb"
-    run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
-    rapidoc.generate
-  end
-
-  after "deploy", "deploy:finalize"
-  after "deploy:cold", "deploy:finalize"
-
-  task :finalize do
-    whenever.update_crontab
-    sudo "/etc/init.d/apache2 restart"
-  end
-
-  task :before_update do
+  task :before_update_code do
     thinking_sphinx.stop rescue nil
   end
 
-  task :after_update do
+  task :after_update_code do
+  end
+
+  before "deploy:migrate", "db:backup"
+  after "deploy:update", "deploy:sphinx"
+
+  task :sphinx do
     symlink_sphinx_indexes
-    run "cd #{current_path} && cp config/#{server_config}.rb config/initializers"
     thinking_sphinx.configure
     thinking_sphinx.start
+  end
+
+  task :after_symlink do
+    run "rm -rf #{current_path}/log && ln -s #{shared_path}/log #{current_path}/log"
+    run "mv #{current_path}/REVISION #{current_path}/app/views/layouts/_revision.html.erb"
+    run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
+    rapidoc.generate
+    run "cd #{current_path} && cp config/#{server_config}.rb config/initializers"
+  end
+
+  after %w(deploy deploy:migrations deploy:cold), "deploy:finalize"
+
+  task :finalize do
+    whenever.write_crontab
+    apache.restart
   end
 
   desc "Link up Sphinx's indexes."
