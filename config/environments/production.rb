@@ -4,14 +4,6 @@
 # Code is not reloaded between requests
 config.cache_classes = true
 
-# Use a different logger for distributed setups
-# config.logger = SyslogLogger.new
-config.log_path = RAILS_ROOT + "/../../shared/log"
-
-require 'casclient'
-cas_logger = CASClient::Logger.new(RAILS_ROOT+'/../../shared/log/cas.log')
-cas_logger.level = Logger::DEBUG
-
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false
 config.action_controller.perform_caching             = true
