@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
   PARAMETERS_NOT_TO_BE_ESCAPED = ["password", "confirm_password", "search", "query"]
   before_filter :escape_parameters
-  
+
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   #protect_from_forgery # :secret => '9c4bfc3f5c5b497cf9ce1b29fdea20f5'
@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
   def ensure_same_as_logged_person(target_person_id)
     return @user && target_person_id == @user.guid
   end
-  
+
   def escape_parameters
     params.each_pair do |key, value|
       unless PARAMETERS_NOT_TO_BE_ESCAPED.include? key
@@ -180,7 +180,7 @@ class ApplicationController < ActionController::Base
         @client = @application_session.client
       else
         session[:cos_session_id] = nil
-        render :status => :unauthorized and return
+        render_json :status => :unauthorized, :messages => "You are not logged in" and return
       end
     else
       #logger.debug "NO SESSION:" + session[:cos_session_id]
@@ -228,11 +228,11 @@ class ApplicationController < ActionController::Base
   end
 
   private
-  
+
   def escape_html(value)
     return ActionView::Helpers::TagHelper.escape_once(value) if value.class == String
     return value if value.class != Array && value.class != Hash && value.class != HashWithIndifferentAccess
-    
+
     if value.class == Array
       value.collect! do |v|
         escape_html v
