@@ -1,5 +1,7 @@
 namespace :whenever do
-  task :update_crontab, :roles => :app do
-    run "cd #{current_path} && PATH=#{path} whenever --update-crontab"
+  [:update_crontab, :write_crontab].each do |t|
+    task t, :roles => :app do
+      run "cd #{current_path} && PATH=#{path} whenever --#{t}"
+    end
   end
 end

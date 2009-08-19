@@ -71,6 +71,7 @@ Rails::Initializer.run do |config|
   # Environment variable part for Common Services begins here
   DB_STRING_MAX_LENGTH = 255
   PURSE_LIMIT = -10
+  SERVER_DOMAIN = "http://localhost:3000"
   RESSI_URL = "http://localhost:9000"
   RESSI_TIMEOUT = 5
   RESSI_UPLOAD_HOUR = 3
