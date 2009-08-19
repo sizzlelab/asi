@@ -45,7 +45,7 @@ module ApplicationHelper
 
   def doc_title(text)
     #text = text
-    link = "<h1><code>#{link_to('COS', root_url)}"
+    link = "<h1><code>#{link_to('ASI', root_url)}"
 
     text.split("/").inject do |sum, part|
       parturl = part.gsub("&lt;", "").gsub("&gt;", "")

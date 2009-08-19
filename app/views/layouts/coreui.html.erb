@@ -1,23 +1,23 @@
 <html>
   <head>
-    <title>Core UI for OtaSizzle Common Services</title>
+    <title>Core UI for Aalto Social Interface</title>
     <%= stylesheet_link_tag("cos") %>
   </head>
   <body>
     <h1>[Core::UI]</h1>
 
-    <p style="color: green"><%= flash[:notice] %></p> 
-    <p style="color: orange"><%= flash[:warning] %></p> 
-    <p style="color: red"><%= flash[:error] %></p> 
-    
+    <p style="color: green"><%= flash[:notice] %></p>
+    <p style="color: orange"><%= flash[:warning] %></p>
+    <p style="color: red"><%= flash[:error] %></p>
+
     <%= yield %>
-    
+
     <% if @user %>
       <p><%= link_to "Logout", "/session", :method=>"delete" %></p>
     <% end %>
 
     <div class="footer">
-      OtaSizzle Common Services <%= render :partial => "layouts/version" %> built <%= render :partial => "layouts/build_date" %>
+      Aalto Social Interface <%= render :partial => "layouts/version" %> built <%= render :partial => "layouts/build_date" %>
     </div>
   </body>
 </html>
