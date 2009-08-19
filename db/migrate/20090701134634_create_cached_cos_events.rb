@@ -1,6 +1,6 @@
 class CreateCachedCosEvents < ActiveRecord::Migration
   def self.up
-    create_table :cached_cos_events do |t|
+    create_table :cached_cos_events, :options => 'ENGINE=InnoDB DEFAULT CHARSET=utf8' do |t|
       t.string :user_id
       t.string :application_id
       t.string :cos_session_id
