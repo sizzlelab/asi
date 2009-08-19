@@ -1,27 +1,18 @@
 set :application, "cos"
-set :repository_root, "svn+ssh://cos@alpha.sizl.org/svn/common-services"
-
 set :user, "cos"
-set :host, "localhost"
 
-if ENV['DEPLOY_ENV'] == "alpha"
-  set :server_config, "alpha"
-  set :repository_root, "file:///svn/common-services"
-elsif ENV['DEPLOY_ENV'] == "beta"
-  set :server_config, "beta"
-  set :host, "beta.sizl.org"
+set :repository, "svn+ssh://#{user}@alpha.sizl.org/svn/common-services/trunk"
+
+if ENV['DEPLOY_ENV']
+  set :server_name, ENV['DEPLOY_ENV']
+  set :host, "#{ENV['DEPLOY_ENV']}.sizl.org"
 else
-  set :server_config, "localhost"
+  set :server_name, "localhost"
   set :host, "localhost"
 end
 
-
 role :app, "#{user}@#{host}"
 role :db, "#{user}@#{host}", :primary => true
-
-
-set :repository,  "#{repository_root}/trunk"
-
 
 set :deploy_to, "/var/datat/cos/common-services"
 set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
@@ -33,23 +24,14 @@ set :mongrel_conf, "#{shared_path}/config/mongrel_cluster.yml"
 namespace :deploy do
 
   task :setup do
-    run "mkdir -p #{shared_path}/db/sphinx"
-    run "mkdir -p #{shared_path}/tmp/pids"
-    run "mkdir -p #{shared_path}/log"
-    run "mkdir -p #{shared_path}/config"
-  end
-
-  [ :stop, :start, :restart ].each do |t|
-    task t, :roles => :app do
-      mongrel.send(t)
+    run "mkdir -p #{deploy_to}/releases"
+    %w(db/sphinx tmp/pids log config).each do |dir|
+      run "mkdir -p #{shared_path}/#{dir}"
     end
   end
 
   task :before_update_code do
     thinking_sphinx.stop rescue nil
-  end
-
-  task :after_update_code do
   end
 
   before "deploy:migrate", "db:backup"
@@ -58,7 +40,7 @@ namespace :deploy do
     run "mv #{current_path}/REVISION #{current_path}/app/views/layouts/_revision.html.erb"
     run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
     rapidoc.generate
-    run "cd #{current_path} && cp config/#{server_config}.rb config/initializers"
+    run "cd #{current_path} && cp config/#{server_name}.rb config/initializers"
   end
 
   task :before_start do
@@ -87,6 +69,12 @@ namespace :deploy do
   desc "Link up Sphinx's indexes."
   task :symlink_sphinx_indexes, :roles => [:app] do
     run "ln -nfs #{shared_path}/db/sphinx #{current_path}/db/sphinx"
+  end
+
+  [ :stop, :start, :restart ].each do |t|
+    task t, :roles => :app do
+      mongrel.send(t)
+    end
   end
 
 end

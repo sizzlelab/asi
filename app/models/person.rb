@@ -332,6 +332,12 @@ class Person < ActiveRecord::Base
     is_association
   end
 
+  # Required for old migrations to run; Thinking Sphinx will attempt
+  # to call this even in old versions of the table
+  def delta=(delta)
+    super rescue nil
+  end
+
   # Methods provided by include_simple_groups:
   # user.groups
   # user.pending_groups
