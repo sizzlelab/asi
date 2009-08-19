@@ -6,38 +6,33 @@
     <h1>Rules of the user "<%= @person.username %>"</h1>
     <table>
       <% @rules.each do |rule| %>
-      <%# form_for(rule) do |r| %>
         <tr>
-          <% if rule.state == "active" %>
+          <% if rule.active? %>
             <td bgcolor="green">
-              <%=h rule.rule_name%>
+              <%=link_to rule.rule_name, rule_path(@person,rule.id), :method => :get %>
             </td>
             <td>
               <%=button_to "Disable rule", rule_path(@person,rule.id)+'/disable', :method => :put %>
-              <%#=link_to "Delete", rules_path+'/'+rule.id, :method => %>
             </td>
           <% else %>
             <td bgcolor="red">
-              <%=h rule.rule_name%>
+              <%=link_to rule.rule_name, rule_path(@person,rule.id), :method => :get %>
             </td>
             <td>
-              <%#=button_to "Enable rule", rule_path(@person,rule.id), :method => "enable"%>
               <%=button_to "Enable rule", rule_path(@person,rule.id)+'/enable', :method => :put%>
             </td>
           <% end %>
           <td>
-            <%#=link_to "Delete", rules_path+'/'+rule.id, :method => :delete %>
             <%=button_to "Delete", rule_path(@person,rule.id), :method => :delete %>
           </td>
           <td>
-            <%=button_to "Show", rule_path(@person, rule.id), :method => :get %>
+            <%#=button_to "Show", rule_path(@person, rule.id), :method => :get %>
           </td>
         </tr>
-      <%# end %>
       <% end %>
     </table>
     <br />
-    <%#= link_to 'New Rule', :action => 'create' %>
+    <p>[ <%= link_to "New Rule", new_rule_path %> ]</p>
   </body>
 </html>
 

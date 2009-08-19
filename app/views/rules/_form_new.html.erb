@@ -1,0 +1,43 @@
+<h1>New Rule</h1>
+<%  form_for @rule do |rule_form| %>
+  <%= rule_form.error_messages %>
+  <p>
+    Name: <%= rule_form.text_field :rule_name %>
+  </p>
+  <h3>Condition Action Sets</h3>
+  <%# create the two select box for conditions using the condition type and value %> 
+  <p>Condition Type: <%= select( "condition_type", "id", Condition.all.collect {|u| [u.condition_type,u.id]}) %></p>
+  <p>Condition Value: <%= select( "condition_value", "id", Condition.all.collect {|u| [u.condition_value,u.id]}) %></p>
+  <p>Logic: <%= rule_form.select(:logic, options_for_select([['and', 'and'], ['or', 'or']])) %></p>
+  <p>[ Add more conditions ]</p>
+  <hr>
+  <p>Action: see <%= select( "action_data", "id", Action.all.collect {|u| [u.data,u.id]}) %></p>
+  <p>[ Add more actions ]</p>
+  <hr>
+  <p>
+    <%= rule_form.submit "Submit" %>  </p>
+
+<% end %>
+
+  <%#*<div id="conditions">%>
+    <%# rule_form.fields_for :conditions do |condition_form| %>
+      <%#*<div class="task">%>
+        <%#*<p>%>
+          <%#= condition_form.label :name, "Task:" %>
+          <%#= condition_form.text_field :name %>
+
+          <%#*<!-- Uses JS to hide this `task' and set a hidden_field with the name%>
+               <%#*`_delete' to "1" which causes the record to be deleted. -->%>
+          <%#= remove_link_unless_new_record(condition_form) %>
+        <%#*</p>%>
+      <%#*</div>%>
+    <%# end %>
+  <%#*</div>%>
+  <%#*<p>%>
+    <%#= add_condition_link "Add a condition", rule_form %>
+  <%#*</p>%>
+
+
+ <%#*select_tag 'person', options_from_collection_for_select(@people, 'id', 'name')%>
+
+  <%#*select("post", "person_id", Person.all.collect {|p| [ p.name, p.id ] }, { :include_blank => true })%>

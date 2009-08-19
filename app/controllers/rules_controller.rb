@@ -4,25 +4,31 @@ class RulesController < ApplicationController
 
   PROFILE_FIELDS = %W(id username email name status_message birthdate phone_number gender irc_nick msn_nick avatar address location)
 
+  def new
+    @rule = Rule.new
+    @rule.condition_action_sets.build
+  end
 
   # create a new rule from create_rule view
   def create
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
     params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
+    @rule = Rule.new(params[:rule])
+    @rule.state = "active"
+    @rule.person_id = params[:user_id]
 
-    @rule = Rule.new(:person_id => params[:user_id],
-      :rule_name => params[:rule_name],
-      :state => "active",
-      :logic => params[:logic])
+#    condition_id = Condition.find(:first, :conditions => { :condition_type => params[:condition_type], :condition_value => params[:condition_value] })
 
-    # TODO Create some condition_action_sets according to params
-        
-    # @rule.condition_action_sets.build()
-    
-    if @rule.save      
-      render rules_path
+#    @rule.condition_action_sets.build(:condition_id => params[condition_id],
+#                                       :action_id => params[:action_data])
+
+
+    if @rule.save
+      flash[:notice] = "Successfully created rule."
+      redirect_to rules_path
     else
-      render :status => :bad_request, :json => @rule.errors.full_messages.to_json and return
+      flash[:notice] = "Error."
+      redirect_to :back
     end
   end
 
@@ -95,14 +101,19 @@ class RulesController < ApplicationController
   # show a rule
   # @condition_action_sets_hash = {action1=>conditions_array, action2=>conditions_array}
   def show
-    @rule = Rule.find_by_id(params['id'])
-    if @rule
+    if @user
+      @person = Person.find_by_id(@user.id)
+      @rule = Rule.find_by_id(params['id'])
+#      ConditionActionSet.get_by_rule_id_action_data(params['id'], @action, @data)
+#      @rule.get_condition_action_sets_belong_to_this_rule(@action, @data)
       @condition_action_sets = @rule.get_condition_action_sets_belong_to_the_rule
-    else
-      render :status => :not_found and return
+
+      if ! @rule
+        redirect_to rules_path
+        flash[:notice] = "This rule doesn't exist."
+      end
     end
   end
-
 
   #   update a rule, and associated conditon_action_sets
   def update
@@ -128,25 +139,16 @@ class RulesController < ApplicationController
 
   # enable a rule. set 'state' to 'active'
   def enable
-    @rule = Rule.find_by_id(params['rule_id'])
-    if @rule.update_attribute(:state, 'active')
-      flash[:notice] = 'Rule was successfully updated.'
-      redirect_to rules_path and return
-    else
-      flash[:notice] = 'Error.'
-    end
+    @rule = Rule.find_by_id(params['id'])
+    @rule.enable_rule
+    redirect_to rules_path and return
   end
 
   # disable a rule. set 'state' to 'inactive'
   def disable
-    flash[:notice] = 'disabled method.'
-    @rule = Rule.find_by_id(params['rule_id'])
-    if @rule.update_attribute(:state, 'inactive')
-      flash[:notice] = 'Rule was successfully updated.'
+      @rule = Rule.find_by_id(params['id'])
+      @rule.disable_rule
       redirect_to rules_path and return
-    else
-      flash[:notice] = 'Error.'
-    end
   end
 
   #  # get all the rules belong to a person

@@ -24,7 +24,7 @@ class Rule < ActiveRecord::Base
     :in => VALID_RULE_LOGICS,
     :allow_nil => false,
     :message => "must be 'or' or 'and'"
-
+  
   alias_method :orig_update_attributes, :update_attributes
 
   def update_attributes(attributes)
@@ -86,7 +86,7 @@ class Rule < ActiveRecord::Base
     return rule_hash
   end
 
-  
+
   # check if the rule is active
   def active?
     return true if self.state == "active"
@@ -94,16 +94,12 @@ class Rule < ActiveRecord::Base
 
   # enable the rule
   def enable_rule
-    if self.state == "inactive"
-      self.update_attributes(:state => "active")
-    end
+      self.update_attribute(:state, 'active')
   end
 
   # disable the rule
   def disable_rule
-    if self.state == "active"
-      self.update_attributes(:state => "inactive")
-    end
+      self.update_attribute(:state, 'inactive')
   end
 
   def set_owner
@@ -265,7 +261,7 @@ class Rule < ActiveRecord::Base
 
 
   # condition_value can be 'Public' or 'Private'
-  # When public: evry user can perform the action
+  # When public: every user can perform the action
   # when private: only the user himslef can perform the action
   def check_condition_publicity(connection_person=nil, object_person_id=nil, condition_value=nil)
     print "************ in rule/check_condition_publicity ******************* \n"
