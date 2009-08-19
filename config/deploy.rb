@@ -6,6 +6,7 @@ set :host, "localhost"
 
 if ENV['DEPLOY_ENV'] == "alpha"
   set :server_config, "alpha"
+  set :repository_root, "file:///svn/common-services"
 elsif ENV['DEPLOY_ENV'] == "beta"
   set :server_config, "beta"
   set :host, "beta.sizl.org"
