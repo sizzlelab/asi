@@ -1,6 +1,6 @@
 class CreateUserSubscriptions < ActiveRecord::Migration
   def self.up
-    create_table :user_subscriptions do |t|
+    create_table :user_subscriptions, :options => 'ENGINE=InnoDB DEFAULT CHARSET=utf8' do |t|
       t.column :person_id, :integer
       t.column :channel_id, :integer
 
