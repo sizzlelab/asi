@@ -105,8 +105,5 @@ CASClient::Frameworks::Rails::Filter.configure(
   #:proxy_callback_url => "https://kassi:3444/cas_proxy_callback/receive_pgt"
 )
 
-ExceptionNotifier.exception_recipients = %w(cos@cs.hut.fi)
-ExceptionNotifier.sender_address = %("ASI Error" <asi@cos.sizl.org>)
-ExceptionNotifier.email_prefix = "[ASI] "
 
 
