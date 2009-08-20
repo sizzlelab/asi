@@ -2,6 +2,8 @@ require 'find'
 
 class ApiController < ApplicationController
 
+  skip_before_filter :log
+
   def api
     if api_changed? && ENV['RAILS_ENV'] == "development"
       system("script/rapidoc/generate")
