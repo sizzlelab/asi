@@ -4,7 +4,6 @@ require 'logging_helper'
 require 'json'
 
 class ApplicationController < ActionController::Base
-  include ExceptionNotifiable
 
   helper :all # include all helpers, all the time
   layout 'default'
@@ -243,4 +242,26 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+
+  protected
+
+  def log_error(exception)
+    super(exception)
+
+    begin
+
+      if RAILS_ENV == "production"
+        ErrorMailer.deliver_snapshot(
+          exception,
+          clean_backtrace(exception),
+          session,
+          params,
+          request,
+          @current_user)
+      end
+    rescue => e
+      logger.error(e)
+    end
+  end
+
 end
