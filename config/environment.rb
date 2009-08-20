@@ -105,5 +105,3 @@ CASClient::Frameworks::Rails::Filter.configure(
   #:proxy_callback_url => "https://kassi:3444/cas_proxy_callback/receive_pgt"
 )
 
-
-
