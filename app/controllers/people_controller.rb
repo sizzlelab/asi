@@ -6,6 +6,8 @@ class PeopleController < ApplicationController
   #before_filter :fix_utf8_characters, :only => [:create, :update, :index]
   after_filter :set_cache_control, :only => [:get_avatar, :get_small_thumbnail, :get_large_thumbnail]
 
+  cache_sweeper :people_sweeper, :only => [:create, :update, :delete, :update_avatar]
+
 =begin rapidoc
 access:: Client login
 return_code:: 200 - OK
@@ -47,7 +49,7 @@ description:: Finds users based on their real names and usernames.
   end
 
 =begin rapidoc
-access:: User login
+access:: Client login
 return_code:: 200 - OK
 json:: {"entry":
 {"name":null,
@@ -64,9 +66,12 @@ latest update is always in UTC time. The 'avatar' slot in the returned JSON cont
 image and also the status of the avatar, which is 'set' or 'not_set' depending on if the user has uploaded an image or not.
 =end
   def show
-    @person = Person.find_by_guid(params['user_id'])
-    if ! @person
-      render_json :status => :not_found and return
+    if !(@person = Rails.cache.read(Person.build_cache_key(params['user_id'])) )
+      @person = Person.find_by_guid(params['user_id'])
+      if ! @person
+        render_json :status => :not_found and return
+      end
+      Rails.cache.write(Person.build_cache_key(params['user_id']), @person, :expires_in => 60.minutes)
     end
     render_json :entry => @person.person_hash(@client.id, @user)
   end
