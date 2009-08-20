@@ -349,6 +349,12 @@ class Person < ActiveRecord::Base
   # user.leave(group)
   # user.become_member_of(group)
 
+  def Person.build_cache_key(key, user=nil)
+    ckey = "ASI:"
+    ckey += key
+    ckey += ":" + (user ? user.guid.to_s : "nil")
+  end
+
   private
 
   #returns a string representing the connection between the user and the asker
