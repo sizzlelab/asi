@@ -53,6 +53,13 @@ class ApplicationController < ActionController::Base
     render :action => request.path[1..-1].gsub(/\/$/, ""), :layout => "doc"
   end
 
+  if RAILS_ENV == "test"
+    def test
+      render :layout => "doc"
+    end
+  end
+
+
   def ensure_person_login
     unless @user
       render_json :status => :unauthorized, :messages => "Please login as a user to continue" and return
