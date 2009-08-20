@@ -287,10 +287,10 @@ description:: Creates a new user. If creation is succesful the current app-only 
   end
 
   def update_avatar
-    # COMMENTED AWAY TEMPORARILY TO HELP TESTING OF KASSI
-    # if ! ensure_same_as_logged_person(params['user_id'])
-    #   render :status => :forbidden and return
-    # end
+
+    if ! ensure_same_as_logged_person(params['user_id'])
+       render :status => :forbidden and return
+    end
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render_json :status  => :not_found and return
@@ -368,7 +368,11 @@ description:: Creates a new user. If creation is succesful the current app-only 
     else
       service_name = service.name
     end
+
+    logger.debug service_name
+
     full_filename = "#{RAILS_ROOT}/public/images/#{DEFAULT_AVATAR_IMAGES[service_name][image_type]}"
+
     @data = File.open(full_filename,'rb').read
   end
 
