@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :maintain_session_and_user
 
-  after_filter :log
+  after_filter :log, :except => [ :index, :doc ]
   after_filter :set_correct_content_type
 
   PARAMETERS_NOT_TO_BE_ESCAPED = ["password", "confirm_password", "search", "query"]
