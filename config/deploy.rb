@@ -16,7 +16,9 @@ role :db, "#{user}@#{host}", :primary => true
 
 set :deploy_to, "/var/datat/cos/common-services"
 set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
+set :mongrel_cluster_size, 7
 set :rails_env, :production
+
 
 set :path, "$PATH:/var/lib/gems/1.8/bin"
 set :mongrel_conf, "#{shared_path}/config/mongrel_cluster.yml"
