@@ -9,9 +9,9 @@ class ApplicationControllerTest < ActionController::TestCase
     @response = ActionController::TestResponse.new
   end
 
-  def test_index
+  def test_logging
     assert_difference "CachedCosEvent.count", 1 do
-      get :index, { :app_id => clients(:one).id, :event_id => "index_test" }, { :cos_session_id => sessions(:session1).id }
+      get :test, { :app_id => clients(:one).id, :event_id => "index_test" }, { :cos_session_id => sessions(:session1).id }
       assert_response :success
     end
     event = CachedCosEvent.find(:first, :order => 'created_at DESC')
