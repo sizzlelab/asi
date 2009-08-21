@@ -221,7 +221,7 @@ class Rule < ActiveRecord::Base
       #more condition types can go here
     end
 
-    print "check condition result: #{result} \n"
+    #print "check condition result: #{result} \n"
     return result
   end
 
@@ -231,7 +231,7 @@ class Rule < ActiveRecord::Base
   # if condition_value is true, return true if connection_person is logged in
   # if condition_value is false, return true if connection_person is NOT logged_in
   def check_condition_logged_in(connection_person=nil, condition_value=nil)
-    print "************ in rule/check_condition_logged_in ******************* \n"
+    #print "************ in rule/check_condition_logged_in ******************* \n"
     if condition_value == nil
       return false
     end
@@ -256,7 +256,7 @@ class Rule < ActiveRecord::Base
   # condition_value is group_id
   # return true if connection_person is a member of the group, else return false
   def check_condition_group(connection_person=nil, condition_value=nil)
-    print "************ in rule/check_condition_group ******************* \n"
+    #print "************ in rule/check_condition_group ******************* \n"
     if !connection_person.nil? && !condition_value.nil?
       group = Group.find_by_id(condition_value)
       return group.membership(connection_person)
@@ -268,7 +268,7 @@ class Rule < ActiveRecord::Base
   # check if connection_person is a friend of object_person
   # return true if yes, else return false
   def check_condition_friend(connection_person=nil, object_person_id=nil, condition_value=nil)
-    print "************ in rule/check_condition_friend ******************* \n"
+    #print "************ in rule/check_condition_friend ******************* \n"
     if !connection_person.nil? && !object_person_id.nil? && condition_value
       friend = Connection.find(:all, :conditions => {'person_id' =>  object_person_id, 'contact_id' => connection_person.id, 'status'=>'accepted'})
       if friend.length != 0
@@ -284,7 +284,7 @@ class Rule < ActiveRecord::Base
   # When public: every user can perform the action
   # when private: only the user himslef can perform the action
   def check_condition_publicity(connection_person=nil, object_person_id=nil, condition_value=nil)
-    print "************ in rule/check_condition_publicity ******************* \n"
+    #print "************ in rule/check_condition_publicity ******************* \n"
     if !connection_person.nil? && !object_person_id.nil? && !condition_value.nil?
       if condition_value == "public"
         return true
@@ -299,7 +299,7 @@ class Rule < ActiveRecord::Base
   # only a specific user can perform the action
   # condition_value is the username
   def check_condition_user(connection_person=nil, condition_value=nil)
-    print "************ in rule/check_condition_user ******************* \n"
+    #print "************ in rule/check_condition_user ******************* \n"
     if !connection_person.nil? && !condition_value.nil?
       user = Person.find(:all, :conditions => {'username' => condition_value, 'id'=> connection_person.id})
       if user.length != 0

@@ -20,6 +20,11 @@ four:
   action_id: view_email
   rule_id: 2
 
+five:
+    condition_id: 6 # user testi1 with person_id 1aa
+    action_id: view_email
+    rule_id: 6
+    
 rule3_id:
   condition_id: 1 # publicity - private
   action_id: view_id
@@ -84,3 +89,4 @@ rule3_location:
    condition_id: 1 # publicity - private
    action_id: view_location
    rule_id: 3
+

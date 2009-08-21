@@ -79,10 +79,9 @@ class RulesController < ApplicationController
     if @rule.save
       flash[:notice] = "Default profile rule is created for user successfuly."
       redirect_to rules_path
-      # render :status => :created and return
     else
       flash[:notice] = "Default profile rule creation for user failed."
-      render :status => :bad_request, :json => @rule.errors.full_messages.to_json and return # where to render?
+      redirect_to :back # not sure about this redirect_to
     end
   end
 
