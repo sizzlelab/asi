@@ -12,6 +12,9 @@
 #
 
 class Session < ActiveRecord::Base
+
+  EXPIRES_IN = 2.weeks
+
   attr_accessor :username, :password, :client_name, :client_password, :person_match, :application_login
   belongs_to :person
   belongs_to :client
@@ -20,10 +23,16 @@ class Session < ActiveRecord::Base
   before_validation :authenticate_client
 
   validates_presence_of :application_login, :message => 'failed',
-                                       :unless => :session_has_been_associated_with_client?
+                        :unless => :session_has_been_associated_with_client?
 
   before_save :associate_session_to_person
   before_save :associate_session_to_client
+
+  def Session.cleanup
+    Session.all(:conditions => [ "updated_at < ?", EXPIRES_IN.ago ]).each do |s|
+      s.destroy
+    end
+  end
 
   def to_json(*a)
     session_hash = {
