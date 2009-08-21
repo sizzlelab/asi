@@ -9,10 +9,6 @@ class RuleTest < ActiveSupport::TestCase
   
 
   
- # test rule create
-  def test_create_rule
-    
-  end
 
   # test update_attributes
   def test_update_attributes
@@ -22,6 +18,11 @@ class RuleTest < ActiveSupport::TestCase
   # test authorize
   def test_authorize?
 
+  end
+
+  # test authorize_actions
+  def test_authorize_actions
+    
   end
 
   # test get_rule_hash
@@ -64,15 +65,53 @@ class RuleTest < ActiveSupport::TestCase
     
   end
 
-  # test authorize_according_to_one_rule
+  # test authorize_according_to_one_rule(connection_person, object_person_id, action, data)
   def test_authorize_according_to_one_rule
-    
+    rule_or = rules(:active_or_rule) # friends or members of group tkk can view name of person 1
+    rule_and = rules(:active_and_rule) # friends who are members of group tkk can view email of person 1
+    action_view_name = actions(:view_name)
+    action_view_email = actions(:view_email)
+    connection_person = people(1)
+    object_person = people(:valid_person) # person id 1
+    connection_person_test = people(:test) # not friend, not member of group tkk
+    connection_person_friend_group_mem = people(:friend) # person 4 is a friend, and also a member of group tkk
+    connection_person_friend_not_group_mem = people(:contact) # person 3 is a friend, but not a member of group tkk
+
+    assert rule_or.authorize_according_to_one_rule(connection_person_test, object_person.id, action, data)
   end
 
 
   # test private methods
 
-  # test check_condition_logged_in
+  # test check_condition(connection_person=nil, object_person_id=nil, condition=nil)
+  def test_check_condition
+    connection_person_test = people(:test)
+    connection_person_1aa = people(:person1) # 1aa is member of group tkk, friend of 1, satisfy condition_user
+    object_person = people(:valid_person) # person id 1
+    condition_private = conditions(:private)
+    condition_public = conditions(:public)
+    condition_logged_in = conditions(:logged_in)
+    condition_is_friend = conditions(:is_friend)
+    condition_group = conditions(:group)
+    condition_user = conditions(:user)
+    rule = rules(:test_rule)
+    # expose private methods of the test object rule
+    class << rule
+      public :check_condition
+    end
+
+    assert !rule.check_condition(connection_person_test, object_person.id, condition_private)
+    assert rule.check_condition(connection_person_test, object_person.id, condition_public)
+    assert rule.check_condition(connection_person_test, object_person.id, condition_logged_in)
+    assert !rule.check_condition(connection_person_test, object_person.id, condition_is_friend)
+    assert rule.check_condition(connection_person_1aa, object_person.id, condition_is_friend)
+    assert !rule.check_condition(connection_person_test, object_person.id, condition_group)
+    #assert rule.check_condition(connection_person_1aa, object_person.id, condition_group)
+    assert !rule.check_condition(connection_person_test, object_person.id, condition_user)
+    #assert rule.check_condition(connection_person_1aa, object_person.id, condition_user)
+  end
+
+  # test check_condition_logged_in(connection_person, condition_value)
   def test_check_condition_logged_in
     rule = rules(:test_rule)
     # expose private methods of the test object rule
@@ -80,7 +119,12 @@ class RuleTest < ActiveSupport::TestCase
       public :check_condition_logged_in
     end
 
-    
+    connection_person1 = nil
+    connection_person2 = people(:valid_person)
+    assert !rule.check_condition_logged_in(connection_person1, true)
+    assert rule.check_condition_logged_in(connection_person2, true)
+    assert rule.check_condition_logged_in(connection_person1, false)
+    assert !rule.check_condition_logged_in(connection_person2, false)
   end
 
   # test check_condition_group

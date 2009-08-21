@@ -11,7 +11,7 @@
   <p>Logic: <%= rule_form.select(:logic, options_for_select([['and', 'and'], ['or', 'or']])) %></p>
   <p>[ Add more conditions ]</p>
   <hr>
-  <p>Action: see <%= select( "action_data", "id", Action.all.collect {|u| [u.data,u.id]}) %></p>
+  <p>Action: see <%= select( "action_data", "id", Action.all.collect {|u| [u.action_value,u.id]}) %></p>
   <p>[ Add more actions ]</p>
   <hr>
   <p>

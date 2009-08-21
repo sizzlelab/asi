@@ -172,9 +172,9 @@ class Person < ActiveRecord::Base
     # now only logged in user who is a member of group tkk (testi1 with person_id 1aa) can get user1's email address
     # authorize?(subject_person_id, object_person_id, action, object_data)
     #print "******************in person/ authorize email view access*************************\n"
-    #if connection_person == self || Rule.authorize?(connection_person, id, 'view', 'email')
+    if connection_person == self || Rule.authorize?(connection_person, id, 'view', 'email')
       person_hash.merge!({'email' => email})
-    #end
+    end
 
     if self.person_spec
       self.person_spec.attributes.except('status_message', 'status_message_changed').each do |key, value|

@@ -34,4 +34,8 @@ privacy:
   person_id: 1
   contact_id: 1aa
   status: 'accepted'
- 
+
+privacy2:
+  person_id: 1aa
+  contact_id: 1
+  status: 'accepted' 

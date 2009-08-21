@@ -23,7 +23,7 @@
               <td> Condition Value: <%=condition.condition_value %> </td>
               <% is_first = false %>
             <% end %>  <%# conditions_array.each%>
-            <td> =======> Action: <%=action.action%> <%=action.data %> </td>
+            <td> =======> Action: <%=action.action_type%> <%=action.action_value %> </td>
           <% end %> <%# @condition_action_sets.each_pair%>
         <% end %> <%# if @condition_action_sets %>
       </table>

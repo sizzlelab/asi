@@ -65,7 +65,7 @@ name_contains_dash:
 
   #encrypted_password 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c is "testi" in readable form
 <% 20.times do |n| %>
-<%="#{n}:
+<%="person#{n}:
   id: #{n}aa
   username: testi#{n}
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c

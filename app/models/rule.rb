@@ -31,22 +31,22 @@ class Rule < ActiveRecord::Base
     orig_update_attributes attributes
   end
 
-  # check if subject_person has the right do a certain ation to data
-  # syntax: authorize?(subject_person, object_person_id, action, data)
+  # check if subject_person has the right do a certain ation (action_type) to data (action_value)
+  # syntax: authorize?(subject_person, object_person_id, action_type, action_value)
   # return: true or false
-  def Rule.authorize?(connection_person=nil, object_person_id=nil, action=nil, data=nil)
-    print "************ in rule/authorize? ******************* \n"
-    if connection_person
-      print "connection_person.id: #{connection_person.id} \n"
-    end
-    print "object_person_id: #{object_person_id} \n"
-    print "action: #{action} \n"
-    print "data: #{data} \n"
+  def Rule.authorize?(subject_person=nil, object_person_id=nil, action_type=nil, action_value=nil)
+    # print "************ in rule/authorize? ******************* \n"
+    # if subject_person
+    #  print "subject_person.id: #{subject_person.id} \n"
+    # end
+    #print "object_person_id: #{object_person_id} \n"
+    #print "action_type: #{action_type} \n"
+    #print "action_value: #{action_value} \n"
 
     active_rules = Rule.find(:all, :conditions => {'person_id'=>object_person_id, 'state'=>'active'})
     if active_rules.length != 0
       active_rules.each do |rule|
-        if rule.authorize_according_to_one_rule(connection_person, object_person_id, action, data)
+        if rule.authorize_according_to_one_rule(subject_person, object_person_id, action_type, action_value)
           return true
         end
       end
@@ -55,17 +55,37 @@ class Rule < ActiveRecord::Base
     return false
   end
 
+  # check if subject_person has the right to do an action ("view", "comment"...)
+  # to an array of data (action_value_array)
+  # params: subject_person, object_person_id, action_type, action_value_array
+  # return: array that contains data which are accessible to subject_person
+  # usage example: pass all the profile fields as action_value_array, and return
+  # profile fields that can be viewed by subject_person
+  def Rule.authorize_action_on_multiple_data(subject_person=nil, object_person_id=nil, action_type=nil, action_value_array=nil)
+    result_array = []
+    if action_value_array
+      action_value_array.each do |action_value|
+        if Rule.authorize?(subject_person, object_person_id, action_type, action_value)
+          result_array = result_array.push(action_value)
+        end
+      end
+    end
+    return result_array
+  end
+
+  # added by ville
   def to_hash_by_data
     h = Hash.new
     condition_action_sets.each do |set|
-      h[set.action.data] = set
+      h[set.action.action_value] = set
     end
     return h
   end
 
 
-  def condition_action_sets_concerning(data)
-    condition_action_sets.find(:all, :conditions => { :actions => { :data => data } }, :joins => [:action] ).inspect
+  # added by ville
+  def condition_action_sets_concerning(action_value)
+    condition_action_sets.find(:all, :conditions => { :actions => { :action_value => action_value } }, :joins => [:action] ).inspect
   end
 
   # get the rule
@@ -102,9 +122,7 @@ class Rule < ActiveRecord::Base
       self.update_attribute(:state, 'inactive')
   end
 
-  def set_owner
-
-  end
+ 
 
 
   def to_json (asking_person, *a)
@@ -116,20 +134,19 @@ class Rule < ActiveRecord::Base
   # return a hash of sets, empty hash if there is no set belong to this rule
   # return value: hash {action_obj1 => [condition_obj1, condition_obj2,...], action_obj2 => conditions_array, ...}
   def get_condition_action_sets_belong_to_the_rule
-    sets = ConditionActionSet.find_all_by_rule_id(self.id)
+    sets = self.condition_action_sets
     sets_hash = {}
 
     if !(sets.empty?)
-      sets.each do |item|
-        action = Action.find_by_id(item.action_id)
-        condition = Condition.find_by_id(item.condition_id)
+      sets.each do |set|
+        action = set.action
+        condition = set.condition
         if sets_hash.has_key?(action)
           conditions_array = sets_hash.fetch(action)
           conditions_array = conditions_array.push(condition)
           sets_hash[action] = conditions_array
         else
-          conditions_array = []
-          conditions_array = conditions_array.push(condition)
+          conditions_array = [condition]
           sets_hash.merge!({action => conditions_array})
         end
       end
@@ -139,24 +156,25 @@ class Rule < ActiveRecord::Base
   end
 
 
-  # get all the condition_action_sets belong to this rule and corrsponding to specific action and data
+  # get all the condition_action_sets belong to this rule and corrsponding to
+  # specific action_type and action_value
   # return an array of sets, empty array if there is no set
-  def get_condition_action_sets_by_rule_action_data(action, data)
-    ConditionActionSet.get_by_rule_id_action_data(self.id, action, data)
+  def get_condition_action_sets_by_rule_action_type_value(action_type=nil, action_value=nil)
+    ConditionActionSet.get_by_rule_id_action_type_action_value(self.id, action_type, action_value)
   end
 
-  # check if subject_person has the right do a certain ation to data based on this rule
-  def authorize_according_to_one_rule(connection_person, object_person_id, action, data)
-    print "************ in rule/authorize_according_to_one_rule ******************* \n"
-    print "rule_id: #{self.id} , rule_name: #{self.rule_name}, person_id: #{self.person_id} \n"
-    print " "
+  # check if subject_person has the right do a certain ation (action_type) to
+  # data (action_value) based on this rule
+  def authorize_according_to_one_rule(connection_person=nil, object_person_id=nil, action_type=nil, action_value=nil)
+    #print "************ in rule/authorize_according_to_one_rule ******************* \n"
+    #print "rule_id: #{self.id} , rule_name: #{self.rule_name}, person_id: #{self.person_id} \n"
+    #print " "
     result = false
-    condition_action_sets = get_condition_action_sets_belong_to_this_rule(action, data)
+    condition_action_sets = self.get_condition_action_sets_by_rule_action_type_value(action_type, action_value)
     if condition_action_sets.length != 0
       condition_action_sets.each do |condition_action_set|
-        condition_id = condition_action_set.condition_id
-        condition = Condition.find_by_id(condition_id)
-        print "condition.id: #{condition.id}, condition.type: #{condition.condition_type}, condition.value: #{condition.condition_value} \n"
+        condition = condition_action_set.condition
+        #print "condition.id: #{condition.id}, condition.type: #{condition.condition_type}, condition.value: #{condition.condition_value} \n"
         if self.logic == "and"
           if check_condition(connection_person, object_person_id, condition)
             result = true
@@ -171,19 +189,21 @@ class Rule < ActiveRecord::Base
         end
       end
     end
+
+    return result
   end
 
   private
 
   # check if the connection_person satisfies a condition
   def check_condition(connection_person=nil, object_person_id=nil, condition=nil)
-    print "************ in rule/check_condition ******************* \n"
+    #print "************ in rule/check_condition ******************* \n"
     if condition
       condition_type = condition.condition_type
       condition_value = condition.condition_value
     end
-    print "condition_type:  #{condition_type} \n"
-    print "condition_value:  #{condition_value} \n"
+    #print "condition_type:  #{condition_type} \n"
+    #print "condition_value:  #{condition_value} \n"
 
     result = false
 

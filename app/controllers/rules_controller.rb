@@ -66,7 +66,7 @@ class RulesController < ApplicationController
     condition_private = Condition.find_by_condition_type_and_condition_value("publicity", "private")
     
     sets_hash.each_pair do |key, value|
-      action = Action.find_by_action_and_data("view", key)
+      action = Action.find_by_action_type_and_action_value("view", key)
       if value == "public"
         condition_id = condition_public.id
       elsif value == "private"
@@ -104,8 +104,6 @@ class RulesController < ApplicationController
     if @user
       @person = Person.find_by_id(@user.id)
       @rule = Rule.find_by_id(params['id'])
-#      ConditionActionSet.get_by_rule_id_action_data(params['id'], @action, @data)
-#      @rule.get_condition_action_sets_belong_to_this_rule(@action, @data)
       @condition_action_sets = @rule.get_condition_action_sets_belong_to_the_rule
 
       if ! @rule
@@ -139,14 +137,14 @@ class RulesController < ApplicationController
 
   # enable a rule. set 'state' to 'active'
   def enable
-    @rule = Rule.find_by_id(params['id'])
+    @rule = Rule.find_by_id(params['rule_id'])
     @rule.enable_rule
     redirect_to rules_path and return
   end
 
   # disable a rule. set 'state' to 'inactive'
   def disable
-      @rule = Rule.find_by_id(params['id'])
+      @rule = Rule.find_by_id(params['rule_id'])
       @rule.disable_rule
       redirect_to rules_path and return
   end
