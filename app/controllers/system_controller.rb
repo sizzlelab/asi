@@ -11,27 +11,24 @@ class SystemController < ApplicationController
   layout nil
 
   def reindex
-    system "rake thinking_sphinx:rebuild RAILS_ENV=#{ENV['RAILS_ENV']} &"
+    rake "thinking_sphinx:rebuild"
     render :template => "system/default"
   end
 
   def upload
-    CachedCosEvent.upload_all
+    rake "ressi:upload"
     render :template => "system/default"
   end
-  
+
   def clean_sessions
-    Session.find(:all).each do |s|
-      #destroys all sessions that have been updated more than two weeks ago
-      s.destroy if s.updated_at < (Time.now - (60 * 60 * 24 * 14))
-    end
+    Session.cleanup
     render :template => "system/default"
   end
 
   private
 
   def ensure_localhost
-    unless request.host == "localhost"
+    unless local_request?
       render :status => :forbidden, :template => "system/default"
     end
   end
