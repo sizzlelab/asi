@@ -11,12 +11,19 @@ else
   set :host, "localhost"
 end
 
+mongrel_cluster_size = {
+  "alpha" => 7,
+  "beta" => 13,
+  "localhost" => 1
+}
+
+set :mongrel_cluster_size, mongrel_cluster_size[server_name]
+
 role :app, "#{user}@#{host}"
 role :db, "#{user}@#{host}", :primary => true
 
 set :deploy_to, "/var/datat/cos/common-services"
 set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
-set :mongrel_cluster_size, 13
 set :rails_env, :production
 
 
@@ -30,6 +37,11 @@ namespace :deploy do
     %w(db/sphinx tmp/pids log config).each do |dir|
       run "mkdir -p #{shared_path}/#{dir}"
     end
+  end
+
+  task :before_cold do
+    run "killall mongrel_rails" rescue nil
+    run "killall searchd" rescue nil
   end
 
   task :before_update_code do
