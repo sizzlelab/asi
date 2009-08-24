@@ -20,7 +20,7 @@ class ErrorMailer < ActionMailer::Base
 
     recipients  'vsundber@gmail.com'
     from        'Error Mailer <ASIErrors@sizl.org>'
-    subject     "[Error] exception on #{SERVER_DOMAIN} at #{request.url}" #  #{env['REQUEST_URI']}"
+    subject     "[Error] exception on #{request.url}" #  #{env['REQUEST_URI']}"
     sent_on    sent_on
     body        :exception => exception, :trace => trace,
                 :session => session, :params => params,
