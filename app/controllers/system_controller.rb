@@ -28,9 +28,13 @@ class SystemController < ApplicationController
   private
 
   def ensure_localhost
-    unless local_request?
+    unless local_request? || ENV['RAILS_ENV'] == "test"
       render :status => :forbidden, :template => "system/default"
     end
+  end
+
+  def rake(task)
+    system "rake #{task} RAILS_ENV=#{ENV['RAILS_ENV']} > /dev/null &"
   end
 
 end
