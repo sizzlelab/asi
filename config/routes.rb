@@ -91,7 +91,6 @@ ActionController::Routing::Routes.draw do |map|
                                          :delete => 'delete'
 
   map.resource '/people/:user_id/@avatar', :controller => 'people',
-                                           :post => 'update_avatar',
                                            :get => 'get_avatar',
                                            :put => 'update_avatar',
                                            :delete => 'delete_avatar',
@@ -135,11 +134,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/recover_password', :controller => 'people',
                                            :post => 'recover_password'
 
-  map.resource '/people/reset_password', :controller => 'people',
-                                         :get => 'reset_password',
-                                         :post => 'change_password',
-                                         :format_get => 'html',
-                                         :format_post => 'html'
+  map.connect '/people/reset_password', :controller => 'people',
+                                        :action => 'reset_password', :conditions => { :method => :get }
+
+  map.connect '/people/change_password', :controller => 'people',
+                                         :action => 'change_password', :format => 'html', :conditions => { :method => :post }
 
   map.resource '/people/:user_id/@groups', :controller => 'groups',
                                            :get => 'get_groups_of_person',

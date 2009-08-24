@@ -11,9 +11,6 @@ class GroupsController < ApplicationController
   before_filter :ensure_admin, :only => ADMIN_METHODS
 
   def create
-    parameters_hash = HashWithIndifferentAccess.new(params.clone)
-    params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
-
     unless params[:group]
       render_json :status => :bad_request, :messages => "No group supplied. Note that params must be given as group[title] etc." and return
     end
