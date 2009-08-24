@@ -120,6 +120,29 @@ description:: Creates a new user. If creation is succesful the current app-only 
     end
   end
 
+=begin rapidoc
+access:: Self
+return_code:: 200
+return_code:: 400 - There's a problem with one of the parameters.
+param:: person
+  param:: password - A new password.
+  param:: email - Person's email address
+  param:: status_message - Person's current status message.
+  param:: birthdate - Person's birthdate as date. Format yyyy-mm-dd
+  param:: gender - Person's gender, either MALE or FEMALE.
+  param:: description - A description of the person, or "about me".
+  param:: website - A link to this person's website.
+  param:: name
+    param:: given_name - Person's given name.
+    param:: family_name - Person's family name.
+    param:: phone_number - Person's phone number, stored as a string.
+  param:: address
+    param:: street_address - Person's street address
+    param:: postal_code - Person's postal code, e.g. 02150
+    param:: locality - Person's locality, e.g. Espoo
+
+description:: Update (or add) information to user's profile. The person-parameter needs to contain only the attributes that need to be changed. If an error occurs, both status code and an array of error messages are returned.
+=end
   def update
     parameters_hash = HashWithIndifferentAccess.new(params.clone)
     params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
@@ -261,6 +284,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
       @friends = @person.contacts
     end
     @friends.filter_paginate!(params[:per_page], params[:page]){true}
+    @friends.collect! { |p| p.to_hash(@user, @client)}
     render_json :entry => @friends, :size => @friends.count_available and return
   end
 
