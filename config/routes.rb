@@ -7,7 +7,6 @@ module COSRoutes
     connect "api" + route, :controller => 'api',
                            :format => "html",
                            :action => 'api'
-
   end
 
   def resource(route, options)
@@ -133,10 +132,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/:user_id/@location/@location_security_token', :controller => 'locations',
                                                                      :get => 'fetch_location_security_token'
 
-  map.resource '/people/:user_id/@transactions/transactions.xml', :controller => 'transactions',
-                                                                  :get => 'get',
-                                                                  :post => 'create'
-
   map.resource '/people/recover_password', :controller => 'people',
                                            :post => 'recover_password'
 
@@ -234,17 +229,15 @@ ActionController::Routing::Routes.draw do |map|
 
 
 
-  map.resource '/transactions', :controller => 'transactions',
-                                :get => 'get',
-                                :post => 'create'
-
   map.confirmation '/confirmation', :controller => 'confirmations', :action => 'confirm_email'
 
   map.request_new_confirm_email "confirmation/request_new_confirm_email", :controller => 'confirmations', :action => "request_new_confirm_email", :format => "html", :format_get => "html"
 
   map.documentation '/appdata'
 
-  map.documentation '/tutorial'
+  map.connect "doc/tutorial", :controller => 'application',
+                           :format => 'html',
+                           :action => 'doc'
 
  # map.apidoc '/api', :controller => 'api', :get => 'index', :format => "html"
  # map.peopleapi '/api/people', :controller => 'api',:action => 'people' ,:get => 'people', :format => 'html'

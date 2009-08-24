@@ -1,42 +1,51 @@
 <%= DocUtil.print_erb "doc_title '#{@path}'", true if @path%>
 
 <% @documentation.each_pair do |method, comment| %>
+
+  <% unless comment != nil && comment.description && comment.return_codes.empty? %>
   <h3><%= method.to_s.upcase %></h3>
+  <% end %>
 
   <%if comment%>
-    <p><strong>Description:</strong></p>
     <p><%= comment.description %></p>
 
-    <p><strong>Parameters:</strong></p>
     <% unless comment.parameters.empty? %>
+      <p><strong>Parameters:</strong></p>
       <table>
         <% comment.parameters.each do |p| %><%=p.to_table %><% end %>
       </table>
     <% end %>
 
+    <% unless comment.access == nil %>
     <p><strong>Access:</strong> <%= comment.access %> </p>
+    <% end %>
 
+    <% unless comment.return_codes.empty? %>
     <p><strong>Return codes:</strong></p>
 
 <table>
 
-<%comment.return_codes.each do |r| %>
+<% comment.return_codes.each do |r| %>
   <tr>
     <th><%= r[0] %>&nbsp;<span class="status-code"><%= DocUtil.print_erb "http_status( #{r[0]}.to_s )", true %></span></th>
     <td><%= r[1] %></td>
   </tr>
   <%end%>
 </table>
+    <% end %>
+
+
+    <% unless comment.json == nil %>
     <p><strong>Returns:</strong><p>
     <pre><%=comment.json%></pre>
-
+<% end %>
   <%else%>
     <p> (Documentation missing) </p>
   <%end%>
 <% end %>
 
 <% unless @childs.empty?%>
-  <h1> Subresources </h1>
+  <h2> Subresources </h2>
   <ul>
     <% @childs.each do |c| %>
       <%= c.subresource_paths_as_ul_items %>

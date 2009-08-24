@@ -9,7 +9,7 @@ class PeopleController < ApplicationController
   cache_sweeper :people_sweeper, :only => [:create, :update, :delete, :update_avatar]
 
 =begin rapidoc
-access:: Client login
+access:: Application
 return_code:: 200 - OK
 json:: {"entry":
 [{"name":{"given_name":"Tauno","unstructured":"Tauno Testilapio","family_name":"Testilapio"},
