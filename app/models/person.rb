@@ -349,10 +349,13 @@ class Person < ActiveRecord::Base
   # user.leave(group)
   # user.become_member_of(group)
 
-  def Person.build_cache_key(key, user=nil)
+  def Person.build_cache_key(key, timestamp = nil, options = {}, user=nil)
     ckey = "ASI:"
-    ckey += key
+    ckey += key.to_s
     ckey += ":" + (user ? user.guid.to_s : "nil")
+    ckey += ":" + (timestamp ? timestamp.to_formatted_s(:number) : "nil")
+    ckey += ":" + options[:page].to_s + "-" + options[:per_page].to_s if options[:page] && options[:per_page]
+    return ckey
   end
 
   private
