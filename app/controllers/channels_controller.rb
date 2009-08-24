@@ -52,8 +52,8 @@ class ChannelsController < ApplicationController
     @channel.creator_app = @client
     if @channel.channel_type == "group" && params[:channel][:group_id]
       group = Group.find_by_id(params[:channel][:group_id])
-      if !group || !group.admins.exists?(@user)
-        render_json :status => :bad_request, :messages => "Group does not exist or not group admin." and return
+      if !group || !group.members.exists?(@user)
+        render_json :status => :bad_request, :messages => "Group does not exist." and return
       end
       @channel.group_subscribers << group
     end
