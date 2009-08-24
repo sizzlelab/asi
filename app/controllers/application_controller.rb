@@ -129,12 +129,12 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_channel_admin
-    if @channel.channel_type == "group"
+    if !ensure_same_as_logged_person(@channel.owner.guid)
+      render :status => :forbidden and return
+    elsif @channel.channel_type == "group"
       if @channel.group_subscribers.size != 0 && ! @channel.group_subscribers[0].admins.exists?(@user)
         render :status => :forbidden and return
       end
-    elsif !ensure_same_as_logged_person(@channel.owner.guid)
-      render :status => :forbidden and return
     end
   end
 
