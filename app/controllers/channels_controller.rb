@@ -1,11 +1,21 @@
 class ChannelsController < ApplicationController
 
   before_filter :ensure_client_login
-  before_filter :ensure_person_login, :except => :list
+  before_filter :ensure_person_login, :except => :index
   before_filter :get_channel, :except => [:index, :create]
   before_filter :ensure_channel_admin, :only => [:edit, :delete]
   before_filter :ensure_can_read_channel, :only => [:list_subscriptions, :show]
 
+=begin rapidoc
+access:: Application
+return_code:: 200
+
+description:: Lists channels. Parameters are optional but only one kind of listing (either search or by person id or by group id) is possible at a time. Only channels that current user has access to are listed.
+
+json:: { "entry": [
+ {  }
+] }
+=end
   def index
     if params[:search]
       @channels = Channel.search( params[:search])

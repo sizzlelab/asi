@@ -3,6 +3,15 @@ class SessionsController < ApplicationController
   before_filter :ensure_client_logout, :only => :create
   #skip_before_filter :maintain_session_and_user, :only => [:create]
 
+=begin rapidoc
+access:: Free
+return_code:: 200
+description:: Returns the current session, if any.
+
+json:: { "entry" :
+  { "user_id" : "tmoCBomrl993MCurh",
+    "app_id" : "aNfxPwHXmr3PkIacr-fEfL" } }
+=end
   def get
     @session = @application_session
     render_json :status => :ok, :entry => @session and return
@@ -159,6 +168,10 @@ json:: { "entry" :
 
   end
 
+=begin rapidoc
+return_code:: 200
+description:: Ends the current session.
+=end
   def destroy
     ui_mode = (@client && @client == Client.find_by_name(COREUI_APP_NAME))
 
@@ -166,7 +179,7 @@ json:: { "entry" :
 
     @application_session.destroy
     session[:cos_session_id] = @user = @client = nil
-    
+
     render_json :status => :ok
 
     if ui_mode

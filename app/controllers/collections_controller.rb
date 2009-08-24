@@ -7,6 +7,13 @@ class CollectionsController < ApplicationController
 
   after_filter :update_updated_at_and_by, :except => [ :create, :index, :show, :delete ]
 
+=begin rapidoc
+return_code:: 200
+
+param:: tags - Limits the list to this collections whose tags are an exact match to this parameter.
+
+description:: Retrieves a list of all collections accessible in the current session. The list may be empty.
+=end
   def index
     conditions = { :client_id => @client.id }
     if params["tags"]
@@ -15,7 +22,7 @@ class CollectionsController < ApplicationController
 
     @collections = Collection.find(:all, :conditions => conditions, :order => 'updated_at DESC' )
     @collections.reject! { |item| ! item.read?(@user, @client) }
-    
+
     entries = Array.new
     if @collections
       @collections.each do |item|
@@ -24,7 +31,15 @@ class CollectionsController < ApplicationController
     end
     render_json :entry => entries and return
   end
+=begin rapidoc
+return_code:: 200
+return_code:: 403 - The current application or user doesn't have read access to this collection.
 
+param:: count - The number of items per page. If this parameter is unspecified, all items will be included.
+param:: startIndex - Index of the first returned item. Indexing starts at 1.
+
+description::  Returns this collection. If this collection contains references to other collections, those without read-access for the current user are hidden automatically from the results.
+=end
   def show
     if ! @collection.read?(@user, @client)
       @collection = nil
@@ -37,6 +52,23 @@ class CollectionsController < ApplicationController
     render_json :entry => @collection.to_hash(@user, @client, params[:count], params[:startIndex]) and return
   end
 
+=begin rapidoc
+return_code:: 201
+
+param:: collection
+  param:: title - A title describing the collection.
+  param:: owner_id - The id of the user owning the collection. If unspecified, the collection will belong to the application (and will be visible to all users).
+  param:: priv - Whether the collection is private. A private collection is visible to only the owner and their friends.
+  param:: read_only - Whether the collection is read-only. Read-only collections can be written to only by their owner; other collections are writable by all users with read access
+  param:: indestructible - Whether the collection is indestructible. Indestructible collections cannot be deleted. Can be set only for collections without an owner.
+  param:: tags - Keywords for the collection.
+  param:: id - You can set the id for the collection yourself if you want. Must be a globally unique (GUID) string, 8-22 characters (preferably 22), and only letters, numbers and underscores allowed.
+  param:: metadata
+    param:: any_key - Any string
+    param:: another_key - Another string
+
+description:: Creates a collection. All parameters are optional.
+=end
   def create
     if params[:collection]
       @collection = Collection.new( params[:collection] )
@@ -71,6 +103,23 @@ class CollectionsController < ApplicationController
     end
   end
 
+
+=begin rapidoc
+return_code:: 200
+return_code:: 403 - The current application or user doesn't have read access to this collection.
+
+param:: collection
+  param:: title - A title describing this collection.
+  param:: owner_id - The id of the user owning this collection. If unspecified, this collection will belong to the application (and will be visible to all users).
+  param:: priv - Whether this collection is private. A private collection is visible to only the owner and their friends.
+  param:: read_only - Whether this collection is read-only. Read-only collections can be written to only by their owner; other collections are writable by all users with read access
+  param:: tags - Keywords for this collection.
+  param:: metadata
+    param:: any_key - Any string
+    param:: another_key - Another string
+
+description:: Updates the attributes of this collection.
+=end
   def update
     render_json :status => :forbidden and return unless @collection.write?(@user, @client)
     if !params[:collection]
@@ -80,6 +129,12 @@ class CollectionsController < ApplicationController
     render_json :entry => @collection.to_hash(@user, @client) and return
   end
 
+=begin rapidoc
+return_code:: 200
+return_code:: 403 - The current application or user doesn't have read access to this collection, or this collection is indestructible. You must contact an ASI administrator to delete an indestructible collection.
+
+description:: Deletes this collection.
+=end
   def delete
     if ! @collection.delete?(@user, @client)
       render_json :status => :forbidden and return
@@ -88,6 +143,20 @@ class CollectionsController < ApplicationController
     render_json :entry => @collection.to_hash(@user, @client)
   end
 
+
+=begin rapidoc
+return_code:: 201
+return_code:: 400 - A malformed or unsupported image type was uploaded.
+return_code:: 403 - The current application or user doesn't have read access to this collection, or this collection is indestructible. You must contact an ASI administrator to delete an indestructible collection.
+
+param:: item
+  param:: content_type - The content type of the new collection item. The content types currently supported are <tt>text/*</tt>, <tt>image/*</tt> and <tt>collection</tt> (a reference to another collection).
+  param:: file - A file to be added to the collection (optional).
+  param:: body - The body of the item. If a file is given or content_type is not text/*, this parameter is ignored.
+  param:: collection_id - Id of an existing collection where the reference will point to. If content_type is not collection this parameter is ignored.
+
+description:: Adds a new item to this collection.
+=end
   def add
     if ! @collection.write?(@user, @client)
       render_json :status => :forbidden, :messages => "This collection belongs to another client." and return
@@ -114,7 +183,7 @@ class CollectionsController < ApplicationController
     else
       collection = Ownership.find_by_item_id(item_id).parent
     end
-
+;
     render_json :status => :not_found, :messages => "Could not find parent collection for the item." and return if (collection.nil?)
     render_json :status => :forbidden, :messages => "The user is not allowed to delete from this collection." and return if (!collection.delete?(@user, @client))
 

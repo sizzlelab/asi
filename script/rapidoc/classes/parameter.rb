@@ -22,7 +22,7 @@ class Parameter
   end
 
   def to_table
-    name, desc = self.value.gsub("\\'", "'").split('-')
+    name, desc = self.value.gsub("\\'", "'").split(' - ')
 
     unless childs.empty?
       retval = "<tr>\n<th class='inner_parameters'><div class='inner_parameters'>#{name}</div></th>\n"
