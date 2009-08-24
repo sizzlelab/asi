@@ -1,2 +1,0 @@
-class AppdataController < ApplicationController
-end

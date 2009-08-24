@@ -124,6 +124,8 @@ class GroupsController < ApplicationController
 
   def get_members
     @members = @group.members
+    @members.filter_paginate!(params[:per_page], params[:page]) { |r| true }
+    @members.collect! { |p| p.to_hash(@user, @client) }
     render_json :entry => @members and return
   end
 
