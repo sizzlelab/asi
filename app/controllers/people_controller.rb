@@ -36,14 +36,17 @@ description:: Finds users based on their real names and usernames.
       end
     end
     if not params[:search]
-      @people = Person.all(options)
-      size = Person.count
+      modified = Rails.cache.fetch(Person.build_cache_key(:person_modified)) {
+        Time.now
+      }
+      @people = Rails.cache.fetch(Person.build_cache_key(:all_persons, modified, options), :expires_in => 15.minutes) { Person.all(options) }
+      size = Rails.cache.fetch(Person.build_cache_key(:person_count, modified), :expires_in => 15.minutes) { Person.count }
     else
       query = (params['search'] || "").strip
       @people = Person.search("*#{query}*", :without => { :name_id => 0 },
                               :per_page => params[:per_page] ? params[:per_page].to_i : nil,
                               :page => params[:page] ? params[:page].to_i : nil)
-      size = @people.total_entries
+      size = Rails.cache.fetch(Person.build_cache_key(:person_count, modified), :expires_in => 15.minutes) { @people.total_entries }
     end
     render_json :entry => @people.collect { |p| p.person_hash(@client, @user)  }, :size => size
   end
