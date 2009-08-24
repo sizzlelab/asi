@@ -11,7 +11,7 @@ config.cache_store = :mem_cache_store
 #config.action_view.cache_template_loading            = true
 
 # Use a different cache store in production
-# config.cache_store = :mem_cache_store
+config.cache_store = :mem_cache_store
 
 # Enable serving of images, stylesheets, and javascripts from an asset server
 # config.action_controller.asset_host                  = "http://assets.example.com"
