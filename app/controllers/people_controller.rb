@@ -3,7 +3,6 @@ class PeopleController < ApplicationController
   before_filter :change_me_to_userid
   before_filter :ensure_client_login, :except => [:update_avatar, :get_avatar, :get_small_thumbnail, :get_large_thumbnail, :reset_password, :change_password]
   before_filter :ensure_person_logout, :only  => [:create, :recover_password]
-  #before_filter :fix_utf8_characters, :only => [:create, :update, :index]
   after_filter :set_cache_control, :only => [:get_avatar, :get_small_thumbnail, :get_large_thumbnail]
 
   cache_sweeper :people_sweeper, :only => [:create, :update, :delete, :update_avatar]
@@ -144,9 +143,6 @@ param:: person
 description:: Update (or add) information to user's profile. The person-parameter needs to contain only the attributes that need to be changed. If an error occurs, both status code and an array of error messages are returned.
 =end
   def update
-    parameters_hash = HashWithIndifferentAccess.new(params.clone)
-    params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
-
     errors = {}
     if ! ensure_same_as_logged_person(params['user_id'])
       render_json :status => :forbidden and return
@@ -169,7 +165,12 @@ description:: Update (or add) information to user's profile. The person-paramete
     @person = nil
   end
 
+=begin rapidoc
+access:: Self
+return_code:: 200
 
+description:: Deletes this user.
+=end
   def delete
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
@@ -183,7 +184,14 @@ description:: Update (or add) information to user's profile. The person-paramete
     render_json :status => :ok
   end
 
+=begin rapidoc
+access:: Self
+return_code:: 200
+return_code:: 400 - If this user is an association.
+param:: friend_id - The id of the friend being requested.
 
+description:: Adds a new connection to this user. The connection is added as <em>pending</em> and changed to <em>accepted</em> after the friend accepts the request.
+=end
   def add_friend
     # If there is no pending connection between persons,
     # add pendind/requested connections between them.
@@ -222,6 +230,13 @@ description:: Update (or add) information to user's profile. The person-paramete
     render_json :status => :ok
   end
 
+=begin rapidoc
+access:: Application
+return_code:: 200
+param:: email - The email address of the user.
+
+description:: Sends a password recovery email to a specified email address.
+=end
   def recover_password
     person = Person.find_by_email(params[:email])
 
@@ -270,6 +285,16 @@ description:: Update (or add) information to user's profile. The person-paramete
 
   end
 
+=begin rapidoc
+return_code:: 200
+
+param:: sortBy - (Optional) A field according to which the results should be sorted. Currently only supported is status_changed that will sort the results based on the date of last status message change.
+param:: sortOrder - (Optional) Valid values are ascending (default) and descending.
+param:: per_page - Number of items to show.
+param:: page - Page to show.
+
+description:: Gets a list of this user's friends.
+=end
   def get_friends
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
@@ -288,11 +313,22 @@ description:: Update (or add) information to user's profile. The person-paramete
     render_json :entry => @friends, :size => @friends.count_available and return
   end
 
+=begin rapidoc
+return_code:: 200
+
+description:: Removes this friend connection.
+=end
   def remove_friend
     return if !remove_any_connection_between(params['user_id'], params['friend_id'])
     render_json :status => :ok and return
   end
 
+
+=begin rapidoc
+return_code:: 200
+
+description:: Returns a list of people who have requested to connect to this user.</p><p>A friend request is accepted by making the same request in the opposite direction.
+=end
   def pending_friend_requests
     if ! ensure_same_as_logged_person(params['user_id'])
       render_json :status => :forbidden and return
@@ -300,24 +336,51 @@ description:: Update (or add) information to user's profile. The person-paramete
     render_json :entry => @user.pending_contacts
   end
 
+=begin rapidoc
+return_code:: 200
+
+description:: Rejects this friend request.
+=end
   def reject_friend_request
     if remove_any_connection_between(params['user_id'], params['friend_id'])
       render_json :entry => {}
     end
   end
 
+=begin rapidoc
+return_code:: 200
+description:: Gets the full-sized avatar image of the user. If an avatar has not been set, a default avatar is returned. Maximum width is 600px and maximum height 800px.
+=end
   def get_avatar
     fetch_avatar("full")
   end
 
+=begin rapidoc
+return_code:: 200
+description:: Gets a thumbnail of the avatar of the user. Thumbnail dimensions are 50x50.
+=end
   def get_small_thumbnail
     fetch_avatar("small_thumb")
   end
 
+=begin rapidoc
+return_code:: 200
+description:: Gets a thumbnail of the avatar of the user. Maximum thumbnail dimensions are 350x200.
+=end
   def get_large_thumbnail
     fetch_avatar("large_thumb")
   end
 
+=begin rapidoc
+return_code:: 200
+return_code:: 400 - The avatar is of an unsupported type. Supported types are <tt>image/jpeg</tt>, <tt>image/png</tt> and <tt>image/gif</tt>
+
+param:: file
+  param:: content_type - Content type of user's avatar image.
+  param:: filename - Filename of user's avatar image file.
+
+description:: Replaces this user's avatar. Each user is given an implicit default avatar at creation.
+=end
   def update_avatar
 
     if ! ensure_same_as_logged_person(params['user_id'])
@@ -339,6 +402,11 @@ description:: Update (or add) information to user's profile. The person-paramete
     end
   end
 
+=begin rapidoc
+return_code:: 200
+
+description:: Deletes this user's avatar. <tt>GET</tt> will hereon return the default avatar.
+=end
   def delete_avatar
     @person = Person.find_by_guid(params['user_id'])
     if ! @person

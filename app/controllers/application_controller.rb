@@ -118,11 +118,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  #this should be done to all stored params (from Kassi etc.) because Rails seems to mess up parsing utf8 charas encoded in \\u00e4 like form
-  def fix_utf8_characters(parameter_hash)
-    return HashWithIndifferentAccess.new(JSON.parse(parameter_hash.to_json.gsub(/\\\\u/,'\\u')))
-  end
-
   def get_random_string
     chars_for_key = [('a'..'z'),('A'..'Z'),(0..9)].map{|i| i.to_a}.flatten
     return (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
