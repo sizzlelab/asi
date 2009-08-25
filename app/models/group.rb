@@ -26,7 +26,7 @@ class Group < ActiveRecord::Base
   belongs_to :creator, :foreign_key => "creator_id", :class_name => "Person"
 
   has_one :group_search_handle, :dependent => :destroy
-  after_save :create_search_handle
+  after_create :create_search_handle
 
   attr_readonly :creator_id
 

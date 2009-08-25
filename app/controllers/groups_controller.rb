@@ -56,6 +56,7 @@ class GroupsController < ApplicationController
       groups = Group.search("*" + params[:query].strip + "*")
     else
       options[:conditions] = "group_type = 'open' OR group_type = 'closed'"
+      options[:include] = :creator
       order_by = 'updated_at'
       order = 'DESC'
       if params[:sort_by] && %w{ updated_at created_at title owner description }.include?(params[:sort_by])
