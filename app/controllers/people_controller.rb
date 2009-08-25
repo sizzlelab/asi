@@ -3,7 +3,7 @@ class PeopleController < ApplicationController
   before_filter :change_me_to_userid
   before_filter :ensure_client_login, :except => [:update_avatar, :get_avatar, :get_small_thumbnail, :get_large_thumbnail, :reset_password, :change_password]
   before_filter :ensure_person_logout, :only  => [:create, :recover_password]
-  after_filter :set_cache_control, :only => [:get_avatar, :get_small_thumbnail, :get_large_thumbnail]
+  before_filter :set_cache_control, :only => [:get_small_thumbnail, :get_large_thumbnail]
 
   cache_sweeper :people_sweeper, :only => [:create, :update, :delete, :update_avatar]
 
@@ -492,7 +492,7 @@ description:: Deletes this user's avatar. <tt>GET</tt> will hereon return the de
   end
 
   def set_cache_control
-    response.headers['Cache-control'] = 'public s-maxage=3600'
+    expires_in 60.minutes, :public => true
   end
 
   # If request is using /people/@me/xxxxxxx, change user_id from @me to real userid
