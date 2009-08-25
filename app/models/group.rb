@@ -96,7 +96,10 @@ class Group < ActiveRecord::Base
 
   def kick(person)
     self.membership(person).destroy if person.is_member_of?(self)
-    if admins.empty?
+
+    if members.count == 0
+      destroy
+    elsif admins.empty?
       restore_admin_rights
     end
   end
