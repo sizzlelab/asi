@@ -7,6 +7,8 @@ class PeopleController < ApplicationController
 
   cache_sweeper :people_sweeper, :only => [:create, :update, :delete, :update_avatar]
 
+  PERSON_HASH_INCLUDES = [:address, :roles, :location, :avatar, :name]
+
 =begin rapidoc
 access:: Application
 return_code:: 200 - OK
@@ -27,7 +29,7 @@ param:: search - The search term. Every user whose name matches the regular expr
 description:: Finds users based on their real names and usernames.
 =end
   def index
-    options = {}
+    options = {:include => PERSON_HASH_INCLUDES}
     if params[:per_page]
       options[:limit] = params[:per_page].to_i
       if params[:page] && params[:page].to_i >= 1
@@ -38,7 +40,7 @@ description:: Finds users based on their real names and usernames.
       modified = Rails.cache.fetch(Person.build_cache_key(:person_modified)) {
         Time.now
       }
-      @people = Rails.cache.fetch(Person.build_cache_key(:all_persons, modified, options), :expires_in => 15.minutes) { Person.all(options) }
+      @people = Person.all(options) 
       size = Rails.cache.fetch(Person.build_cache_key(:person_count, modified), :expires_in => 15.minutes) { Person.count }
     else
       query = (params['search'] || "").strip
@@ -111,7 +113,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
       @application_session.person = @person
       @application_session.save
 
-      render_json :status => :created, :entry => @person
+      render_json :status => :created, :entry => @person.person_hash(@client.id, @user)
     else
       render_json :status => :bad_request, :messages => @person.errors.full_messages
       @person = nil
@@ -154,7 +156,7 @@ description:: Update (or add) information to user's profile. The person-paramete
     if params[:person]
       begin
         if @person.update_attributes(params[:person])
-          render_json :entry => @person and return
+          render_json :entry => @person.person_hash(@client.id, @user) and return
         end
       rescue NoMethodError  => e
         errors = e.to_s
