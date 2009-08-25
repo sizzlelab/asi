@@ -1,6 +1,7 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
+require 'factory'
 begin
   require 'redgreen'
 rescue Exception => e
@@ -38,6 +39,8 @@ class ActiveSupport::TestCase
   # Note: You'll currently still have to declare fixtures explicitly in integration tests
   # -- they do not yet inherit this setting
   fixtures :all
+
+  include Factory
 
   # Test the minimum or maximum length of an attribute.
   def assert_length(boundary, object, attribute, length, options = {})

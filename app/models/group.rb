@@ -96,6 +96,9 @@ class Group < ActiveRecord::Base
 
   def kick(person)
     self.membership(person).destroy if person.is_member_of?(self)
+    if admins.empty?
+      restore_admin_rights
+    end
   end
 
   def has_member?(person)
@@ -155,6 +158,11 @@ class Group < ActiveRecord::Base
       end
     end
     super
+  end
+
+  def restore_admin_rights
+    oldest_membership = memberships.sort_by{ |membership| membership.created_at }.first
+    grant_admin_status_to(oldest_membership.person)
   end
 
   private

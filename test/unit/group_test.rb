@@ -198,4 +198,21 @@ class GroupTest < ActiveSupport::TestCase
     group.reload
     assert_equal creator, group.creator
   end
+
+  def test_admin_rights_restoration
+    group = Factory.create_group
+    member = Factory.create_person
+    newer_member = Factory.create_person
+
+    creator = group.creator
+
+    member.join(group)
+    newer_member.join(group)
+
+    creator.leave(group)
+
+    assert ! creator.is_member_of?(group)
+    assert member.is_admin_of?(group)
+    assert ! newer_member.is_admin_of?(group)
+  end
 end
