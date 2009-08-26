@@ -40,24 +40,24 @@ class SessionsControllerTest < ActionController::TestCase
   def test_user_only
     #test with user only
     post :create, { :session => { :username => "testi", :password => "testia,.u"}, :format => 'json'}
-    assert_response :unauthorized
+    assert_response :forbidden
   end
 
-  def test_unauthorized
+  def test_forbidden
     #test with erroneus login information
     post :create, { :session => { :username => "testi", :password => "testia,.u", :app_name => "ossi", :app_password => "testi"}, :format => 'json'}
-    assert_response :unauthorized
+    assert_response :forbidden
 
     post :create, { :session => { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "tesaoeulcrhti"}, :format => 'json'}
-    assert_response :unauthorized
+    assert_response :forbidden
 
     post :create, { :session => { :username => "testi", :password => "testi2513", :app_name => "ossi", :app_password => "t23452esaoeulcrhti"}, :format => 'json'}
-    assert_response :unauthorized
+    assert_response :forbidden
   end
 
   def test_no_person
     post :create, { :session => { :username => "not-there", :password => "not-there", :app_name => "ossi", :app_password => "testi"}, :format => 'json'}
-    assert_response :unauthorized
+    assert_response :forbidden
   end
 
   def test_get
@@ -111,7 +111,7 @@ class SessionsControllerTest < ActionController::TestCase
     assert_response :not_found
 
     post :create, { :format => 'json' }
-    assert_response :unauthorized
+    assert_response :forbidden
 
     post :create, { :username => "testi", :password => "testi",
                     :app_name => "ossi", :app_password => "testi", :format => 'json' },

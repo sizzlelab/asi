@@ -23,7 +23,7 @@ json:: { "entry" :
 =begin rapidoc
 access:: Free
 return_code:: 201 - Successfully logged in.
-return_code:: 401 - Invalid login details.
+return_code:: 403 - Invalid login details.
 return_code:: 409 - A session already exists.
 param:: session
   param:: app_name - The application's name.
@@ -125,7 +125,7 @@ json:: { "entry" :
             flash[:warning] = "User login failed."
             redirect_to :back and return
           else
-            render_json :status => :unauthorized, :messages => "User login failed." and return
+            render_json :status => :forbidden, :messages => "User login failed." and return
           end
         end
       end
@@ -162,7 +162,7 @@ json:: { "entry" :
         flash[:error] = @session.errors.full_messages
         redirect_to :back and return
       else
-        render_json :status => :unauthorized, :messages => @session.errors.full_messages and return
+        render_json :status => :forbidden, :messages => @session.errors.full_messages and return
       end
     end
 
