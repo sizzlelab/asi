@@ -13,15 +13,7 @@ class PeopleController < ApplicationController
 access:: Application
 return_code:: 200 - OK
 json:: {"entry":
-[{"name":{"given_name":"Tauno","unstructured":"Tauno Testilapio","family_name":"Testilapio"},
-"status":{"message":"","changed":"2009-08-03T07:21:58Z"},
-"birthdate":null,"gender":{"displayvalue":null,"key":null},
-"role":null,"username":"testilapio","phone_number":"0501234567","is_association":null,
-"website":null,"id":"b401CUzHur3R2baaWPEYjL","description":null,
-"avatar":{"status":"not_set","link":{"rel":"self","href":"\/people\/b401CUzHur3R2baaWPEYjL\/@avatar"}},
-"msn_nick":null,"irc_nick":null,"status_message":"",
-"address":{"postal_code":"02150","locality":"Espoo","
-            unstructured":"Testaajankatu 1, 02150 Espoo","street_address":"Testaajankatu 1"}}]
+[{"address":{"unstructured":"MyString, MyString MyString","street_address":"MyString","postal_code":"MyString","locality":"MyString"},"name":{"family_name":"Makkonen","unstructured":"Juho Makkonen","given_name":"Juho"},"birthdate":"1940-06-01","is_association":null,"username":"kusti","gender":{"displayvalue":"MALE","key":"MALE"},"avatar":{"status":"not_set","link":{"rel":"self","href":"\/people\/g1\/@avatar"}},"id":"g1","phone_number":"+358 40 834 7176","msn_nick":"maison","website":"http:\/\/example.com","description":"About me","irc_nick":"pelle","status":{"changed":"2008-08-28T10:58:12Z","message":"Valid person rocks."},"status_message":"Valid person rocks."}]
 }
 
 param:: search - The search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all charactersin the search term are interpreted as literals rather than special regexp characters.
@@ -40,7 +32,7 @@ description:: Finds users based on their real names and usernames.
       modified = Rails.cache.fetch(Person.build_cache_key(:person_modified)) {
         Time.now
       }
-      @people = Person.all(options) 
+      @people = Person.all(options)
       size = Rails.cache.fetch(Person.build_cache_key(:person_count, modified), :expires_in => 15.minutes) { Person.count }
     else
       query = (params['search'] || "").strip
@@ -55,16 +47,7 @@ description:: Finds users based on their real names and usernames.
 =begin rapidoc
 access:: Client login
 return_code:: 200 - OK
-json:: {"entry":
-{"name":null,
-"status":{"message":"","changed":"2009-08-03T07:21:56Z"},
-"connection":"you","birthdate":null,
-"gender":{"displayvalue":null,"key":null},
-"role":"user","username":"testman","phone_number":"123","is_association":null,"website":null,
-"id":"cU6ZhispWr3PmvaaWPEYjL","description":null,
-"avatar":{"status":"not_set","link":{"rel":"self","href":"\/people\/cU6ZhispWr3PmvaaWPEYjL\/@avatar"}},
-"msn_nick":null,"irc_nick":null,"status_message":"","address":null,"email":"testman@example.com"}}
-
+json:: { :entry => Factory.create_person }
 description::  Gets the information of the user specified by user_id. Note that the timestamp for status_messages
 latest update is always in UTC time. The 'avatar' slot in the returned JSON contains the link to the avatar
 image and also the status of the avatar, which is 'set' or 'not_set' depending on if the user has uploaded an image or not.
@@ -236,7 +219,6 @@ description:: Adds a new connection to this user. The connection is added as <em
 access:: Application
 return_code:: 200
 param:: email - The email address of the user.
-
 description:: Sends a password recovery email to a specified email address.
 =end
   def recover_password
@@ -400,7 +382,7 @@ description:: Replaces this user's avatar. Each user is given an implicit defaul
         render_json :status  => :bad_request, :messages => avatar.errors.full_messages and return
       end
     else
-      render_json :status  => :bad_request and return
+      render_json :status  => :bad_request, :messages => "You did not provide a file." and return
     end
   end
 
