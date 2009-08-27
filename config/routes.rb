@@ -90,7 +90,7 @@ ActionController::Routing::Routes.draw do |map|
                                          :put => 'update',
                                          :delete => 'delete'
 
-  map.resource '/people/:user_id/@avatar', :controller => 'people',
+  map.resource '/people/:user_id/@avatar', :controller => 'avatars',
                                            :get => 'get_avatar',
                                            :post => 'update_avatar',
                                            :delete => 'delete_avatar',
@@ -98,11 +98,11 @@ ActionController::Routing::Routes.draw do |map|
                                            :format_post => 'html'
 
 
-  map.resource '/people/:user_id/@avatar/large_thumbnail', :controller => 'people',
+  map.resource '/people/:user_id/@avatar/large_thumbnail', :controller => 'avatars',
                                                            :get => 'get_large_thumbnail',
                                                            :format_get => 'jpg'
 
-  map.resource '/people/:user_id/@avatar/small_thumbnail', :controller => 'people',
+  map.resource '/people/:user_id/@avatar/small_thumbnail', :controller => 'avatars',
                                                            :get => 'get_small_thumbnail',
                                                            :format_get => 'jpg'
 
@@ -195,7 +195,7 @@ ActionController::Routing::Routes.draw do |map|
   # Others
 
   map.resource '/session', :controller => 'sessions',
-                           :get => 'get',
+                           :get => 'show',
                            :delete => 'destroy',
                            :post => 'create'
 

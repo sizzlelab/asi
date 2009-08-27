@@ -11,18 +11,7 @@ json:: { "pagination": {
     "page": 1
   },
   "entry": [
- { "type": "Channel",
-   "result": { See <%= link_to_api("/channels/channel_id") %> }
- },
- { "type":"Message",
-   "result": { See <%= link_to_api("/channels/channel_id>/@messages/msg_id") %> }
- },
- { "type":"Group",
-   "result": { See <%= link_to_api("/groups/group_id/@public") %> }
- },
- { "type":"Person",
-   "result": { See <%= link_to_api("/people/user_id/@self") %> }
- }
+
 ] }
 param:: search - The search term.
 param:: per_page - How many results to show per page.
