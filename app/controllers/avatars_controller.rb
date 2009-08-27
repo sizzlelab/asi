@@ -7,7 +7,7 @@ class AvatarsController < ApplicationController
 return_code:: 200
 description:: Gets the full-sized avatar image of the user. If an avatar has not been set, a default avatar is returned. Maximum width is 600px and maximum height 800px.
 =end
-  def get_avatar
+  def show
     fetch_avatar("full")
   end
 
@@ -15,7 +15,7 @@ description:: Gets the full-sized avatar image of the user. If an avatar has not
 return_code:: 200
 description:: Gets a thumbnail of the avatar of the user. Thumbnail dimensions are 50x50.
 =end
-  def get_small_thumbnail
+  def show_small_thumbnail
     expires_in 60.minutes, :public => true
     fetch_avatar("small_thumb")
   end
@@ -24,7 +24,7 @@ description:: Gets a thumbnail of the avatar of the user. Thumbnail dimensions a
 return_code:: 200
 description:: Gets a thumbnail of the avatar of the user. Maximum thumbnail dimensions are 350x200.
 =end
-  def get_large_thumbnail
+  def show_large_thumbnail
     fetch_avatar("large_thumb")
   end
 
@@ -38,7 +38,7 @@ param:: file
 
 description:: Replaces this user's avatar. Each user is given an implicit default avatar at creation.
 =end
-  def update_avatar
+  def update
 
     if ! ensure_same_as_logged_person(params['user_id'])
        render :status => :forbidden and return
@@ -64,7 +64,7 @@ return_code:: 200
 
 description:: Deletes this user's avatar. <tt>GET</tt> will hereon return the default avatar.
 =end
-  def delete_avatar
+  def delete
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
       render_json :status => :not_found and return
