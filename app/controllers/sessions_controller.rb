@@ -12,18 +12,18 @@ json:: { "entry" :
   { "user_id" : "tmoCBomrl993MCurh",
     "app_id" : "aNfxPwHXmr3PkIacr-fEfL" } }
 =end
-  def get
+  def show
     @session = @application_session
-    render_json :status => :ok, :entry => @session and return
     if !@session
       render_json :status => :not_found and return
     end
+    render_json :status => :ok, :entry => @session and return
   end
 
 =begin rapidoc
 access:: Free
 return_code:: 201 - Successfully logged in.
-return_code:: 403 - Invalid login details.
+return_code:: 401 - Invalid login details.
 return_code:: 409 - A session already exists.
 param:: session
   param:: app_name - The application's name.
@@ -125,7 +125,7 @@ json:: { "entry" :
             flash[:warning] = "User login failed."
             redirect_to :back and return
           else
-            render_json :status => :forbidden, :messages => "User login failed." and return
+            render_json :status => :unauthorized, :messages => "User login failed." and return
           end
         end
       end
@@ -136,7 +136,7 @@ json:: { "entry" :
            flash[:warning] = "The email address for this user account is not yet confirmed. Logging in requires confirmation."
            redirect_to :back and return
          else
-           render_json :status => :forbidden, :messages => "The email address for this user account is not yet confirmed. Login requires confirmation." and return
+           render_json :status => :unauthorized, :messages => "The email address for this user account is not yet confirmed. Login requires confirmation." and return
          end
       end
 
@@ -162,7 +162,7 @@ json:: { "entry" :
         flash[:error] = @session.errors.full_messages
         redirect_to :back and return
       else
-        render_json :status => :forbidden, :messages => @session.errors.full_messages and return
+        render_json :status => :unauthorized, :messages => @session.errors.full_messages and return
       end
     end
 
