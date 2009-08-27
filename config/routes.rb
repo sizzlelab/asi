@@ -91,19 +91,19 @@ ActionController::Routing::Routes.draw do |map|
                                          :delete => 'delete'
 
   map.resource '/people/:user_id/@avatar', :controller => 'avatars',
-                                           :get => 'get_avatar',
-                                           :post => 'update_avatar',
-                                           :delete => 'delete_avatar',
+                                           :get => 'show',
+                                           :post => 'update',
+                                           :delete => 'delete',
                                            :format_get => 'jpg',
                                            :format_post => 'html'
 
 
   map.resource '/people/:user_id/@avatar/large_thumbnail', :controller => 'avatars',
-                                                           :get => 'get_large_thumbnail',
+                                                           :get => 'show_large_thumbnail',
                                                            :format_get => 'jpg'
 
   map.resource '/people/:user_id/@avatar/small_thumbnail', :controller => 'avatars',
-                                                           :get => 'get_small_thumbnail',
+                                                           :get => 'show_small_thumbnail',
                                                            :format_get => 'jpg'
 
   map.resource '/people', :controller => 'people',
