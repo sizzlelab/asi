@@ -3,7 +3,7 @@ class PeopleController < ApplicationController
   before_filter :change_me_to_userid
   before_filter :ensure_client_login, :except => [:update_avatar, :get_avatar, :get_small_thumbnail, :get_large_thumbnail, :reset_password, :change_password]
   before_filter :ensure_person_logout, :only  => [:create, :recover_password]
-  before_filter :set_cache_control, :only => [:get_small_thumbnail, :get_large_thumbnail]
+  before_filter :set_cache_control, :only => [:get_small_thumbnail]
 
   cache_sweeper :people_sweeper, :only => [:create, :update, :delete, :update_avatar]
 
