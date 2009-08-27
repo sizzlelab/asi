@@ -267,4 +267,18 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # If request is using /people/@me/xxxxxxx, change user_id from @me to real userid
+  def change_me_to_userid
+    if params[:user_id] == "@me"
+      if ses = Session.find_by_id(session[:cos_session_id])
+        if ses.person
+          params[:user_id] = ses.person.guid
+        else
+          render_json :status => :unauthorized, :messages => "Please login as a user to continue" and return
+        end
+      end
+    end
+  end
+
+
 end

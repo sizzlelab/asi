@@ -324,61 +324,6 @@ class PeopleControllerTest < ActionController::TestCase
 
   end
 
-  def test_update_and_get_avatar
-    # try to show the default large thumbnail
-    get :get_large_thumbnail, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
-    assert_response :success
-
-    # try to show the default small thumbnail
-    get :get_small_thumbnail, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
-    assert_response :success
-
-    # try to upload an avatar
-    put :update_avatar, { :user_id => people(:valid_person).guid, :file => fixture_file_upload("Australian_painted_lady.jpg","image/jpeg"),
-                          :format => 'html' },
-                        { :cos_session_id => sessions(:session1).id }
-    assert_response :success, @response.body
-
-    # try to show the uploaded avatar
-    get :get_avatar, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
-    assert_response :success
-
-    # try to show the large thumbnail of the avatar
-    get :get_large_thumbnail, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
-    assert_response :success
-
-    # try to show the small thumbnail of the avatar
-    get :get_small_thumbnail, { :user_id => people(:valid_person).guid, :format => 'jpg' }, { :cos_session_id => sessions(:session1).id }
-    assert_response :success
-
-    # check that avatar info is changed to 'set'
-    get :show, { :user_id => people(:valid_person).guid, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
-    assert_response :success, @response.body
-    json = JSON.parse(@response.body)
-    assert_equal("set", json["entry"]["avatar"]["status"])
-
-  end
-
-  def test_update_avatar_image_without_suffix
-    put :update_avatar, { :user_id => people(:valid_person).guid, :file => fixture_file_upload("kuva_ilman_paatetta","image/jpeg"),
-                          :format => 'html' },
-                        { :cos_session_id => sessions(:session1).id }
-    assert_response :bad_request
-  end
-
-  def test_update_avatar_image_with_all_caps
-    put :update_avatar, { :user_id => people(:valid_person).guid, :file => fixture_file_upload("LADY.JPG","image/jpeg"),
-                          :format => 'html' },
-                        { :cos_session_id => sessions(:session1).id }
-    assert_response :success
-  end
-
-  def test_delete_avatar
-    login_as people:valid_association
-    delete :delete_avatar, { :user_id => people(:valid_association).guid, :format => 'json' }
-    assert_response :success
-    json = JSON.parse(@response.body)
-  end
 
   def test_add_friend
     #add friend to a valid person (as a request at first)

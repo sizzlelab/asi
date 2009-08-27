@@ -110,8 +110,6 @@ param:: page - Page to display.
 param:: sort_by - Field to sort results by. Defaults to <tt>updated_at</tt>. Possible values are <tt>created_at</tt>, <tt>updated_at</tt>, <tt>title</tt>, <tt>description</tt>, <tt>creator</tt>.
 param:: sort_order - Possible values are <tt>ascending</tt> and <tt>descending</tt>. Defaults to <tt>descending</tt>.
 json:: { "entry": [
-  { <em>Group 1</em> },
-  { <em>Group 2</em> }
 ] }
 description:: Returns all the groups visible in the current session.
 =end
@@ -188,8 +186,7 @@ description::  Attempts to add the person specified by user_id to a group. This 
 =begin rapidoc
 return_code:: 200
 json:: { "entry": [
-  { <em>Group 1</em> },
-  { <em>Group 2</em> }
+
 ] }
 description:: Returns the groups in which this user is a member.
 =end
@@ -260,9 +257,7 @@ description:: Removes this person from this group. Any user can remove their own
 return_code:: 200
 description:: Returns the pending members of this group. These are users that have requested membership of the group. See <%= link_to_api("/people/user_id/@groups/group_id/") %> to accept requests.
 json:: { "entry": [
-  { <em>Person 1</em> },
-  { <em>Person 2</em> },
-  { <em>Person 3</em> }
+
 ] }
 =end
   def get_pending_members
@@ -275,9 +270,7 @@ json:: { "entry": [
 return_code:: 200
 description:: Returns the groups this user has been invited to.
 json:: { "entry": [
-  { <em>Group 1</em> },
-  { <em>Group 2</em> },
-  { <em>Group 3</em> }
+
 ] }
 =end
   def get_invites
