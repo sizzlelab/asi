@@ -92,10 +92,11 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource '/people/:user_id/@avatar', :controller => 'people',
                                            :get => 'get_avatar',
-                                           :put => 'update_avatar',
+                                           :post => 'update_avatar',
                                            :delete => 'delete_avatar',
                                            :format_get => 'jpg',
                                            :format_post => 'html'
+
 
   map.resource '/people/:user_id/@avatar/large_thumbnail', :controller => 'people',
                                                            :get => 'get_large_thumbnail',
