@@ -165,7 +165,8 @@ description:: Deletes this user.
       render_json :status => :forbidden and return
     end
     @person.destroy
-    session[:cos_session_id] = @user = nil
+    @application_session.destroy
+    session[:cos_session_id] = nil
     render_json :status => :ok
   end
 

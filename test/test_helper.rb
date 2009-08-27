@@ -219,8 +219,10 @@ module COSTestingDSL
   def deletes_account(options)
     delete "/people/#{options[:id]}/@self", options
     assert_response :success
-    get "/people/#{options[:id]}/@self"
+    get "/people/#{options[:id]}/@self", options
     assert_response :unauthorized
+    get "/session"
+    assert_response :not_found
   end
 
   def logs_out
