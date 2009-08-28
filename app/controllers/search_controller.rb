@@ -13,7 +13,7 @@ json:: { "pagination" => {
   "entry" => [
 
 ] }
-param:: search - The search term.
+param:: search - The search term. Sensible results for search terms under the length of 2 are not guaranteed. Wildcards are supported; the search is by default a wildcard search from both sides.
 param:: per_page - How many results to show per page.
 param:: page - Which page to show. Indexing starts at 1.
 
