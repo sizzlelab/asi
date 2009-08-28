@@ -8,9 +8,9 @@ access:: Free
 return_code:: 200
 description:: Returns the current session, if any.
 
-json:: { "entry" :
-  { "user_id" : "tmoCBomrl993MCurh",
-    "app_id" : "aNfxPwHXmr3PkIacr-fEfL" } }
+json:: { "entry" =>
+  { "user_id" => "tmoCBomrl993MCurh",
+    "app_id" => "aNfxPwHXmr3PkIacr-fEfL" } }
 =end
   def show
     @session = @application_session
@@ -36,9 +36,9 @@ description:: Starts a new session. Sessions can be associated either
 with an application only or with an application and a user. To start a session without logging a user in, provide no <tt>username</tt> or <tt>password</tt>.</p>
 <p>Using HTTPS for logging in is recommended.
 
-json:: { "entry" :
-  { "user_id" : "tmoCBomrl993MCurh",
-    "app_id" : "aNfxPwHXmr3PkIacr-fEfL" } }
+json:: { "entry" =>
+  { "user_id" => "tmoCBomrl993MCurh",
+    "app_id" => "aNfxPwHXmr3PkIacr-fEfL" } }
 =end
   def create
 
@@ -125,7 +125,8 @@ json:: { "entry" :
             flash[:warning] = "User login failed."
             redirect_to :back and return
           else
-            render_json :status => :unauthorized, :messages => "User login failed." and return
+            status = (params[:app_name] == "ossi" ? :forbidden : :unauthorized)
+            render_json :status => status, :messages => "User login failed." and return
           end
         end
       end

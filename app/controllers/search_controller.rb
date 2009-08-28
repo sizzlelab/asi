@@ -5,12 +5,12 @@ class SearchController < ApplicationController
 =begin rapidoc
 access:: Client login
 return_code:: 200
-json:: { "pagination": {
-    "size": 42,
-    "per_page": 4,
-    "page": 1
+json:: { "pagination" => {
+    "size" => 42,
+    "per_page" => 4,
+    "page" => 1
   },
-  "entry": [
+  "entry" => [
 
 ] }
 param:: search - The search term.

@@ -19,15 +19,7 @@ param:: group
   param:: type - Can be open, closed or hidden.
   param:: description - A descriptive text for the group (optional).
   param:: create_channel - If set to <tt>true</tt>, a channel for the group is also created with same name as group's title.
-json:: { "entry": {
-  "id":"1",
-  "number_of_members":0,
-  "created_at":"2009-08-20T07:28:04Z",
-  "title":"Seutula",
-  "group_type":"open",
-  "created_by":"g1",
-  "description":"For all from Seutula" }
-}
+json:: { "entry" => Factory.create_example_group }
 description:: Creates a new group. The creator is automatically added to the new group as an admin.
 =end
   def create
@@ -56,15 +48,7 @@ description:: Creates a new group. The creator is automatically added to the new
 =begin rapidoc
 access:: Application
 return_code:: 200
-json:: { "entry": {
-  "id":"1",
-  "number_of_members":0,
-  "created_at":"2009-08-20T07:28:04Z",
-  "title":"Seutula",
-  "group_type":"open",
-  "created_by":"g1",
-  "description":"For all from Seutula" }
-}
+json:: { "entry" => Factory.create_example_group }
 description:: Returns the details of this group.
 =end
   def show
@@ -81,15 +65,7 @@ param:: group
   param:: title - The title (or name) of the group.
   param:: type - Can be open, closed or hidden.
   param:: description - A descriptive text for the group (optional).
-json:: { "entry": {
-  "id":"1",
-  "number_of_members":0,
-  "created_at":"2009-08-20T07:28:04Z",
-  "title":"Seutula",
-  "group_type":"open",
-  "created_by":"g1",
-  "description":"For all from Seutula" }
-}
+json:: { "entry": Factory.create_example_group }
 description:: Updates the information of this group. All parameters are optional; leave out the ones you do not wish to change.
 =end
   def update
@@ -109,8 +85,7 @@ param:: per_page - Number of entries to display.
 param:: page - Page to display.
 param:: sort_by - Field to sort results by. Defaults to <tt>updated_at</tt>. Possible values are <tt>created_at</tt>, <tt>updated_at</tt>, <tt>title</tt>, <tt>description</tt>, <tt>creator</tt>.
 param:: sort_order - Possible values are <tt>ascending</tt> and <tt>descending</tt>. Defaults to <tt>descending</tt>.
-json:: { "entry": [
-] }
+json:: { "entry": [ Factory.create_group, Factory.create_group, Factory.create_group ] }
 description:: Returns all the groups visible in the current session.
 =end
   def public_groups

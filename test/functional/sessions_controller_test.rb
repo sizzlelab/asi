@@ -45,18 +45,18 @@ class SessionsControllerTest < ActionController::TestCase
 
   def test_unauthorized
     #test with erroneus login information
-    post :create, { :session => { :username => "testi", :password => "testia,.u", :app_name => "ossi", :app_password => "testi"}, :format => 'json'}
+    post :create, { :session => { :username => "testi", :password => "testia,.u", :app_name => "kassi", :app_password => "testi"}, :format => 'json'}
     assert_response :unauthorized
 
-    post :create, { :session => { :username => "testi", :password => "testi", :app_name => "ossi", :app_password => "tesaoeulcrhti"}, :format => 'json'}
+    post :create, { :session => { :username => "testi", :password => "testi", :app_name => "kassi", :app_password => "tesaoeulcrhti"}, :format => 'json'}
     assert_response :unauthorized
 
-    post :create, { :session => { :username => "testi", :password => "testi2513", :app_name => "ossi", :app_password => "t23452esaoeulcrhti"}, :format => 'json'}
+    post :create, { :session => { :username => "testi", :password => "testi2513", :app_name => "kassi", :app_password => "t23452esaoeulcrhti"}, :format => 'json'}
     assert_response :unauthorized
   end
 
   def test_no_person
-    post :create, { :session => { :username => "not-there", :password => "not-there", :app_name => "ossi", :app_password => "testi"}, :format => 'json'}
+    post :create, { :session => { :username => "not-there", :password => "not-there", :app_name => "kassi", :app_password => "testi"}, :format => 'json'}
     assert_response :unauthorized
   end
 
@@ -118,4 +118,11 @@ class SessionsControllerTest < ActionController::TestCase
                   { :cos_session_id => sessions(:session1).id }
     assert_response :conflict
   end
+
+  def test_ossi_forbidden_response
+    post :create, { :session => { :app_name => 'ossi', :app_password => 'testi', :username => 'testi', :password => 'wrong'}, :format => 'json'}
+    assert_response :forbidden
+  end
+
+
 end

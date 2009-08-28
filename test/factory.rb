@@ -1,6 +1,6 @@
 module Factory
 
-  def self.create_person(attributes = { })
+  def self.create_person(options = { }, attributes = { })
     default_attributes = {
 
       :username => "kusti",
@@ -26,20 +26,31 @@ module Factory
     Person.create! default_attributes.merge(attributes)
   end
 
-  def self.create_group(attributes = { })
+  def self.create_example_group
+    self.create_group(:prefix => false, :save => false)
+  end
+
+  def self.create_group(options = { :prefix => true, :save => true }, attributes = { })
     default_attributes = {
 
-      :title => "Test title",
+      :title => "An example group",
+      :description => "Groups can have descriptions. This is an example.",
       :group_type => "open",
-      :creator => create_person
+      :creator => create_person(options)
 
     }
 
-    [ :title ].each do |attribute|
-      default_attributes[attribute] = random_prefix(5) + default_attributes[attribute]
+    if options[:prefix]
+      [ :title ].each do |attribute|
+        default_attributes[attribute] = random_prefix(5) + default_attributes[attribute]
+      end
     end
 
-    Group.create! default_attributes.merge(attributes)
+    if options[:save]
+      Group.create! default_attributes.merge(attributes)
+    else
+      Group.create! default_attributes.merge(attributes) rescue Group.create default_attributes.merge(attributes)
+    end
   end
 
   private
