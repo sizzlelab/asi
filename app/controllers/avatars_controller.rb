@@ -46,7 +46,7 @@ description:: Replaces this user's avatar. Each user is given an implicit defaul
       render_json :status  => :not_found and return
     end
     if params[:file]
-      [:original_filename, :content_type, :filename ].each do |m|
+      [ :original_filename, :content_type ].each do |m|
         unless params[:file].respond_to?(m)
           render_json :status => :bad_request, :messages => "Malformed file upload" and return
         end
