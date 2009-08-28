@@ -11,8 +11,8 @@ class PeopleController < ApplicationController
 =begin rapidoc
 access:: Application
 return_code:: 200 - OK
-json:: {"entry":
-[{"address":{"unstructured":"MyString, MyString MyString","street_address":"MyString","postal_code":"MyString","locality":"MyString"},"name":{"family_name":"Makkonen","unstructured":"Juho Makkonen","given_name":"Juho"},"birthdate":"1940-06-01","is_association":null,"username":"kusti","gender":{"displayvalue":"MALE","key":"MALE"},"avatar":{"status":"not_set","link":{"rel":"self","href":"\/people\/g1\/@avatar"}},"id":"g1","phone_number":"+358 40 834 7176","msn_nick":"maison","website":"http:\/\/example.com","description":"About me","irc_nick":"pelle","status":{"changed":"2008-08-28T10:58:12Z","message":"Valid person rocks."},"status_message":"Valid person rocks."}]
+json:: {"entry" =>
+[ Factory.create_person, Factory.create_person ]
 }
 
 param:: search - The search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all charactersin the search term are interpreted as literals rather than special regexp characters.
@@ -40,7 +40,7 @@ description:: Finds users based on their real names and usernames.
                               :page => params[:page] ? params[:page].to_i : nil)
       size = Rails.cache.fetch(Person.build_cache_key(:person_count, modified), :expires_in => 15.minutes) { @people.total_entries }
     end
-    render_json :entry => @people.collect { |p| p.person_hash(@client, @user)  }, :size => size
+    render_json :entry => @people.collect { |p| p.to_hash(@user, @client)  }, :size => size
   end
 
 =begin rapidoc
@@ -59,7 +59,7 @@ image and also the status of the avatar, which is 'set' or 'not_set' depending o
       end
       Rails.cache.write(Person.build_cache_key(params['user_id']), @person, :expires_in => 60.minutes)
     end
-    render_json :entry => @person.person_hash(@client.id, @user)
+    render_json :entry => @person.to_hash(@user, @client)
   end
 
 =begin rapidoc
@@ -68,11 +68,7 @@ return_code:: 201 - Created
 return_code:: 400 - Bad request
 return_code:: 409 - Conflict
 
-json:: {"entry":
-{"name":null,"status":{"changed":null,"message":null},"birthdate":null,"gender":{"displayvalue":null,"key":null},
-"username":"teemu","phone_number":null,"is_association":null,"website":null,"id":"","description":null,
-"avatar":{"status":"not_set","link":{"rel":"self","href":"\/people\/\/@avatar"}},
-"msn_nick":null,"irc_nick":null,"status_message":null,"address":null}}
+json:: {"entry" => Factory.create_person }
 
 param:: person
   param:: username - The desired username. Must be unique in the system. Length 4-20 characters.
@@ -365,11 +361,5 @@ description:: Rejects this friend request.
       return order    #the default is "ascending"
     end
   end
-
-  def set_cache_control
-
-  end
-
-
 
 end

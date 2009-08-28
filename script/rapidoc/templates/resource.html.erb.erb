@@ -37,7 +37,7 @@
 
     <% unless comment.json == nil %>
     <p><strong>Returns:</strong><p>
-    <pre><%=DocUtil.pretty_print(comment.json) rescue comment.json%></pre>
+    <pre><%=DocUtil.pretty_print(comment.json)%></pre>
 <% end %>
   <%else%>
     <p> (Documentation missing) </p>
