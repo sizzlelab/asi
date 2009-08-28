@@ -32,9 +32,7 @@ description:: Gets a thumbnail of the avatar of the user. Maximum thumbnail dime
 return_code:: 200
 return_code:: 400 - The avatar is of an unsupported type. Supported types are <tt>image/jpeg</tt>, <tt>image/png</tt> and <tt>image/gif</tt>
 
-param:: file
-  param:: content_type - Content type of user's avatar image.
-  param:: filename - Filename of user's avatar image file.
+param:: file - The
 
 description:: Replaces this user's avatar. Each user is given an implicit default avatar at creation.
 =end
@@ -48,6 +46,11 @@ description:: Replaces this user's avatar. Each user is given an implicit defaul
       render_json :status  => :not_found and return
     end
     if params[:file]
+      [:original_filename, :content_type, :filename ].each do |m|
+        unless params[:file].respond_to?(m)
+          render_json :status => :bad_request, :messages => "Malformed file upload" and return
+        end
+      end
       avatar = @person.create_avatar(:file => params[:file])
       if avatar.valid?
         render_json :status  => :ok and return
