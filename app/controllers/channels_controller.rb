@@ -91,6 +91,14 @@ json:: { "entry" =>
     render_json :status => :created, :entry => @channel and return
   end
 
+=begin rapidoc
+access:: Application
+return_code:: 201
+
+description:: Subscribes to this channel. Post without parameters subscribes current user to the channel. Channel of type group can have only a single group subscriber and no user subscribers. Public and friend channels can have only user subscribers. Only group admins can subscribe the group to a channel.
+
+param:: group_id - The group to be subscribed
+=end
   def subscribe
     if @channel.channel_type == "group"
       if !params[:group_id]
@@ -118,6 +126,14 @@ json:: { "entry" =>
     end
   end
 
+=begin rapidoc
+return_code:: 200
+
+param:: group_id - The group to be unsubscribed.
+param:: person_id - The person to be unsubscribed.
+
+description:: Remove subscriptions. Single group can be unsubscribed by that group's admin. Single users can be unsubscribed by friend and public channel admins. If no parameters are given, unsubscribe current user.
+=end
   def unsubscribe
     if @channel.channel_type == "group"
       if !params[:group_id]
@@ -152,6 +168,13 @@ json:: { "entry" =>
     end
   end
 
+=begin rapidoc
+return_code:: 200
+
+description:: Lists subscriptions.
+
+json:: { :entry => { :user_subscribers => [ Factory.create_example_person ], :group_subscribers => [] }}
+=end
   def list_subscriptions
     @group_subscriptions = @channel.group_subscribers
     @user_subscriptions = @channel.user_subscribers
