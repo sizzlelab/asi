@@ -2,15 +2,16 @@ require 'erb'
 require File.join(File.dirname(__FILE__), 'method_doc.rb')
 
 class ResourceNode
-  attr_accessor :path, :level, :parent, :documentation, :title
+  attr_accessor :path, :level, :parent, :documentation, :title, :description
   attr_reader :childs, :methods, :controller
 
-  def initialize(path, controller)
+  def initialize(path, controller, description)
     self.path = path
     @childs = Array.new
     @methods = Hash.new
     @controller = controller
     @documentation = Hash.new
+    self.description = description
     
     self.title = self.path.gsub(/:(.*?)\//, '&lt;\1&gt;/')
 

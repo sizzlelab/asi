@@ -11,7 +11,7 @@ module COSRoutes
 
   def resource(route, options)
     documentation route.gsub(":", "")
-    options.except(:controller, :format_get, :format_put, :format_post).each do |method, action|
+    options.except(:controller, :format_get, :format_put, :format_post, :description).each do |method, action|
       if method.to_s.eql?("get")
         format = options[:format_get] || 'json'
       elsif method.to_s.eql?("post") || method.to_s.eql?("put")
@@ -22,7 +22,8 @@ module COSRoutes
       connect route, :controller => options[:controller],
                      :format => format,
                      :action => action,
-                     :conditions => { :method => method }
+                     :conditions => { :method => method },
+                     :description => options[:description]
     end
   end
 end
@@ -42,9 +43,10 @@ ActionController::Routing::Routes.draw do |map|
     coreui.resources :profile
   end
 
+  # Adding parameter :description, adds it to the resources documentation
   # Application-specific client data
   map.resource '/appdata', :controller => 'appdata',
-                            :get => 'index'
+                           :get => 'index'
 
   map.resource '/appdata/:user_id/@self/:app_id', :controller => 'client_data',
                                                   :get => 'show',
@@ -109,7 +111,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource '/people', :controller => 'people',
                           :post => 'create',
-                          :get => 'index'
+                          :get => 'index',
+                          :description => "A resource for accessing the users of OtaSizzle."
 
   map.resource '/people/:user_id/@friends', :controller => 'people',
                                             :get => 'get_friends',

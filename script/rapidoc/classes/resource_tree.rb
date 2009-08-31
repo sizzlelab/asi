@@ -38,11 +38,10 @@ class ResourceTree
   def read_routes_into_nodes
     puts 'Reading routes into nodes'
     @routes.routes.each do |d|
-      
       path = d.segments.inject("") { |str,s| str << s.to_s }
       
       unless @exceptions.include?(path.split(/\//)[1]) || @exceptions.include?(path)
-        node = ResourceNode.new(path, d.defaults[:controller])
+        node = ResourceNode.new(path, d.defaults[:controller], d.parameter_shell[:description])
         unless self.resources.include? node
           self.resources << node
         end
