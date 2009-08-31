@@ -5,9 +5,9 @@ module Factory
       def self.create_#{klass.name.downcase}(options = { :prefix => true, :save => true }, attributes = { })
         default_attributes = #{default_attributes}
 
-        #{prefix_attributes.inspect}.each do |attribute|
-          default_attributes[attribute] = random_prefix(5) + default_attributes[attribute]
-        end
+          #{prefix_attributes.inspect}.each do |attribute|
+            default_attributes[attribute] = random_prefix(5) + default_attributes[attribute]
+          end
 
         if options[:save]
           #{klass}.create! default_attributes.merge(attributes)
