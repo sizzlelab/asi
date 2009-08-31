@@ -16,8 +16,8 @@ module Factory
         end
       end
 
-      def self.create_example_#{klass.name.downcase}
-        self.create_#{klass.name.downcase}(:prefix => false, :save => false)
+      def self.create_example_#{klass.name.downcase}(attributes = { })
+        self.create_#{klass.name.downcase}({ :prefix => false, :save => false }, attributes)
       end
 
     })
@@ -48,7 +48,7 @@ module Factory
       :group_type => "open",
       :creator => create_person(options)
 
-  }})
+  }}, [ :title ])
 
   metafactory(Location, %{ {
       :latitude => 60.163389841749,
@@ -56,6 +56,18 @@ module Factory
       :accuracy => 58.0,
       :label => "Otaniemen Alepa"
   }})
+
+  metafactory(Channel, %{ {
+      :name => "Chanel 9",
+      :description => "Hethethethethethe",
+      :owner => create_person(options),
+      :creator_app => create_client(options)
+  }}, [ :name ])
+
+  metafactory(Client, %{ {
+      :name => "Essi",
+      :password => "testi"
+  }}, [ :name ])
 
   private
 

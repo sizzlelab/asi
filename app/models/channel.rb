@@ -101,7 +101,7 @@ class Channel < ActiveRecord::Base
 
 
   def to_json(*a)
-    return to_hash.to_json(*a)
+    return to_hash.to_json
   end
 
   private
