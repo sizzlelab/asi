@@ -2,7 +2,7 @@ require 'erb'
 require File.join(File.dirname(__FILE__), 'method_doc.rb')
 
 class ResourceNode
-  attr_accessor :path, :level, :parent, :documentation
+  attr_accessor :path, :level, :parent, :documentation, :title
   attr_reader :childs, :methods, :controller
 
   def initialize(path, controller)
@@ -11,6 +11,8 @@ class ResourceNode
     @methods = Hash.new
     @controller = controller
     @documentation = Hash.new
+    
+    self.title = self.path.gsub(/:(.*?)\//, '&lt;\1&gt;/')
 
     class << @documentation
       def each_pair
@@ -70,7 +72,7 @@ class ResourceNode
   end
 
   def subresource_paths_as_ul_items
-    retval = "<li class = level_#{self.level}><tt><%= link_to \"#{self.path}\", \"/api/#{self.path.delete(':').sub('/','')}\"%></tt></li>"
+    retval = "<li class = level_#{self.level}><tt><%= link_to \"#{self.title}\", \"/api/#{self.path.delete(':').sub('/','')}\"%></tt></li>"
 
     unless @childs.empty?
       retval += "<ul>"
