@@ -1,5 +1,5 @@
 <%= DocUtil.print_erb "doc_title '#{@title}'", true if @path%>
-
+<%= @description %>
 <% @documentation.each_pair do |method, comment| %>
 
   <% unless comment != nil && comment.description && comment.return_codes.empty? %>
