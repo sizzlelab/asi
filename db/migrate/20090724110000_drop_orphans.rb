@@ -7,12 +7,6 @@ class DropOrphans < ActiveRecord::Migration
       end
     end
 
-    Transaction.all.each do |c|
-      if ! Person.find_by_id(c.sender_id) || ! Person.find_by_id(c.receiver_id)
-        c.destroy
-      end
-    end
-
     [ PendingValidation, PersonName, PersonSpec, Role, Session ].each do |k|
       k.all.each do |c|
         if ! Person.find_by_id(c.person_id)
