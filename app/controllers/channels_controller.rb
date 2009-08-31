@@ -12,8 +12,9 @@ return_code:: 200
 
 description:: Lists channels. Parameters are optional but only one kind of listing (either search or by person id or by group id) is possible at a time. Only channels that current user has access to are listed.
 
-json:: { "entry": [
- {  }
+json:: { "entry" => [
+  Factory.create_example_channel(:name => "Chanel 9"),
+  Factory.create_example_channel(:name => "Chanel 10")
 ] }
 =end
   def index
@@ -56,6 +57,22 @@ json:: { "entry": [
     render_json :entry => @channels, :size => size and return
   end
 
+=begin rapidoc
+access:: Application
+return_code:: 200
+
+description:: Creates a channel. Parameters are optional except name. Current user is set to channel owner and current client is set to creator_app. Owner is subscribed to the channel (except for group channels).
+
+param:: channel
+  param:: name - Channel name. Must be at least two characters long.
+  param:: description - Channel description.
+  param:: channel_type - Currently public, group and friend channels are supported. Default is public.
+  param:: group_id - A single group's id which is then subscribed to the channel if channel_type == 'group'. Current user must have admin rights to that group.
+
+json:: { "entry" =>
+  Factory.create_example_channel(:name => "Chanel 9")
+}
+=end
   def create
     @channel = Channel.new( params[:channel].except(:group_id) )
     @channel.owner = @user
