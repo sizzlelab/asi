@@ -37,7 +37,7 @@ class Location < ActiveRecord::Base
   end
 
   def to_json(*a)
-    location_hash.to_json(*a)
+    location_hash.to_json
   end
 
   def location_hash

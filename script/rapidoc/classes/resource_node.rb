@@ -70,7 +70,7 @@ class ResourceNode
   end
 
   def subresource_paths_as_ul_items
-    retval = "<li class = level_#{self.level}><tt><a href = api/#{self.path.delete(':').sub('/','')}> #{self.path} </a></tt></li>"
+    retval = "<li class = level_#{self.level}><tt><%= link_to \"#{self.path}\", \"/api/#{self.path.delete(':').sub('/','')}\"%></tt></li>"
 
     unless @childs.empty?
       retval += "<ul>"

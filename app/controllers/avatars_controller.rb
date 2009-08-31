@@ -32,7 +32,7 @@ description:: Gets a thumbnail of the avatar of the user. Maximum thumbnail dime
 return_code:: 200
 return_code:: 400 - The avatar is of an unsupported type. Supported types are <tt>image/jpeg</tt>, <tt>image/png</tt> and <tt>image/gif</tt>
 
-param:: file - The
+param:: file - The avatar picture file.
 
 description:: Replaces this user's avatar. Each user is given an implicit default avatar at creation.
 =end

@@ -7,6 +7,11 @@ class LocationsController < ApplicationController
   before_filter :ensure_person_login, :only => :fetch_location_security_token
   #before_filter :ensure_client_login, :only => :update, #TODO Add this when SISSI is corrected
 
+=begin rapidoc
+return_code:: 200
+json:: { :entry => Factory.create_location }
+description:: Returns this person's location.
+=end
   def get
     @location = Person.find_by_guid(params['user_id']).location
     if ! @location
@@ -17,9 +22,18 @@ class LocationsController < ApplicationController
     render_json :entry => @location
   end
 
+=begin rapidoc
+param:: location_security_token - The current user's security token, obtained via <tt><%= link_to_api("@location_security_token") %></tt>
+param::location
+  param::latitude - Latitude coordinates in Decimal Degree format
+  param::longitude - Longitude coordinate sin Decimal Degree format
+  param::label - Text label given to current location
+  param::accuracy - Accuracy of the location
+description:: Sets the location of the user. If only some of the fields are updated, rest will be set to null.
+=end
   def update
 
-    # The logged user can change only her own location...
+    # The logged user can change only their own location...
     if ! ensure_same_as_logged_person(params['user_id'])
       if !params['username'] and !params['password'] and !params['location_security_token']
         render_json :status => :forbidden and return
@@ -60,7 +74,7 @@ class LocationsController < ApplicationController
       render_json :status  => 406, :json => "Problem with parameters.".to_json and  return
       #TODO return more info about which parameter went wrong
     end
-    
+
     render_json :status => :ok
   end
 
