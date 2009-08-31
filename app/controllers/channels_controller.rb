@@ -183,10 +183,29 @@ json:: { :entry => { :user_subscribers => [ Factory.create_example_person ], :gr
                           } and return
   end
 
+=begin rapidoc
+return_code:: 200
+
+description:: Returns the details of this channel.
+
+json:: { :entry => Factory.create_channel }
+=end
   def show
     render_json :entry => @channel and return
   end
 
+=begin rapidoc
+return_code:: 200
+
+param:: channel
+  param:: name - Channel name. Must be at least two characters long.
+  param:: description - Channel description.
+  param:: owner_id - The new channel owner.
+
+description:: Updates the details of this channel.
+
+json:: { :entry => Factory.create_channel }
+=end
   def edit
     if params[:channel][:owner_id]
       person = Person.find_by_id(params[:channel][:owner_id])
@@ -207,6 +226,11 @@ json:: { :entry => { :user_subscribers => [ Factory.create_example_person ], :gr
     render_json :status => :ok, :entry => @channel and return
   end
 
+=begin rapidoc
+return_code:: 200
+
+description:: Deletes this channel.
+=end
   def delete
     @channel.delete
     render :status => :ok and return
