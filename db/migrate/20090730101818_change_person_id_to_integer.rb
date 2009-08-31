@@ -1,7 +1,6 @@
 class ChangePersonIdToInteger < ActiveRecord::Migration
   def self.up
     drop_foreign_key :addresses, :people
-    drop_foreign_key :authorizes, :people
     drop_foreign_key :channels, :people
     drop_foreign_key :client_data_sets, :people
     drop_foreign_key :collections, :people
@@ -18,8 +17,6 @@ class ChangePersonIdToInteger < ActiveRecord::Migration
     drop_foreign_key :person_specs, :people
     drop_foreign_key :roles, :people
     drop_foreign_key :sessions, :people
-    drop_foreign_key :transactions, :people, "sender"
-    drop_foreign_key :transactions, :people, "receiver"
     drop_foreign_key :user_subscriptions, :people
 
     execute "ALTER TABLE people CHANGE id id INTEGER AUTO_INCREMENT;"
@@ -27,7 +24,6 @@ class ChangePersonIdToInteger < ActiveRecord::Migration
     change_column :memberships, :person_id, :integer, { :default => 0 }
     change_column :memberships, :inviter_id, :integer
     change_column :addresses, :owner_id, :integer
-    change_column :authorizes, :person_id, :integer
     change_column :channels, :owner_id, :integer
     change_column :client_data_sets, :person_id, :integer
     change_column :collections, :owner_id, :integer
@@ -42,15 +38,12 @@ class ChangePersonIdToInteger < ActiveRecord::Migration
     change_column :person_specs, :person_id, :integer
     change_column :roles, :person_id, :integer
     change_column :sessions, :person_id, :integer
-    change_column :transactions, :sender_id, :integer
-    change_column :transactions, :receiver_id, :integer
     change_column :user_subscriptions, :person_id, :integer
 
 
     foreign_key :memberships, :person_id, :people, :id, "person"
     foreign_key :memberships, :inviter_id, :people, :id, "inviter"
     foreign_key :addresses, :owner_id, :people, :id
-    foreign_key :authorizes, :person_id, :people, :id
     foreign_key :channels, :owner_id, :people, :id
     foreign_key :client_data_sets, :person_id, :people, :id
     foreign_key :collections, :owner_id, :people, :id
@@ -65,8 +58,6 @@ class ChangePersonIdToInteger < ActiveRecord::Migration
     foreign_key :person_specs, :person_id, :people, :id
     foreign_key :roles, :person_id, :people, :id
     foreign_key :sessions, :person_id, :people, :id
-    foreign_key :transactions, :sender_id, :people, :id, "sender"
-    foreign_key :transactions, :receiver_id, :people, :id, "receiver"
     foreign_key :user_subscriptions, :person_id, :people, :id
 
 
