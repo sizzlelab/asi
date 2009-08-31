@@ -4,6 +4,9 @@ class MessagesController < ApplicationController
   before_filter :ensure_can_read_channel, :only => [ :index, :create, :show ]
   before_filter :get_message, :only => [ :delete, :edit, :show ]
 
+=begin rapidoc
+description:: List channel's messages. By default the messages are ordered descending by 'updated_at'.
+=end
   def index
     if params[:search]
       @messages = Message.search( params[:search],
