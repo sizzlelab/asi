@@ -77,6 +77,8 @@ class Person < ActiveRecord::Base
     set_property :delta => true
   end
 
+  accepts_nested_attributes_for :name, :address
+
   ALL_FIELDS = %w(status_message birthdate irc_nick msn_nick phone_number description website username name address is_association)
   STRING_FIELDS = %w(status_message irc_nick msn_nick website)
   # Fields that need to be translated if the language is changed.

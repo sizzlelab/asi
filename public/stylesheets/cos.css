@@ -22,6 +22,10 @@ table {
     font-size : small
 }
 
+p {
+    font-size: medium
+}
+
 th.inner_parameters {
     border-right : 1px solid black;
     width : 20%;
