@@ -14,11 +14,9 @@ class DocUtil
     begin
       data = eval(value)
     rescue SyntaxError => e
-      puts value
-#      data = JSON.parse(value)
+      data = value
     end
     begin
-
       value = JSON.pretty_generate(JSON.parse(JSON.pretty_generate(data)))
     rescue JSON::ParserError => e
       puts "Parser error in #{data}"

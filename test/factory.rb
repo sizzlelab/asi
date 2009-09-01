@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module Factory
 
   def self.metafactory(klass, default_attributes, prefix_attributes = [])
@@ -37,7 +38,9 @@ module Factory
       :msn_nick => "maison",
       :phone_number => "+358 40 834 7176",
       :description => "About me",
-      :website => "http://example.com"
+      :website => "http://example.com",
+      :name => create_personname(options),
+      :address => create_address(options)
 
   }}, [ :username, :email ])
 
@@ -68,6 +71,17 @@ module Factory
       :name => "Essi",
       :password => "testi"
   }}, [ :name ])
+
+  metafactory(PersonName, %{ {
+      :given_name => "Essi",
+      :family_name => "Esimerkki"
+  }})
+
+  metafactory(Address, %{ {
+      :street_address => "Yrjö-Koskisenkatu 42",
+      :postal_code => "00170",
+      :locality => "Helsinki"
+  }})
 
   private
 

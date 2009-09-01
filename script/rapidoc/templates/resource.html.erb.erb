@@ -19,13 +19,19 @@
     <% end %>
 
     <% unless comment.return_codes.empty? %>
-    <p><strong>Return codes:</strong></p>
-
 <table>
+<tr>
+<td rowspan="<%= comment.return_codes.size %>" style="vertical-align: top; padding-right: 1em">
+    <p><strong>Returns:</strong></p>
+</td>
+    <th style="padding-top: 0.3em"><%= DocUtil.print_erb "\"#{comment.return_codes[0][0].strip + "&nbsp"};\" + http_status( #{comment.return_codes[0][0]}.to_s )", true %></th>
+    <td><%= comment.return_codes[0][1] %></td>
+</tr>
 
-<% comment.return_codes.each do |r| %>
+
+<% comment.return_codes[1..-1].each do |r| %>
   <tr>
-    <th><%= r[0] %>&nbsp;<span class="status-code"><%= DocUtil.print_erb "http_status( #{r[0]}.to_s )", true %></span></th>
+    <th><%= DocUtil.print_erb "\"#{r[0].strip + "&nbsp;"}\" + http_status( #{r[0]}.to_s )", true %></th>
     <td><%= r[1] %></td>
   </tr>
   <%end%>
@@ -34,7 +40,7 @@
 
 
     <% unless comment.json == nil %>
-    <p><strong>Returns:</strong><p>
+    <p><strong>Response example:</strong><p>
     <pre><%=DocUtil.pretty_print(comment.json)%></pre>
 <% end %>
   <%else%>
