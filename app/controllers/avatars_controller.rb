@@ -30,11 +30,11 @@ description:: Gets a thumbnail of the avatar of the user. Maximum thumbnail dime
 
 =begin rapidoc
 return_code:: 200
-return_code:: 400 - The avatar is of an unsupported type. Supported types are <tt>image/jpeg</tt>, <tt>image/png</tt> and <tt>image/gif</tt>
+return_code:: 400 - The avatar is of an unsupported type. Supported types are <tt>image/jpeg</tt>, <tt>image/png</tt> and <tt>image/gif</tt>.
 
-param:: file - The avatar picture file.
+param:: file - The avatar picture file (as a multipart file upload).
 
-description:: Replaces this user's avatar. Each user is given an implicit default avatar at creation.
+description:: Replaces this user's avatar. Each user is given an implicit default avatar at creation.<p>The semantics of this method are closer to that of <tt>PUT</tt> than <tt>POST</tt>. <tt>POST</tt> is used here due to the difficulty of multipart file uploads with the <tt>PUT</tt> method in some HTTP client libraries.
 =end
   def update
 

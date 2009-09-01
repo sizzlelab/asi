@@ -2,9 +2,7 @@
 <%= @description %>
 <% @documentation.each_pair do |method, comment| %>
 
-  <% unless comment != nil && comment.description && comment.return_codes.empty? %>
   <h3><%= method.to_s.upcase %></h3>
-  <% end %>
 
   <%if comment%>
     <p><%= comment.description %></p>
