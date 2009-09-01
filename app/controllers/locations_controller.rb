@@ -78,6 +78,13 @@ description:: Sets the location of the user. If only some of the fields are upda
     render_json :status => :ok
   end
 
+=begin rapidoc
+return_code:: 200
+
+description:: The returned JSON has a field location_security_token which contains UUID string that can be used as a security token
+
+json:: { :entry => { :location_security_token => UUID.timestamp_create.to_s } }
+=end
   def fetch_location_security_token
     role = @user.roles.find_by_client_id(@client.id)
     render_json :status => :ok, :json => { :location_security_token => role.location_security_token }.to_json

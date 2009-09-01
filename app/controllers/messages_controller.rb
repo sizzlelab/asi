@@ -5,6 +5,15 @@ class MessagesController < ApplicationController
   before_filter :get_message, :only => [ :delete, :edit, :show ]
 
 =begin rapidoc
+return_code:: 200 - Returns messages in json's entry -field.
+return_code:: 403 - User has no access to channel.
+return_code:: 404 - Channel not found.
+
+param:: page - Pagination page.
+param:: per_page - Pagination per page.
+param:: search - Search parameter to search from channel's messages.
+param:: sort_order - Changes the sort order of messages. Allowed values are 'ascending' and 'descending'.
+
 description:: List channel's messages. By default the messages are ordered descending by 'updated_at'.
 =end
   def index
@@ -37,7 +46,20 @@ description:: List channel's messages. By default the messages are ordered desce
     end
     render_json :entry => @messages, :size => size and return
   end
+=begin rapidoc
+return_code:: 200 - Returns messages in json's entry -field.
+return_code:: 403 - User has no access to channel.
+return_code:: 404 - Channel not found.
 
+param:: message
+  param:: title - Message title
+  param:: body - Message content. Text only.
+  param:: attachment - Attachment. Currently only urls are advised to be used. In any case the handling of the attachment-field's content is left for the client.
+  param:: content_type - Message's attachment's content type.
+  param:: reference_to - Message id that this message is a reply to.
+
+description:: List channel's messages. By default the messages are ordered descending by 'updated_at'.
+=end
   def create
     @message = Message.new(params[:message].except(:reference_to))
     if params[:message][:reference_to]
@@ -56,6 +78,13 @@ description:: List channel's messages. By default the messages are ordered desce
     render_json :status => :created, :entry => @message and return
   end
 
+=begin rapidoc
+return_code:: 200 - Returns message in json's entry -field.
+return_code:: 403 - User has no access to channel.
+return_code:: 404 - Message not found.
+
+description:: Show message.
+=end
   def show
     render_json :entry => @message
   end
@@ -64,6 +93,13 @@ description:: List channel's messages. By default the messages are ordered desce
 
   end
 
+=begin rapidoc
+return_code:: 201 - Message deleted.
+return_code:: 403 - User has no access to channel.
+return_code:: 404 - Message not found.
+
+description:: Delete message.
+=end
   def delete
     if ensure_same_as_logged_person(@message.poster.guid)
       @message.delete

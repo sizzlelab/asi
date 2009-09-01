@@ -73,17 +73,17 @@ ActionController::Routing::Routes.draw do |map|
 
   # Role management (Person-client-connection)
 
-  map.resource '/appdata/:app_id/@people', :controller => 'client', :get => 'index'
+  # map.resource '/appdata/:app_id/@people', :controller => 'client', :get => 'index'
 
-  map.resource '/appdata/:app_id/@people/:roles', :controller => 'client', :get => 'index'
+  # map.resource '/appdata/:app_id/@people/:roles', :controller => 'client', :get => 'index'
 
-  map.resource '/people/:user_id/@apps', :controller => 'client', :get => 'index_services',
-                                                                  :post => 'create'
+  # map.resource '/people/:user_id/@apps', :controller => 'client', :get => 'index_services',
+  #                                                                 :post => 'create'
 
-  map.resource '/people/:user_id/@apps/:app_id/@role', :controller => 'client', :get => 'show',
-                                                                                :delete => 'delete',
-                                                                                :post => 'create',
-                                                                                :put => 'update'
+  # map.resource '/people/:user_id/@apps/:app_id/@role', :controller => 'client', :get => 'show',
+  #                                                                               :delete => 'delete',
+  #                                                                               :post => 'create',
+  #                                                                               :put => 'update'
 
   # People
 
@@ -95,7 +95,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/:user_id/@avatar', :controller => 'avatars',
                                            :get => 'show',
                                            :post => 'update',
-                                           :put => 'update',
                                            :delete => 'delete',
                                            :format_get => 'jpg',
                                            :format_post => 'html'
