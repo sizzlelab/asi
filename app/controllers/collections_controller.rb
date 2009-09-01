@@ -167,6 +167,13 @@ description:: Adds a new item to this collection.
     render_json :status => :created, :entry => entry and return
   end
 
+=begin rapidoc
+return_code:: 200
+return_code:: 403 - The current combination of application and user is not allowed to delete this item.
+return_code:: 404 - The item with the specified id does not exist.
+
+description:: Deletes the item. If the item is a reference to a collection, only the reference is deleted, not the referenced collection.
+=end
   def delete_item
     item_id = params["item_id"]
 
