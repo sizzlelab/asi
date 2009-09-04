@@ -76,7 +76,7 @@ param:: person
   param:: is_association - 'true' if this user is an association. Associations may be displayed differently by applications, and they cannot send or receive friend requests.
   param:: consent - The version of the consent that the user has agreed to. For example: 'FI1'/'EN1.5'/'SE4'
 
-description:: Creates a new user. If creation is succesful the current app-only session is changed to be associated also to the user that was just created.
+description:: Creates a new user. If creation is succesful the current app-only session is changed to be associated also to the user that was just created. Also sends a welcoming email to the users email address.
 =end
   def create
     @person = Person.new(params[:person])
@@ -89,7 +89,10 @@ description:: Creates a new user. If creation is succesful the current app-only 
 
       @application_session.person = @person
       @application_session.save
-
+      
+      
+      UserMailer.deliver_welcome(@person, @client)
+      
       render_json :status => :created, :entry => @person.person_hash(@client.id, @user)
     else
       render_json :status => :bad_request, :messages => @person.errors.full_messages

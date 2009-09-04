@@ -7,6 +7,13 @@ class UserMailer < ActionMailer::Base
     body       :user => user, :confirmation_url => confirmation_url
   end
 
+  def welcome(user, client)
+    recipients user.email
+    from COS_MAIL_FROM_ADRESS
+    subject "Welcome to OtaSizzle!"
+    body :user => user, :client => client
+  end
+  
   def recovery(options)
     recipients options[:email]
     from COS_MAIL_FROM_ADRESS
