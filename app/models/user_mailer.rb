@@ -10,7 +10,7 @@ class UserMailer < ActionMailer::Base
   def welcome(user, client)
     recipients user.email
     from COS_MAIL_FROM_ADRESS
-    subject "Welcome to OtaSizzle!"
+    subject "Tervetuloa #{client.realname || client.name}-käyttäjäksi! | Welcome to #{client.realname || client.name}!"
     body :user => user, :client => client
   end
   

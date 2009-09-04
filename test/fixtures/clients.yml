@@ -17,16 +17,18 @@ one:
    name: "ossi"
    encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
    salt: ZB32fj38ueBG
-
+   realname: "Ossi"
 
 two:
    id: 2
    name: "kassi"
    encrypted_password: 4516452e6230c2165df3ea76a86e164f956f5df2e2b317903ac6db190fc86337
    salt: b5koiO7MFRbX
+   realname: "Kassi"
 
 kassi:
    id: acm-TkziGr3z9Tab_ZvnhG
    name: "kassi2"
    encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
    salt: ZB32fj38ueBG
+   realname: "Kassi2"
