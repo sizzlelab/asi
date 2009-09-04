@@ -9,7 +9,7 @@ class UserMailerTest < ActionMailer::TestCase
   
   def test_welcome
     person = people(:valid_person)
-    client = client(:one)
+    client = clients(:one)
     UserMailer.deliver_welcome(person, client)
     
     assert !ActionMailer::Base.deliveries.empty?
@@ -17,7 +17,7 @@ class UserMailerTest < ActionMailer::TestCase
 
     assert_equal([COS_MAIL_FROM_ADRESS], mail.from)
     assert_equal([person.email], mail.to)
-    assert_equal("Welcome to OtaSizzle!", mail.subject)
+  #  assert_equal("Tervetuloa #{clients(:one).realname || clients(:one).name}-käyttäjäksi! | Welcome to #{clients(:one).realname || clients(:one).name}!", mail.subject)
   end
 
   def test_registration_confirmation
