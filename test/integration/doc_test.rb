@@ -18,27 +18,4 @@ class DocTest < ActionController::IntegrationTest
     assert_equal 0, missing.size, "Documentation missing from #{missing.size} api pages: \n#{missing.collect{ |m| "   #{m}\n" }}"
   end
 
-
-  def test_doc
-    read_page "/"
-    read_page "/doc"
-    read_page "/doc/"
-    read_page "/doc/people"
-    read_page "/doc/people/"
-
-    try_to_read_page "/doc/poople"
-    try_to_read_page "/foo/bar"
-  end
-
-  private
-  def read_page(url)
-    get url
-    assert_response :success
-  end
-
-  def try_to_read_page(url)
-    get url
-    assert_response :not_found
-  end
-
 end
