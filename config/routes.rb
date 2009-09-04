@@ -1,9 +1,9 @@
 module COSRoutes
 
   def documentation(route)
-    connect "doc" + route, :controller => 'application',
+    connect "doc" + route, :controller => 'api',
                            :format => 'html',
-                           :action => 'doc'
+                           :action => 'api'
     connect "api" + route, :controller => 'api',
                            :format => "html",
                            :action => 'api'
