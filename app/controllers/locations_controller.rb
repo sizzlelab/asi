@@ -1,7 +1,5 @@
 class LocationsController < ApplicationController
 
-  before_filter :change_me_to_userid
-
   USER_UPDATEABLE_FIELDS = %w(longitude latitude accuracy label)
 
   before_filter :ensure_person_login, :only => :fetch_location_security_token
@@ -88,20 +86,6 @@ json:: { :entry => { :location_security_token => UUID.timestamp_create.to_s } }
   def fetch_location_security_token
     role = @user.roles.find_by_client_id(@client.id)
     render_json :status => :ok, :json => { :location_security_token => role.location_security_token }.to_json
-  end
-
-  private
-
-  def change_me_to_userid
-    if params[:user_id] == "@me"
-      if ses = Session.find_by_id(session[:cos_session_id])
-        if ses.person
-          params[:user_id] = ses.person.guid
-        else
-          render_json :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
-        end
-      end
-    end
   end
 
 end

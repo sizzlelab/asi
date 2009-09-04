@@ -27,6 +27,24 @@ class Image < ActiveRecord::Base
   SMALL_THUMB_HEIGHT = 50
   DIRECTORY = "tmp/images"
 
+  DEFAULT_AVATAR_IMAGES = {
+    "cos" => {
+      "full" => "cos_avatar_80_80.jpg",
+      "large_thumb" => "kassi_avatar.png",
+      "small_thumb" => "kassi_avatar_small.png"
+    },
+    "ossi" => {
+      "full" => "cos_avatar_80_80.jpg",
+      "large_thumb" => "cos_avatar_80_80.jpg",
+      "small_thumb" => "cos_avatar_50_50.jpg"
+    },
+    "kassi" => {
+      "full" => "kassi_avatar.png",
+      "large_thumb" => "kassi_avatar.png",
+      "small_thumb" => "kassi_avatar_small.png"
+    }
+  }
+
   validates_presence_of :person_id
   validate :valid_file
 

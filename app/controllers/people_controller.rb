@@ -1,6 +1,5 @@
 class PeopleController < ApplicationController
 
-  before_filter :change_me_to_userid
   before_filter :ensure_client_login, :except => [ :reset_password, :change_password ]
   before_filter :ensure_person_logout, :only  => [ :create, :recover_password ]
 

@@ -5,52 +5,25 @@ require 'json'
 
 class ApplicationController < ActionController::Base
 
-  helper :all # include all helpers, all the time
+  helper :all
   layout 'default'
 
- # around_filter :catch_no_method_errors
-
   before_filter :maintain_session_and_user
+  before_filter :change_me_to_userid
 
   after_filter :log, :except => [ :index, :doc ]
-  after_filter :set_correct_content_type
 
   PARAMETERS_NOT_TO_BE_ESCAPED = ["password", "confirm_password", "search", "query"]
   before_filter :escape_parameters
 
-  # See ActionController::RequestForgeryProtection for details
-  # Uncomment the :secret if you're not using the cookie session store
-  #protect_from_forgery # :secret => '9c4bfc3f5c5b497cf9ce1b29fdea20f5'
-
-  # See ActionController::Base for details
-  # Uncomment this to filter the contents of submitted sensitive data parameters
-  # from your application log (in this case, all fields with names like "password").
   filter_parameter_logging :password
-
-  DEFAULT_AVATAR_IMAGES = {
-    "cos" => {
-      "full" => "cos_avatar_80_80.jpg",
-      "large_thumb" => "kassi_avatar.png",
-      "small_thumb" => "kassi_avatar_small.png"
-    },
-    "ossi" => {
-      "full" => "cos_avatar_80_80.jpg",
-      "large_thumb" => "cos_avatar_80_80.jpg",
-      "small_thumb" => "cos_avatar_50_50.jpg"
-    },
-    "kassi" => {
-      "full" => "kassi_avatar.png",
-      "large_thumb" => "kassi_avatar.png",
-      "small_thumb" => "kassi_avatar_small.png"
-    }
-  }
 
   def index
     render :layout => "doc"
   end
 
   def doc
-    render :action => request.path[1..-1].gsub(/\/$/, ""), :layout => "doc"
+    redirect_to request.path.gsub("doc", "api")
   end
 
   if RAILS_ENV == "test"
@@ -58,7 +31,6 @@ class ApplicationController < ActionController::Base
       render :layout => "doc"
     end
   end
-
 
   def ensure_person_login
     unless @user
@@ -110,12 +82,6 @@ class ApplicationController < ActionController::Base
       e.headers           = request.headers.reject do |*a|
         a[0].starts_with?("rack") or a[0].starts_with?("action_controller")
       end.to_json
-    end
-  end
-
-  def set_correct_content_type
-    if params["format"]
-      response.content_type = Mime::Type.lookup_by_extension(params["format"].to_s).to_s
     end
   end
 
@@ -184,19 +150,7 @@ class ApplicationController < ActionController::Base
         session[:cos_session_id] = nil
         render_json :status => :unauthorized, :messages => "You are not logged in" and return
       end
-    else
-      #logger.debug "NO SESSION:" + session[:cos_session_id]
     end
-  end
-
-  #Feedback functionality
-  # Change current navigation state based on array containing new navi items.
-  def save_navi_state(navi_items)
-    session[:navi1] = navi_items[0] || session[:navi1]
-    session[:navi2] = navi_items[1] || session[:navi2]
-    session[:navi3] = navi_items[2] || session[:navi3]
-    session[:navi4] = navi_items[3] || session[:navi4]
-    session[:profile_navi] = navi_items[4] || session[:profile_navi]
   end
 
   # Define how many listed items are shown per page.
@@ -260,22 +214,22 @@ class ApplicationController < ActionController::Base
           session,
           params,
           request,
-          @current_user)
+          @user)
       end
     rescue => e
       logger.error(e)
     end
   end
 
+  private
+
   # If request is using /people/@me/xxxxxxx, change user_id from @me to real userid
   def change_me_to_userid
     if params[:user_id] == "@me"
-      if ses = Session.find_by_id(session[:cos_session_id])
-        if ses.person
-          params[:user_id] = ses.person.guid
-        else
-          render_json :status => :unauthorized, :messages => "Please login as a user to continue" and return
-        end
+      if @user
+        params[:user_id] = @user.guid
+      else
+        render_json :status => :unauthorized, :messages => "Please login as a user to continue" and return
       end
     end
   end

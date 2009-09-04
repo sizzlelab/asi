@@ -1,6 +1,5 @@
 class AvatarsController < ApplicationController
 
-  before_filter :change_me_to_userid
   cache_sweeper :people_sweeper, :only => [:update_avatar]
 
 =begin rapidoc
@@ -117,7 +116,7 @@ private
 
     logger.debug service_name
 
-    full_filename = "#{RAILS_ROOT}/public/images/#{DEFAULT_AVATAR_IMAGES[service_name][image_type]}"
+    full_filename = "#{RAILS_ROOT}/public/images/#{Image::DEFAULT_AVATAR_IMAGES[service_name][image_type]}"
 
     @data = File.open(full_filename,'rb').read
     @filename = "default-avatar.jpg"
