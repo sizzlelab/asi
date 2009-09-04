@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   end
 
   def doc
-    redirect_to request.path.gsub("doc", "api")
+    render :action => request.path[1..-1].gsub(/\/$/, ""), :layout => "doc"
   end
 
   if RAILS_ENV == "test"

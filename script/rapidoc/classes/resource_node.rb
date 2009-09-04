@@ -12,7 +12,7 @@ class ResourceNode
     @controller = controller
     @documentation = Hash.new
     self.description = description
-    
+
     self.title = self.path.gsub(/:(.*?)\//, '&lt;\1&gt;/')
 
     class << @documentation
@@ -73,7 +73,7 @@ class ResourceNode
   end
 
   def subresource_paths_as_ul_items
-    retval = "<li class = level_#{self.level}><tt><%= link_to \"#{self.title}\", \"/api/#{self.path.delete(':').sub('/','')}\"%></tt></li>"
+    retval = "<li class = level_#{self.level}><tt><%= link_to \"#{self.title}\", \"/doc/#{self.path.delete(':').sub('/','')}\"%></tt></li>"
 
     unless @childs.empty?
       retval += "<ul>"

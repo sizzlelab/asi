@@ -8,7 +8,7 @@ class ApiController < ApplicationController
     if api_changed? && ENV['RAILS_ENV'] == "development"
       system("script/rapidoc/generate")
     end
-    render :action => request.path[1..-1].gsub(/\/$/, ""), :layout => "doc"
+    render :action => request.path[1..-1].gsub(/\/$/, "").gsub("doc/", ""), :layout => "doc"
   end
 
   private
