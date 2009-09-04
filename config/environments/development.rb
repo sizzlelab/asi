@@ -20,7 +20,7 @@ config.action_mailer.raise_delivery_errors = false
 SERVER_DOMAIN = "http://localhost:3000"
 
 ActionMailer::Base.smtp_settings = {
-  :address => 'smtp.hut.fi', #if needed change to own smtp server
+  :address => 'mail.inet.fi', #if needed change to own smtp server
   :port => 25,
   :domain => 'cos.alpha.sizl.org'
 }
