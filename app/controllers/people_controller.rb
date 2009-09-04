@@ -341,7 +341,10 @@ description:: Rejects this friend request.
     if ! @contact
       render_json :status => :not_found and return false
     end
-    Connection.breakup(@person, @contact)
+    if ! Connection.exists?(@person, @contact)
+      render_json :status => :not_found, :messages => "#{contact_id} is not a friend of #{user_id}" and return false
+    end
+      Connection.breakup(@person, @contact)
     return true
   end
 
