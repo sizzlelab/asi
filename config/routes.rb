@@ -22,8 +22,7 @@ module COSRoutes
       connect route, :controller => options[:controller],
                      :format => format,
                      :action => action,
-                     :conditions => { :method => method },
-                     :description => options[:description]
+                     :conditions => { :method => method }
     end
   end
 end
@@ -110,8 +109,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource '/people', :controller => 'people',
                           :post => 'create',
-                          :get => 'index',
-                          :description => "A resource for accessing the users of OtaSizzle."
+                          :get => 'index'
 
   map.resource '/people/:user_id/@friends', :controller => 'people',
                                             :get => 'get_friends',

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 class GroupsController < ApplicationController
 
-  before_filter :change_me_to_userid, :except => [ :create, :public_groups, :show, :update, :get_members, :get_pending_members ]
-
   methods_not_requiring_person_login = [:show, :public_groups, :get_members]
   before_filter :ensure_person_login, :except => methods_not_requiring_person_login
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
@@ -302,19 +300,6 @@ json:: { "entry": [
 
     return {:status => :forbidden, :message => "Request denied." }
 
-  end
-
-  # If request is using /people/@me/xxxxxxx, change user_id from @me to real userid
-  def change_me_to_userid
-    if params[:user_id] == "@me"
-      if ses = Session.find_by_id(session[:cos_session_id])
-        if ses.person
-          params[:user_id] = ses.person.guid
-        else
-          render_json :status => :unauthorized, :messages => "Please login as a user to continue" and return
-        end
-      end
-    end
   end
 
 end
