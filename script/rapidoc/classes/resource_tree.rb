@@ -39,8 +39,8 @@ class ResourceTree
     puts 'Reading routes into nodes'
     @routes.routes.each do |d|
       path = d.segments.inject("") { |str,s| str << s.to_s }
-      
-      unless @exceptions.include?(path.split(/\//)[1]) || @exceptions.include?(path)
+     
+      unless @exceptions.include?(path) || @exceptions.include?(path.split(/\//)[1]) || @exceptions.include?(path[1, path.length-2])
         node = ResourceNode.new(path, d.defaults[:controller], d.parameter_shell[:description])
         unless self.resources.include? node
           self.resources << node
@@ -49,6 +49,7 @@ class ResourceTree
         node.add_method(d.conditions[:method], d.parameter_shell[:action])
       end
     end
+    
   end
   
   def create_hierarchy
