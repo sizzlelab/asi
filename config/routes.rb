@@ -162,25 +162,18 @@ ActionController::Routing::Routes.draw do |map|
                                                      :delete => 'remove_person_from_group'
 
   # Groups
-
   map.resource '/groups', :controller => 'groups',
                           :post => 'create'
 
   map.resource '/groups/@public', :controller => 'groups',
                                   :get => 'public_groups'
 
-  # Deprecated
-  map.resource '/groups/:group_id', :controller => 'groups',
-                                    :get => 'show',
-                                    :put => 'update'
+#  map.resource '/groups/:user_id', :controller => 'groups',
+#                                     :get => 'personal_groups'
 
-
-  map.resource '/groups/:group_id/@members', :controller => 'groups',
-                                                     :get => 'get_members'
-
-  # New version
   map.resource '/groups/@public/:group_id', :controller => 'groups',
-                                            :get => 'show'
+                                            :get => 'show',
+                                            :put => 'update'
 
   map.resource '/groups/@public/:group_id/@members', :controller => 'groups',
                                              :get => 'get_members'
