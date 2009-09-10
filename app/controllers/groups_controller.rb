@@ -248,6 +248,7 @@ json:: { "entry": [
 =end
   def get_invites
     @groups = @user.invited_groups
+    
     @groups_hash = @groups.collect do |group|
       group.get_group_hash(@user)
     end
@@ -256,6 +257,7 @@ json:: { "entry": [
 
 =begin rapidoc
 return_code:: 200
+return_code:: 403 - Only the authenticated person can view their membership status.
 return_code:: 404 - The person or group doesn't exist or there is no connection between the two.
 
 description:: Returns the membership status of this person in this group.
@@ -264,6 +266,9 @@ json:: { "entry" => Factory.create_group.memberships[0] }
   def show_membership
     unless @person = Person.find_by_guid(params[:user_id])
       render_json :status => :not_found, :messages => "Person not found" and return
+    end
+    unless @person == @user
+      render_json :status => :forbidden, :messages => "You can only view your own membership status" and return
     end
     unless @membership = @group.membership(@person)
       render_json :status => :not_found, :messages => "This person has no connection to this group" and return
