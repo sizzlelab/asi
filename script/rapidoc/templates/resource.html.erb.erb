@@ -2,7 +2,7 @@
 <%= @description %>
 <% @documentation.each_pair do |method, comment| %>
 
-  <h3><%= method.to_s.upcase %></h3>
+  <a name="<%= method.to_s.upcase %>"><h3><%= method.to_s.upcase %></h3></a>
 
   <%if comment%>
     <p><%= comment.description %></p>
