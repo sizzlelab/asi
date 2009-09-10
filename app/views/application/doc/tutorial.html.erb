@@ -43,7 +43,7 @@ DELETE - to delete a resource</p>
 
 <h3>How to access Aalto Social Interface development server?</h3>
 
-<p>To access ASI you need an application account and password. You can ask those by contacting us (email to antti.virolainen [at] tkk.fi). Include in the email a short description of your idea and the name of your application. In the beginning, the application account will work only on ASI development server (cos.alpha.sizl.org), but when you reach a stable state in with your application, contact us again to get access to the production ASI (cos.sizl.org).</p>
+<p>To access ASI you need an application account and password. You can ask those by contacting us (email to cos [at] cs.hut.fi). Include in the email a short description of your idea and the name of your application. In the beginning, the application account will work only on ASI development server (cos.alpha.sizl.org), but when you reach a stable state in with your application, contact us again to get access to the production ASI (cos.sizl.org).</p>
 
 <p>All the real OtaSizzle user accounts are on the production ASI. The development ASI contains only test data, although some users may have similar username in both servers.</p>
 
@@ -80,7 +80,7 @@ DELETE - to delete a resource</p>
 <p>To test your application account, do the following in the interactive tester:</p>
 <pre>POST /session</pre>
 <p>(with params)</p>
-<pre>app_name=your_app_name&amp;app_password=your_app_password</pre>
+<pre>session[app_name]=your_app_name&amp;session[app_password]=your_app_password</pre>
 <p>You should get response looking like:</p>
 <pre>
   Code: 201
