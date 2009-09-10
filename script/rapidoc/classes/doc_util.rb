@@ -17,7 +17,7 @@ class DocUtil
       data = value
     end
     begin
-      value = JSON.pretty_generate(JSON.parse(JSON.pretty_generate(data)))
+      value = JSON.pretty_generate(JSON.parse(data.to_json))
     rescue JSON::ParserError => e
       puts "Parser error in #{data}"
       puts e.message

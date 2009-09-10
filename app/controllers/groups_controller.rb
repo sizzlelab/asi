@@ -6,7 +6,7 @@ class GroupsController < ApplicationController
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
 
   ADMIN_METHODS = [ :update, :accept_pending_membership_request, :get_pending_members, :change_admin_status ]
-  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update_membership_status ] + ADMIN_METHODS
+  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update_membership_status, :show_membership ] + ADMIN_METHODS
   before_filter :ensure_admin, :only => ADMIN_METHODS
 
 =begin rapidoc
@@ -254,6 +254,23 @@ json:: { "entry": [
     render_json :entry => @groups and return
   end
 
+=begin rapidoc
+return_code:: 200
+return_code:: 404 - The person or group doesn't exist or there is no connection between the two.
+
+description:: Returns the membership status of this person in this group.
+json:: { "entry" => Factory.create_group.memberships[0] }
+=end
+  def show_membership
+    unless @person = Person.find_by_guid(params[:user_id])
+      render_json :status => :not_found, :messages => "Person not found" and return
+    end
+    unless @membership = @group.membership(@person)
+      render_json :status => :not_found, :messages => "This person has no connection to this group" and return
+    end    
+    render_json :entry => @membership
+  end
+  
   private
 
   def get_group_or_not_found
