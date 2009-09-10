@@ -147,12 +147,13 @@ ActionController::Routing::Routes.draw do |map|
                                            :post => 'add_member'
 
   map.resource '/people/:user_id/@groups/@invites', :controller => 'groups',
-  :get => 'get_invites'
+                                                    :get => 'get_invites'
 
 
   map.resource '/people/:user_id/@groups/:group_id', :controller => 'groups',
                                                      :put => 'update_membership_status',
-                                                     :delete => 'remove_person_from_group'
+                                                     :delete => 'remove_person_from_group',
+                                                     :get => 'show_membership'
 
   map.resource '/people/:user_id/@groups', :controller => 'groups',
                                            :get => 'get_groups_of_person',

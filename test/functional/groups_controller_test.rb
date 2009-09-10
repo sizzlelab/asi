@@ -511,4 +511,23 @@ class GroupsControllerTest < ActionController::TestCase
     end
   end
 
+  test "show_membership" do
+    group = Factory.create_group
+    login_as group.creator
+    get :show_membership, { :user_id => group.creator.guid, :group_id => group.id, :format => 'json' }
+    assert_response :ok, @response.body
+    entry = @json["entry"]
+    assert entry["admin_role"]
+  end
+
+  test "show_membership_not_there" do
+    user = Factory.create_person
+    group = Factory.create_group
+    login_as user
+    [ [user.guid, "myrandomstring"], ["myrandomstring", group.id], [ "nosuchuser", "nosuchgroup" ] ].each do |a|
+      get :show_membership, { :user_id => a[0], :group_id => a[1], :format => 'json' }
+      assert_response :not_found, @response.body
+    end
+  end
+  
 end
