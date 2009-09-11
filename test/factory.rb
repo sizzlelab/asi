@@ -10,6 +10,10 @@ module Factory
             default_attributes[attribute] = random_prefix(5) + default_attributes[attribute]
           end
 
+      if ! options
+        options = { }
+      end
+      
         if options[:save]
           #{klass}.create! default_attributes.merge(attributes)
         else

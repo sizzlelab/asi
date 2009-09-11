@@ -29,7 +29,7 @@ class Channel < ActiveRecord::Base
   attr_accessible :name, :description, :channel_type, :owner, :creator_app
   attr_readonly :channel_type, :creator_app
 
-  before_save :subscribe
+  after_create :subscribe
   before_validation_on_create :set_default_type
 
   validates_inclusion_of :channel_type, :in => %w( public friend group), :message => "must be public, friend or group."

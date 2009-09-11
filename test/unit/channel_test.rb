@@ -90,4 +90,11 @@ class ChannelTest < ActiveSupport::TestCase
     assert channel1.valid?
   end
 
+  test "group_subscription" do
+    group = Factory.create_group(nil, { :title => "Kamppi"})
+    channel = Factory.create_channel(nil, { :channel_type => "group", :name => "Kamppi" })
+    channel.save
+    channel.save
+  end
+  
 end
