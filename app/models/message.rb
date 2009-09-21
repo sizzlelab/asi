@@ -71,6 +71,9 @@ class Message < ActiveRecord::Base
   end
 
   def show?(user, client=nil)
+    unless channel
+      return false
+    end
     channel.show? user, client
   end
 
