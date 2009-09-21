@@ -204,14 +204,7 @@ class Person < ActiveRecord::Base
     end
   end
 
-  def to_hash(user, client)
-    person_hash(client.andand.id, user)
-  end
-
-
-  #creates a hash of person attributes. If connection_person is not nil, adds connection attribute to hash
-  # connection_person means the person who is asking to get the hash for current person
-  def person_hash(client_id=nil, connection_person=nil, *a)
+  def to_hash(user=nil, client=nil)
 
     person_hash = {
       'id' => guid,
@@ -226,28 +219,28 @@ class Person < ActiveRecord::Base
     end
 
 
-    #TODO Make more sensible check for the clients that are authorized to get email
-    # Currently check if client_id matches to Kassi.
-    if connection_person == self || client_id == "acm-TkziGr3z9Tab_ZvnhG"
+    if user == self || client.andand.show_email?
       person_hash.merge!({'email' => email})
     end
 
-    if connection_person
-      person_hash.merge!({'connection' => get_connection_string(connection_person)})
+    if user
+      person_hash.merge!({'connection' => get_connection_string(user)})
       # if the asker is a friend (or self), include location
-      if location && (person_hash['connection'] == ACCEPTED_CONNECTION_STRING || connection_person == self)
+      if location && (person_hash['connection'] == ACCEPTED_CONNECTION_STRING || user == self)
         person_hash.merge!({:location => location})
       end
     end
 
-    if !client_id.nil?
-      person_hash.merge!({'role' => role_title(client_id)})
+    if client
+      person_hash.merge!({'role' => role_title(client.id)})
     end
     return person_hash
   end
 
+public
+
   def to_json(client_id=nil, connection=nil, *a)
-    person_hash(client_id, connection).to_json(*a)
+    to_hash(connection, Client.find_by_id(client_id)).to_json(*a)
   end
 
 # added by tchang

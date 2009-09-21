@@ -583,7 +583,10 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_kassi_email_kludge
-    login_as people(:valid_person).contacts[0], clients(:kassi)
+    client = clients(:kassi)
+    client.show_email = true
+
+    login_as people(:valid_person).contacts[0], client
     get :show, { :user_id => people(:valid_person).guid, :format => "json"}
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
