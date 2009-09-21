@@ -28,4 +28,5 @@ class Client < ActiveRecord::Base
       return model
     end
   end
+
 end

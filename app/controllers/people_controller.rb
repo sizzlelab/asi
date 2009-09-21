@@ -90,12 +90,12 @@ description:: Creates a new user. If creation is succesful the current app-only 
 
       @application_session.person = @person
       @application_session.save
-      
+
       unless params[:welcome_email] == "false"
         UserMailer.deliver_welcome(@person, @client)
       end
-      
-      render_json :status => :created, :entry => @person.person_hash(@client.id, @user)
+
+      render_json :status => :created, :entry => @person.to_hash(@user, @client)
     else
       render_json :status => :bad_request, :messages => @person.errors.full_messages
       @person = nil
@@ -138,7 +138,7 @@ description:: Update (or add) information to user's profile. The person-paramete
     if params[:person]
       begin
         if @person.update_attributes(params[:person])
-          render_json :entry => @person.person_hash(@client.id, @user) and return
+          render_json :entry => @person.to_hash(@user, @client) and return
         end
       rescue NoMethodError  => e
         errors = e.to_s
