@@ -170,6 +170,8 @@ class PersonTest < ActiveSupport::TestCase
 
     assert_not_nil json["role"], "Role is missing"
 
+    assert_not_nil json["updated_at"], "updated_at"
+
     spec_fields.each do |value|
         assert_not_nil json[value] , "#{value} was nil."
     end
