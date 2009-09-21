@@ -131,6 +131,25 @@ class ResourceNode
       end
 
     end
+    
+    #Find out if there are multiple routes with same action
+    self.methods.each_value do |value|
+      arr = self.methods.select { |k, v| v == value}
+      if self.documentation
+        arr.each do |a|
+          if self.documentation[a[0]] && ! self.documentation[a[0]].description.empty?
+            puts a[0].inspect
+            method = a[0]
+          else
+            puts arr.inspect
+            Kernel.abort
+            self.documentation[a[0]] = MethodDoc.new
+            self.documentation[a[0]].add_variable("description", "See #{method}")
+          end
+        end
+      end
+ end
+   
   end
 
   def generate_resource_doc
@@ -138,7 +157,7 @@ class ResourceNode
       self.documentation[m] = nil
     end
 
-
+    
     self.parse_method_doc
 
     template = ""
