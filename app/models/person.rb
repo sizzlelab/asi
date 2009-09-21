@@ -211,7 +211,8 @@ class Person < ActiveRecord::Base
       'avatar' => { :link => { :rel => "self", :href => "/people/#{guid}/@avatar" },
                     :status => ( avatar ? "set" : "not_set" ) },
       'status' => { :message => status_message, :changed => status_message_changed },
-      :gender => { "displayvalue" => gender, "key" => gender }
+      :gender => { "displayvalue" => gender, "key" => gender },
+      'updated_at' => updated_at
     }
 
     ALL_FIELDS.each do |field|
