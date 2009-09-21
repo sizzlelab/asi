@@ -121,10 +121,6 @@ class Channel < ActiveRecord::Base
   end
 
   def subscribe
-    if self.channel_type == 'group'
-      group_subscribers << Group.find_by_title(self.name) rescue ActiveRecord::RecordInvalid
-    end
-
     user_subscribers << owner rescue ActiveRecord::RecordInvalid
   end
 

@@ -58,7 +58,7 @@ param:: message
   param:: content_type - Message's attachment's content type.
   param:: reference_to - Message id that this message is a reply to.
 
-description:: List channel's messages. By default the messages are ordered descending by 'updated_at'.
+description:: Creates a new message.
 =end
   def create
     @message = Message.new(params[:message].except(:reference_to))
