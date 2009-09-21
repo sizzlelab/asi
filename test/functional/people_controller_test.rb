@@ -66,7 +66,7 @@ class PeopleControllerTest < ActionController::TestCase
       assert mailtext =~ /http\S+#{user.pending_validation.key}/
       assert mailtext =~ /#{user.username}/
     end
-    
+
     #make sure that the  welcome mail is sent
     assert !ActionMailer::Base.deliveries.empty?
     mail = ActionMailer::Base.deliveries.first
@@ -74,7 +74,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert_equal([COS_MAIL_FROM_ADRESS], mail.from)
     assert_equal([user.email], mail.to)
     #assert_equal("Tervetuloa #{clients(:one).realname || clients(:one).name}-käyttäjäksi! | Welcome to #{clients(:one).realname || clients(:one).name}!", mail.subject)
-    
+
     assert_not_nil(Session.find(sessions(:client_only_session).id).person_id)
 
     assert_not_nil json["entry"]
@@ -90,7 +90,7 @@ class PeopleControllerTest < ActionController::TestCase
   def test_create_association
     assert_nil(Session.find(sessions(:client_only_session).id).person_id)
     ActionMailer::Base.deliveries.clear
-    
+
     post :create, { :person => {:username  => "newbie",
                     :password => "newbass",
                     :email => "newbie@testland.gov",
@@ -104,7 +104,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert_not_nil user
     json = JSON.parse(@response.body)
     assert_not_nil(Session.find(sessions(:client_only_session).id).person_id)
-    
+
     #check that no welcome mail is sent
     assert ActionMailer::Base.deliveries.empty?, "No welcome email should have been sent."
 
@@ -434,6 +434,10 @@ class PeopleControllerTest < ActionController::TestCase
     #check that no more requested
     assert ! user.pending_contacts.include?(requested)
     assert ! requested.requested_contacts.include?(user)
+
+    delete :remove_friend, { :user_id => people(:valid_person).guid, :friend_id => people(:requested).guid, :format => 'json' }
+    assert_response :not_found
+    json = JSON.parse(@response.body)
   end
 
   def test_search
