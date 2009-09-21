@@ -317,6 +317,18 @@ module COSTestingDSL
     JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
   end
 
+  def puts_app_data(user_id, app_id, data)
+    put "/appdata/#{user_id}/@self/#{app_id}", { :data => data }
+    assert_response :success, @response.body
+  end
+
+  def gets_app_data
+    get "/appdata/@me/@self/@application"
+    assert_response :success, @response.body
+    JSON.parse(@response.body)["entry"]
+  end
+
+
   private
 
   def subset(a, b)

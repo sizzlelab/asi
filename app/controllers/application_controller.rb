@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :maintain_session_and_user
   before_filter :change_me_to_userid
+  before_filter :change_app_to_appid
 
   after_filter :log, :except => [ :index, :doc ] if LOG_TO_RESSI
 
@@ -234,5 +235,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def change_app_to_appid
+    if params[:app_id] == "@application"
+      if @client
+        params[:app_id] = @client.id
+      else
+        render_json :status => :unauthorized, :messages => "Please login as an application to continue" and return
+      end
+    end
+  end
 
 end
