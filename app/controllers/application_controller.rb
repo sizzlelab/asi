@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
 
   def ensure_person_login
     unless @user
-      status = (@client.name == "ossi" ? :forbidden : :unauthorized)
+      status = (@client.andand.name == "ossi" ? :forbidden : :unauthorized)
       render_json :status => status, :messages => "Please login as a user to continue" and return
     end
   end
