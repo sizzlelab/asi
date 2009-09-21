@@ -11,7 +11,12 @@ json:: { :entry => Factory.create_location }
 description:: Returns this person's location.
 =end
   def get
-    @location = Person.find_by_guid(params['user_id']).location
+    @person = Person.find_by_guid(params['user_id'])
+    unless @person
+      render_json :status => 404, :messages => "Person not found"
+    end
+
+    @location = @person.location
     if ! @location
       #if location is not set, return just nils
       @location = Location.new
