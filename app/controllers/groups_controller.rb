@@ -36,6 +36,7 @@ description:: Creates a new group. The creator is automatically added to the new
                                    :owner => @user,
                                    :channel_type => "group",
                                    :creator_app => @client)
+        @channel.group_subscribers << @group
       end
       render_json :status => :created, :entry => @group and return
     else
