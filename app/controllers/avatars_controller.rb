@@ -108,13 +108,12 @@ private
   end
 
   def get_default_avatar(service, image_type)
-    if service.nil?
-      service_name = "cos"
-    else
-      service_name = service.name
-    end
 
-    logger.debug service_name
+    service_name = service.andand.name
+
+    unless Image::DEFAULT_AVATAR_IMAGES[service_name]
+      service_name = "cos"
+    end
 
     full_filename = "#{RAILS_ROOT}/public/images/#{Image::DEFAULT_AVATAR_IMAGES[service_name][image_type]}"
 
