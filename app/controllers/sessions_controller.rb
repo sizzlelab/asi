@@ -31,6 +31,7 @@ param:: session
   param:: username - The user's username (optional).
   param:: password - The user's password (optional).
   param:: proxy_ticket - A CAS proxy ticket (optional).
+param:: remember_me - If set, returns a cookie valid for two weeks (optional).
 
 description:: Starts a new session. Sessions can be associated either
 with an application only or with an application and a user. To start a session without logging a user in, provide no <tt>username</tt> or <tt>password</tt>.</p>
@@ -151,6 +152,11 @@ json:: { "entry" =>
       end
 
       session[:cos_session_id] = @session.id
+
+      if params[:remember_me]
+        session_options[:expire_after] = 2.weeks
+      end
+
       if ui_mode
         flash[:notice] = "Logged in."
         redirect_to coreui_profile_index_path and return
