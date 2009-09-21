@@ -16,8 +16,10 @@ class SystemController < ApplicationController
   end
 
   def upload
-    rake "ressi:upload"
-    render :template => "system/default"
+    if LOG_TO_RESSI
+      rake "ressi:upload"
+      render :template => "system/default"
+    end
   end
 
   def clean_sessions
