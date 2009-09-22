@@ -77,7 +77,7 @@ module Factory
       :owner => create_person(options),
       :creator_app => create_client(options)
   }}, [ :name ], %{
-    (1 + rand(5)).times do 
+    rand(4).times do 
       o.messages << Message.create(:title => "Title", :body => "Body", :poster => create_person, :channel => o)
     end
     o.save

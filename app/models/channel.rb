@@ -103,6 +103,8 @@ class Channel < ActiveRecord::Base
       if poster
         hash.merge!({ :updated_by => { :link => poster.to_link, :name => poster.display_name }})
       end
+    else
+      hash.merge!({ :updated_by => { :link => owner.to_link, :name => owner.display_name }})
     end
 
     hash
