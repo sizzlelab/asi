@@ -334,6 +334,14 @@ public
     super rescue nil
   end
 
+  def display_name
+    name_or_username
+  end
+
+  def to_link
+    { :href => "/people/#{guid}/@self"}
+  end
+  
   # Methods provided by include_simple_groups:
   # user.groups
   # user.pending_groups

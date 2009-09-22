@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 module Factory
 
-  def self.metafactory(klass, default_attributes, prefix_attributes = [])
+  def self.metafactory(klass, default_attributes, prefix_attributes = [], finalize = "o")
     class_eval(%{
+
+      def self.finalize_#{klass.name.downcase}(o)
+        #{finalize}
+      end
+
       def self.create_#{klass.name.downcase}(options = { :prefix => true, :save => true }, attributes = { })
         default_attributes = #{default_attributes}
 
@@ -15,10 +20,12 @@ module Factory
       end
       
         if options[:save]
-          #{klass}.create! default_attributes.merge(attributes)
+          object = #{klass}.create! default_attributes.merge(attributes)
         else
-          #{klass}.create! default_attributes.merge(attributes) rescue #{klass}.create default_attributes.merge(attributes)
+          object = #{klass}.create! default_attributes.merge(attributes) rescue #{klass}.create default_attributes.merge(attributes)
         end
+
+        object = finalize_#{klass.name.downcase}(object)
       end
 
       def self.create_example_#{klass.name.downcase}(attributes = { })
@@ -69,7 +76,21 @@ module Factory
       :description => "Hethethethethethe",
       :owner => create_person(options),
       :creator_app => create_client(options)
-  }}, [ :name ])
+  }}, [ :name ], %{
+    (1 + rand(5)).times do 
+      o.messages << Message.create(:title => "Title", :body => "Body", :poster => create_person, :channel => o)
+    end
+    o.save
+    o
+  })
+
+  metafactory(Message, %{ {
+      :title => "Title",
+      :body => "This is the message body.",
+      :poster => create_person(options),
+      :content_type => "text/plain",
+      :channel => create_channel(options)
+  }}, [ ])
 
   metafactory(Client, %{ {
       :name => "Essi",

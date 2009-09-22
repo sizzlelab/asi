@@ -80,8 +80,7 @@ class Message < ActiveRecord::Base
   private
 
   def touch_channel_timestamp
-    self.channel.updated_at = Time.now
-    self.channel.save
+    self.channel.touch
   end
 
   def associations_must_exist

@@ -87,7 +87,7 @@ class Channel < ActiveRecord::Base
 
   #user and client parameters are required for sphinx
   def to_hash(user=nil, client=nil)
-    { :id => guid,
+    hash = { :id => guid,
       :name => name,
       :description => description,
       :owner_id => owner.guid,
@@ -97,6 +97,15 @@ class Channel < ActiveRecord::Base
       :channel_type => channel_type,
       :message_count => self.messages.size
     }
+
+    if messages.size > 0
+      poster = self.messages.first.poster
+      if poster
+        hash.merge!({ :updated_by => { :link => poster.to_link, :name => poster.display_name }})
+      end
+    end
+
+    hash
   end
 
 
@@ -104,6 +113,14 @@ class Channel < ActiveRecord::Base
     return to_hash.to_json
   end
 
+  def touch
+    group_subscribers.each do |group|
+      group.touch
+    end
+    self.updated_at = Time.now
+    self.save
+  end
+  
   private
 
   def validate_group_count
