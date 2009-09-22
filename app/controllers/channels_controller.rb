@@ -70,7 +70,7 @@ param:: channel
   param:: group_id - A single group's id which is then subscribed to the channel if channel_type == 'group'. Current user must have admin rights to that group.
 
 json:: { "entry" =>
-  Factory.create_example_channel(:name => "Chanel 9")
+   Factory.create_example_channel(:name => "Chanel 9")
 }
 =end
   def create

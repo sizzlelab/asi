@@ -168,6 +168,11 @@ class Group < ActiveRecord::Base
     grant_admin_status_to(oldest_membership.person)
   end
 
+  def touch
+    updated_at = Time.now
+    save
+  end
+  
   private
 
   def auto_accept_members?

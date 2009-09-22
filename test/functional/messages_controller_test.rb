@@ -48,7 +48,7 @@ class MessagesControllerTest < ActionController::TestCase
   end
 
   def test_touch_channel_timestamp
-    old_timestamp = Channel.find_by_id(channels(:julkikanava).id).updated_at
+    old_timestamp = channels(:julkikanava).updated_at
     post :create, {:format => "json", :channel_id => channels(:julkikanava).guid, :message => {:title => "Timestamp-testi", :body => "Testitekstiä" }}, {:cos_session_id => sessions(:session1).id}
     assert_response :created, @response.body
     json = JSON.parse(@response.body)
