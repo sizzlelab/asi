@@ -149,7 +149,6 @@ class ApplicationController < ActionController::Base
         @client = @application_session.client
       else
         session[:cos_session_id] = nil
-        render_json :status => :unauthorized, :messages => "You are not logged in" and return
       end
     end
   end
