@@ -204,6 +204,10 @@ class Person < ActiveRecord::Base
     end
   end
 
+  def updated_at
+    [super, name.andand.updated_at, address.andand.updated_at].compact.sort.last
+  end
+  
   def to_hash(user=nil, client=nil)
 
     person_hash = {
