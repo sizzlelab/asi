@@ -23,19 +23,23 @@ class CachedCosEvent < ActiveRecord::Base
     if CachedCosEvent.count > 0
       logger.info "Uploading #{CachedCosEvent.count} events to Ressi at #{Time.now}.\n"
 
-      CachedCosEvent.all.each_with_index do |event, i|
-        logger.info i if i % 1000 == 0
-        tries = 0
-        begin
-          tries += 1
-          event.upload
-          event.destroy
-        rescue => e
-          retry if tries < 5
-          raise e
+      CachedCosEvent.find_in_batches(:batch_size => 1000) do |events|
+        events.each_with_index do |event, i|
+          logger.info i if i % 1000 == 0
+          tries = 0
+          begin
+            tries += 1
+            event.upload
+            event.destroy
+          rescue => e
+            if tries < 5
+              logger.info "Retrying..."
+              retry
+            end
+            raise e
+          end
         end
       end
-
       logger.info "Ressi upload finished at #{Time.now}.\n"
     end
   end
