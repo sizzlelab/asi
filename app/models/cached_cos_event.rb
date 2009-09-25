@@ -15,6 +15,7 @@
 #  updated_at        :datetime
 #  semantic_event_id :string(255)
 #
+require 'timeout'
 
 class CachedCosEvent < ActiveRecord::Base
 
@@ -22,10 +23,17 @@ class CachedCosEvent < ActiveRecord::Base
     if CachedCosEvent.count > 0
       logger.info "Uploading #{CachedCosEvent.count} events to Ressi at #{Time.now}.\n"
 
-      CachedCosEvent.find_each do |event|
-        event.upload
-        event.destroy
-        event.destroy
+      CachedCosEvent.all.each_with_index do |event, i|
+        logger.info i if i % 1000 == 0
+        tries = 0
+        begin
+          tries += 1
+          event.upload
+          event.destroy
+        rescue => e
+          retry if tries < 5
+          raise e
+        end
       end
 
       logger.info "Ressi upload finished at #{Time.now}.\n"
@@ -33,21 +41,17 @@ class CachedCosEvent < ActiveRecord::Base
   end
 
   def upload
-    begin 
-      event = CosEvent.create({
-                                :user_id =>        user_id,
-                                :application_id => application_id,
-                                :cos_session_id => cos_session_id,
-                                :ip_address =>     ip_address,
-                                :action =>         action,
-                                :parameters =>     parameters,
-                                :return_value =>   return_value,
-                                :headers =>        headers,
-                                :semantic_event_id => semantic_event_id
-                              })
-    rescue ActiveResource::ServerError => e
-      logger.debug e
-    end
-    self.destroy
+
+    event = CosEvent.create({
+                              :user_id =>        user_id,
+                              :application_id => application_id,
+                              :cos_session_id => cos_session_id,
+                              :ip_address =>     ip_address,
+                              :action =>         action,
+                              :parameters =>     parameters,
+                              :return_value =>   return_value,
+                              :headers =>        headers,
+                              :semantic_event_id => semantic_event_id
+                            })
   end
 end
