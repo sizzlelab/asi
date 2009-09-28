@@ -77,8 +77,8 @@ Rails::Initializer.run do |config|
   RESSI_UPLOAD_HOUR = 3
   COS_MAIL_FROM_ADRESS = "tuki@sizl.org"
   CAS_BASE_URL = "http://cos.alpha.sizl.org:8180/cas"
-  LOG_TO_RESSI = true
-  
+  LOG_TO_RESSI = false
+
   COREUI_APP_NAME = "coreui"
   COREUI_APP_PASSWORD = "8IJHk!-()a"
 

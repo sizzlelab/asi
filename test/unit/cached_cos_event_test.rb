@@ -41,17 +41,19 @@ class CachedCosEventTest < ActiveSupport::TestCase
     assert event.save
   end
 
-  test "upload" do
-    begin
-      event = CachedCosEvent.new(@@OPTIONS)
-      assert event.save
-      assert_difference "CachedCosEvent.count", -1 do
-        event.upload
+  if LOG_TO_RESSI
+    test "upload" do
+      begin
+        event = CachedCosEvent.new(@@OPTIONS)
+        assert event.save
+        assert_difference "CachedCosEvent.count", -1 do
+          event.upload
+        end
+      rescue Errno::ECONNREFUSED => e
+        puts "No connection to RESSI at #{RESSI_URL}"
+      rescue Exception => e
+        assert false,  "Ressi timed out at #{RESSI_URL}"
       end
-    rescue Errno::ECONNREFUSED => e
-      puts "No connection to RESSI at #{RESSI_URL}"
-    rescue Exception => e
-      assert false,  "Ressi timed out at #{RESSI_URL}"
     end
   end
 
