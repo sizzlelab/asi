@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: images
+#
+#  id          :string(255)     default(""), not null, primary key
+#  filename    :string(255)
+#  data        :binary(21474836
+#  created_at  :datetime
+#  updated_at  :datetime
+#  person_id   :integer(4)
+#  small_thumb :binary
+#  large_thumb :binary
+#
+
 <%
 def fixture_data(name)
   render_binary("#{RAILS_ROOT}/test/fixtures/#{name}")
@@ -15,6 +29,7 @@ jpg:
 
 png:
   id: 2
+  person_id: 99
   data: <%= fixture_data("Bison_skull_pile.png") %>
 
 paatteeton:

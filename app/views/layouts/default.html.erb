@@ -1,16 +1,16 @@
 <html>
   <head>
-    <title>Common Services <%= render :partial => "layouts/version" %></title>
+    <title>Aalto Social Interface</title>
     <base href="<%= SERVER_DOMAIN %>" />
     <%= stylesheet_link_tag("cos") %>
   </head>
   <body>
-    <p style="color: green"><%= flash[:notice] %></p> 
-    <p style="color: orange"><%= flash[:warning] %></p> 
-    <p style="color: red"><%= flash[:error] %></p> 
-    
+    <p style="color: green"><%= flash[:notice] %></p>
+    <p style="color: orange"><%= flash[:warning] %></p>
+    <p style="color: red"><%= flash[:error] %></p>
+
     <%= yield %>
-    
+
     <div id="feedback">
       <div id="feedback_spacer">&nbsp;</div>
       <div id="feedback_form">
@@ -28,7 +28,7 @@
     </div>
 
     <div class="footer">
-      OtaSizzle Common Services <%= render :partial => "layouts/version" %> built <%= render :partial => "layouts/build_date" %>
+      Aalto Social Interface <%= render :partial => "layouts/version" %> built <%= render :partial => "layouts/build_date" %>
     </div>
   </body>
 </html>

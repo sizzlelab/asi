@@ -1,0 +1,4 @@
+<div class="condition">
+  Condition: <%= select_tag 'condition[]', @options %>
+  <%= link_to_function "remove", "this.up('.condition').remove()" %>
+</div>

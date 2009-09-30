@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Core UI for OtaSizzle Common Services</title>
+    <title>Core UI for Aalto Social Interface</title>
     <%= stylesheet_link_tag("coreui") %>
     <%= javascript_include_tag :defaults %>
   </head>
@@ -23,13 +23,13 @@
     <% if @user %>
     
     <%= yield %>
-    
+
     <% else %>
       <%= render :partial => "/coreui/login" %>
     <% end %>
 
     <div class="footer">
-      OtaSizzle Common Services <%= render :partial => "layouts/version" %> built <%= render :partial => "layouts/build_date" %>
+      Aalto Social Interface <%= render :partial => "layouts/version" %> built <%= render :partial => "layouts/build_date" %>
     </div>
   </body>
 </html>

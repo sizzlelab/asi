@@ -1,3 +1,7 @@
-<%= render :partial => 'form_new' %>
+<% if @person %>
+  <%= render :partial => 'form_new' %>
+  <p>[ <%= link_to "Back", rules_path%> ]</p>
+<% end %>
 
-<p>[ <%= link_to "Back", rules_path%> ]</p>
+
+

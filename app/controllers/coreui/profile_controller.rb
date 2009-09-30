@@ -2,8 +2,9 @@ class Coreui::ProfileController < ApplicationController
   layout "coreui"
 
   def index
-    if @user 
+    if @user
       @person = Person.find_by_id(@user.id)
+      @profile = Person.find_by_id(@user.id).person_hash(@user)
     end
   end
 
@@ -16,6 +17,7 @@ class Coreui::ProfileController < ApplicationController
   def show
     if @user 
       @person = Person.find_by_id(@user.id)
+      @profile = Person.find_by_id(@user.id).person_hash(@user)
     else
       flash[:warning] = "Please login to see the profile."
       redirect_to coreui_root_path and return
@@ -48,7 +50,8 @@ class Coreui::ProfileController < ApplicationController
     person_spec = params[:person][:person_spec]
     person_hash = params[:person].delete_if { |key, value| key == "person_spec" || key == "password2" }
     person_hash.merge!(person_spec)
-    
+    logger.debug "Person_hash = #{person_hash.inspect}"
+
     @person.update_attributes(person_hash)
     
     flash[:notice] = "Profile information updated."

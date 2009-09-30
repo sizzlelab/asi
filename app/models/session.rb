@@ -1,21 +1,43 @@
+# == Schema Information
+#
+# Table name: sessions
+#
+#  id         :integer(4)      not null, primary key
+#  person_id  :integer(4)
+#  ip_address :string(255)
+#  path       :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#  client_id  :string(255)
+#
+
 class Session < ActiveRecord::Base
-  attr_accessor :username, :password, :client_name, :client_password, :person_match, :client_match
+
+  EXPIRES_IN = 2.weeks
+
+  attr_accessor :username, :password, :client_name, :client_password, :person_match, :application_login
   belongs_to :person
   belongs_to :client
- 
+
   before_validation :authenticate_person
   before_validation :authenticate_client
 
-  validates_presence_of :client_match, :message => 'for your clients name and password could not be found',
-                                       :unless => :session_has_been_associated_with_client?
- 
+  validates_presence_of :application_login, :message => 'failed',
+                        :unless => :session_has_been_associated_with_client?
+
   before_save :associate_session_to_person
   before_save :associate_session_to_client
- 
+
+  def Session.cleanup
+    Session.all(:conditions => [ "updated_at < ?", EXPIRES_IN.ago ]).each do |s|
+      s.destroy
+    end
+  end
+
   def to_json(*a)
     session_hash = {
       'app_id' => self.client_id,
-      'user_id' =>  self.person_id
+      'user_id' =>  self.person.andand.guid
 
     }
     return session_hash.to_json(*a)
@@ -30,9 +52,9 @@ class Session < ActiveRecord::Base
   end
 
   def authenticate_client
-    self.client_match = Client.find_by_name_and_password(self.client_name, self.client_password) unless session_has_been_associated_with_client?
+    self.application_login = Client.find_by_name_and_password(self.client_name, self.client_password) unless session_has_been_associated_with_client?
   end
- 
+
   def associate_session_to_person
     if self.person_match
       self.person_id ||= self.person_match.id
@@ -40,9 +62,9 @@ class Session < ActiveRecord::Base
   end
 
   def associate_session_to_client
-    self.client_id ||= self.client_match.id
+    self.client_id ||= self.application_login.id
   end
- 
+
   def session_has_been_associated_with_person?
     self.person_id
   end
@@ -50,5 +72,5 @@ class Session < ActiveRecord::Base
   def session_has_been_associated_with_client?
     self.client_id
   end
-  
+
 end

@@ -1,6 +1,6 @@
 class CreateFeedbacks < ActiveRecord::Migration
 def self.up
-    create_table :feedbacks do |t|
+    create_table :feedbacks, :options => 'ENGINE=InnoDB DEFAULT CHARSET=utf8' do |t|
       t.string :content
       t.string :author_id
       t.string :url

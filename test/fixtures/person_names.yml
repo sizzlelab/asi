@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: person_names
+#
+#  id          :integer(4)      not null, primary key
+#  given_name  :string(255)     default("")
+#  family_name :string(255)     default("")
+#  created_at  :datetime
+#  updated_at  :datetime
+#  person_id   :integer(4)
+#
+
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 valid_person_name:
@@ -14,7 +26,7 @@ invalid_person_name:
 
 three:
   id: 3
-  given_name: matti
+  given_name: Matti
   family_name: k
   person_id: 3
 
@@ -36,10 +48,36 @@ dash_name:
   family_name: Seutula
   person_id: 1234
 
+dvdvkkoset:
+  id: 777
+  given_name: Järnö
+  family_name: Törnävä
+  person_id: 2899
+
+ttytot:
+  id: 1299
+  given_name: Teekkaritytot
+  person_id: 2349889
+
+not_yet_friend:
+  id: 223
+  given_name: Kake
+  person_id: 6
+
+test:
+  id: 224
+  person_id: aeCd5wrNir3BOQab_ZvnhG
+  family_name: test
+
+orphan:
+  id: 230932
+  person_id: not_there
+  given_name: orphan
+
 <% 20.times do |n| %>
-<%="#{n}:
+<%="name#{n}:
   id: #{n + 4}
-  person_id: #{n}aa
+  person_id: #{n + 20}
   given_name: Pekka
   family_name: Kuusinen#{n}
 "

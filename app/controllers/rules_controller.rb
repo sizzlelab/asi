@@ -1,12 +1,31 @@
 class RulesController < ApplicationController
   layout "rules"
-  before_filter :ensure_client_login, :except => [:create_default_profile_rule]
-
-  PROFILE_FIELDS = %W(id username email name status_message birthdate phone_number gender irc_nick msn_nick avatar address location)
+  before_filter :ensure_client_login
 
   def new
-    @rule = Rule.new
-    @rule.condition_action_sets.build
+    if @user
+      @person = Person.find_by_id(@user.id)
+
+      @rule = Rule.new
+      @rule.condition_action_sets.build
+
+      @action = Action.find(:all)
+      @condition = Condition.find(:all)
+      @options = ""
+      @condition.each do |condition|
+        #determine the value for the selected option as "condition_type condition_value"
+        @options = @options << "<option value='"+condition.condition_type+" "+condition.condition_value+"'>"
+        #determine what will appear as an option
+        if (condition.condition_type == "group") or (condition.condition_type == "user")
+          @options = @options << condition.condition_type+" = "+condition.condition_value
+        elsif (condition.condition_type == "logged_in") or (condition.condition_type == "is_friend")
+          @options = @options << condition.condition_type
+        else
+          @options = @options << condition.condition_value
+        end
+        @options = @options << "</option>"
+      end
+    end
   end
 
   # create a new rule from create_rule view
@@ -16,72 +35,21 @@ class RulesController < ApplicationController
     @rule = Rule.new(params[:rule])
     @rule.state = "active"
     @rule.person_id = params[:user_id]
-
-#    condition_id = Condition.find(:first, :conditions => { :condition_type => params[:condition_type], :condition_value => params[:condition_value] })
-
-#    @rule.condition_action_sets.build(:condition_id => params[condition_id],
-#                                       :action_id => params[:action_data])
-
-
+    # Get the action that was selected. We assume that exist just one action
+    action = Action.find_by_action_type_and_action_value("view", params[:action_data])
+    #get the conditions that are passed trough the select as an array with condition_type first and value next
+    params[:condition].each do |field|
+      teste = field.split(" ")
+      condition = Condition.find_by_condition_type_and_condition_value(teste[0] , teste[1])
+      #add the condition_action_set with the previous (only) action
+      @rule.condition_action_sets.build(:condition_id => condition.id, :action_id => action.id)
+    end
     if @rule.save
       flash[:notice] = "Successfully created rule."
       redirect_to rules_path
     else
       flash[:notice] = "Error."
       redirect_to :back
-    end
-  end
-
-  # put in controller only for test purposes
-  # when a new user is created, a default profile rule with rule name "profile
-  # rule"is automatically created for him.
-  # The user can edit the profile rule later
-  # default profile rule sets profile fieds username 'public', and all
-  # the other fields "private"
-  def create_default_profile_rule
-    parameters_hash = HashWithIndifferentAccess.new(params.clone)
-    params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
-
-    @rule = Rule.new(:person_id => params[:user_id],
-                    :rule_name => "profile rule",
-                    :state => "active",
-                    :logic => "and")
-    
-    # sets rule id as "person_id rule_name"
-    # rule id cannot be set by "new", because id is protected attributes
-    #@rule.id = params[:user_id] + " profile rule"
-    # rule id is now generated automatically using 'usesguid' plugin
-   
-    # create condition_action_sets for this profile rule
-    sets_hash = {}
-    PROFILE_FIELDS.each do |field|
-      if field == "username"
-        sets_hash.merge!({field => "public"})
-      else
-        sets_hash.merge!({field => "private"})
-      end
-    end
-    
-    condition_public = Condition.find_by_condition_type_and_condition_value("publicity", "public")
-    condition_private = Condition.find_by_condition_type_and_condition_value("publicity", "private")
-    
-    sets_hash.each_pair do |key, value|
-      action = Action.find_by_action_type_and_action_value("view", key)
-      if value == "public"
-        condition_id = condition_public.id
-      elsif value == "private"
-        condition_id = condition_private.id
-      end
-      @rule.condition_action_sets.build(:condition_id => condition_id,
-                                       :action_id => action.id)
-    end
-        
-    if @rule.save
-      flash[:notice] = "Default profile rule is created for user successfuly."
-      redirect_to rules_path
-    else
-      flash[:notice] = "Default profile rule creation for user failed."
-      redirect_to :back # not sure about this redirect_to
     end
   end
 
@@ -117,12 +85,11 @@ class RulesController < ApplicationController
     @rule = Rule.find_by_id(params['id'])
     @rule.state = params['state']
     if @rule.update_attributes(params[:rule])
-      flash[:notice] = 'Rule was successfully updated.'
+      flash[:notice] = "Rule was successfully updated."
     else
-      flash[:notice] = 'Rule was successfully updated.'
+      flash[:notice] = "Rule wasn't updated."
     end
   end
-
 
   # distroy a rule and all the associated condition_action_sets
   def destroy
@@ -147,18 +114,5 @@ class RulesController < ApplicationController
       @rule.disable_rule
       redirect_to rules_path and return
   end
-
-  #  # get all the rules belong to a person
-  #  def get_rules_of_person
-  #    @rules = Rule.find_all_by_person_id(params[:user_id])
-  #    @rules_hash = @rules.collect do |rule|
-  #      rule.get_rule_hash(@user)
-  #    end
-
-  #    redirect_to coreui_profile_index_path
-  #     render 'list_rules.erb'
-  #    render :action => 'list_rules'
-  #  end
-
 
 end

@@ -5,7 +5,7 @@
       ID:
     </div>
     <div class="profile_update_form_center">
-      <%= @person.id %> 
+      <%= @person.id %>
     </div>
   </div>
   <div class="profile_info_field">
@@ -13,7 +13,7 @@
       Username:
     </div>
     <div class="profile_update_form_center">
-      <%= @person.username %> 
+      <%= @person.username %>
     </div>
   </div>
   <div class="profile_info_field">
@@ -21,10 +21,10 @@
       E-mail:
     </div>
     <div class="profile_update_form_center">
-      <%= @person.email %> 
+      <%= @person.email %>
     </div>
   </div>
-  <div class="profile_info_field">  
+  <div class="profile_info_field">
     <div class="profile_update_form_left">
       Avatar:
     </div>
@@ -33,19 +33,19 @@
       <%= link_to(image_tag("/people/#{@person.id}/@avatar/large_thumbnail"), "/people/#{@person.id}/@avatar") %>
       <% else %>
       (no avatar image)
-      <% end %>
+  <% end %>
     </div>
   </div>
-  
+
   <h3>Personal information</h3>
-  
+
 <% if name = @person.name %>
-  <div class="profile_info_field">  
+  <div class="profile_info_field">
     <div class="profile_update_form_left">
       Name:
     </div>
     <div class="profile_update_form_right">
-      <%= name.unstructured %> 
+      <%= name.unstructured %>
     </div>
   </div>
 <% end %>
@@ -56,7 +56,9 @@
       Status message:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.status_message %> <small>(<%= distance_of_time_in_words_to_now(spec.status_message_changed) %> ago)</small>
+      <% if spec.status_message =! "" %>
+        <%= spec.status_message %> <small>(<%= distance_of_time_in_words_to_now(spec.status_message_changed) %> ago)</small>
+      <% end %>
     </div>
   </div>
   <div class="profile_info_field">
@@ -72,7 +74,7 @@
       Phone number:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.phone_number %> 
+      <%= spec.phone_number %>
     </div>
   </div>
   <div class="profile_info_field">
@@ -80,7 +82,7 @@
       Website:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.website %> 
+      <%= spec.website %>
     </div>
   </div>
   <div class="profile_info_field">
@@ -96,7 +98,7 @@
       Description:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.description %> 
+      <%= spec.description %>
     </div>
   </div>
   <div class="profile_info_field">
@@ -104,7 +106,7 @@
       IRC nickname:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.irc_nick %> 
+      <%= spec.irc_nick %>
     </div>
   </div>
   <div class="profile_info_field">
@@ -112,7 +114,7 @@
       MSN nickname:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.msn_nick %> 
+      <%= spec.msn_nick %>
     </div>
   </div>
 <% end %>
@@ -120,7 +122,7 @@
 <h3>Address and location</h3>
 
 <% if address = @person.address %>
-  <div class="profile_info_field">  
+  <div class="profile_info_field">
     <div class="profile_update_form_left">
       Address:
     </div>
@@ -150,9 +152,9 @@
     </div>
     <% end %>
   </div>
-  
+
   <hr />
 
   <div class="profile_update_form_buttons">
     [ <%= link_to "Edit profile", edit_coreui_profile_path(:id => @person.id) %> ]
-  </div>  
+  </div>

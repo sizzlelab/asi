@@ -4,17 +4,13 @@
 # Code is not reloaded between requests
 config.cache_classes = true
 
-# Use a different logger for distributed setups
-# config.logger = SyslogLogger.new
-config.log_path = "../sizzle_logs/common-services.log"
-
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false
 config.action_controller.perform_caching             = true
 #config.action_view.cache_template_loading            = true
 
 # Use a different cache store in production
-# config.cache_store = :mem_cache_store
+config.cache_store = :mem_cache_store, "127.0.0.1:11211"
 
 # Enable serving of images, stylesheets, and javascripts from an asset server
 # config.action_controller.asset_host                  = "http://assets.example.com"
@@ -35,3 +31,4 @@ ActionMailer::Base.default_charset = "utf-8"
 # ActionController::AbstractRequest.relative_url_root = "http://cos.sizl.org"
 
 SERVER_DOMAIN = "http://cos.sizl.org"
+

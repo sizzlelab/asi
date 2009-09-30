@@ -1,33 +1,53 @@
+# == Schema Information
+#
+# Table name: groups
+#
+#  id          :string(255)     default(""), not null, primary key
+#  title       :string(255)
+#  creator_id  :integer(4)
+#  group_type  :string(255)
+#  created_at  :datetime
+#  updated_at  :datetime
+#  description :text
+#
+
 open:
   id: testgroupid
   title: "Open testiryhma-group"
   description: "Tänne hurjasti ääkkösia for testing!%#€# :D"
-  created_by: 1
+  creator_id: 1
   group_type: open
-  
+
 another_open:
     id: adhaiegtwb
     title: "täää on testi!!"
-    created_by: 1
+    creator_id: 1
     group_type: open
 
 closed:
   id: yure23t
   title: "closed group"
   description: "This group is closed, really."
-  created_by: 1
+  creator_id: 1
   group_type: closed
 
 hidden:
-  id: ppiasas 
+  id: ppiasas
   title: "hidden group"
   description: "This is a very secret group that no one should see"
-  created_by: 1
+  creator_id: 1
   group_type: hidden
 
 tkk:
   id: tkk
   title: TKK
   description: "Group for tkk students and teachers"
-  created_by: 1
+  creator_id: 1
+  group_type: open
+
+seutula:
+  id: 1
+  title: Seutula
+  description: "For all from Seutula"
+  creator_id: 1
   group_type: open

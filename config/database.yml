@@ -4,8 +4,8 @@ development:
   adapter: mysql
   database: commonservices_development
   encoding: utf8
-  username: cos
-  password: a,.srdg330
+  username: root
+  password: 123456
   host: localhost
 
 # Warning: The database defined as "test" will be erased and
@@ -15,15 +15,15 @@ test:
   adapter: mysql
   database: commonservices_test
   encoding: utf8
-  username: cos
-  password: a,.srdg330
+  username: root
+  password: 123456
   host: localhost
 
 production:
   adapter: mysql
   database: commonservices_production
   encoding: utf8
-  username: cos
-  password: a,.srdg330
+  username: root
+  password: 123456
   host: localhost
   socket: /var/run/mysqld/mysqld.sock

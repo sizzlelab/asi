@@ -1,24 +1,86 @@
+# == Schema Information
+#
+# Table name: people
+#
+#  id                     :integer(4)      not null, primary key
+#  username               :string(255)
+#  encrypted_password     :string(255)
+#  created_at             :datetime
+#  updated_at             :datetime
+#  email                  :string(255)
+#  salt                   :string(255)
+#  consent                :string(255)
+#  coin_amount            :integer(4)      default(0), not null
+#  is_association         :boolean(1)
+#  status_message         :string(255)
+#  status_message_changed :datetime
+#  gender                 :string(255)
+#  irc_nick               :string(255)
+#  msn_nick               :string(255)
+#  phone_number           :string(255)
+#  description            :text
+#  website                :string(255)
+#  birthdate              :date
+#  guid                   :string(255)
+#  delta                  :boolean(1)      default(TRUE), not null
+#
+
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 
 #encrypted_password 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c is "testi" in readable form
 
+
 valid_person:
   id: 1
+  guid: g1
   username: kusti
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: working@address.com
   salt: ZB32fj38ueBG
+  status_message: "Valid person rocks."
+  status_message_changed: 2008-08-28T10:58:12+03:00
+  birthdate: 1940-06-01
+  gender: MALE
+  irc_nick: "pelle"
+  msn_nick: "maison"
+  phone_number: "+358 40 834 7176"
+  description: "About me"
+  website: "http://example.com"
+
+valid_association:
+  id: 99
+  guid: g2349889
+  username: ttytot
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  email: working-as-well@address.com
+  is_association: true
+  salt: ZB32fj38ueBG
 
 invalid_person:
   id: 2
+  guid: g2
   username: a/a
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: dsfs
   salt: ZB32fj38ueBG
-  
+  status_message: "Contact is a contact."
+  status_message_changed: 2008-08-27T10:58:12+03:00
+  birthdate: 2000-01-01
+  gender: MALE
+
+blank_person:
+  id: 100
+  guid: gaouehcrauoceh
+  username: abbbc
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  email: dsfs
+  salt: ZB32fj38ueBG
+
+
 contact:
   id: 3
+  guid: g3
   username: contact
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   email: contact@address.com
@@ -26,31 +88,38 @@ contact:
 
 friend:
   id: 4
+  guid: g4
   username: hawking
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
+  status_message: "On a friendly mood"
+  status_message_changed: 2008-10-28T11:58:12+03:00
 
 requested:
   id: 5
+  guid: g5
   username: liimatta
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
 
 not_yet_friend:
   id: 6
+  guid: g6
   username: Kake
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG''
 
 test:
-  id: aeCd5wrNir3BOQab_ZvnhG
+  id: 98
+  guid: gaeCd5wrNir3BOQab_ZvnhG
   username: testi
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
   email: testi@tes.ti
 
 not_yet_validated:
-  id: aosfasfju29twf9e
+  id: 10
+  guid: gaosfasfju29twf9e
   username: wannabe
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
@@ -58,18 +127,28 @@ not_yet_validated:
 
 name_contains_dash:
   id: 1234
+  guid: g1234
   username: sepijaakko
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
   email: sepi@example.com
 
+name_contains_dvdvkkoset:
+  id: 2899
+  guid: g2899
+  username: jarno
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  salt: ZB32fj38ueBG
+  email: jarno@example.com
+
   #encrypted_password 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c is "testi" in readable form
 <% 20.times do |n| %>
 <%="person#{n}:
-  id: #{n}aa
+  id: #{n+20}
+  guid: g#{n}aa
   username: testi#{n}
   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
   salt: ZB32fj38ueBG
-  email: not.confirmed@example.com
+  email: not.confirmed.#{n}@example.com
 "%>
 <% end %>

@@ -15,7 +15,7 @@ class Coreui::PrivacyController < ApplicationController
 
   def edit
     if @user
-      @rule = @user.profile_rule #TODO create profile rule if it's not there
+      @rule = @user.profile_rule #TODO create profile rule if it's not there. It will be there cause is created at people_controller
       @rule_sets = @rule.to_hash_by_data
       @person = @user
     else
@@ -32,7 +32,7 @@ class Coreui::PrivacyController < ApplicationController
       redirect_to coreui_root_path and return
     end
 
-    @rule = @person.profile_rule #TODO create profile rule if it's not there
+    @rule = @person.profile_rule #TODO create profile rule if it's not there. The profile rule is already created at people_controller when a user is created.
 
     if @rule
 

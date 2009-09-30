@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: roles
+#
+#  id                      :integer(4)      not null, primary key
+#  person_id               :integer(4)
+#  client_id               :string(255)
+#  title                   :string(255)
+#  created_at              :datetime
+#  updated_at              :datetime
+#  terms_version           :string(255)
+#  location_security_token :string(255)
+#
+
 require 'test_helper'
 
 class RoleTest < ActiveSupport::TestCase
@@ -19,6 +33,18 @@ class RoleTest < ActiveSupport::TestCase
     assert ! roles(:missing_person_id).valid?
     assert ! roles(:missing_client_id).valid?
     assert ! roles(:missing_title).valid?
+  end
+  
+  def test_location_security_token
+    role = roles(:valid_user)
+    assert role.valid?
+    
+    security_token = role.location_security_token
+    assert security_token
+    
+    security_token_confirm = role.location_security_token
+    
+    assert_equal security_token, security_token_confirm
   end
 
 end

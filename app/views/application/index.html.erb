@@ -1,12 +1,8 @@
-<h1>OtaSizzle Common Services</h1>
+<h1>Aalto Social Interface</h1>
 <p>
-  This is the start page of OtaSizzle Common Services &ndash; <strong>COS</strong> for short. 
-  Currently, only JSON access to resources is supported. However, this HTML view to them acts
-  as the authoritative COS reference.
-</p>  
-<p>
-  This API is used to document also the features that are <strong>planned but not yet implemented</strong>.
-   Those future features will be marked with <span class='not_implemented'>grey background</span>.
+  Aalto Social Interface, or <strong>ASI</strong>, is a RESTful platform for social media applications.
+  Using ASI, anyone can create their own application that is available to the OtaSizzle user base and social network.
+  An ASI application will not necessarily even need its own database.
 </p>
 
 <h2>Getting Started</h2>
@@ -15,19 +11,25 @@
 <p>Instructions in a nutshell are:</p>
 <ul>
   <li><tt>POST /session</tt> to create a new session.</li>
-  <li><tt>GET</tt> resources to view them, create new ones with <tt>POST</tt> and update them in place with <tt>PUT</tt>. 
+  <li><tt>GET</tt> resources to view them, create new ones with <tt>POST</tt> and update them in place with <tt>PUT</tt>.
     <tt>DELETE</tt> is also supported.</li>
-  <li>If you're unable to <tt>PUT</tt> or <tt>DELETE</tt>, use <tt>POST</tt> with the actual method in the magic field 
+  <li>If you're unable to <tt>PUT</tt> or <tt>DELETE</tt>, use <tt>POST</tt> with the actual method in the magic field
     <tt>_method</tt>.</li>
   <li><tt>DELETE /session</tt> when finished.</li>
 </ul>
 
-<h2>Services - The COS API reference</h2>
+<p>All the calls to ASI resources can (and should) be made with an additional <code>event_id</code> parameter. This parameter is intended for the research log to be a semantic identifier of what the user was actually doing when this request was made. So it could be something like <code>"Kassi::ShowItemsListing::2009-07-30_14:17:23::02313"</code> but the message format is not restricted to anything. This identifier should persist for all the ASI-requests for the same action, for example when the user loads a single page in a client application, but a new one must be made for the next action. The parameter's format should be somewhat consistent between calls.</p>
+
+<h2>The ASI API reference</h2>
+
+<p><a href="/doc/changelog">Changelog</a></p>
+
 <ul>
-<li><a href="doc/session"><tt>/session</tt></a> &ndash; logging in and out</li>
-<li><a href="doc/people"><tt>/people</tt></a> &ndash; social networking information</li>
-<li><a href="doc/groups"><tt>/groups</tt></a> &ndash; groups of people</li>
-<li><a href="doc/appdata"><tt>/appdata</tt></a> &ndash; arbitrary application-specific data</li>
-<li><span class='not_implemented'><a href="doc/channels"><tt>/channels</tt></a> &ndash; message channels</span></li>
+<li><a href="api/session"><tt>/session</tt></a> &ndash; logging in and out</li>
+<li><a href="api/people"><tt>/people</tt></a> &ndash; social networking information</li>
+<li><a href="api/groups"><tt>/groups</tt></a> &ndash; groups of people</li>
+<li><a href="api/channels"><tt>/channels</tt></a> &ndash; message channels</li>
+<li><a href="api/search"><tt>/search</tt></a> &ndash; search inside the above</li>
+<li><a href="api/appdata"><tt>/appdata</tt></a> &ndash; arbitrary application-specific data</li>
 </ul>
 

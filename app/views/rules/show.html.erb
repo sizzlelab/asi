@@ -3,12 +3,11 @@
     <title>Core UI for OtaSizzle Common Services - Privacy Management: Show Rule </title>
   </head>
   <body>
-    <h1>Rule Information</h1>
+    <h2>Rule Information</h2>
     <% if @rule %>
       <p>Rule id: <%=@rule.id%> </p>
       <p>Rule name:<%=@rule.rule_name %></p>
-      <p>Rule state: <%=@rule.state %></p>
-      <p>Rule logic: <%=@rule.logic%> </p>
+      <p>Rule state: <%=@rule.state %></p>      
       <h3>Condition Action Sets</h3>
       <hr>
       <table>
@@ -22,12 +21,12 @@
               <tr> <td> Condition Type: <%=condition.condition_type %> </td>
               <td> Condition Value: <%=condition.condition_value %> </td>
               <% is_first = false %>
-            <% end %>  <%# conditions_array.each%>
+            <% end %>  <%# end conditions_array.each%>
             <td> =======> Action: <%=action.action_type%> <%=action.action_value %> </td>
-          <% end %> <%# @condition_action_sets.each_pair%>
-        <% end %> <%# if @condition_action_sets %>
+          <% end %> <%# end @condition_action_sets.each_pair%>
+        <% end %> <%# end if @condition_action_sets %>
       </table>
-    <% end %> <%# if @rule%>
+    <% end %> <%# end if @rule%>
     <p>[ <%= link_to "Back", rules_path%> ]</p>
   </body>
 </html>

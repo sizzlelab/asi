@@ -4,11 +4,11 @@ class CollectionsController < ApplicationController
   before_filter :verify_client
 
   before_filter :get_or_not_found, :except => [ :create, :index, :delete_item ]
-  
+
   after_filter :update_updated_at_and_by, :except => [ :create, :index, :show, :delete ]
 
-  verify :method => :post, 
-         :only => :create, 
+  verify :method => :post,
+         :only => :create,
          :render => { :status => :method_not_allowed },
          :add_headers => { 'Allow' => 'POST' }
 
@@ -27,7 +27,7 @@ class CollectionsController < ApplicationController
     if params["tags"]
       conditions.merge!({:tags => params["tags"]})
     end
-    
+
     @collections = Collection.find(:all, :conditions => conditions, :order => 'updated_at DESC' )
     @collections.reject! { |item| ! item.read?(@user, @client) }
   end
@@ -51,12 +51,12 @@ class CollectionsController < ApplicationController
                                  :title => params["title"],
                                  :priv => params["priv"],
                                  :id => params["id"] )
-                                 
+
     # Check: if user submitted an id, but it is not set, there was an error
-    if params["id"] && params["id"] != @collection.id                        
-      render :status => :bad_request, :json =>  @collection.errors.full_messages and return                     
+    if params["id"] && params["id"] != @collection.id
+      render :status => :bad_request, :json =>  @collection.errors.full_messages and return
     end
-    
+
     if @user and params['owner']
       if @collection.indestructible
         render :status => :bad_request, :json => "Cannot set both: owner and indestructible" and return
@@ -70,14 +70,14 @@ class CollectionsController < ApplicationController
         render :status => :bad_request, :json => "Cannot set a collection private without an owner." and return
       end
     end
-    
+
     @collection.client = @client
     @collection.updated_by = @user ? @user.id : @client.id
-        
+
     if @collection.save
       render :status => :created
     else
-      render :status => :bad_request, :json =>  @collection.errors.full_messages and return 
+      render :status => :bad_request, :json =>  @collection.errors.full_messages and return
     end
   end
 
@@ -91,7 +91,7 @@ class CollectionsController < ApplicationController
   end
 
   def delete
-    if ! @collection.delete?(@user, @client)      
+    if ! @collection.delete?(@user, @client)
       render :status => :forbidden and return
     end
     @collection.destroy
@@ -104,16 +104,16 @@ class CollectionsController < ApplicationController
     head :status => :bad_request and return unless @collection.create_item(params, @user, @client)
     @item = @collection.items[-1]
   end
-  
+
   def delete_item
     item_id = params["item_id"]
-    
+
     item = TextItem.find_by_id(item_id)
     item = Image.find_by_id(item_id) if item.nil?
     item = Collection.find_by_id(item_id) if item.nil?
     render :status => :not_found, :json  => {:error => "Could not find the item with id #{item_id}"}.to_json and return if item.nil?
-    
-    if item.class == Collection 
+
+    if item.class == Collection
       if params["id"].nil?
         render :status => :bad_request, :json => {:error => "Can't delete a collection reference without " +
                                                   "providing the parent collection id. Please use " +
@@ -123,17 +123,17 @@ class CollectionsController < ApplicationController
     else
       collection = Ownership.find_by_item_id(item_id).parent
     end
-    
+
     render :status => :not_found, :json  => {:error => "Could not find parent collection for the item"}.to_json and return if (collection.nil?)
     render :status => :forbidden, :json  => {:error => "The user is not allowed to delete from this collection!"}.to_json and return if (!collection.delete?(@user, @client))
-    
+
     collection.delete_item(item_id)
     render :json => {}.to_json
   end
-  
-  
+
+
   private
-  
+
   def verify_client
     if @client == nil or params["app_id"].to_s != @client.id.to_s
       render :status => :forbidden and return
@@ -147,7 +147,7 @@ class CollectionsController < ApplicationController
       head :status => :not_found and return
     end
   end
-  
+
   #update the fields "updated_at" and "updated_by"
   def update_updated_at_and_by
     #logger.info { "FILTTERISSÄ: #{response.headers["Status"]}" }
@@ -156,7 +156,7 @@ class CollectionsController < ApplicationController
       # @collection.updated_at = DateTime.now
       # @collection.updated_by = @user ? @user.id : @client.id
       # @collection.save
-      
+
     end
   end
 end

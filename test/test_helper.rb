@@ -1,6 +1,7 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
+require 'factory'
 begin
   require 'redgreen'
 rescue Exception => e
@@ -21,7 +22,7 @@ class ActiveSupport::TestCase
   # don't care one way or the other, switching from MyISAM to InnoDB tables
   # is recommended.
   #
-  # The only drawback to using transactional fixtures is when you actually 
+  # The only drawback to using transactional fixtures is when you actually
   # need to test transactions.  Since your test is bracketed by a transaction,
   # any transactions started in your code will be automatically rolled back.
   self.use_transactional_fixtures = true
@@ -39,6 +40,8 @@ class ActiveSupport::TestCase
   # -- they do not yet inherit this setting
   fixtures :all
 
+  include Factory
+
   # Test the minimum or maximum length of an attribute.
   def assert_length(boundary, object, attribute, length, options = {})
     valid_char = options[:valid_char] || "a"
@@ -48,13 +51,13 @@ class ActiveSupport::TestCase
     assert !object.valid?,
     "#{object[attribute]} (length #{object[attribute].length}) " +
     "should raise a length error"
-    #TODO: better assertion for this; doesn't work now because 
+    #TODO: better assertion for this; doesn't work now because
     #error messages are modified from rails defaults
     #assert_equal correct_error_message(boundary, length), object.errors.on(attribute)
 
     # Test the boundary itself.
-    barely_valid = valid_char * length 
-    object[attribute] = barely_valid 
+    barely_valid = valid_char * length
+    object[attribute] = barely_valid
     assert object.valid?,
     "#{object[attribute]} (length #{object[attribute].length}) " +
     "should be on the boundary of validity"
@@ -62,13 +65,13 @@ class ActiveSupport::TestCase
 
   # Create an attribute that is just barely invalid.
   def barely_invalid_string(boundary, length, valid_char)
-    if boundary == :max 
+    if boundary == :max
       invalid_length = length + 1
     elsif boundary == :min
       invalid_length = length - 1
     else
       raise ArgumentError, "boundary must be :max or :min"
-    end    
+    end
     valid_char * invalid_length
   end
 
@@ -83,9 +86,44 @@ class ActiveSupport::TestCase
       raise ArgumentError, "boundary must be :max or :min"
     end
   end
-  
-  def login_as(person)
-    @request.session[:person_id] = people(person).id
+
+  def login
+    login_as(Person.first)
+  end
+
+
+  def login_as(person, client=nil)
+    client ||= Client.find :first
+    session = Session.new(:person => person, :client => client)
+    session.save(false)
+    @request.session[:cos_session_id] = session.id
+  end
+end
+
+class ActionController::TestCase
+
+  def assert_response(response, message=nil)
+    super
+    if @request.format == "application/json"
+      if response == :success
+        @json = JSON.parse(@response.body)
+        unless @response.body.start_with? "{}"
+          assert @json.key?("entry") || @json.key?("messages"), "No 'entry' or 'messages' in #{@response.body}"
+        end
+      elsif @response.body.start_with? "{" && response != :created
+        @json = JSON.parse(@response.body)
+        assert_nil json["entry"], "Illegal 'entry' in #{@response.body} with #{response}"
+      end
+      assert !(@response.body.start_with? "["), "No 'messages' in #{@response.body}"
+      if @response.body.start_with? "{"
+        @json = JSON.parse(@response.body)
+        if @json.key?("messages")
+          @json["messages"].each do |m|
+            assert !m.start_with?("["), "Nested array in messages: #{@json.inspect}"
+          end
+        end
+      end
+    end
   end
 
 end
@@ -97,7 +135,7 @@ module COSTestingDSL
     else
       expected_response = :created
     end
-    post "/session", options
+    post "/session", { :session => options }
     assert_response expected_response
     assert_not_nil session[:cos_session_id] if expected_response == :created
   end
@@ -105,7 +143,6 @@ module COSTestingDSL
   def finds_collections(options)
     get "/appdata/#{options[:client_id]}/@collections"
     assert_response :success
-    assert_template "collections/index"
     json = JSON.parse(response.body)
     assert_not_nil json["entry"]
     assert_not_nil json["entry"][0]
@@ -116,26 +153,26 @@ module COSTestingDSL
   def creates_collection(options)
     post "/appdata/#{options[:client_id]}/@collections"
     assert_response :created
-    assert_template "collections/create"
+#    assert_template "collections/create"
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
-    return json["id"]
+    assert_not_nil json['entry']["id"]
+    return json['entry']["id"]
   end
 
   def gets_collection(options)
     get "/appdata/#{options[:client_id]}/@collections/#{options[:id]}"
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
-    assert_not_nil json["entry"]
+    assert_not_nil json['entry']["id"]
+    assert_not_nil json['entry']["entry"]
   end
 
   def adds_text_to_collection(options)
-    post "/appdata/#{options[:client_id]}/@collections/#{options[:id]}", 
-    { :title => "Sleep Tight", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." }
+    post "/appdata/#{options[:client_id]}/@collections/#{options[:id]}",
+    { :item => {:title => "Sleep Tight", :content_type => "text/plain", :body => "Lorem ipsum dolor sit amet." }}
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json['entry']["id"]
   end
 
   def deletes_collection(options)
@@ -152,8 +189,8 @@ module COSTestingDSL
     get "/people/#{options[:id]}/@self"
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
-    assert_equal options[:id], json["id"]
+    assert_not_nil json["entry"]["id"]
+    assert_equal options[:id], json["entry"]["id"]
     return json
   end
 
@@ -161,7 +198,7 @@ module COSTestingDSL
     put "/people/#{options[:id]}/@self", options
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json["entry"]["id"]
     #special handling for status_message
     if (options[:person][:status_message])
       options[:person][:status] = {:message => options[:person][:status_message]}
@@ -169,21 +206,23 @@ module COSTestingDSL
     end
     #Don't expect email to be returned
     options[:person].delete(:email)
-    assert subset(options[:person], json)
+    assert subset(options[:person], json["entry"])
   end
 
   def changes_password_of_person(options)
     put "/people/#{options[:id]}/@self", {:person => { :password => options[:password] } }
     assert_response :success
     json = JSON.parse(response.body)
-    assert_not_nil json["id"]
+    assert_not_nil json["entry"]["id"]
   end
 
   def deletes_account(options)
     delete "/people/#{options[:id]}/@self", options
     assert_response :success
-    get "/people/#{options[:id]}/@self"
+    get "/people/#{options[:id]}/@self", options
     assert_response :unauthorized
+    get "/session"
+    assert_response :not_found
   end
 
   def logs_out
@@ -210,12 +249,12 @@ module COSTestingDSL
     put "/people/#{options[:id]}/@avatar", options
     assert_response :success
   end
-  
+
   def creates_user_with(options)
     post "/people", {:person => options}
     assert_response :created, @response.body
   end
-  
+
   def confirms_email_with(options)
     post "/confirmation", options
     assert_response :success, @response.body
@@ -225,13 +264,25 @@ module COSTestingDSL
   def creates_group_with(options)
     post "/groups", options
     assert_response :success, @response.body
-    JSON.parse(@response.body)["group"]["id"]
+    JSON.parse(@response.body)["entry"]["id"]
   end
 
   def lists_public_groups
     get "/groups/@public"
     assert_response :success, @response.body
-    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+    JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
+  end
+
+  def lists_channels
+    get "/channels/"
+    assert_response :success, @response.body
+    JSON.parse(@response.body)["entry"].collect {|c| c["name"]}
+  end
+
+  def searches_groups_with(query)
+    get "/groups/@public", { :query => query }
+    assert_response :success, @response.body
+    JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
   end
 
   def lists_membership_requests(group_id)
@@ -263,7 +314,7 @@ module COSTestingDSL
   def lists_membership_invites(user_id, group_id)
     get "/people/#{user_id}/@groups/@invites"
     assert_response :success, @response.body
-    JSON.parse(@response.body)["entry"].collect {|g| g["group"]["id"]}
+    JSON.parse(@response.body)["entry"].collect {|g| g["id"]}
   end
 
   private

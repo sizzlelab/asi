@@ -4,21 +4,27 @@ require 'logging_helper'
 require 'json'
 
 class ApplicationController < ActionController::Base
+
   helper :all # include all helpers, all the time
   layout 'default'
 
+ # around_filter :catch_no_method_errors
+
   before_filter :maintain_session_and_user
-  
-  after_filter :log
+
+  after_filter :log, :except => [ :index, :doc ]
   after_filter :set_correct_content_type
+
+  PARAMETERS_NOT_TO_BE_ESCAPED = ["password", "confirm_password", "search", "query"]
+  before_filter :escape_parameters
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   #protect_from_forgery # :secret => '9c4bfc3f5c5b497cf9ce1b29fdea20f5'
-  
-  # See ActionController::Base for details 
+
+  # See ActionController::Base for details
   # Uncomment this to filter the contents of submitted sensitive data parameters
-  # from your application log (in this case, all fields with names like "password"). 
+  # from your application log (in this case, all fields with names like "password").
   filter_parameter_logging :password
 
   DEFAULT_AVATAR_IMAGES = {
@@ -47,88 +53,127 @@ class ApplicationController < ActionController::Base
     render :action => request.path[1..-1].gsub(/\/$/, ""), :layout => "doc"
   end
 
+  if RAILS_ENV == "test"
+    def test
+      render :layout => "doc"
+    end
+  end
+
+
   def ensure_person_login
     unless @user
-      render :status => :unauthorized, :json => "Please login as a user to continue".to_json and return
-    end
-    
-    unless Role.find_by_user_and_client_id(@user.id, @client.id)
-      render :status => :not_found, :json => "User has never logged into this client service before.".to_json and return 
+      status = (@client.name == "ossi" ? :forbidden : :unauthorized)
+      render_json :status => status, :messages => "Please login as a user to continue" and return
     end
   end
- 
+
   def ensure_person_logout
     if @user
-      render :status => :conflict, :json => "You must logout before you can login or register".to_json and return
+      render_json :status => :conflict, :messages => "You must logout before you can login or register" and return
     end
   end
-  
+
   def ensure_client_login
     unless @client
-      render :status => :unauthorized, :json => "Please login as a client to continue".to_json and return
+      render_json :status => :unauthorized, :messages => "Please login as a client to continue" and return
     end
   end
- 
+
   def ensure_client_logout
     if @client
-      render :status => :conflict, :json => "You must logout client before you can login".to_json and return
+      render_json :status => :conflict, :messages => "You must logout client before you can login" and return
     end
   end
 
   def ensure_same_as_logged_person(target_person_id)
-    return @user && target_person_id == @user.id
+    return @user && target_person_id == @user.guid
   end
-  
-  def log
-    request.extend(LoggingHelper)
-    
-    logger.info("  Session: " + request.to_json({ :session => @application_session }))
-    logger.info("  Headers: " + Hash.new(request.headers).except("RAW_POST_DATA").to_json)
-    
-    saved_to_ressi = ""
-    
-    # Trying to save the log data also to Ressi
-    begin
-      if RESSI_URL
-        cos_event = CosEvent.create({
-          :user_id =>        @user ? @user.id : nil,
-          :application_id => @client ? @client.id : nil, 
-          :cos_session_id => session[:cos_session_id],
-          :ip_address =>     request.remote_ip, 
-          :action =>         controller_class_name + "\#" + action_name, 
-          :parameters =>     respond_to?(:filter_parameters) ? filter_parameters(params).to_json : params.to_json, # from base.rb in action_controller 
-          :return_value =>   @_response.headers['Status'], 
-          :headers =>        Hash.new(request.headers).except("RAW_POST_DATA").to_json
-        })
-        saved_to_ressi = cos_event.valid?
-      else
-        saved_to_ressi = "DISABLED"
+
+  def escape_parameters
+    params.each_pair do |key, value|
+      unless PARAMETERS_NOT_TO_BE_ESCAPED.include? key
+        params[key] = escape_html(value)
       end
-    rescue Exception => e
-      saved_to_ressi = "ERROR " + e.to_s
     end
-    
-    logger.info { "Session DB id:  #{session[:cos_session_id]}   Ressi: #{saved_to_ressi}" }
   end
-  
+
+  def log
+    CachedCosEvent.create do |e|
+      e.user_id           = @user ? @user.guid : nil
+      e.application_id    = @client ? @client.id : nil
+      e.cos_session_id    = session[:cos_session_id]
+      e.ip_address        = request.remote_ip
+      e.action            = controller_class_name + "\#" + action_name
+      e.parameters        = filter_parameters(params).to_json
+      e.return_value      = @_response.status
+      e.semantic_event_id = params[:event_id]
+      e.headers           = request.headers.reject do |*a|
+        a[0].starts_with?("rack") or a[0].starts_with?("action_controller")
+      end.to_json
+    end
+  end
+
   def set_correct_content_type
-    if params["format"] 
-      response.content_type = Mime::Type.lookup_by_extension(params["format"].to_s).to_s 
+    if params["format"]
+      response.content_type = Mime::Type.lookup_by_extension(params["format"].to_s).to_s
     end
   end
-  
-  #this should be done to all stored params (from Kassi etc.) because Rails seems to mess up parsing utf8 charas encoded in \\u00e4 like form
-  def fix_utf8_characters(parameter_hash)
-    return HashWithIndifferentAccess.new(JSON.parse(parameter_hash.to_json.gsub(/\\\\u/,'\\u')))
-  end
-  
+
   def get_random_string
     chars_for_key = [('a'..'z'),('A'..'Z'),(0..9)].map{|i| i.to_a}.flatten
     return (0..10).map{ chars_for_key[rand(chars_for_key.length)]}.join
   end
-  
+
+  def ensure_channel_admin
+    if !ensure_same_as_logged_person(@channel.owner.guid)
+      render :status => :forbidden and return
+    elsif @channel.channel_type == "group"
+      if @channel.group_subscribers.size != 0 && ! @channel.group_subscribers[0].admins.exists?(@user)
+        render :status => :forbidden and return
+      end
+    end
+  end
+
+  def ensure_can_read_channel
+    if !@channel.can_read?(@user)
+      render :status => :forbidden and return
+    end
+  end
+
+  def get_channel
+    @channel = Channel.find_by_guid( params[:channel_id] )
+    if !@channel
+      render :status => :not_found and return
+    end
+  end
+
   protected
- 
+
+  def render_json(options = {})
+    hash = Hash.new
+    if !options[:json]
+      if options[:messages]
+        hash[:messages] = [options[:messages]].flatten
+        options.delete(:messages)
+      end
+      if options[:entry]
+        hash[:entry] = options[:entry]
+        options.delete(:entry)
+      end
+      if params[:per_page] && params[:page]
+        hash[:pagination] = { :per_page => params[:per_page].to_i,
+                              :page => params[:page].to_i
+                            }
+        if options[:size]
+          hash[:pagination][:size] = options[:size]
+        end
+
+      end
+      options[:json] = hash
+    end
+    render options
+  end
+
   def maintain_session_and_user
     if session[:cos_session_id]
       if @application_session = Session.find_by_id(session[:cos_session_id])
@@ -137,11 +182,11 @@ class ApplicationController < ActionController::Base
         @client = @application_session.client
       else
         session[:cos_session_id] = nil
-        render :status => :unauthorized and return
+        render_json :status => :unauthorized, :messages => "You are not logged in" and return
       end
     else
       #logger.debug "NO SESSION:" + session[:cos_session_id]
-    end 
+    end
   end
 
   #Feedback functionality
@@ -167,5 +212,77 @@ class ApplicationController < ActionController::Base
   def set_up_feedback_form
     @feedback = Feedback.new
   end
-  
+
+  def catch_no_method_errors
+    begin
+      yield
+    rescue ActiveRecord::UnknownAttributeError => e
+      render_json :status => :bad_request, :messages => "#{e.to_s}" and return
+    rescue NoMethodError => e
+      if e.name.to_s.end_with? "="
+        render_json :status => :bad_request, :messages => "unknown attribute #{e.name.chop}" and return
+      else
+        render_json :status => :bad_request, :messages => "unknown attribute #{e.name}" and return
+      end
+    rescue ThinkingSphinx::ConnectionError => e
+      render_json :status => 500, :messages => "The search daemon is dead." and return
+    end
+  end
+
+  private
+
+  def escape_html(value)
+    return ActionView::Helpers::TagHelper.escape_once(value) if value.class == String
+    return value if value.class != Array && value.class != Hash && value.class != HashWithIndifferentAccess
+
+    if value.class == Array
+      value.collect! do |v|
+        escape_html v
+      end
+    elsif value.class == Hash || value.class == HashWithIndifferentAccess
+      value.each_pair do |k, v|
+        value[k] = escape_html(v)
+      end
+    end
+  end
+
+  protected
+
+  def log_error(exception)
+    super(exception)
+
+    begin
+
+      if RAILS_ENV == "production"
+        ErrorMailer.deliver_snapshot(
+          exception,
+          clean_backtrace(exception),
+          session,
+          params,
+          request,
+          @current_user)
+      end
+    rescue => e
+      logger.error(e)
+    end
+  end
+
+  # If request is using /people/@me/xxxxxxx, change user_id from @me to real userid
+  def change_me_to_userid
+    if params[:user_id] == "@me"
+      if ses = Session.find_by_id(session[:cos_session_id])
+        if ses.person
+          params[:user_id] = ses.person.guid
+        else
+          render_json :status => :unauthorized, :messages => "Please login as a user to continue" and return
+        end
+      end
+    end
+  end
+
+  #this should be done to all stored params (from Kassi etc.) because Rails seems to mess up parsing utf8 charas encoded in \\u00e4 like form
+  def fix_utf8_characters(parameter_hash)
+    return HashWithIndifferentAccess.new(JSON.parse(parameter_hash.to_json.gsub(/\\\\u/,'\\u')))
+  end
+
 end

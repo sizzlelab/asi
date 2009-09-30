@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: clients
+#
+#  id                 :string(255)     default(""), not null, primary key
+#  name               :string(255)
+#  created_at         :datetime
+#  updated_at         :datetime
+#  encrypted_password :string(255)
+#  salt               :string(255)
+#
+
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
@@ -9,11 +21,12 @@ one:
 
 two:
    id: 2
-   name: "Kassi"
+   name: "kassi"
+   encrypted_password: 4516452e6230c2165df3ea76a86e164f956f5df2e2b317903ac6db190fc86337
+   salt: b5koiO7MFRbX
 
-cos:
-    id: 3
-    name: "coreui"
-    encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
-    salt: ZB32fj38ueBG
-
+kassi:
+   id: acm-TkziGr3z9Tab_ZvnhG
+   name: "kassi2"
+   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+   salt: ZB32fj38ueBG

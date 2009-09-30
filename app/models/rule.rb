@@ -4,7 +4,6 @@ class Rule < ActiveRecord::Base
   has_many :condition_action_sets, :dependent => :destroy
   belongs_to :owner, :foreign_key => "person_id", :class_name => "Person"
 
-  accepts_nested_attributes_for :condition_action_sets, :allow_destroy => true
   validates_presence_of :owner
   validates_presence_of [:rule_name, :state, :logic]
 
@@ -12,6 +11,9 @@ class Rule < ActiveRecord::Base
   VALID_RULE_LOGICS = %w(or and)
   NAME_MIN_LENGTH = 2
   NAME_MAX_LENGTH = 70
+
+  #added by marcos to make the default creation
+  PROFILE_FIELDS = %W(id username email name status_message birthdate phone_number gender irc_nick msn_nick avatar address location)
 
   validates_length_of :rule_name, :within => NAME_MIN_LENGTH..NAME_MAX_LENGTH
   validates_uniqueness_of :rule_name, :scope => [:person_id]
@@ -73,6 +75,59 @@ class Rule < ActiveRecord::Base
     return result_array
   end
 
+  # when a new user is created, a default profile rule with rule name "profile
+  # privacy"is automatically created for him.
+  # The user can edit the profile rule later
+  # default profile rule sets profile fieds username 'public', and all
+  # the other fields "private"
+  def Rule.create_default_profile_rule(person)
+
+
+#    parameters_hash = HashWithIndifferentAccess.new(params.clone)
+#    params = fix_utf8_characters(parameters_hash) #fix nordic letters in person details
+
+    @rule = Rule.new(:person_id => person.id,
+                    :rule_name => "profile privacy",
+                    :state => "active",
+                    :logic => "and")
+
+    # sets rule id as "person_id rule_name"
+    # rule id cannot be set by "new", because id is protected attributes
+    #@rule.id = params[:user_id] + " profile rule"
+    # rule id is now generated automatically using 'usesguid' plugin
+
+    # create condition_action_sets for this profile rule
+    sets_hash = {}
+    PROFILE_FIELDS.each do |field|
+      if field == "username"
+        sets_hash.merge!({field => "public"})
+      else
+        sets_hash.merge!({field => "private"})
+      end
+    end
+
+    condition_public = Condition.find_by_condition_type_and_condition_value("publicity", "public")
+    condition_private = Condition.find_by_condition_type_and_condition_value("publicity", "private")
+
+    sets_hash.each_pair do |key, value|
+      action = Action.find_by_action_type_and_action_value("view", key)
+      if value == "public"
+        condition_id = condition_public.id
+      elsif value == "private"
+        condition_id = condition_private.id
+      end
+      @rule.condition_action_sets.build(:condition_id => condition_id,
+                                       :action_id => action.id)
+    end
+
+    if @rule.save
+      return true
+    else
+      return false
+    end
+  end
+
+
   # added by ville
   def to_hash_by_data
     h = Hash.new
@@ -106,8 +161,7 @@ class Rule < ActiveRecord::Base
     return rule_hash
   end
 
-
-  # check if the rule is active
+    # check if the rule is active
   def active?
     return true if self.state == "active"
   end

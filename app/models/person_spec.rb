@@ -1,9 +1,28 @@
+# == Schema Information
+#
+# Table name: person_specs
+#
+#  id                     :integer(4)      not null, primary key
+#  person_id              :integer(4)
+#  status_message         :string(255)     default("")
+#  birthdate              :date
+#  gender                 :string(255)
+#  created_at             :datetime
+#  updated_at             :datetime
+#  status_message_changed :datetime
+#  irc_nick               :string(255)
+#  msn_nick               :string(255)
+#  phone_number           :string(255)
+#  description            :string(255)
+#  website                :string(255)
+#
+
 class PersonSpec < ActiveRecord::Base
 
   belongs_to :person
 
-  ALL_FIELDS = %w(status_message gender birthdate irc_nick msn_nick phone_number)
-  STRING_FIELDS = %w(status_message irc_nick msn_nick)
+  ALL_FIELDS = %w(status_message gender birthdate irc_nick msn_nick phone_number description website)
+  STRING_FIELDS = %w(status_message irc_nick msn_nick description website)
   # Fields that are not included in json
   NO_JSON_FIELDS = %w(id person_id created_at updated_at)
   # Fields that need to be translated if the language is changed.
@@ -24,16 +43,16 @@ class PersonSpec < ActiveRecord::Base
   :in => VALID_DATES,
   :allow_nil => true,
   :message => "is invalid"
-  
+
   def status_message=(new_message)
     self[:status_message] = new_message
     self[:status_message_changed] = DateTime.now.utc
   end
-  
+
   def status_message_changed=(new_date)
     #Status message time stamp cannot be changed by other means than changing the message text
   end
-    
+
   def to_json(*a)
     {
       :gender => {"displayname" => self.gender, "key" => self.gender}

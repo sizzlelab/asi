@@ -1,0 +1,34 @@
+# == Schema Information
+#
+# Table name: group_search_handles
+#
+#  id       :integer(4)      not null, primary key
+#  group_id :string(255)
+#  delta    :boolean(1)      default(TRUE), not null
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+open:
+  id: 1
+  group_id: testgroupid
+
+another_open:
+  id: 2
+  group_id: adhaiegtwb
+
+closed:
+  id: 3
+  group_id: yure23t
+
+hidden:
+  id: 4
+  group_id: ppiasas
+
+tkk:
+  id: 5
+  group_id: tkk
+
+seutula:
+  id: 6
+  group_id: 1

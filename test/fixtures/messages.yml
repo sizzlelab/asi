@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: messages
+#
+#  id           :integer(4)      not null, primary key
+#  title        :string(255)
+#  content_type :string(255)
+#  body         :text
+#  poster_id    :integer(4)
+#  channel_id   :integer(4)
+#  created_at   :datetime
+#  updated_at   :datetime
+#  reference_to :integer(4)
+#  attachment   :string(255)
+#  guid         :string(255)
+#  delta        :boolean(1)      default(TRUE), not null
+#
+
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 # one:
@@ -7,33 +25,41 @@
 #   column: value
 
 testiviesti1:
-  id: message1
+  id: 1
+  guid: dsgasdhgashgah
   title: Testi1
   content_type: text/plain
   body: Tämä on testiviesti1
   poster_id: 1
-  channel_id: channel1
+  channel_id: 1
+  updated_at: 2009-07-23T14:06:22Z
   
 testiviesti2:
-  id: message2
+  id: 2
+  guid: pgjaspgjwpoEGHpowegh
   title: Testi2
   content_type: text/plain
   body: Tämä on testiviesti2
   poster_id: 1
-  channel_id: channel1
+  channel_id: 1
+  updated_at: 2009-07-23T14:09:22Z
+
 
 testiviesti3:
-  id: message3
+  id: 3
+  guid: psihgoeIHGoihwg
   title: Testi3
   content_type: text/plain
   body: Tämä on testiviesti3
-  poster_id: 1
-  channel_id: channel1
+  poster_id: 3
+  channel_id: 1
+  updated_at: 2009-07-23T14:08:22Z
 
 testiviesti4:
-  id: message4
+  id: 4
+  guid: gjoaehigoaiwhrgoahrwg
   title: Testi4
   content_type: text/plain
   body: Tämä on testiviesti4
   poster_id: 1
-  channel_id: channel2
+  channel_id: 2

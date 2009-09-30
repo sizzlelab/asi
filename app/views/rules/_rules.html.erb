@@ -3,7 +3,7 @@
     <title>Core UI for OtaSizzle Common Services - Privacy Management: List Rules </title>
   </head>
   <body>
-    <h1>Rules of the user "<%= @person.username %>"</h1>
+    <h2>Rules of the user "<%= @person.username %>"</h2>
     <table>
       <% @rules.each do |rule| %>
         <tr>
@@ -25,14 +25,11 @@
           <td>
             <%=button_to "Delete", rule_path(@person,rule.id), :method => :delete %>
           </td>
-          <td>
-            <%#=button_to "Show", rule_path(@person, rule.id), :method => :get %>
-          </td>
         </tr>
       <% end %>
     </table>
     <br />
-    <p>[ <%= link_to "New Rule", new_rule_path %> ]</p>
+    <p> <%= button_to "Create a new Rule", new_rule_path, :method => :get%></p>
   </body>
 </html>
 
