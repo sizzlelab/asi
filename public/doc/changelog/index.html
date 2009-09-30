@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+        <title>Changelog</title>
+
+        <link rel="stylesheet" href="/stylesheets/cos.css" type="text/css" />
+
+</head>
+
+<body>
+
+<h1><a href="/">COS</a> / Changelog</h1>
+
+<h2>Version 0.9.0 - 28.7.2009</h2>
+<p>This version is incompatible with version 0.8.</p>
+
+<h3>Changes to return values</h3>
+<p>The new standard for returned JSON value formats:</p>
+        <ul>
+                <li>data in <code>entry</code>: <pre>{ 'entry' : [ item1, item2 ] }</pre> or <pre>{ 'entry' : item }</pre></li>
+                <li>errors as an array in <code>messages</code>: <pre>{ 'messages' : [ 'Some error', 'Other error' ] }</pre>Note that an array is returned even in the case of a single error.
+        </ul>
+<p>It is legal for the returned JSON to be empty: <code>{ }</code>. This means everything is ok but there was nothing to return.
+<p>Many resources were changed to adhere to this standard. The most frequent change is from <tt>{ foo }</tt> to <tt>{ 'entry' : foo }</tt>.
+<h3>Changes to parameters</h3>
+        <ul>
+          <li><a href="/doc/session"><tt>POST /session</tt></a>
+            <ul><li>Parameters wrapped in <code>session</code>.</li></ul>
+          </li>
+          <li><a href="/doc/people/user_id/@location"><tt>PUT /people/&lt;user_id&gt;/@location</tt></a>
+            <ul><li>Parameters wrapped in <code>location</code>, except for <tt>location_security_token</tt>.</li></ul>
+          </li>
+          <li><a href="/doc/groups"><tt>POST /groups</tt></a>
+            <ul><li>Parameters wrapped in <tt>group</tt>.</li></ul>
+            </li>
+          <li><a href="/doc/channels"><tt>POST /channels</tt></a></li>
+          <ul>
+            <li>Parameters wrapped in <tt>channel</tt>.</li>
+          </ul>
+          <li><a href="/doc/appdata/app_id/@collections"><tt>POST /appdata/app_id/@collections</tt></a></li>
+          <ul>
+            <li>Parameters wrapped in <tt>collection</tt>.</li>
+                </ul>
+          <li><a href="/doc/appdata/app_id/@collections/id"><tt>PUT /appdata/app_id/@collections/id</tt></a></li>
+          <ul>
+            <li>Parameters wrapped in <tt>collection</tt>.</li>
+          </ul>
+          <li><a href="/doc/appdata/app_id/@collections/id"><tt>POST /appdata/app_id/@collections/id</tt></a></li>
+                <ul>
+                  <li>Parameters wrapped in <tt>item</tt>.</li>
+                </ul>
+        </ul>
+
+</body>
+</html>

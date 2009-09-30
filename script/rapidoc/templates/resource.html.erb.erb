@@ -1,0 +1,59 @@
+<%= DocUtil.print_erb "doc_title '#{@title}'", true if @path%>
+<%= @description %>
+<% @documentation.each_pair do |method, comment| %>
+
+  <h3><%= method.to_s.upcase %></h3>
+
+  <%if comment%>
+    <p><%= comment.description %></p>
+
+    <% unless comment.parameters.empty? %>
+      <p><strong>Parameters:</strong></p>
+      <table>
+        <% comment.parameters.each do |p| %><%=p.to_table %><% end %>
+      </table>
+    <% end %>
+
+    <% unless comment.access == nil %>
+    <p><strong>Access:</strong> <%= comment.access %> </p>
+    <% end %>
+
+    <% unless comment.return_codes.empty? %>
+<table>
+<tr>
+<td rowspan="<%= comment.return_codes.size %>" style="vertical-align: top; padding-right: 1em">
+    <p><strong>Returns:</strong></p>
+</td>
+    <th style="padding-top: 0.3em"><%= DocUtil.print_erb "\"#{comment.return_codes[0][0].strip + "&nbsp"};\" + http_status( #{comment.return_codes[0][0]}.to_s )", true %></th>
+    <td><%= comment.return_codes[0][1] %></td>
+</tr>
+
+
+<% comment.return_codes[1..-1].each do |r| %>
+  <tr>
+    <th><%= DocUtil.print_erb "\"#{r[0].strip + "&nbsp;"}\" + http_status( #{r[0]}.to_s )", true %></th>
+    <td><%= r[1] %></td>
+  </tr>
+  <%end%>
+</table>
+    <% end %>
+
+
+    <% unless comment.json == nil %>
+    <p><strong>Response example:</strong><p>
+    <pre><%=DocUtil.pretty_print(comment.json)%></pre>
+<% end %>
+  <%else%>
+    <p> (Documentation missing) </p>
+  <%end%>
+<% end %>
+
+<% unless @childs.empty?%>
+  <h2> Subresources </h2>
+  <ul>
+    <% @childs.each do |c| %>
+      <%= c.subresource_paths_as_ul_items %>
+    <% end %>
+  </ul>
+<% end %>
+

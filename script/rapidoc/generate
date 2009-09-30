@@ -1,0 +1,11 @@
+#!/usr/bin/ruby
+require 'fileutils'
+
+require File.join(File.dirname(__FILE__), 'classes', 'resource_tree.rb')
+require File.join(File.dirname(__FILE__), 'classes', 'doc_util.rb')
+
+tree = ResourceTree.new ['/', 'api', 'doc', 'admin', 'coreui', 'tutorial', 'test', 'transactions']
+
+FileUtils.rm_rf(File.join(FileUtils.pwd, 'app', 'views', 'api'))
+
+tree.generate_doc

@@ -1,0 +1,36 @@
+Rails Api Doc Generator
+Author: Sampo Toiva, based on JPM van der Meer's initial work on rapidoc
+=======================
+With API DOC one can generate code for a Restful Rails API. 
+It generates a API controller, by simply invoking... ./generate. It first parses routes to generate documentation structure for each of the resources. It then parses the controllers based on the data parsed from routes, and generates an ApiControllert. This makes it very easy to document our Rest API. For methods you use, and according to ERB templates it generates the view for you
+
+=INSTALL
+Please copy this directory into the rails script directory and pass arguments to RAPIDoc into the file ./generate. Then put documentation in your RESFul controllers and start generating api documentation, it will be created into app/views/api.
+
+==Templates
+Templates can be used for tuning your method generation.
+
+EXAMPLE Method documentation
+=begin rapidoc
+access:: FREE
+return_code:: 200 - OK
+return_code:: 401 - UNAUTHORIZED 
+json:: {'entry':{'user_id':null,
+'app_id':'app-id'}}
+
+param:: search - the search term. Every user whose name matches the regular expression /.*search.*/ will be returned. 
+param:: people
+  param:: subparam
+    param:: subsubparam - Subparameters are marked with two spaces per each level in the beginning of the line.
+    param:: subsubparam - Description here.
+    param:: subsubparam
+      param:: subsubsubparam - Description for this third level parameter.
+param:: new - foobar
+
+description:: Finds users based on their (real) names.
+=end
+
+
+
+ 
+
