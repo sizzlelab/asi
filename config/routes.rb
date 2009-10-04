@@ -169,8 +169,17 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/groups/@public', :controller => 'groups',
                                   :get => 'public_groups'
 
-#  map.resource '/groups/:user_id', :controller => 'groups',
-#                                     :get => 'personal_groups'
+  map.resource '/groups/:user_id', :controller => 'groups',
+                                   :get => 'personal_groups'
+                                   
+  map.resource '/groups/:user_id/:group_id', :controller => 'groups',
+                                             :get => 'show',
+                                             :put => 'update',
+                                             :delete => 'delete'
+  
+  map.resource '/groups/:user_id/:group_id/@members', :controller => 'groups',
+                                                      :get => 'get_members'
+                                             
 
   map.resource '/groups/@public/:group_id', :controller => 'groups',
                                             :get => 'show',

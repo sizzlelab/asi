@@ -30,7 +30,7 @@ class Group < ActiveRecord::Base
 
   attr_readonly :creator_id
 
-  VALID_GROUP_TYPES =  %w(open closed hidden) #personal (to be implemented)
+  VALID_GROUP_TYPES =  %w(open closed hidden personal) 
   TITLE_MIN_LENGTH = 2
   TITLE_MAX_LENGTH = 70
   DESCRIPTION_MAX_LENGTH = 5000
@@ -38,7 +38,7 @@ class Group < ActiveRecord::Base
   validates_inclusion_of :group_type,
                          :in => VALID_GROUP_TYPES,
                          :allow_nil => false,
-                         :message => "must currently be 'open', 'closed', 'hidden' " #or 'personal'"
+                         :message => "must be 'open', 'closed', 'hidden' or 'personal'"
 
   validates_length_of :title, :within => TITLE_MIN_LENGTH..TITLE_MAX_LENGTH
   validates_length_of :description, :allow_nil => true, :allow_blank => true, :maximum => DESCRIPTION_MAX_LENGTH, :message => "is too long"
@@ -95,7 +95,11 @@ class Group < ActiveRecord::Base
   end
 
   def kick(person)
-    self.membership(person).destroy if person.is_member_of?(self)
+    if group_type == 'personal' &&  person == creator
+      return false
+    else
+      self.membership(person).destroy if person.is_member_of?(self)
+    end
 
     if members.count == 0
       destroy
@@ -120,8 +124,8 @@ class Group < ActiveRecord::Base
     return true if group_type == "open" || group_type == "closed"
     return false if not person
     return true if person == creator
-    return true if person.is_member_of?(self)
-    return true if invited_members.include?(person)
+    return true if person.is_member_of?(self) && group_type != "personal"
+    return true if invited_members.include?(person) && group_type != "personal"
     false
   end
 
@@ -144,8 +148,8 @@ class Group < ActiveRecord::Base
       'created_by' => creator.andand.guid,
       'number_of_members' => members.count
       }
-
-    if asking_person
+    
+    if asking_person && group_type != 'personal'
       group_hash.merge!({'is_member' => (has_member?(asking_person))})
       group_hash.merge!({'is_admin' => asking_person.is_admin_of?(self)}) if has_member?(asking_person)
     end
@@ -153,8 +157,12 @@ class Group < ActiveRecord::Base
   end
 
   #Overwritten update_attributes method that updates pending members if
-  #group type is changed to open
+  #group type is changed to open. Personal groups cannot be changed to 
+  #any other type and other types cannot be changed to personal
   def update_attributes(attributes)
+    if attributes[:group_type] == 'personal' || group_type == 'personal'
+      attributes.delete(:group_type)
+    end
     if attributes[:group_type] == 'open'
       pending_members.each do |pending|
         accept_member pending

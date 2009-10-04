@@ -14,7 +14,7 @@ return_code:: 201
 return_code:: 400 - There was an error in one or more parameters.
 param:: group
   param:: title - The title (or name) of the group.
-  param:: type - Can be open, closed or hidden.
+  param:: type - Can be open, closed, personal or hidden.
   param:: description - A descriptive text for the group (optional).
   param:: create_channel - If set to <tt>true</tt>, a channel for the group is also created with same name as group's title.
 json:: { "entry" => Factory.create_example_group }
@@ -31,7 +31,7 @@ description:: Creates a new group. The creator is automatically added to the new
     @group = Group.create(params[:group].merge({ :creator => @user }))
 
     if @group.valid?
-      if params[:create_channel] == 'true'
+      if params[:create_channel] == 'true' && params[:group][:group_type] != 'personal'
         @channel = Channel.create( :name => @group.title,
                                    :owner => @user,
                                    :channel_type => "group",
@@ -65,7 +65,7 @@ param:: group
   param:: type - Can be open, closed or hidden.
   param:: description - A descriptive text for the group (optional).
 json:: { "entry": Factory.create_example_group }
-description:: Updates the information of this group. All parameters are optional; leave out the ones you do not wish to change.
+description:: Updates the information of this group. All parameters are optional; leave out the ones you do not wish to change. Personal groups cannot be changed to any other type and groups of other types cannot be changed to personal groups.
 =end
   def update
     if @group.update_attributes(params[:group])
@@ -116,6 +116,35 @@ description:: Returns all the groups visible in the current session.
   end
 
 =begin rapidoc
+access:: Owner
+return_code:: 200
+param:: per_page - Number of entries to display.
+param:: page - Page to display.
+param:: sort_by - Field to sort results by. Defaults to <tt>updated_at</tt>. Possible values are <tt>created_at</tt>, <tt>updated_at</tt>, <tt>title</tt>, <tt>description</tt>.
+param:: sort_order - Possible values are <tt>ascending</tt> and <tt>descending</tt>. Defaults to <tt>descending</tt>.
+json:: { "entry": [ Factory.create_group, Factory.create_group, Factory.create_group ] }
+description:: Returns all the groups visible in the current session.
+return_code:: 403 - The logged in user is different than <user_id>
+=end 
+  def personal_groups
+    options = {}
+    options[:conditions] = {:group_type => 'personal', :creator_id => params[:person_id] }
+    options[:include] = :creator
+    order_by = 'updated_at'
+    order = 'DESC'
+    if params[:sort_by] && %w{ updated_at created_at title description }.include?(params[:sort_by])
+      order_by = params[:sort_by]
+    end
+    if params[:sort_order] == 'ascending'
+      order = 'ASC'
+    end
+    options[:order] = order_by + " " + order
+    @groups = Group.all(options)
+    count = Group.count(options.only(:conditions))
+    render_json :entry => @groups, :size => count
+  end
+
+=begin rapidoc
 return_code:: 201 - The join was successful.
 return_code:: 202 - The invitation or membership request was sent.
 return_code:: 403 - The logged in user is not allowed to send invitations to the group
@@ -124,6 +153,17 @@ param:: group_id - The id of the target group.
 description::  Attempts to add the person specified by user_id to a group. This will succeed immediately if the group is open or user_id is logged in and has an invitation. If the group is closed and user_id is logged in, a membership request is sent. If user_id is not logged in, an invitation is sent to user_id – but only if the group is open or the logged in user is an admin of the group.
 =end
   def add_member
+    if @group.group_type == "personal"
+      if !ensure_same_as_logged_person(@group.owner.guid)
+        render_json :status => :forbidden, :messages => "Only personal group owner can add persons to group."
+      end
+      if !(@invitee = Person.find_by_guid(params[:user_id]))
+        render_json :status => :not_found, :messages => "No person with spesified id found."
+      end
+      @group.accept_member(@invitee)
+      render_json :status => :created and return
+    end
+    
     if params[:user_id] != @user.guid
       @invitee = Person.find_by_guid(params[:user_id])
 
