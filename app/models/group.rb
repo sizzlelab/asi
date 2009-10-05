@@ -47,6 +47,7 @@ class Group < ActiveRecord::Base
   validates_uniqueness_of :title, :case_sensitive => false
 
   after_create :make_creator_member
+  after_save :set_group_delta_flag
 
   def make_creator_member
     if group_type != "personal"
@@ -193,6 +194,10 @@ class Group < ActiveRecord::Base
     GroupSearchHandle.create(:group => self)
   end
 
+  def set_group_delta_flag
+    self.group_search_handle.delta = true
+    self.group_search_handle.save
+  end
 
   # def json_with_members
   #   #TODO add info of members
