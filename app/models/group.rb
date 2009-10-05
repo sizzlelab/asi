@@ -49,8 +49,10 @@ class Group < ActiveRecord::Base
   after_create :make_creator_member
 
   def make_creator_member
-    accept_member(creator)
-    grant_admin_status_to(creator)
+    if group_type != "personal"
+      accept_member(creator)
+      grant_admin_status_to(creator)
+    end
   end
 
   def Group.all_public
@@ -95,10 +97,10 @@ class Group < ActiveRecord::Base
   end
 
   def kick(person)
-    if group_type == 'personal' &&  person == creator
-      return false
-    else
-      self.membership(person).destroy if person.is_member_of?(self)
+    self.membership(person).destroy if person.is_member_of?(self)
+
+    if group_type == "personal"
+      return
     end
 
     if members.count == 0

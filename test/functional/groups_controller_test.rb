@@ -28,6 +28,14 @@ class GroupsControllerTest < ActionController::TestCase
     end
   end
 
+  def test_create_personal
+    login_as people(:valid_person)
+    post :create, {:group => {:title => "foo", :type => "personal", :description => "goo"}, :format => "json"}
+    assert_response :success
+    json = JSON.parse @response.body
+    assert_equal 0, json["entry"]["number_of_members"]    
+  end
+
   def test_create_invalid
     login_as people(:valid_person)
     post :create, { :group => { :title => "foo", :type => "open", :description => "foo" }, :format => "json" }
@@ -528,6 +536,59 @@ class GroupsControllerTest < ActionController::TestCase
       get :show_membership, { :user_id => a[0], :group_id => a[1], :format => 'json' }
       assert_response :not_found, @response.body
     end
+  end
+  
+  def test_personal_add_member
+    post :add_member, {:group_id =>  groups(:personal).id, :user_id => people(:friend).guid, :format => 'json' },
+                      { :cos_session_id => sessions(:session1).id }
+    assert_response :success
+    assert_equal 1, Group.find_by_id(groups(:personal).id).members.count
+    
+    post :add_member, {:group_id =>  groups(:personal).id, :user_id => Factory.create_person.guid, :format => 'json' },
+                      { :cos_session_id => sessions(:session4).id }
+    assert_response :forbidden
+    assert_equal 1, Group.find_by_id(groups(:personal).id).members.count
+  end
+  
+  def test_personal_remove_member
+    post :add_member, {:group_id =>  groups(:personal).id, :user_id => people(:friend).guid, :format => 'json' },
+                      { :cos_session_id => sessions(:session1).id }
+    delete :remove_person_from_group, {:group_id =>  groups(:personal).id, :user_id => people(:friend).guid, :format => 'json' },
+                      { :cos_session_id => sessions(:session4).id }
+    assert_response :forbidden
+    assert_equal 1, Group.find_by_id(groups(:personal).id).members.count
+
+    delete :remove_person_from_group, {:group_id =>  groups(:personal).id, :user_id => people(:friend).guid, :format => 'json' },
+                      { :cos_session_id => sessions(:session1).id }
+    assert_response :ok, @response.body
+    assert Group.find_by_id(groups(:personal).id)
+    assert_equal 0, Group.find_by_id(groups(:personal).id).members.count
+  end
+  
+  def test_personal_delete
+    delete :delete, {:group_id => groups(:personal).id, :user_id => people(:valid_person).guid, :format => 'json' }, {:cos_session_id => sessions(:session4).id }
+    assert_response :forbidden
+    
+    delete :delete, {:group_id => groups(:personal).id, :user_id => people(:valid_person).guid, :format => 'json' }, {:cos_session_id => sessions(:session1).id }
+    assert_response :ok, @response.body
+  end
+  
+  def test_personal_show
+    post :add_member, {:group_id =>  groups(:personal).id, :user_id => people(:friend).guid, :format => 'json' },
+                      { :cos_session_id => sessions(:session1).id }
+    get :personal_groups, {:user_id => people(:valid_person).guid, :format => "json"}, {:cos_session_id => sessions(:session1).id }
+    assert_response :ok, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal groups(:personal).title, json["entry"][0]["title"]
+    
+    get :personal_groups, {:user_id => people(:valid_person).guid, :format => "json"}, {:cos_session_id => sessions(:session4).id }
+    assert_response :forbidden, @response.body
+
+    get :personal_groups, {:user_id => people(:friend).guid, :format => "json"}, {:cos_session_id => sessions(:session4).id }
+    assert_response :ok, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal 0, json["entry"].length
+    
   end
   
 end

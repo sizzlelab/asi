@@ -6,7 +6,7 @@ class GroupsController < ApplicationController
   before_filter :ensure_client_login, :only => methods_not_requiring_person_login
 
   ADMIN_METHODS = [ :update, :accept_pending_membership_request, :get_pending_members, :change_admin_status ]
-  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update_membership_status, :show_membership ] + ADMIN_METHODS
+  before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update_membership_status, :show_membership, :delete ] + ADMIN_METHODS
   before_filter :ensure_admin, :only => ADMIN_METHODS
 
 =begin rapidoc
@@ -116,19 +116,22 @@ description:: Returns all the groups visible in the current session.
   end
 
 =begin rapidoc
-access:: Owner
+access:: User
 return_code:: 200
 param:: per_page - Number of entries to display.
 param:: page - Page to display.
 param:: sort_by - Field to sort results by. Defaults to <tt>updated_at</tt>. Possible values are <tt>created_at</tt>, <tt>updated_at</tt>, <tt>title</tt>, <tt>description</tt>.
 param:: sort_order - Possible values are <tt>ascending</tt> and <tt>descending</tt>. Defaults to <tt>descending</tt>.
 json:: { "entry": [ Factory.create_group, Factory.create_group, Factory.create_group ] }
-description:: Returns all the groups visible in the current session.
+description:: Returns all the personal groups of current user.
 return_code:: 403 - The logged in user is different than <user_id>
 =end 
   def personal_groups
+    if !ensure_same_as_logged_person(params[:user_id])
+      render_json :status => :forbidden, :messages => "A user's personal groups are only visible to that user." and return
+    end
     options = {}
-    options[:conditions] = {:group_type => 'personal', :creator_id => params[:person_id] }
+    options[:conditions] = {:group_type => 'personal', :creator_id => @user.id }
     options[:include] = :creator
     order_by = 'updated_at'
     order = 'DESC'
@@ -140,8 +143,26 @@ return_code:: 403 - The logged in user is different than <user_id>
     end
     options[:order] = order_by + " " + order
     @groups = Group.all(options)
-    count = Group.count(options.only(:conditions))
+    count = Group.count(options.slice(:conditions))
     render_json :entry => @groups, :size => count
+  end
+
+=begin rapidoc
+return_code:: 201 - Succesfully deleted
+return_code:: 403 - The logged in user is not the creator of this group or the group is not of type <tt>personal</tt>
+access:: Group creator
+param:: group_id - The id of target group.
+description:: Deletes the group.
+=end
+  def delete
+    if @group.group_type != "personal"
+      render_json :status => :forbidden, :messages => "Not a personal group." and return
+    end
+    if !ensure_same_as_logged_person(@group.creator.guid)
+      render_json :status => :forbidden, :messages => "Only group creator can delete personal groups." and return
+    end
+    @group.destroy
+    render_json :status => :ok and return
   end
 
 =begin rapidoc
@@ -154,8 +175,8 @@ description::  Attempts to add the person specified by user_id to a group. This 
 =end
   def add_member
     if @group.group_type == "personal"
-      if !ensure_same_as_logged_person(@group.owner.guid)
-        render_json :status => :forbidden, :messages => "Only personal group owner can add persons to group."
+      if !ensure_same_as_logged_person(@group.creator.guid)
+        render_json :status => :forbidden, :messages => "Only personal group creator can add persons to group."
       end
       if !(@invitee = Person.find_by_guid(params[:user_id]))
         render_json :status => :not_found, :messages => "No person with spesified id found."
@@ -253,7 +274,11 @@ return_code:: 200
 description:: Removes this person from this group. Any user can remove their own membership. An admin user can remove any other user in the group (even other admins).
 =end
   def remove_person_from_group
-    if params[:user_id] != @user.guid and not @user.is_admin_of?(@group)
+    if @group.group_type == "personal"
+      if !ensure_same_as_logged_person(@group.creator.guid)
+        render_json :status => :forbidden, :messages => "Only personal group's creator can remove members." and return
+      end
+    elsif params[:user_id] != @user.guid && !@user.is_admin_of?(@group)
       render_json :status => :forbidden, :messages  => "You are not authorized to remove this user from this group." and return
     end
 
