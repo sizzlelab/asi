@@ -51,3 +51,11 @@ seutula:
   description: "For all from Seutula"
   creator_id: 1
   group_type: open
+
+personal:
+  id: pers1
+  title: "Personal group"
+  description: "Perso naali oli parsakaali"
+  creator_id: 1
+  group_type: personal
+  
