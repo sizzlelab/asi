@@ -26,7 +26,7 @@ class Rule < ActiveRecord::Base
     :in => VALID_RULE_LOGICS,
     :allow_nil => false,
     :message => "must be 'or' or 'and'"
-  
+
   alias_method :orig_update_attributes, :update_attributes
 
   def update_attributes(attributes)
@@ -54,7 +54,7 @@ class Rule < ActiveRecord::Base
       end
     end
 
-    return false
+    return true
   end
 
   # check if subject_person has the right to do an action ("view", "comment"...)
@@ -176,7 +176,7 @@ class Rule < ActiveRecord::Base
       self.update_attribute(:state, 'inactive')
   end
 
- 
+
 
 
   def to_json (asking_person, *a)
@@ -205,7 +205,7 @@ class Rule < ActiveRecord::Base
         end
       end
     end
-    
+
     return sets_hash
   end
 
@@ -346,7 +346,7 @@ class Rule < ActiveRecord::Base
         return (connection_person.id == object_person_id)
       end
     end
-    
+
     return false
   end
 

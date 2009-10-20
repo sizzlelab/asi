@@ -79,6 +79,10 @@ class Person < ActiveRecord::Base
 
   accepts_nested_attributes_for :name, :address
 
+  #added by marcos to determine wich fields are controlled by the rules. Its hard-coded in rules.rb
+  PROFILE_FIELDS = %W(id username email name status_message birthdate phone_number gender irc_nick msn_nick avatar address location)
+
+
   ALL_FIELDS = %w(status_message birthdate irc_nick msn_nick phone_number description website username name address is_association)
   STRING_FIELDS = %w(status_message irc_nick msn_nick website)
   # Fields that need to be translated if the language is changed.
@@ -110,8 +114,8 @@ class Person < ActiveRecord::Base
   end
 
   #added by tchang
-  has_many :rules,
-           :through => :authorizes
+  has_many :rules
+  has_one :profile_rule, :class_name => "Rule", :conditions => { :rule_name => "profile privacy" }
   # has_many :authorizes
 
   # Max & min lengths for all fields
@@ -207,7 +211,7 @@ class Person < ActiveRecord::Base
   def updated_at
     [super, name.andand.updated_at, address.andand.updated_at].compact.sort.last
   end
-  
+
   def to_hash(user=nil, client=nil)
 
     person_hash = {
@@ -239,6 +243,23 @@ class Person < ActiveRecord::Base
     if client
       person_hash.merge!({'role' => role_title(client.id)})
     end
+
+   #Added by Marcos to possibilite the person_hash to use the rules system with the authorize method
+#    logger.debug "HASH in the begging. Complete: #{person_hash.inspect}"
+    # loop trough the Profile_fields and check if the user is authorize
+    # to view each field with the method Rule.Authorize.
+    # if the user is not able to see will delete this entry from the person_hash
+    PROFILE_FIELDS.each do |field|
+      if !Rule.authorize?(user, guid, "view", field)
+#        logger.debug "Wasnt authorize by the rule"
+        person_hash.delete(field)
+#        logger.debug "Deleted the filed = "+field
+      else
+#        logger.debug "AUTHORIZED from the rules"
+      end
+    end
+#    logger.debug "HASH after pass trough the rules : #{person_hash.inspect}"
+
     return person_hash
   end
 
@@ -246,42 +267,6 @@ public
 
   def to_json(client_id=nil, connection=nil, *a)
     to_hash(connection, Client.find_by_id(client_id)).to_json(*a)
-  end
-
-# added by tchang
-# check if subject_person has access right to model and field
-# return: true or false
-  def authorize(subject_person=nil, model=nil, field=nil)
-
-    result = false
-
-    if (!model && !field)
-      return result
-    elsif (model && field)
-      # both params model and field are not nil, find action_id
-      action = Action.find(:first, :conditions => {'model' => model,'field' => field})
-    elsif (model && !field)
-      # param model is not nil, while field is nil
-      action = Action.find(:first, :condition => ["model = ?", params[model]])
-    end
-
-    # find all the rules associated with this person and this action
-
-    rules = Rule.find(:all, :joins => :authorizes, :conditions => {'authorizes.person_id' => id, 'rules.action_id' => action.id})
-
-    rules.each do |rule|
-      condition = Condition.find(rule.condition_id)
-
-      if checkCondition(condition, subject_person)
-        result = true
-      end
-    end
-
-    return result
-  end
-
-  def checkCondition(condition=nil, subject_person=nil)
-    return false
   end
 
   def moderator?(client)
@@ -345,7 +330,7 @@ public
   def to_link
     { :href => "/people/#{guid}/@self"}
   end
-  
+
   # Methods provided by include_simple_groups:
   # user.groups
   # user.pending_groups
