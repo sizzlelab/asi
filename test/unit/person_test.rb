@@ -138,8 +138,11 @@ class PersonTest < ActiveSupport::TestCase
     avatar = @valid_avatar
     avatar.person = @valid_person
 
+    person.rules.each { |r| r.destroy }
+    person.reload
+    
     raw_json = person.to_json(person.roles[0].client.id, person)
-
+    
     assert_equal raw_json.gsub("gender", ""), raw_json.sub("gender", ""), "Duplicate gender key"
 
     json = JSON.parse(raw_json)

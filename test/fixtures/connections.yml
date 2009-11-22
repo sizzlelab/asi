@@ -51,3 +51,13 @@ eight:
   person_id: 'aeCd5wrNir3BOQab_ZvnhG'
   contact_id: 1
   status: 'accepted'
+
+nine:
+  person_id: 21
+  contact_id: 1
+  status: 'accepted'
+
+ten:
+  person_id: 1
+  contact_id: 21
+  status: 'accepted'

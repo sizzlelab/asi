@@ -46,12 +46,14 @@ class Rule < ActiveRecord::Base
     #print "action_value: #{action_value} \n"
 
     active_rules = Rule.find(:all, :conditions => {'person_id'=>object_person_id, 'state'=>'active'})
+
     if active_rules.length != 0
       active_rules.each do |rule|
         if rule.authorize_according_to_one_rule(subject_person, object_person_id, action_type, action_value)
           return true
         end
       end
+      return false
     end
 
     return true
@@ -242,9 +244,9 @@ class Rule < ActiveRecord::Base
           end
         end
       end
+      return result
     end
-
-    return result
+    return true
   end
 
   private

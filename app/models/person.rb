@@ -64,6 +64,8 @@ class Person < ActiveRecord::Base
            :source => :contact,
            :conditions => "status = 'pending'"
 
+  has_many :rules
+  
   define_index do
     indexes username
     indexes name(:given_name), :as => :given_name
