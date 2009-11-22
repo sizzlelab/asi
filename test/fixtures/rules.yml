@@ -1,0 +1,50 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+# friends or members of group tkk can view name of person 1
+active_or_rule:
+  id: 1
+  person_id: 1
+  rule_name: name privacy
+  state: active
+  logic: or
+
+# friends who are members of group tkk can view email of person 1
+active_and_rule:
+  id: 2
+  person_id: 1
+  rule_name: email privacy
+  state: active
+  logic: and
+
+# profile rule for person 3
+profile_rule_for_3:
+  id: 3
+  person_id: 3
+  rule_name: profile privacy
+  state: active
+  logic: and
+
+# inactive rule
+inactive_rule:
+  id: 4
+  person_id: 21
+  rule_name: location rule
+  state: inactive
+  logic: and
+
+# test rule
+test_rule:
+  id: 5
+  person_id: 1
+  rule_name:  test rule
+  state: active
+  logic: and
+
+# user 1aa can view email of person 1
+another_email_rule:
+    id: 6
+    person_id: 1
+    rule_name: another name rule
+    state: active
+    logic: and
+
