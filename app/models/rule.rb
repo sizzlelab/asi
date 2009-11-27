@@ -27,12 +27,6 @@ class Rule < ActiveRecord::Base
     :allow_nil => false,
     :message => "must be 'or' or 'and'"
 
-  alias_method :orig_update_attributes, :update_attributes
-
-  def update_attributes(attributes)
-    orig_update_attributes attributes
-  end
-
   # check if subject_person has the right do a certain ation (action_type) to data (action_value)
   # syntax: authorize?(subject_person, object_person_id, action_type, action_value)
   # return: true or false
@@ -55,7 +49,6 @@ class Rule < ActiveRecord::Base
       end
       return false
     end
-
     return true
   end
 
@@ -246,7 +239,7 @@ class Rule < ActiveRecord::Base
       end
       return result
     end
-    return true
+    return false
   end
 
   private
