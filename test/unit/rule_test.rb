@@ -25,7 +25,7 @@ class RuleTest < ActiveSupport::TestCase
     # The logic field should have validation errors
     assert rule.errors.invalid?(:logic)
   end
-  
+
   # test validates_length_of :rule_name, :within => NAME_MIN_LENGTH..NAME_MAX_LENGTH
   def test_length_boundaries
     assert_length :min, rules(:active_or_rule), :rule_name, Rule::NAME_MIN_LENGTH
@@ -81,7 +81,7 @@ class RuleTest < ActiveSupport::TestCase
 
   # test update_attributes
   #def test_update_attributes
-    
+
   #end
 
   #test authorize(subject_person, object_person_id, action_type, action_value)
@@ -89,7 +89,7 @@ class RuleTest < ActiveSupport::TestCase
   def test_authorize
     object_person = people(:valid_person) # person_id 1
     subject_person_1aa = people(:person1) # person_id 1aa
-    subject_person_2aa = people(:person2) # person_id 2aa
+    subject_person_2aa = people(:person3) # person_id 2aa
 
     # can uncomment the following line to run authorize? for 100 times
 
@@ -117,7 +117,7 @@ class RuleTest < ActiveSupport::TestCase
 
   # test get_rule_hash(asking_person)
   #def test_get_rule_hash
-    
+
   #end
 
   # test active
@@ -180,17 +180,17 @@ class RuleTest < ActiveSupport::TestCase
   def test_authorize_according_to_one_rule
     rule_or = rules(:active_or_rule) # friends or members of group tkk can view name of person 1
     rule_and = rules(:active_and_rule) # friends who are members of group tkk can view email of person 1
-    
+
     action_view_name = actions(:view_name)
     action_view_email = actions(:view_email)
     object_person = people(:valid_person) # person id 1
     subject_person_test = people(:test) # not friend, not member of group tkk
     subject_person_4 = people(:friend) # person 4 is a friend, but not a member of group tkk
     subject_person_1aa = people(:person1) # person 1aa is a friend, and also a member of group tkk
-    
+
     assert subject_person_1aa.contacts.include? object_person
     assert subject_person_1aa.is_member_of? groups(:tkk)
-    
+
     assert !rule_or.authorize_according_to_one_rule(subject_person_test, object_person.id, action_view_name.action_type, action_view_name.action_value)
     assert !rule_and.authorize_according_to_one_rule(subject_person_test, object_person.id, action_view_email.action_type, action_view_email.action_value)
     assert rule_or.authorize_according_to_one_rule(subject_person_4, object_person.id, action_view_name.action_type, action_view_name.action_value)
