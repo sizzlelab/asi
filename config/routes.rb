@@ -1,9 +1,9 @@
 module COSRoutes
 
   def documentation(route)
-    connect "doc" + route, :controller => 'api',
+    connect "doc" + route, :controller => 'application',
                            :format => 'html',
-                           :action => 'api'
+                           :action => 'doc'
     connect "api" + route, :controller => 'api',
                            :format => "html",
                            :action => 'api'
@@ -40,6 +40,7 @@ ActionController::Routing::Routes.draw do |map|
                 :action => 'index',
                 :conditions => { :method => :get }
     coreui.resources :profile
+    coreui.resources :privacy
   end
 
   # Adding parameter :description, adds it to the resources documentation
@@ -109,7 +110,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource '/people', :controller => 'people',
                           :post => 'create',
-                          :get => 'index'
+                          :get => 'index',
+                          :description => "A resource for accessing the users of OtaSizzle."
 
   map.resource '/people/:user_id/@friends', :controller => 'people',
                                             :get => 'get_friends',
@@ -128,7 +130,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/:user_id/@location', :controller => 'locations',
                                              :get => 'get',
                                              :put => 'update',
-                                             :post => 'update'
+                                             :post => 'update',
+                                             :delete => 'destroy'
 
   map.resource '/people/:user_id/@location/@location_security_token', :controller => 'locations',
                                                                      :get => 'fetch_location_security_token'
@@ -147,13 +150,12 @@ ActionController::Routing::Routes.draw do |map|
                                            :post => 'add_member'
 
   map.resource '/people/:user_id/@groups/@invites', :controller => 'groups',
-                                                    :get => 'get_invites'
+  :get => 'get_invites'
 
 
   map.resource '/people/:user_id/@groups/:group_id', :controller => 'groups',
                                                      :put => 'update_membership_status',
-                                                     :delete => 'remove_person_from_group',
-                                                     :get => 'show_membership'
+                                                     :delete => 'remove_person_from_group'
 
   map.resource '/people/:user_id/@groups', :controller => 'groups',
                                            :get => 'get_groups_of_person',
@@ -163,27 +165,25 @@ ActionController::Routing::Routes.draw do |map|
                                                      :delete => 'remove_person_from_group'
 
   # Groups
+
   map.resource '/groups', :controller => 'groups',
                           :post => 'create'
 
   map.resource '/groups/@public', :controller => 'groups',
                                   :get => 'public_groups'
 
-  map.resource '/groups/:user_id', :controller => 'groups',
-                                   :get => 'personal_groups'
-                                   
-  map.resource '/groups/:user_id/:group_id', :controller => 'groups',
-                                             :get => 'show',
-                                             :put => 'update',
-                                             :delete => 'delete'
-  
-  map.resource '/groups/:user_id/:group_id/@members', :controller => 'groups',
-                                                      :get => 'get_members'
-                                             
+  # Deprecated
+  map.resource '/groups/:group_id', :controller => 'groups',
+                                    :get => 'show',
+                                    :put => 'update'
 
+
+  map.resource '/groups/:group_id/@members', :controller => 'groups',
+                                                     :get => 'get_members'
+
+  # New version
   map.resource '/groups/@public/:group_id', :controller => 'groups',
-                                            :get => 'show',
-                                            :put => 'update'
+                                            :get => 'show'
 
   map.resource '/groups/@public/:group_id/@members', :controller => 'groups',
                                              :get => 'get_members'
@@ -195,6 +195,21 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource '/location/single_update', :controller => 'locations',
                                           :post => 'update'
+
+
+  #Rules
+
+    #Define ways to access the enable and disable from the view with the put method
+  map.connect '/coreui/privacy/:user_id/rules/:rule_id/enable',  :controller => 'rules',
+                                                         :action => 'enable',
+                                                         :method => 'put'
+
+  map.connect '/coreui/privacy/:user_id/rules/:rule_id/disable',  :controller => 'rules',
+                                                          :action => 'disable',
+                                                          :method => 'put'
+
+    #Rails will create the default routes like http://guides.rubyonrails.org/routing.html 3.2 CRUD, Verbs, and Actions
+  map.resources :rules, :path_prefix => '/coreui/privacy/:user_id'
 
   # Others
 
@@ -255,4 +270,8 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'application',
            :action => 'index',
            :conditions => { :method => :get }
+  map.connect '/:controller/:action/:id', :format => 'json'
+  map.connect '/:controller/:action/:id'
+  map.connect '/:controller/:action'
+
 end
