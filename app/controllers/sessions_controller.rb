@@ -53,9 +53,11 @@ json:: { "entry" =>
     ui_mode = false
 
 
-    if params[:app_name]
-      render_json :status => :bad_request, :messages => "You are using a deprecated piece of API. See the changelog (/doc/changel/og) for details." and return
+    if params[:app_name] && params[:app_name] != COREUI_APP_NAME
+      render_json :status => :bad_request, :messages => "You are using a deprecated piece of API. See the changelog (/doc/changelog) for details." and return
     end
+
+    p "foo"
 
 
     [ :app_name, :app_password, :username, :password, :proxy_ticket ].each do |param|
@@ -72,6 +74,7 @@ json:: { "entry" =>
 
     # If the right Rails authenticity_token is provided, we'll trust it's CoreUI
     if (params[:authenticity_token] && params[:authenticity_token] == form_authenticity_token && params[:app_name] == COREUI_APP_NAME)
+
       @session = Session.new({ :username => params[:username],
                                :password => params[:password],
                                :client_name => params[:app_name],

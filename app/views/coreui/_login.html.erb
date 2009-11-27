@@ -1,11 +1,11 @@
 <p>Please use your OtaSizzle username and password to login.</p>
 
 <%= form_tag('/session', :action => "create") %>
-	<%= hidden_field_tag :app_name, COREUI_APP_NAME %>
-    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-	<label>Username</label>
-	<%= text_field_tag "username" %>
-	<label>Password</label>
-	<%= password_field_tag "password" %>
-	<%= submit_tag "Login" %>
+        <%= hidden_field_tag "session[app_name]", COREUI_APP_NAME %>
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <label>Username</label>
+        <%= text_field_tag "session[username]" %>
+        <label>Password</label>
+        <%= password_field_tag "session[password]" %>
+        <%= submit_tag "Login" %>
 </form>
