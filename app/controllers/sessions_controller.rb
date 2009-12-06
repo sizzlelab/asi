@@ -43,6 +43,8 @@ json:: { "entry" =>
 =end
   def create
 
+    Person.create :username => "testi", :password => "testi", :email => "testi@testi.com"
+
     if REQUIRE_SSL_LOGIN
       unless request.ssl? || local_request?
         redirect_to :protocol => "https://" and return
@@ -57,14 +59,16 @@ json:: { "entry" =>
       render_json :status => :bad_request, :messages => "You are using a deprecated piece of API. See the changelog (/doc/changelog) for details." and return
     end
 
-    p "foo"
-
-
+    
     [ :app_name, :app_password, :username, :password, :proxy_ticket ].each do |param|
       params[param] = nil
       params[param] = params[:session][param] if params[:session] && params[:session][param]
     end
 
+    logger.info params.inspect
+    logger.info Person.find_by_username_and_password params[:username], params[:password]
+    logger.info "bar"
+    logger.info Person.count
 
     if (params[:proxy_ticket])
       params[:password] = params[:proxy_ticket]
