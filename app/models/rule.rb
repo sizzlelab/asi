@@ -100,12 +100,13 @@ class Rule < ActiveRecord::Base
         sets_hash.merge!({field => "private"})
       end
     end
-
-    condition_public = Condition.find_by_condition_type_and_condition_value("publicity", "public")
-    condition_private = Condition.find_by_condition_type_and_condition_value("publicity", "private")
+    
+    condition_public = Condition.get_or_create(:condition_type => "publicity", :condition_value => "public")
+    condition_private = Condition.get_or_create(:condition_type => "publicity", :condition_value => "private")
 
     sets_hash.each_pair do |key, value|
-      action = Action.find_by_action_type_and_action_value("view", key)
+      action = Action.get_or_create(:action_type => "view", :action_value => key)
+      puts action
       if value == "public"
         condition_id = condition_public.id
       elsif value == "private"
@@ -118,7 +119,7 @@ class Rule < ActiveRecord::Base
     if @rule.save
       return true
     else
-      return false
+      return @rule
     end
   end
 
