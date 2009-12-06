@@ -1,3 +1,5 @@
+<% form_for @person, :url => { :controller => "profile", :action => "update", :id => @person.id } do |f| %>
+
   <h3>User account</h3>
 
   <div class="profile_info_field">
@@ -5,7 +7,7 @@
       ID:
     </div>
     <div class="profile_update_form_center">
-      <%= @person.id %>
+      <%= @person.id %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -13,7 +15,7 @@
       Username:
     </div>
     <div class="profile_update_form_center">
-      <%= @person.username %>
+      <%= f.text_field :username %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -21,10 +23,26 @@
       E-mail:
     </div>
     <div class="profile_update_form_center">
-      <%= @person.email %>
+      <%= f.text_field :email %> 
     </div>
   </div>
   <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      New password:
+    </div>
+    <div class="profile_update_form_center">
+      <%= f.password_field :password %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Confirm new password:
+    </div>
+    <div class="profile_update_form_center">
+      <%= password_field_tag "person[password2]", "", :size => 30 %> 
+    </div>
+  </div>
+  <div class="profile_info_field">  
     <div class="profile_update_form_left">
       Avatar:
     </div>
@@ -33,32 +51,38 @@
       <%= link_to(image_tag("/people/#{@person.id}/@avatar/large_thumbnail"), "/people/#{@person.id}/@avatar") %>
       <% else %>
       (no avatar image)
-  <% end %>
+      <% end %>
     </div>
   </div>
-
+  
   <h3>Personal information</h3>
-
-<% if name = @person.name %>
-  <div class="profile_info_field">
+  
+<% f.fields_for :name, @person.name do |name_fields| %>
+  <div class="profile_info_field">  
     <div class="profile_update_form_left">
-      Name:
+      Given name:
     </div>
     <div class="profile_update_form_right">
-      <%= name.unstructured %>
+      <%= name_fields.text_field :given_name %> 
+    </div>
+  </div>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Family name:
+    </div>
+    <div class="profile_update_form_center">
+      <%= name_fields.text_field :family_name %> 
     </div>
   </div>
 <% end %>
 
-<% if spec = @person.person_spec %>
+<% f.fields_for :person_spec, @person.person_spec do |spec_fields| %>
   <div class="profile_info_field">
     <div class="profile_update_form_left">
       Status message:
     </div>
     <div class="profile_update_form_center">
-      <% if spec.status_message =! "" %>
-        <%= spec.status_message %> <small>(<%= distance_of_time_in_words_to_now(spec.status_message_changed) %> ago)</small>
-      <% end %>
+      <%= spec_fields.text_field :status_message %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -66,7 +90,7 @@
       Birthdate:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.birthdate %>
+      <%= spec_fields.text_field :birthdate %> (yyyy-mm-dd)
     </div>
   </div>
   <div class="profile_info_field">
@@ -74,7 +98,7 @@
       Phone number:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.phone_number %>
+      <%= spec_fields.text_field :phone_number %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -82,7 +106,7 @@
       Website:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.website %>
+      <%= spec_fields.text_field :website %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -90,7 +114,10 @@
       Gender:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.gender %>
+      <%= select_tag 'person[person_spec][gender]', 
+                     options_for_select([""].concat(PersonSpec::VALID_GENDERS), 
+                     @person.person_spec ? @person.person_spec.gender : "") 
+      %>
     </div>
   </div>
   <div class="profile_info_field">
@@ -98,7 +125,7 @@
       Description:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.description %>
+      <%= spec_fields.text_field :description %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -106,7 +133,7 @@
       IRC nickname:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.irc_nick %>
+      <%= spec_fields.text_field :irc_nick %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -114,20 +141,36 @@
       MSN nickname:
     </div>
     <div class="profile_update_form_center">
-      <%= spec.msn_nick %>
+      <%= spec_fields.text_field :msn_nick %> 
     </div>
   </div>
 <% end %>
 
 <h3>Address and location</h3>
 
-<% if address = @person.address %>
-  <div class="profile_info_field">
+<% f.fields_for :address, @person.address do |address_fields| %>
+  <div class="profile_info_field">  
     <div class="profile_update_form_left">
-      Address:
+      Street address:
     </div>
     <div class="profile_update_form_right">
-      <%= address.unstructured %>
+      <%= address_fields.text_field :street_address %>
+    </div>
+  </div>
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Postal code:
+    </div>
+    <div class="profile_update_form_right">
+      <%= address_fields.text_field :postal_code, :class => "update_postal_code" %>
+    </div>
+  </div>
+  <div class="profile_info_field">  
+    <div class="profile_update_form_left">
+      Locality:
+    </div>
+    <div class="profile_update_form_right">
+      <%= address_fields.text_field :locality %>
     </div>
   </div>
 <% end %>
@@ -144,6 +187,11 @@
       </div>
       <div class="right_float">
         <small>(<%= distance_of_time_in_words_to_now(l.updated_at) %> ago)</small>
+        <%= button_to_remote "Clear", 
+          :update => "location_data",
+          :url => { :controller => "/locations", :format => "json", :action => "destroy", :user_id => @person.id },
+          :method => :delete
+        %>
       </div>
     </div>
     <% else %>
@@ -152,9 +200,11 @@
     </div>
     <% end %>
   </div>
-
+  
   <hr />
 
   <div class="profile_update_form_buttons">
-    [ <%= link_to "Edit profile", edit_coreui_profile_path(:id => @person.id) %> ]
-  </div>
+    <%= submit_tag "Save changes" %>
+    [ <%= link_to "Cancel", coreui_profile_path(:id => @person.id) %> ]
+  </div>  
+<% end %>

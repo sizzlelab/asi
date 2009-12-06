@@ -16,8 +16,15 @@ class Coreui::PrivacyController < ApplicationController
   def edit
     if @user
       @rule = @user.profile_rule #TODO create profile rule if it's not there. It will be there cause is created at people_controller
+      if not @rule
+        Rule.create_default_profile_rule(@user)
+        @rule = @user.profile_rule
+      end
       @rule_sets = @rule.to_hash_by_data
       @person = @user
+      if not @person.name
+        @person.create_name
+      end
     else
       flash[:warning] = "Please login to edit your profile privacy."
       redirect_to coreui_root_path and return
