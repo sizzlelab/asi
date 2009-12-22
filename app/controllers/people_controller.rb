@@ -137,7 +137,7 @@ description:: Update (or add) information to user's profile. The person-paramete
     end
     if params[:person]
       begin
-        if @person.update_attributes(params[:person])
+        if @person.json_update_attributes(params[:person])
           render_json :entry => @person.to_hash(@user, @client) and return
         end
       rescue NoMethodError  => e
