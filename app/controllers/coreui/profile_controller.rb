@@ -35,7 +35,7 @@ class Coreui::ProfileController < ApplicationController
 
   def update
     @person = Person.find_by_id(params[:id])
-
+    
     if @person.id != @user.id
       flash[:warning] = "You can only update your own profile."
       redirect_to coreui_root_path and return
@@ -46,16 +46,12 @@ class Coreui::ProfileController < ApplicationController
       redirect_to :back and return
     end
 
-    # Merging person_spec from a separate hash to the "main hash"
-    person_spec = params[:person][:person_spec]
-    person_hash = params[:person].delete_if { |key, value| key == "person_spec" || key == "password2" }
-    person_hash.merge!(person_spec)
-    logger.debug "Person_hash = #{person_hash.inspect}"
-
-    @person.update_attributes(person_hash)
-
-    flash[:notice] = "Profile information updated."
-    redirect_to coreui_profile_index_path and return
+    if @person.update_attributes(params[:person].except(:password2, :password))
+      flash[:notice] = "Profile information updated."
+      redirect_to edit_coreui_profile_path and return
+    else
+      render :action => "edit" and return
+    end
   end
 
   def destroy
