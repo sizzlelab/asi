@@ -1,15 +1,11 @@
+
+<div style="background-color: red">
+<%= error_messages_for 'person' %>
+</div>
 <% form_for @person, :url => { :controller => "profile", :action => "update", :id => @person.id } do |f| %>
 
   <h3>User account</h3>
 
-  <div class="profile_info_field">
-    <div class="profile_update_form_left">
-      ID:
-    </div>
-    <div class="profile_update_form_center">
-      <%= @person.id %> 
-    </div>
-  </div>
   <div class="profile_info_field">
     <div class="profile_update_form_left">
       Username:
@@ -76,13 +72,13 @@
   </div>
 <% end %>
 
-<% f.fields_for :person_spec, @person.person_spec do |spec_fields| %>
+
   <div class="profile_info_field">
     <div class="profile_update_form_left">
       Status message:
     </div>
     <div class="profile_update_form_center">
-      <%= spec_fields.text_field :status_message %> 
+      <%= f.text_field :status_message %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -90,7 +86,7 @@
       Birthdate:
     </div>
     <div class="profile_update_form_center">
-      <%= spec_fields.text_field :birthdate %> (yyyy-mm-dd)
+      <%= f.text_field :birthdate %> (yyyy-mm-dd)
     </div>
   </div>
   <div class="profile_info_field">
@@ -98,7 +94,7 @@
       Phone number:
     </div>
     <div class="profile_update_form_center">
-      <%= spec_fields.text_field :phone_number %> 
+      <%= f.text_field :phone_number %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -106,7 +102,7 @@
       Website:
     </div>
     <div class="profile_update_form_center">
-      <%= spec_fields.text_field :website %> 
+      <%= f.text_field :website %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -114,18 +110,18 @@
       Gender:
     </div>
     <div class="profile_update_form_center">
-      <%= select_tag 'person[person_spec][gender]', 
-                     options_for_select([""].concat(PersonSpec::VALID_GENDERS), 
-                     @person.person_spec ? @person.person_spec.gender : "") 
+      <%= select_tag 'person[gender]', 
+                     options_for_select([""].concat(Person::VALID_GENDERS), 
+                     @person.gender) 
       %>
     </div>
   </div>
   <div class="profile_info_field">
     <div class="profile_update_form_left">
-      Description:
+      About me:
     </div>
     <div class="profile_update_form_center">
-      <%= spec_fields.text_field :description %> 
+      <%= f.text_field :description %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -133,7 +129,7 @@
       IRC nickname:
     </div>
     <div class="profile_update_form_center">
-      <%= spec_fields.text_field :irc_nick %> 
+      <%= f.text_field :irc_nick %> 
     </div>
   </div>
   <div class="profile_info_field">
@@ -141,10 +137,10 @@
       MSN nickname:
     </div>
     <div class="profile_update_form_center">
-      <%= spec_fields.text_field :msn_nick %> 
+      <%= f.text_field :msn_nick %> 
     </div>
   </div>
-<% end %>
+
 
 <h3>Address and location</h3>
 

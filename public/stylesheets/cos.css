@@ -278,3 +278,25 @@ div.pagination_padding {
         padding: 5px;
         border: 2px solid red;
 }
+
+/* COREUI */
+
+#OtaSizzle {
+       position: absolute;
+       left: 116px;
+       top: 8px;
+       width: 288px;
+       height: 135px;
+       z-index: -100;
+       background: url(../images/OtaSizzle.png) no-repeat ;
+       }
+
+#background {
+       position: absolute;
+       left: 178px;
+       top: 115px;
+       width: 540px;
+       height: 610px;
+       z-index: -100;
+       background: url(../images/background.png) no-repeat;
+       }

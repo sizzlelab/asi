@@ -65,11 +65,6 @@ json:: { "entry" =>
       params[param] = params[:session][param] if params[:session] && params[:session][param]
     end
 
-    logger.info params.inspect
-    logger.info Person.find_by_username_and_password params[:username], params[:password]
-    logger.info "bar"
-    logger.info Person.count
-
     if (params[:proxy_ticket])
       params[:password] = params[:proxy_ticket]
     end
@@ -194,12 +189,12 @@ description:: Ends the current session.
     @application_session.destroy
     session[:cos_session_id] = @user = @client = nil
 
-    render_json :status => :ok
-
     if ui_mode
       flash[:notice] = "Successfully logged out."
       redirect_to coreui_root_path and return
     end
+
+    render_json :status => :ok
 
   end
 
