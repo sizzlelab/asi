@@ -13,7 +13,7 @@ class Rule < ActiveRecord::Base
   NAME_MAX_LENGTH = 70
 
   #added by marcos to make the default creation
-  PROFILE_FIELDS = %W(id username email name status_message birthdate phone_number gender irc_nick msn_nick avatar address location)
+  PROFILE_FIELDS = %W(username email name status birthdate phone_number gender irc_nick msn_nick avatar address location website description)
 
   validates_length_of :rule_name, :within => NAME_MIN_LENGTH..NAME_MAX_LENGTH
   validates_uniqueness_of :rule_name, :scope => [:person_id]
@@ -40,14 +40,18 @@ class Rule < ActiveRecord::Base
     #print "action_value: #{action_value} \n"
 
     active_rules = Rule.find(:all, :conditions => {'person_id'=>object_person_id, 'state'=>'active'})
-
+    
     if active_rules.length != 0
+      undecided = true
       active_rules.each do |rule|
-        if rule.authorize_according_to_one_rule(subject_person, object_person_id, action_type, action_value)
-          return true
+        result = rule.authorize_according_to_one_rule(subject_person, object_person_id, action_type, action_value)
+
+        return true if result
+        if result == false
+          undecided = false
         end
       end
-      return false
+      return undecided || false
     end
     return true
   end
@@ -94,33 +98,32 @@ class Rule < ActiveRecord::Base
     # create condition_action_sets for this profile rule
     sets_hash = {}
     PROFILE_FIELDS.each do |field|
-      if field == "username"
+      if field == "username" || field == "name"
         sets_hash.merge!({field => "public"})
       else
-        sets_hash.merge!({field => "private"})
+        sets_hash.merge!({field => "friends_only"})
       end
     end
     
     condition_public = Condition.get_or_create(:condition_type => "publicity", :condition_value => "public")
     condition_private = Condition.get_or_create(:condition_type => "publicity", :condition_value => "private")
+    condition_logged_in = Condition.get_or_create(:condition_type => "user", :condition_value => "logged_in")
+    condition_friends = Condition.get_or_create(:condition_type => "user", :condition_value => "friends_only")
 
     sets_hash.each_pair do |key, value|
       action = Action.get_or_create(:action_type => "view", :action_value => key)
       puts action
       if value == "public"
         condition_id = condition_public.id
-      elsif value == "private"
-        condition_id = condition_private.id
+      elsif value == "friends_only"
+        condition_id = condition_friends.id
       end
       @rule.condition_action_sets.build(:condition_id => condition_id,
                                        :action_id => action.id)
     end
 
-    if @rule.save
-      return true
-    else
-      return @rule
-    end
+    @rule.save
+    return @rule
   end
 
 
@@ -221,9 +224,16 @@ class Rule < ActiveRecord::Base
     #print " "
     result = false
     condition_action_sets = self.get_condition_action_sets_by_rule_action_type_value(action_type, action_value)
+
+   # p condition_action_sets
+
     if condition_action_sets.length != 0
       condition_action_sets.each do |condition_action_set|
+
         condition = condition_action_set.condition
+
+    #    p condition
+        
         #print "condition.id: #{condition.id}, condition.type: #{condition.condition_type}, condition.value: #{condition.condition_value} \n"
         if self.logic == "and"
           if check_condition(connection_person, object_person_id, condition)
@@ -233,17 +243,16 @@ class Rule < ActiveRecord::Base
           end
         elsif self.logic == "or"
           if check_condition(connection_person, object_person_id, condition)
-            result = true
-            return result
+            return true
           end
         end
       end
       return result
     end
-    return false
+    return nil
   end
 
-  private
+  public
 
   # check if the connection_person satisfies a condition
   def check_condition(connection_person=nil, object_person_id=nil, condition=nil)
@@ -257,6 +266,9 @@ class Rule < ActiveRecord::Base
 
     result = false
 
+   # p condition_type
+   # p condition_value
+    
     case condition_type
     when "logged_in"
       result = check_condition_logged_in(connection_person, condition_value)
@@ -334,16 +346,8 @@ class Rule < ActiveRecord::Base
   # When public: every user can perform the action
   # when private: only the user himslef can perform the action
   def check_condition_publicity(connection_person=nil, object_person_id=nil, condition_value=nil)
-    #print "************ in rule/check_condition_publicity ******************* \n"
-    if !connection_person.nil? && !object_person_id.nil? && !condition_value.nil?
-      if condition_value == "public"
-        return true
-      elsif condition_value == "private"
-        return (connection_person.id == object_person_id)
-      end
-    end
-
-    return false
+    return true if condition_value == "public"
+    return connection_person != nil && (connection_person.id == object_person_id)
   end
 
   # only a specific user can perform the action

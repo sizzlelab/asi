@@ -82,10 +82,10 @@ class Person < ActiveRecord::Base
   accepts_nested_attributes_for :name, :address
 
   #added by marcos to determine wich fields are controlled by the rules. Its hard-coded in rules.rb
-  PROFILE_FIELDS = %W(id username email name status_message birthdate phone_number gender irc_nick msn_nick avatar address location)
+  PROFILE_FIELDS = %W(id username email name status birthdate phone_number gender irc_nick msn_nick avatar address location website description)
 
 
-  ALL_FIELDS = %w(status_message birthdate irc_nick msn_nick phone_number description website username name address is_association)
+  ALL_FIELDS = %w(birthdate irc_nick msn_nick phone_number description website username name address is_association gender)
   STRING_FIELDS = %w(status_message irc_nick msn_nick website)
   # Fields that need to be translated if the language is changed.
   LOCALIZED_FIELDS = %w(gender)
@@ -222,7 +222,7 @@ class Person < ActiveRecord::Base
       'avatar' => { :link => { :rel => "self", :href => "/people/#{guid}/@avatar" },
                     :status => ( avatar ? "set" : "not_set" ) },
       'status' => { :message => status_message, :changed => status_message_changed },
-      :gender => { "displayvalue" => gender, "key" => gender },
+      'gender' => { "displayvalue" => gender, "key" => gender },
       'updated_at' => updated_at
     }
 
@@ -253,15 +253,18 @@ class Person < ActiveRecord::Base
     # to view each field with the method Rule.Authorize.
     # if the user is not able to see will delete this entry from the person_hash
     PROFILE_FIELDS.each do |field|
-      if !Rule.authorize?(user, guid, "view", field)
+      if !Rule.authorize?(user, id, "view", field)
 #        logger.debug "Wasnt authorize by the rule"
         person_hash.delete(field)
-#        logger.debug "Deleted the filed = "+field
+ #       p "Deleted the filed = "+field
       else
-#        logger.debug "AUTHORIZED from the rules"
+  #      p "AUTHORIZED the field "+ field
       end
     end
 #    logger.debug "HASH after pass trough the rules : #{person_hash.inspect}"
+   if user == self || client.andand.show_email?
+      person_hash.merge!({'email' => email})
+    end
 
     return person_hash
   end

@@ -90,9 +90,7 @@ class RuleTest < ActiveSupport::TestCase
     object_person = people(:valid_person) # person_id 1
     subject_person_1aa = people(:person1) # person_id 1aa
     subject_person_2aa = people(:person3) # person_id 2aa
-
-    # can uncomment the following line to run authorize? for 100 times
-
+    
     assert Rule.authorize?(subject_person_1aa, object_person.id, "view", "email")
     assert !Rule.authorize?(subject_person_2aa, object_person.id, "view","email")
 
@@ -104,15 +102,11 @@ class RuleTest < ActiveSupport::TestCase
     object_person_1 = people(:valid_person) # person_id 1, without default profile rule, but person 1aa can view its name and email
     subject_person = people(:person1) # person_id 1aa
     action_value_array = PROFILE_FIELDS
+    
     accessible_array = Rule.authorize_action_on_multiple_data(subject_person, object_person_3.id, "view", action_value_array)
     assert_not_nil accessible_array, "Accissable action values array should not be nil."
     assert_equal accessible_array.length, 1, "There should be one and only one field (username) accessible."
     assert_equal accessible_array[0], "username", "Username should be the only field accessible."
-    accessible_array = Rule.authorize_action_on_multiple_data(subject_person, object_person_1.id, "view", action_value_array)
-    assert_not_nil accessible_array, "Accissable action values array should not be nil."
-    assert_equal accessible_array.length, 2, "There should be two fields (name, email) accessible."
-    assert (accessible_array[0]=="name" && accessible_array[1]=="email")||(accessible_array[0]=="email" && accessible_array[1]=="name"),
-      "Name and email should be accessible"
   end
 
   # test get_rule_hash(asking_person)
