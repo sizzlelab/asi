@@ -1,11 +1,11 @@
 <% if @person %>
-  <h2>Welcome, <%= @person.username %>!</h2>
+  <h2>Welcome, <%= @person.name_or_username %>!</h2>
 
   <p>Here you can view and edit the information in your OtaSizzle profile.</p>
 
   <div class="profile_box" id="<%= @person.id %>">
     <div class="avatar">
-      <%= link_to (image_tag("/people/#{@person.id}/@avatar/small_thumbnail", :align => :left, :alt => "Show full profile"), coreui_profile_path(:id => @person.id)) if @person.avatar %>
+      <%= link_to (image_tag("/people/#{@person.guid}/@avatar/small_thumbnail", :align => :left, :alt => "Show full profile"), coreui_profile_path(:id => @person.id)) if @person.avatar %>
     </div>
     <div class="info">
       <p class="name">

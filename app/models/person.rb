@@ -176,6 +176,45 @@ class Person < ActiveRecord::Base
     [super, name.andand.updated_at, address.andand.updated_at].compact.sort.last
   end
 
+  def json_update_attributes(hash)
+    if hash[:name]
+      if name
+        name.update_attributes(hash[:name])
+      else
+        create_name(hash[:name])
+      end
+    end
+    if hash[:address]
+      if address
+        address.update_attributes(hash[:address])
+      else
+        create_address(hash[:address])
+      end
+    end
+    if hash[:birthdate] && ! hash[:birthdate].blank?
+      #Check the format of the birthday parameter
+      begin
+        Date.parse(hash[:birthdate])
+      rescue ArgumentError => e
+        errors.add :birthdate, "is not a valid date or has wrong format, use yyyy-mm-dd"
+        return false
+      end
+    end
+    
+    success = update_attributes(hash.except(:name, :address))
+    
+    if self.name && !self.name.valid?
+      success = false
+      self.name.errors.each{|attr, msg| errors.add(attr, msg)}
+    end
+    if self.address && !self.address.valid?
+      success = false
+      self.address.errors.each{|attr, msg| errors.add(attr, msg)}
+    end
+    
+    return success
+  end
+  
   def to_hash(user=nil, client=nil)
 
     person_hash = {
