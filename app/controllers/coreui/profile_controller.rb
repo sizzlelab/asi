@@ -27,6 +27,8 @@ class Coreui::ProfileController < ApplicationController
   def edit
     if @user
       @person = Person.find_by_id(@user.id)
+      @person.create_name if not @person.name
+      @person.create_address if not @person.address
     else
       flash[:warning] = "Please login to edit the profile."
       redirect_to coreui_root_path and return
