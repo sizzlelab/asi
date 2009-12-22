@@ -30,7 +30,7 @@
     </div>
     <div class="profile_update_form_right">
     <% if @person.avatar %>
-      <%= link_to(image_tag("/people/#{@person.id}/@avatar/large_thumbnail"), "/people/#{@person.id}/@avatar") %>
+      <%= link_to(image_tag("/people/#{@person.guid}/@avatar/large_thumbnail"), "/people/#{@person.guid}/@avatar") %>
       <% else %>
       (no avatar image)
   <% end %>
