@@ -51,13 +51,13 @@ latest update is always in UTC time. The 'avatar' slot in the returned JSON cont
 image and also the status of the avatar, which is 'set' or 'not_set' depending on if the user has uploaded an image or not.
 =end
   def show
-    if !(@person = Rails.cache.read(Person.build_cache_key(params['user_id'])) )
+
       @person = Person.find_by_guid(params['user_id'])
       if ! @person
         render_json :status => :not_found and return
       end
       Rails.cache.write(Person.build_cache_key(params['user_id']), @person, :expires_in => 60.minutes)
-    end
+
     render_json :entry => @person.to_hash(@user, @client)
   end
 
