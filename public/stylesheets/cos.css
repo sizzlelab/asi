@@ -288,7 +288,6 @@ div.pagination_padding {
        width: 288px;
        height: 135px;
        z-index: -100;
-       background: url(../images/OtaSizzle.png) no-repeat ;
        }
 
 #background {
@@ -300,3 +299,11 @@ div.pagination_padding {
        z-index: -100;
        background: url(../images/background.png) no-repeat;
        }
+
+#navi {
+    text-align: center;
+}
+
+#content {
+    background-color: white;
+}

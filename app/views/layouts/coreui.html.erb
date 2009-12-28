@@ -1,24 +1,30 @@
 <html>
   <head>
-    <title>Core UI for Aalto Social Interface</title>
+    <title>OtaSizzle Account Management</title>
     <%= stylesheet_link_tag("cos") %>
   </head>
   <body>
-<div id="OtaSizzle"></div>
-<div id="background"></div>    <h1>[Core::UI]</h1>
+    <div id="OtaSizzle"><%= link_to image_tag("OtaSizzle.png"), coreui_root_path %></div>
+    <div id="background"></div>    
+    <div id="content"> 
 
+    <% if @user %>
+    <div id="navi">
+      [ <%= link_to "Profile", edit_coreui_profile_path(:id => @person.id) %> ]
+      [ <%= link_to "Privacy", edit_coreui_privacy_path(:id => @person.id) %> ]
+      [ <%= link_to "Logout", "/session", :method=>"delete" %> ]
+    </div>
+    <% end %>    
+    
     <p style="color: green"><%= flash[:notice] %></p>
     <p style="color: orange"><%= flash[:warning] %></p>
     <p style="color: red"><%= flash[:error] %></p>
 
     <%= yield %>
 
-    <% if @user %>
-      <p><%= link_to "Logout", "/session", :method=>"delete" %></p>
-    <% end %>
-
     <div class="footer">
-      Aalto Social Interface <%= render :partial => "layouts/version" %> built <%= render :partial => "layouts/build_date" %>
+      ASI <%= render :partial => "layouts/version" %>
     </div>
+  </div>
   </body>
 </html>
