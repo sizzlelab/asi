@@ -88,7 +88,7 @@ private
     if ! @person
       render_json :status => :not_found and return
     end
-    if @person.avatar
+    if @person.avatar && Rule.authorize?(@user, params['user_id'], "view", "avatar")
       case image_type
       when "full"
         @data = @person.avatar.raw_data

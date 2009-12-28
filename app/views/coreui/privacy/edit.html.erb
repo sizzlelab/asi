@@ -24,10 +24,10 @@
       :value => @person.name.unstructured,
       :privacy => true
     },
-    {
-      :key => "status",
-      :label => "Status message",
-      :value => "#{@person.status_message}",
+   {
+      :key => "gender",
+      :label => "Gender",
+      :value => @person.gender,
       :privacy => true
     },
     {
@@ -37,27 +37,27 @@
       :privacy => true
     },
     {
+      :key => "status",
+      :label => "Status message",
+      :value => "#{@person.status_message}",
+      :privacy => true
+    },
+    {
       :key => "phone_number",
       :label => "Phone number",
       :value => @person.phone_number,
       :privacy => true
     },
-    #{
-    #  :key => "website",
-    #  :label => "Website",
-    #  :value => @person.website,
-    #  :privacy => true
-    #},
-    {
-      :key => "gender",
-      :label => "Gender",
-      :value => @person.gender,
-      :privacy => true
-    },
-    {
+     {
       :key => "description",
       :label => "About me",
       :value => @person.description,
+      :privacy => true
+    },
+    {
+      :key => "website",
+      :label => "Website",
+      :value => @person.website,
       :privacy => true
     },
     {
