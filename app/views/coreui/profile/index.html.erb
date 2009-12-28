@@ -1,16 +1,12 @@
 <% if @person %>
+          <%= image_tag("/people/#{@person.guid}/@avatar/large_thumbnail", :align => :left, :style => "float:right; margin-top: 1.5em" ) if @person.avatar %>
   <h2>Welcome<%= @person.name_or_username.strip.empty? ? "!" : ", " + @person.name_or_username %></h2>
 
-  <p>Here you can view and edit the information in your OtaSizzle profile.</p>
+
+  <p>This page allows you to edit your OtaSizzle profile and privacy settings.</p>
 
   <div class="profile_box" id="<%= @person.id %>">
-    <div class="avatar">
-      <%= link_to (image_tag("/people/#{@person.guid}/@avatar/small_thumbnail", :align => :left, :alt => "Show full profile"), coreui_profile_path(:id => @person.id)) if @person.avatar %>
-    </div>
     <div class="info">
-      <p class="name">
-        <%= link_to @person.name ? @person.name.unstructured : @person.username, coreui_profile_path(:id => @person.id) %>
-      </p>
       <p class="links">
         <%= link_to "Edit your profile", edit_coreui_profile_path(:id => @person.id) %><br />
         <%= link_to "Edit your privacy settings", edit_coreui_privacy_path(:id => @person.id) %>
@@ -19,6 +15,7 @@
     <div class="box_footer"></div>
   </div>
 <% else %>
+<h1>Account Management</h1>
 <p>Please use your OtaSizzle username and password to login.</p>
 
 <%= form_tag('/session', :action => "create") %>

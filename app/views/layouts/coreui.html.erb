@@ -6,15 +6,16 @@
   <body>
     <div id="OtaSizzle"><%= link_to image_tag("OtaSizzle.png"), coreui_root_path %></div>
     <div id="background"></div>    
-    <div id="content"> 
-
     <% if @user %>
     <div id="navi">
-      [ <%= link_to "Profile", edit_coreui_profile_path(:id => @person.id) %> ]
-      [ <%= link_to "Privacy", edit_coreui_privacy_path(:id => @person.id) %> ]
-      [ <%= link_to "Logout", "/session", :method=>"delete" %> ]
+      [ <%= link_to_unless_current "Home", coreui_root_path %> ]
+      [ <%= link_to_unless_current "Profile", edit_coreui_profile_path(:id => @person.id) %> ]
+      [ <%= link_to_unless_current "Privacy", edit_coreui_privacy_path(:id => @person.id) %> ]
+      [ <%= link_to_unless_current "Logout", "/session", :method=>"delete" %> ]
     </div>
     <% end %>    
+    <div id="content"> 
+
     
     <p style="color: green"><%= flash[:notice] %></p>
     <p style="color: orange"><%= flash[:warning] %></p>
@@ -22,9 +23,6 @@
 
     <%= yield %>
 
-    <div class="footer">
-      ASI <%= render :partial => "layouts/version" %>
-    </div>
   </div>
   </body>
 </html>
