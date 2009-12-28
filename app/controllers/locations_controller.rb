@@ -17,7 +17,7 @@ description:: Returns this person's location.
     end
 
     @location = @person.location
-    if ! @location || !Rule.authorize?(@user, params['user_id'], "view", "location")
+    if ! @location || !Rule.authorize?(@user, @person.id, "view", "location")
       #if location is not set, return just nils
       @location = Location.new
       @location.updated_at = nil
