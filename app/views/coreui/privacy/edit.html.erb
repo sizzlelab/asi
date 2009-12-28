@@ -1,2 +1,181 @@
-<h2>Profile privacy</h2>
-<%= render :partial => "profile_privacy" %>
+<%
+  # Hardcoded fields (those that are not specified here, must be edited from view code below):
+  #   avatar, address, location
+
+  account_fields = [
+    {
+      :key => "username",
+      :label => "Username",
+      :value => @person.username,
+      :privacy => true
+    },
+    {
+      :key => "email",
+      :label => "E-mail",
+      :value => @person.email,
+      :privacy => true
+    }
+  ]
+
+  personal_fields = [
+    {
+      :key => "name",
+      :label => "Name",
+      :value => @person.name.unstructured,
+      :privacy => true
+    },
+    {
+      :key => "status",
+      :label => "Status message",
+      :value => "#{@person.status_message}",
+      :privacy => true
+    },
+    {
+      :key => "birthdate",
+      :label => "Birthdate",
+      :value => @person.birthdate,
+      :privacy => true
+    },
+    {
+      :key => "phone_number",
+      :label => "Phone number",
+      :value => @person.phone_number,
+      :privacy => true
+    },
+    #{
+    #  :key => "website",
+    #  :label => "Website",
+    #  :value => @person.website,
+    #  :privacy => true
+    #},
+    {
+      :key => "gender",
+      :label => "Gender",
+      :value => @person.gender,
+      :privacy => true
+    },
+    #{
+    #  :key => "description",
+    #  :label => "Description",
+    #  :value => @person.description,
+    #  :privacy => true
+    #},
+    {
+      :key => "irc_nick",
+      :label => "IRC nickname",
+      :value => @person.irc_nick,
+      :privacy => true
+    },
+    {
+      :key => "msn_nick",
+      :label => "MSN nickname",
+      :value => @person.msn_nick,
+      :privacy => true
+    }
+  ]
+ %>
+
+<%= form_tag "/coreui/privacy/#{@person['id']}", :method => :put  %>
+
+
+  <h3>User account</h3>
+
+<% account_fields.each do |f| %>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      <%= f[:label] %>:
+    </div>
+    <div class="profile_update_form_two_columns">
+      <%= f[:value] %>
+    </div>
+    <div class="profile_update_form_right">
+      <%= select_tag(
+            "privacy[#{f[:key]}]",
+            options_for_select(
+              privacy_presets("logged_in"), # TODO Give the real default privacy preset as parameter
+              keyword(@rule_sets[f[:key]])
+            )
+          ) if f[:privacy] %>
+    </div>
+  </div>
+<% end %>
+
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Avatar:
+    </div>
+    <div class="profile_update_form_two_columns">
+    <% if @person.avatar %>
+      <%= link_to(image_tag("/people/#{@person.guid}/@avatar/large_thumbnail"), "/people/#{@person.guid}/@avatar") %>
+      <% else %>
+      (no avatar)
+      <% end %>
+    </div>
+    <div class="profile_update_form_right">
+      <%= select_tag("privacy[avatar]", options_for_select(privacy_presets("logged_in"), keyword(@rule_sets["avatar"]))) %>
+    </div>
+  </div>
+
+  <h3>Personal information</h3>
+
+<% personal_fields.each do |f| %>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      <%= f[:label] %>:
+    </div>
+    <div class="profile_update_form_two_columns">
+      <%= f[:value] %>&nbsp;
+    </div>
+    <div class="profile_update_form_right">
+      <%= select_tag("privacy[#{f[:key]}]",
+        options_for_select(privacy_presets("logged_in"),
+          keyword(@rule_sets[f[:key]]))
+        ) if f[:privacy] %>
+    </div>
+  </div>
+<% end %>
+
+<h3>Address and location</h3>
+
+<% if address = @person.address %>
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Address:
+    </div>
+    <div class="profile_update_form_two_columns">
+      <%= address.unstructured.gsub(",", "<br/>") %>&nbsp;
+    </div>
+    <div class="profile_update_form_right">
+      <%= select_tag("privacy[address]", options_for_select(privacy_presets("logged_in"), keyword(@rule_sets["address"]))) %>
+    </div>
+  </div>
+<% end %>
+
+  <div class="profile_info_field">
+    <div class="profile_update_form_left">
+      Last location:
+    </div>
+    <% if l = @person.location %>
+    <div class="profile_update_form_two_columns" id="location_data">
+      <div class="left_float">
+        <%= "\"#{l.label}\"<br /> at " unless ! l.label %>
+        <%= link_to("#{l.latitude}, #{l.longitude}", "http://maps.google.com/maps?q=#{l.latitude}+#{l.longitude}") %>
+      </div>
+      <div class="right_float">
+        <small>(<%= distance_of_time_in_words_to_now(l.updated_at) %> ago)</small>
+      </div>
+   </div>
+    <% else %>
+    <div class="profile_update_form_two_columns">
+      -
+    </div>
+    <% end %>
+    <div class="profile_update_form_right">
+      <%= select_tag("privacy[location]", options_for_select(privacy_presets("logged_in"), keyword(@rule_sets["location"]))) %>
+    </div>
+  </div>
+
+  <div class="profile_update_form_buttons">
+    <%= submit_tag(value = "Save changes") %>
+  </div>
+</form>
