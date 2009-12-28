@@ -125,7 +125,7 @@ json:: { "entry" =>
         else
           @session.destroy
           if ui_mode
-            flash[:warning] = "User login failed."
+            flash[:warning] = "Incorrect username or password. Please try again."
             redirect_to :back and return
           else
             status = (params[:app_name] == "ossi" ? :forbidden : :unauthorized)
