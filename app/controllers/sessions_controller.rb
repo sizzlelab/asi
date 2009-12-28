@@ -160,7 +160,6 @@ json:: { "entry" =>
       end
 
       if ui_mode
-        flash[:notice] = "Logged in."
         redirect_to coreui_profile_index_path and return
       else
         render_json :status => :created, :entry => { :user_id => @session.person.andand.guid,
