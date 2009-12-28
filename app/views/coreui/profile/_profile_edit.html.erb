@@ -1,8 +1,10 @@
 
+
+
 <div style="background-color: red">
 <%= error_messages_for 'person' %>
 </div>
-<% form_for @person, :url => { :controller => "profile", :action => "update", :id => @person.id } do |f| %>
+<% form_for @person, :url => { :controller => "profile", :action => "update", :id => @person.id }, :html => {:multipart => true} do |f| %>
 
   <h3>User account</h3>
 
@@ -46,8 +48,11 @@
     <% if @person.avatar %>
       <%= link_to(image_tag("/people/#{@person.guid}/@avatar/large_thumbnail"), "/people/#{@person.guid}/@avatar") %>
       <% else %>
-      (no avatar image)
-      <% end %>
+      (no avatar)
+    <% end %>
+    <br/>
+    <br/>
+    <%= file_field_tag "file" %>
     </div>
   </div>
   
@@ -196,8 +201,6 @@
     </div>
     <% end %>
   </div>
-  
-  <hr />
 
   <div class="profile_update_form_buttons">
     <%= submit_tag "Save changes" %>

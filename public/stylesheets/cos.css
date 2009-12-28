@@ -283,7 +283,7 @@ div.pagination_padding {
 
 #OtaSizzle {
        position: absolute;
-       left: 116px;
+       left: 46px;
        top: 8px;
        width: 288px;
        height: 135px;
@@ -292,7 +292,7 @@ div.pagination_padding {
 
 #background {
        position: absolute;
-       left: 178px;
+       left: 108px;
        top: 115px;
        width: 540px;
        height: 610px;
@@ -306,4 +306,39 @@ div.pagination_padding {
 
 #content {
     background-color: white;
+    padding: 1em;
+    padding-right: 0; 
+}
+
+div.profile_update_form_left,
+div.profile_update_form_two_columns,
+div.profile_update_form_right,
+div.profile_update_form_center {
+    padding-bottom: 1em;
+}
+
+div.profile_update_form_left {
+    clear: both;
+    float: left;
+    width: 32%;
+}
+
+div.profile_update_form_two_columns {
+    float: left;
+    width: 42%;
+}
+
+div.profile_update_form_right {
+    float: left;
+    width: 22%;
+    text-align: right;
+}
+
+div.profile_update_form_center {
+    float: left;
+    width: 67%;
+}
+
+h3, div.profile_update_form_buttons { 
+    clear:both
 }

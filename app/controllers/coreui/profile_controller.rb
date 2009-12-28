@@ -44,11 +44,26 @@ class Coreui::ProfileController < ApplicationController
     end
 
     if params[:person][:password] != params[:person][:password2]
-      flash[:warning] = "Passwords didn't match."
-      redirect_to :back and return
+      flash[:error] = "Passwords didn't match."
+      render :action => "edit" and return
+    elsif params[:person][:password].empty?
+      params[:person].delete :password
+      params[:person].delete :password2
     end
 
-    if @person.update_attributes(params[:person].except(:password2, :password))
+    if params[:person][:gender].empty?
+      params[:person].delete :gender
+    end
+
+    if params[:file]
+      avatar = @person.create_avatar(:file => params[:file])
+      if not avatar.valid?
+        flash[:error] = "Error with image upload."
+        render :action => "edit" and return
+      end
+    end
+
+    if @person.update_attributes(params[:person].except(:password2))
       flash[:notice] = "Profile information updated."
       redirect_to edit_coreui_profile_path and return
     else
