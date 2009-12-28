@@ -13,6 +13,10 @@
       [ <%= link_to_unless_current "Privacy", edit_coreui_privacy_path(:id => @person.id) %> ]
       [ <%= link_to_unless_current "Logout", "/session", :method=>"delete" %> ]
     </div>
+    <% else %>
+    <div id="navi">
+      <h1>Account Management</h1>
+    </div>
     <% end %>    
     <div id="content"> 
 
