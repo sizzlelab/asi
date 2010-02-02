@@ -46,12 +46,12 @@ class Coreui::ProfileController < ApplicationController
     if params[:person][:password] != params[:person][:password2]
       flash[:error] = "Passwords didn't match."
       render :action => "edit" and return
-    elsif params[:person][:password].empty?
+    elsif !params[:person][:password] || params[:person][:password].empty?
       params[:person].delete :password
       params[:person].delete :password2
     end
 
-    if params[:person][:gender].empty?
+    if params[:person][:gender].andand.empty?
       params[:person].delete :gender
     end
 
