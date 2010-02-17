@@ -11,7 +11,7 @@ module COSRoutes
 
   def resource(route, options)
     documentation route.gsub(":", "")
-    options.except(:controller, :format_get, :format_put, :format_post, :description).each do |method, action|
+    options.except(:controller, :format_get, :format_put, :format_post).each do |method, action|
       if method.to_s.eql?("get")
         format = options[:format_get] || 'json'
       elsif method.to_s.eql?("post") || method.to_s.eql?("put")
@@ -43,7 +43,6 @@ ActionController::Routing::Routes.draw do |map|
     coreui.resources :privacy
   end
 
-  # Adding parameter :description, adds it to the resources documentation
   # Application-specific client data
   map.resource '/appdata', :controller => 'appdata',
                            :get => 'index'
@@ -110,8 +109,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource '/people', :controller => 'people',
                           :post => 'create',
-                          :get => 'index',
-                          :description => "A resource for accessing the users of OtaSizzle."
+                          :get => 'index'
 
   map.resource '/people/:user_id/@friends', :controller => 'people',
                                             :get => 'get_friends',
@@ -130,8 +128,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/:user_id/@location', :controller => 'locations',
                                              :get => 'get',
                                              :put => 'update',
-                                             :post => 'update',
-                                             :delete => 'destroy'
+                                             :post => 'update'
 
   map.resource '/people/:user_id/@location/@location_security_token', :controller => 'locations',
                                                                      :get => 'fetch_location_security_token'
@@ -150,20 +147,17 @@ ActionController::Routing::Routes.draw do |map|
                                            :post => 'add_member'
 
   map.resource '/people/:user_id/@groups/@invites', :controller => 'groups',
-  :get => 'get_invites'
+                                                    :get => 'get_invites'
 
 
   map.resource '/people/:user_id/@groups/:group_id', :controller => 'groups',
                                                      :put => 'update_membership_status',
+                                                     :get => 'show_membership',
                                                      :delete => 'remove_person_from_group'
 
   map.resource '/people/:user_id/@groups', :controller => 'groups',
                                            :get => 'get_groups_of_person',
                                            :post => 'add_member'
-
-  map.resource '/people/:user_id/@groups/:group_id', :controller => 'groups',
-                                                     :delete => 'remove_person_from_group'
-
   # Groups
 
   map.resource '/groups', :controller => 'groups',
@@ -192,7 +186,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource '/groups/@public/:group_id/@pending', :controller => 'groups',
                    :get => 'get_pending_members'
-
+  
   map.resource '/location/single_update', :controller => 'locations',
                                           :post => 'update'
 
