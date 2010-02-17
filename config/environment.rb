@@ -76,7 +76,8 @@ Rails::Initializer.run do |config|
   RESSI_TIMEOUT = 5
   RESSI_UPLOAD_HOUR = 3
   COS_MAIL_FROM_ADRESS = "tuki@sizl.org"
-  CAS_BASE_URL = "http://cos.alpha.sizl.org:8180/cas"
+  #CAS_BASE_URL = "http://cos.alpha.sizl.org:8180/cas"
+  CAS_BASE_URL = "https://zeus.cs.hut.fi/cs/shib/cos"
   LOG_TO_RESSI = false
 
   COREUI_APP_NAME = "coreui"
@@ -101,7 +102,8 @@ cas_logger.level = Logger::DEBUG
 
 CASClient::Frameworks::Rails::Filter.configure(
   :cas_base_url => CAS_BASE_URL,
-  :logger => cas_logger
+  :logger => cas_logger,
+  :validate_url  => "https://zeus.cs.hut.fi/cs/shib/9997/proxyValidate
   #:proxy_retrieval_url => "https://kassi:3444/cas_proxy_callback/retrieve_pgt",
   #:proxy_callback_url => "https://kassi:3444/cas_proxy_callback/receive_pgt"
 )
