@@ -103,7 +103,7 @@ cas_logger.level = Logger::DEBUG
 CASClient::Frameworks::Rails::Filter.configure(
   :cas_base_url => CAS_BASE_URL,
   :logger => cas_logger,
-  :validate_url  => "https://zeus.cs.hut.fi/cs/shib/9997/proxyValidate
+  :validate_url  => "https://zeus.cs.hut.fi/cs/shib/9997/proxyValidate"
   #:proxy_retrieval_url => "https://kassi:3444/cas_proxy_callback/retrieve_pgt",
   #:proxy_callback_url => "https://kassi:3444/cas_proxy_callback/receive_pgt"
 )
