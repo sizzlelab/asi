@@ -177,7 +177,8 @@ ActionController::Routing::Routes.draw do |map|
 
   # New version
   map.resource '/groups/@public/:group_id', :controller => 'groups',
-                                            :get => 'show'
+                                            :get => 'show',
+                                            :put => 'update'
 
   map.resource '/groups/@public/:group_id/@members', :controller => 'groups',
                                              :get => 'get_members'
