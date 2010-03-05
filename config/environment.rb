@@ -76,8 +76,8 @@ Rails::Initializer.run do |config|
   RESSI_TIMEOUT = 5
   RESSI_UPLOAD_HOUR = 3
   COS_MAIL_FROM_ADRESS = "tuki@sizl.org"
-  #CAS_BASE_URL = "http://cos.alpha.sizl.org:8180/cas"
-  CAS_BASE_URL = "https://zeus.cs.hut.fi/cs/shib/cos"
+  CAS_BASE_URL = "http://cos.alpha.sizl.org:8180/cas"
+  #CAS_BASE_URL = "https://zeus.cs.hut.fi/cs/shib/cos"
   CAS_VALIDATE_URL = "https://zeus.cs.hut.fi/cs/shib/9997/proxyValidate"
   LOG_TO_RESSI = false
 
