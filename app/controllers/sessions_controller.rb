@@ -43,8 +43,6 @@ json:: { "entry" =>
 =end
   def create
 
-    Person.create :username => "testi", :password => "testi", :email => "testi@testi.com"
-
     if REQUIRE_SSL_LOGIN
       unless request.ssl? || local_request?
         redirect_to :protocol => "https://" and return
