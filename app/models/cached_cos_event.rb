@@ -55,7 +55,8 @@ class CachedCosEvent < ActiveRecord::Base
                               :parameters =>     parameters,
                               :return_value =>   return_value,
                               :headers =>        headers,
-                              :semantic_event_id => semantic_event_id
+                              :semantic_event_id => semantic_event_id,
+                              :created_at =>     created_at
                             })
   end
 end
