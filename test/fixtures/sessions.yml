@@ -96,3 +96,18 @@ session11:
   client_id: 1
   ip_address: 127.0.0.1
   path: /
+
+session12:
+  id: 666999
+  person_id: 666
+  client_id: 1
+  ip_address: 127.0.0.1
+  path: /
+
+session13:
+  id: 777999
+  person_id: 7
+  client_id: 1
+  ip_address: 127.0.0.1
+  path: /
+

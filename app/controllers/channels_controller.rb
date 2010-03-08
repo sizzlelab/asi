@@ -12,6 +12,9 @@ return_code:: 200
 
 description:: Lists channels. Parameters are optional but only one kind of listing (either search or by person id or by group id) is possible at a time. Only channels that current user has access to are listed.
 
+param:: include_private - Include private channels in the results. Defaults to false.
+param:: type_filter - Restrict the results to one type of channel. This parameter overrides include_private. Parameter can be negated by prefixing with '!' e.g. type_filter=!friend returns all channels except those of type 'friend'.
+
 json:: { "entry" => [
   Factory.create_example_channel(:name => "Chanel 9"),
   Factory.create_example_channel(:name => "Chanel 10")
@@ -47,6 +50,17 @@ json:: { "entry" => [
       elsif params[:group_id]
         options.merge!(:joins => :group_subscriptions, :conditions => {'group_subscriptions.group_id' => params[:group_id]})
       end
+
+      if params[:type_filter]
+        if params[:type_filter].starts_with?('!')
+          options.merge!(:conditions => ["channel_type != '%s'" % params[:type_filter][1..-1]])
+        else
+          options.merge!(:conditions => {'channel_type' => params[:type_filter]})
+        end
+      elsif params[:include_private] != "true"
+        options.merge!(:conditions => ["channel_type != 'private'"])
+      end
+          
       @channels = Channel.all(options)
     end
 
@@ -68,6 +82,7 @@ param:: channel
   param:: description - Channel description.
   param:: channel_type - Currently public, group and friend channels are supported. Default is public.
   param:: group_id - A single group's id which is then subscribed to the channel if channel_type == 'group'. Current user must have admin rights to that group.
+  param:: person_id - A single person's id which is then subscribed to the channel if channel_type == 'private'.
 
 json:: { "entry" =>
    Factory.create_example_channel(:name => "Chanel 9")
@@ -77,12 +92,25 @@ json:: { "entry" =>
     @channel = Channel.new( params[:channel].except(:group_id) )
     @channel.owner = @user
     @channel.creator_app = @client
+
+    if params[:channel][:person_id] and @channel.channel_type != "private"
+        render_json :status => :bad_request, :messages => "Cannot pass a person_id parameter when creating a channel not of type 'private'." and return
+    end
+
     if @channel.channel_type == "group" && params[:channel][:group_id]
       group = Group.find_by_id(params[:channel][:group_id])
       if !group || !group.members.exists?(@user)
         render_json :status => :bad_request, :messages => "Group does not exist." and return
       end
       @channel.group_subscribers << group
+    end
+
+    if @channel.channel_type == "private" && params[:channel][:person_id]
+      person = Person.find_by_id(params[:channel][:person_id])
+      if !person
+        render_json :status => :bad_request, :messages => "Person does not exist." and return
+      end
+      @channel.user_subscribers << person
     end
 
     if !@channel.save
@@ -95,11 +123,20 @@ json:: { "entry" =>
 access:: Application
 return_code:: 201
 
-description:: Subscribes to this channel. Post without parameters subscribes current user to the channel. Channel of type group can have only a single group subscriber and no user subscribers. Public and friend channels can have only user subscribers. Only group admins can subscribe the group to a channel.
+description:: Subscribes to this channel. Post without parameters subscribes current user to the channel. Channel of type group can have only a single group subscriber and no user subscribers. Public and friend channels can have only user subscribers. Only group admins can subscribe the group to a channel. The owner (or any existing subscriber) of a private channel can subscribe other users to the channel by passing the person_id parameter.
 
 param:: group_id - The group to be subscribed
+param:: person_id - The user to subscribe to a private channel
 =end
   def subscribe
+    if params[:group_id] and @channel.channel_type != "group"
+        render_json :status => :bad_request, :messages => "Cannot subscribe groups to channels not of type 'group'." and return
+    end
+
+    if params[:person_id] and @channel.channel_type != "private"
+        render_json :status => :bad_request, :messages => "Cannot subscribe users to channels not of type 'private'." and return
+    end
+
     if @channel.channel_type == "group"
       if !params[:group_id]
         render_json :status => :bad_request, :messages => "Must pass explicit group id to subscribe." and return
@@ -113,10 +150,18 @@ param:: group_id - The group to be subscribed
       end
       @channel.group_subscribers << group
       render :status => :created and return
-    else
-      if params[:group_id]
-        render_json :status => :bad_request, :messages => "Cannot subscribe groups to channels not of type 'group'." and return
+    elsif @channel.channel_type == "private"
+      if !params[:person_id]
+        render_json :status => :bad_request, :messages => "Must pass explicit person id to subscribe." and return
       end
+      person = Person.find_by_id(params[:person_id])
+      if @channel.owner.guid == @user.guid or @channel.user_subscribers.exists?(@user)
+        @channel.user_subscribers << person rescue ActiveRecord::RecordInvalid
+        render :status => :created and return
+      else
+        render :status => :forbidden and return
+      end
+    else
       if @channel.can_read?(@user)
         @channel.user_subscribers << @user rescue ActiveRecord::RecordInvalid
         render :status => :created and return

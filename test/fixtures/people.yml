@@ -117,6 +117,23 @@ test:
   salt: ZB32fj38ueBG
   email: testi@tes.ti
 
+joe_public:
+  id: 7
+  guid: JOWPUBLICir3BOQab_ZvnhG
+  username: joepublic
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  salt: ZB32fj38ueBG
+  email: joe@public.com
+
+random_stranger:
+  id: 666
+  guid: DAMIENwrNir3BOQab_ZvnhG
+  username: stranger
+  encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+  salt: ZB32fj38ueBG
+  email: stranger@tes.ti
+
+
 not_yet_validated:
   id: 10
   guid: gaosfasfju29twf9e

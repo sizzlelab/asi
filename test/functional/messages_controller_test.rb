@@ -17,6 +17,16 @@ class MessagesControllerTest < ActionController::TestCase
 
     get :index, {:format => "json", :channel_id => channels(:ryhmakanava).guid }, {:cos_session_id => sessions(:session5).id}
     assert_response :forbidden , @response.body
+
+    # test subscriber can read messages in private channel
+    get :index, {:format => "json", :channel_id => channels(:anotherprivatechannel).guid, :page => 1, :per_page => 1 }, {:cos_session_id => sessions(:session13).id}
+    assert_response :ok, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal 1, json["entry"].length
+
+    # test non-subscriber cannot read messages in private channel
+    get :index, {:format => "json", :channel_id => channels(:anotherprivatechannel).guid, :page => 1, :per_page => 1 }, {:cos_session_id => sessions(:session12).id}
+    assert_response :forbidden, @response.body
   end
 
   def test_create_message
@@ -45,6 +55,18 @@ class MessagesControllerTest < ActionController::TestCase
     assert_response :ok, @response.body
     json = JSON.parse(@response.body)
     assert_equal 8, json["entry"].length
+
+    # test subscriber can create message in private channel
+    post :create, {:format => "json", :channel_id => channels(:anotherprivatechannel).guid, :message => {:title => "Private message 2", :body => "Private message 2 body" }}, {:cos_session_id => sessions(:session13).id}
+    assert_response :created, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal "Private message 2", json["entry"]["title"]
+    assert_equal "Private message 2 body", json["entry"]["body"]
+    assert_equal people(:joe_public).guid, json["entry"]["poster_id"]
+
+    # test non-subscriber cannot create message in private channel
+    post :create, {:format => "json", :channel_id => channels(:anotherprivatechannel).guid, :message => {:title => "Private message 3", :body => "Private message 3 body" }}, {:cos_session_id => sessions(:session12).id}
+    assert_response :forbidden, @response.body
   end
 
   def test_touch_channel_timestamp

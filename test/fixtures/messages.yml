@@ -63,3 +63,12 @@ testiviesti4:
   body: Tämä on testiviesti4
   poster_id: 1
   channel_id: 2
+
+testiviesti5:
+  id: 5
+  guid: privategjoaehigoaiwhrgoahrwg
+  title: Testi5
+  content_type: text/plain
+  body: Tämä on testiviesti5
+  poster_id: 1
+  channel_id: 6

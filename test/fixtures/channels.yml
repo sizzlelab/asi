@@ -60,6 +60,24 @@ testikanava:
   channel_type: group
   creator_app_id: 1
   
+privatechannel:
+  id: 5
+  guid: privatepsodjgpashgapoih
+  name: Private channel
+  description: Test private channel
+  owner_id: 1
+  channel_type: private
+  creator_app_id: 1
+
+anotherprivatechannel:
+  id: 6
+  guid: anotherprivatepsodjgpashgapoih
+  name: Another Private channel
+  description: Another Test private channel
+  owner_id: 1
+  channel_type: private
+  creator_app_id: 1
+
   
 <% 10.times do |num| %>
 <%= "auto_testikanava#{num}:
