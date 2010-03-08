@@ -32,7 +32,7 @@ class Channel < ActiveRecord::Base
   after_create :subscribe
   before_validation_on_create :set_default_type
 
-  validates_inclusion_of :channel_type, :in => %w( public friend group), :message => "must be public, friend or group."
+  validates_inclusion_of :channel_type, :in => %w( public friend group private), :message => "must be public, friend group or private."
   validates_presence_of :owner_id
   validates_presence_of :creator_app_id
   validates_presence_of :name
@@ -80,6 +80,9 @@ class Channel < ActiveRecord::Base
         group_subscribers.each do |subscription|
           return user.groups.include?(subscription)
         end
+      end
+      if channel_type == "private"
+        return user_subscribers.include?(user)
       end
     end
     return false

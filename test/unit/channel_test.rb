@@ -37,6 +37,12 @@ class ChannelTest < ActiveSupport::TestCase
                             :creator_app => clients(:one), :channel_type => "foo" )
     assert !channel2.valid?
   end
+
+  def test_private_channel_type
+    channel1 = Channel.new( :name => "testi P", :description => "testikanava PRIVATE" , :owner => people(:test), 
+                            :creator_app => clients(:one), :channel_type => "private")
+    assert channel1.valid?
+  end
   
   def test_delete_channel
     channel1 = Channel.new( :name => "testi", :description => "testikanava" , :owner => people(:test), 

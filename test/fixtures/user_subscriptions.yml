@@ -32,3 +32,11 @@ u_subscription3:
 u_subscription4:
   channel_id: 3
   person_id: 1
+  
+u_subscription5:
+  channel_id: 5
+  person_id: 1
+  
+u_subscription6:
+  channel_id: 6
+  person_id: 7
