@@ -80,7 +80,7 @@ description:: Creates a channel. Parameters are optional except name. Current us
 param:: channel
   param:: name - Channel name. Must be at least two characters long.
   param:: description - Channel description.
-  param:: channel_type - Currently public, group and friend channels are supported. Default is public.
+  param:: channel_type - Currently public, group, friend and private channels are supported. Default is public.
   param:: group_id - A single group's id which is then subscribed to the channel if channel_type == 'group'. Current user must have admin rights to that group.
   param:: person_id - A single person's id which is then subscribed to the channel if channel_type == 'private'.
 
@@ -106,7 +106,7 @@ json:: { "entry" =>
     end
 
     if @channel.channel_type == "private" && params[:channel][:person_id]
-      person = Person.find_by_id(params[:channel][:person_id])
+      person = Person.find_by_guid(params[:channel][:person_id])
       if !person
         render_json :status => :bad_request, :messages => "Person does not exist." and return
       end
