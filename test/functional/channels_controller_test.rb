@@ -96,7 +96,7 @@ class ChannelsControllerTest < ActionController::TestCase
     assert_response :bad_request, @response.body
 
     # test person_id with with create private channel
-    post :create, {:format => "json", :channel => {:name => "testiprivate", :description => "test private create with person", :channel_type => "private", :person_id => people(:joe_public).id} }, { :cos_session_id => sessions(:session1).id }
+    post :create, {:format => "json", :channel => {:name => "testiprivate", :description => "test private create with person", :channel_type => "private", :person_id => people(:joe_public).guid} }, { :cos_session_id => sessions(:session1).id }
     assert_response :created, @response.body
     json = JSON.parse(@response.body)
     assert_equal 2, assigns["channel"].user_subscribers.length
