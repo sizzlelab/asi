@@ -18,7 +18,7 @@ class ErrorMailer < ActionMailer::Base
   # @body["params"]  = params
   # @body["env"]   = env
 
-    recipients  'vsundber@gmail.com,sampo.toiva@gmail.com'
+    recipients  'sampo.toiva@gmail.com'
     from        'Error Mailer <ASIErrors@sizl.org>'
     subject     "[Error] exception on #{request.url}" #  #{env['REQUEST_URI']}"
     sent_on    sent_on
