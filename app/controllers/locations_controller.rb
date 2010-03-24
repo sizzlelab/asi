@@ -26,7 +26,7 @@ description:: Returns this person's location.
   end
 
 =begin rapidoc
-param:: location_security_token - The current user's security token, obtained via <tt><%= link_to_api("@location_security_token") %></tt>
+param:: location_security_token - (optional) The current user's security token, obtained via <tt><%= link_to_api("@location_security_token") %></tt> If this parameter is submited, the location can be updated without being logged in as this user.
 param::location
   param::latitude - Latitude coordinates in Decimal Degree format
   param::longitude - Longitude coordinate sin Decimal Degree format
