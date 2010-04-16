@@ -18,6 +18,12 @@ class MessagesControllerTest < ActionController::TestCase
     get :index, {:format => "json", :channel_id => channels(:ryhmakanava).guid }, {:cos_session_id => sessions(:session5).id}
     assert_response :forbidden , @response.body
 
+    # test channel property in response is a guid
+    get :index, {:format => "json", :channel_id => channels(:julkikanava).guid, :page => 1, :per_page => 1 }, {:cos_session_id => sessions(:session1).id}
+    assert_response :ok, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal channels(:julkikanava).guid, json["entry"][0]["channel"]
+
     # test subscriber can read messages in private channel
     get :index, {:format => "json", :channel_id => channels(:anotherprivatechannel).guid, :page => 1, :per_page => 1 }, {:cos_session_id => sessions(:session13).id}
     assert_response :ok, @response.body
@@ -55,6 +61,14 @@ class MessagesControllerTest < ActionController::TestCase
     assert_response :ok, @response.body
     json = JSON.parse(@response.body)
     assert_equal 8, json["entry"].length
+
+    # test create message with reference_to link
+    post :create, {:format => "json", :channel_id => channels(:julkikanava).guid, :message => {:title => "Reply to testiviesti1", :body => "Reply to testiviesti1 body", :reference_to => messages(:testiviesti1).guid }}
+    assert_response :created, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal "Reply to testiviesti1", json["entry"]["title"]
+    assert_equal "Reply to testiviesti1 body", json["entry"]["body"]
+    assert_equal messages(:testiviesti1).guid, json["entry"]["reference_to"]
 
     # test subscriber can create message in private channel
     post :create, {:format => "json", :channel_id => channels(:anotherprivatechannel).guid, :message => {:title => "Private message 2", :body => "Private message 2 body" }}, {:cos_session_id => sessions(:session13).id}
