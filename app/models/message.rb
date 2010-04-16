@@ -55,7 +55,7 @@ class Message < ActiveRecord::Base
     { :id => guid,
       :title => title,
       :body => body,
-      :channel => channel_id,
+      :channel => channel.guid,
       :reference_to => ref_message,
       :attachment => attachment,
       :content_type => content_type,
@@ -86,7 +86,7 @@ class Message < ActiveRecord::Base
   def associations_must_exist
     errors.add("Poster #{poster.id} does not exist.") if poster && !Person.exists?(poster.id)
     errors.add("Channel #{channel.id} does not exist") if channel && !Channel.exists?(channel.id)
-    errors.add("Message #{reference_to.id} does not exist") if reference_to && !Message.exists?(reference_to.id)
+    errors.add("Message #{reference_to} does not exist") if reference_to && !Message.exists?(reference_to)
   end
 
 end
