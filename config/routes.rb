@@ -242,6 +242,22 @@ ActionController::Routing::Routes.draw do |map|
   # End channels
 
 
+  # BinObjects
+  map.resource '/binobjects', :controller => 'bin_objects',
+                            :get => 'index',
+                            :post => 'create'
+
+  map.resource '/binobjects/:binobject_id/', :controller => 'bin_objects',
+                                         :get => 'show_data',
+                                         :put => 'edit',
+                                         :delete => 'delete'
+
+  map.resource '/binobjects/:binobject_id/@metadata/', :controller => 'bin_objects',
+                                                        :get => 'show'
+
+  # End BinObjects
+
+
 
   map.confirmation '/confirmation', :controller => 'confirmations', :action => 'confirm_email'
 
