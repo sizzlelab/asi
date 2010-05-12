@@ -239,6 +239,9 @@ ActionController::Routing::Routes.draw do |map|
                                                           :get => 'show',
                                                           :delete => 'delete'
 
+  map.resource '/channels/:channel_id/@messages/:msg_id/@replies', :controller => 'messages',
+                                                          :get => 'replies'
+
   # End channels
 
 

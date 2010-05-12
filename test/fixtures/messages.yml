@@ -43,7 +43,28 @@ testiviesti2:
   poster_id: 1
   channel_id: 1
   updated_at: 2009-07-23T14:09:22Z
-
+  
+replyto_testiviesti2_1:
+  id: 21
+  guid: r1jaspgjwpoEGHpowegh
+  title: Reply to Testi2 1
+  content_type: text/plain
+  body: Tämä on reply to testiviesti2 number 1
+  poster_id: 1
+  channel_id: 1
+  reference_to: 2
+  updated_at: 2010-05-12T14:09:22Z
+  
+replyto_testiviesti2_2:
+  id: 22
+  guid: r2jaspgjwpoEGHpowegh
+  title: Reply to Testi2 2
+  content_type: text/plain
+  body: Tämä on reply to testiviesti2 number 2
+  poster_id: 1
+  channel_id: 1
+  reference_to: 2
+  updated_at: 2010-05-12T14:09:22Z
 
 testiviesti3:
   id: 3
