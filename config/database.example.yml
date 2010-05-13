@@ -1,0 +1,29 @@
+# SQLite version 3.x
+#   gem install sqlite3-ruby (not necessary on OS X Leopard)
+development:
+  adapter: mysql
+  database: commonservices_development
+  encoding: utf8
+  username: cos
+  password: put_your_db_password_here
+  host: localhost
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  adapter: mysql
+  database: commonservices_test
+  encoding: utf8
+  username: cos
+  password: put_your_db_password_here
+  host: localhost
+
+production:
+  adapter: mysql
+  database: commonservices_production
+  encoding: utf8
+  username: cos
+  password: put_your_db_password_here
+  host: localhost
+  socket: /var/run/mysqld/mysqld.sock

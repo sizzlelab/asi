@@ -52,7 +52,7 @@ json:: { "entry" =>
     ui_mode = false
 
 
-    if params[:app_name] && params[:app_name] != COREUI_APP_NAME
+    if params[:app_name] && params[:app_name] != APP_CONFIG.coreui_app_name
       render_json :status => :bad_request, :messages => "You are using a deprecated piece of API. See the changelog (/doc/changelog) for details." and return
     end
 
@@ -69,12 +69,12 @@ json:: { "entry" =>
     # TODO: Move from @session.save SASSI-version to model and create ticket-field to session.
 
     # If the right Rails authenticity_token is provided, we'll trust it's CoreUI
-    if (params[:authenticity_token] && params[:authenticity_token] == form_authenticity_token && params[:app_name] == COREUI_APP_NAME)
+    if (params[:authenticity_token] && params[:authenticity_token] == form_authenticity_token && params[:app_name] == APP_CONFIG.coreui_app_name)
 
       @session = Session.new({ :username => params[:username],
                                :password => params[:password],
                                :client_name => params[:app_name],
-                               :client_password => COREUI_APP_PASSWORD })
+                               :client_password => APP_CONFIG.coreui_app_password })
       ui_mode = true
     else
       @session = Session.new({ :username => params[:username],
@@ -180,7 +180,7 @@ return_code:: 200
 description:: Ends the current session.
 =end
   def destroy
-    ui_mode = (@client && @client == Client.find_by_name(COREUI_APP_NAME))
+    ui_mode = (@client && @client == Client.find_by_name(APP_CONFIG.coreui_app_name))
 
     render_json :status => :not_found and return unless @application_session
 

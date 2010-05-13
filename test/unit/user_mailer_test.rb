@@ -15,7 +15,7 @@ class UserMailerTest < ActionMailer::TestCase
     assert !ActionMailer::Base.deliveries.empty?
     mail = ActionMailer::Base.deliveries.first
 
-    assert_equal([COS_MAIL_FROM_ADRESS], mail.from)
+    assert_equal([APP_CONFIG.asi_mail_from_address], mail.from)
     assert_equal([person.email], mail.to)
   #  assert_equal("Tervetuloa #{clients(:one).realname || clients(:one).name}-käyttäjäksi! | Welcome to #{clients(:one).realname || clients(:one).name}!", mail.subject)
   end
@@ -23,7 +23,7 @@ class UserMailerTest < ActionMailer::TestCase
   def test_registration_confirmation
     person = people(:valid_person)
     mail = UserMailer.create_registration_confirmation(person, "random_key")
-    assert_equal(COS_MAIL_FROM_ADRESS, mail.from.first)
+    assert_equal(APP_CONFIG.asi_mail_from_address, mail.from.first)
     assert_equal( "OtaSizzle registration confirmation", mail.subject)
     assert_equal(person.email, mail.to.first)
     
@@ -43,7 +43,7 @@ class UserMailerTest < ActionMailer::TestCase
 
     mail = ActionMailer::Base.deliveries.first
 
-    assert_equal([COS_MAIL_FROM_ADRESS], mail.from)
+    assert_equal([APP_CONFIG.asi_mail_from_address], mail.from)
     assert_equal([person.email], mail.to)
     assert_equal("OtaSizzle password recovery", mail.subject)
 

@@ -1,0 +1,24 @@
+development: &non_production_settings
+  coreui_app_name: "coreui"
+  coreui_app_password: secret
+  
+  asi_mail_from_address: "asi@example.com"
+  error_mailer_recipients: 'admins@example.com'
+  error_mailer_from_address: 'Error Mailer <ASIErrors@example.com>'
+  
+  crypto_helper_key: "insert_random_generated_key_here4234+naosetuaoeu=23=324//a3245bHEHUoeuh.rcdyfR+ahbe"
+  
+  
+test:
+  <<: *non_production_settings
+
+
+production:
+  coreui_app_name: "coreui"
+  coreui_app_password: secret
+  
+  asi_mail_from_address: "asi@example.com"
+  error_mailer_recipients: 'admins@example.com'
+  error_mailer_from_address: 'Error Mailer <ASIErrors@example.com>'
+  
+  crypto_helper_key: "insert_random_generated_key_here4234+naosetuaoeu=23=324//a3245bHEHUoeuh.rcdyfR+ahbe"

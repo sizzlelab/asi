@@ -50,9 +50,16 @@ Rails::Initializer.run do |config|
   # If you change this key, all old sessions will become invalid!
   # Make sure the secret is at least 30 characters and all random,
   # no regular words or you'll be exposed to dictionary attacks.
+  secret_file = File.join(RAILS_ROOT, "config/session_secret")
+  if File.exist?(secret_file)
+    secret = File.read(secret_file)
+  else
+    secret = ActiveSupport::SecureRandom.hex(64)
+    File.open(secret_file, 'w') { |f| f.write(secret) }
+  end
   config.action_controller.session = {
     :session_key => '_trunk_session',
-    :secret      => 'abc49e4397209f6f2baf2d2bf5400882e2433fb1fd9495a53b95451f580a117a93f9fdd73ff40fc774b2beaec6a460303a81567672e29d0e50da4324866fba57'
+    :secret      => secret
   }
 
   # Use the database for sessions instead of the cookie-based default,
@@ -75,14 +82,12 @@ Rails::Initializer.run do |config|
   RESSI_URL = "http://localhost:9000"
   RESSI_TIMEOUT = 5
   RESSI_UPLOAD_HOUR = 3
-  COS_MAIL_FROM_ADRESS = "tuki@sizl.org"
+  
   CAS_BASE_URL = "http://cos.alpha.sizl.org:8180/cas"
   #CAS_BASE_URL = "https://zeus.cs.hut.fi/cs/shib/cos"
   CAS_VALIDATE_URL = "https://zeus.cs.hut.fi/cs/shib/9997/proxyValidate"
+  
   LOG_TO_RESSI = false
-
-  COREUI_APP_NAME = "coreui"
-  COREUI_APP_PASSWORD = "8IJHk!-()a"
 
   #If following is true, created users must validate their emails before they can log in.
   VALIDATE_EMAILS = false
