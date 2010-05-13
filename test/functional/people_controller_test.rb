@@ -71,7 +71,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert !ActionMailer::Base.deliveries.empty?
     mail = ActionMailer::Base.deliveries.first
 
-    assert_equal([COS_MAIL_FROM_ADRESS], mail.from)
+    assert_equal([APP_CONFIG.asi_mail_from_address], mail.from)
     assert_equal([user.email], mail.to)
     #assert_equal("Tervetuloa #{clients(:one).realname || clients(:one).name}-käyttäjäksi! | Welcome to #{clients(:one).realname || clients(:one).name}!", mail.subject)
 

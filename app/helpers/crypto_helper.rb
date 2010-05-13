@@ -5,8 +5,8 @@ require 'openssl'
 require 'digest/sha2'
 
 module CryptoHelper
-    KEY = "asoenthuSTNOHUSNET2344==+++324234+naosetuaoeu=23=324//a3245bHEHUoeuh.rcdyfR+.p1ahbe"
-
+    KEY = APP_CONFIG.crypto_helper_key
+    
     def self.encrypt(plain_text)
       crypto = start(:encrypt)
 

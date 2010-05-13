@@ -5,7 +5,7 @@ development:
   database: commonservices_development
   encoding: utf8
   username: cos
-  password: a,.srdg330
+  password: put_your_db_password_here
   host: localhost
 
 # Warning: The database defined as "test" will be erased and
@@ -16,7 +16,7 @@ test:
   database: commonservices_test
   encoding: utf8
   username: cos
-  password: a,.srdg330
+  password: put_your_db_password_here
   host: localhost
 
 production:
@@ -24,6 +24,6 @@ production:
   database: commonservices_production
   encoding: utf8
   username: cos
-  password: a,.srdg330
+  password: put_your_db_password_here
   host: localhost
   socket: /var/run/mysqld/mysqld.sock
