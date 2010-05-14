@@ -10,6 +10,16 @@ RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
+#Generating secret key if it does not exist
+secret_file = File.join(RAILS_ROOT, "config/session_secret")
+if File.exist?(secret_file)
+  secret = File.read(secret_file)
+else
+  secret = ActiveSupport::SecureRandom.hex(64)
+  File.open(secret_file, 'w') { |f| f.write(secret) }
+end
+
+
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
@@ -51,6 +61,16 @@ Rails::Initializer.run do |config|
   # (create the session table with "rake db:sessions:create")
   # config.action_controller.session_store = :active_record_store
 
+  # Your secret key for verifying cookie session data integrity.
+  # If you change this key, all old sessions will become invalid!
+  # Make sure the secret is at least 30 characters and all random,
+  # no regular words or you'll be exposed to dictionary attacks.
+  config.action_controller.session = {
+    :session_key => '_trunk_session',
+    :secret      => secret
+  }
+  
+  
   # Use SQL instead of Active Record's schema dumper when creating the test database.
   # This is necessary if your schema can't be completely dumped by the schema dumper,
   # like if you have constraints or database-specific column types
@@ -97,20 +117,3 @@ CASClient::Frameworks::Rails::Filter.configure(
   #:proxy_retrieval_url => "https://kassi:3444/cas_proxy_callback/retrieve_pgt",
   #:proxy_callback_url => "https://kassi:3444/cas_proxy_callback/receive_pgt"
 )
-
-# Your secret key for verifying cookie session data integrity.
-# If you change this key, all old sessions will become invalid!
-# Make sure the secret is at least 30 characters and all random,
-# no regular words or you'll be exposed to dictionary attacks.
-secret_file = File.join(RAILS_ROOT, "config/session_secret")
-if File.exist?(secret_file)
-  secret = File.read(secret_file)
-else
-  secret = ActiveSupport::SecureRandom.hex(64)
-  File.open(secret_file, 'w') { |f| f.write(secret) }
-end
-config.action_controller.session = {
-  :session_key => '_trunk_session',
-  :secret      => secret
-}
-
