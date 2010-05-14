@@ -1,7 +1,7 @@
 set :application, "cos"
 set :user, "cos"
 
-set :repository, "svn+ssh://#{user}@alpha.sizl.org/svn/common-services/trunk"
+set :repository, "http://svn.github.com/sizzlelab/asi.git"
 
 if ENV['DEPLOY_ENV']
   set :server_name, ENV['DEPLOY_ENV']
@@ -55,8 +55,11 @@ namespace :deploy do
     run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
     rapidoc.generate
     run "cd #{current_path} && cp config/#{server_name}.rb config/initializers"
+    run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+    run "ln -nfs #{shared_path}/config/session_secret #{release_path}/config/session_secret"
+    run "ln -nfs #{shared_path}/config/config.yml #{release_path}/config/config.yml"
   end
-
+  
   task :before_start do
     mongrel.configure
     symlink_sphinx_indexes
