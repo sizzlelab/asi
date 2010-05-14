@@ -98,10 +98,11 @@ class MessagesControllerTest < ActionController::TestCase
   end
 
   def test_show_message
-    get :show, {:format => "json", :channel_id => channels(:julkikanava).guid, :msg_id => messages(:testiviesti1).guid }, {:cos_session_id => sessions(:session1).id}
+    get :show, {:format => "json", :channel_id => channels(:julkikanava).guid, :msg_id => messages(:testiviesti2).guid }, {:cos_session_id => sessions(:session1).id}
     assert_response :ok, @response.body
     json = JSON.parse(@response.body)
-    assert_equal messages(:testiviesti1).body, json["entry"]["body"]
+    assert_equal messages(:testiviesti2).body, json["entry"]["body"]
+    assert_equal 2, json["entry"]["replies"]
   end
 
   def test_show_replies_to_message

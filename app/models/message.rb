@@ -52,11 +52,13 @@ class Message < ActiveRecord::Base
     if self.reference_to
       ref_message = Message.find_by_id(reference_to).andand.guid
     end
+    replies = Message.count(:conditions => { :reference_to => id})
     { :id => guid,
       :title => title,
       :body => body,
       :channel => channel.guid,
       :reference_to => ref_message,
+      :replies => replies,
       :attachment => attachment,
       :content_type => content_type,
       :poster_id => poster.guid,
