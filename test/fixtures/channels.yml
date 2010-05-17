@@ -78,7 +78,16 @@ anotherprivatechannel:
   channel_type: private
   creator_app_id: 1
 
-  
+hiddenchannel:
+  id: 7
+  guid: hiddensdoghasdoghaogh
+  name: Hidden channel
+  description: Test hidden (public) channel
+  owner_id: 1
+  channel_type: public
+  creator_app_id: 1
+  hidden: true
+
 <% 10.times do |num| %>
 <%= "auto_testikanava#{num}:
   id: #{num+10}

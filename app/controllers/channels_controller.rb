@@ -53,15 +53,15 @@ json:: { "entry" => [
 
       if params[:type_filter]
         if params[:type_filter].starts_with?('!')
-          options.merge!(:conditions => ["channel_type != '%s'" % params[:type_filter][1..-1]])
+          options.merge!(:conditions => ["channel_type != ?", params[:type_filter][1..-1]])
         else
-          options.merge!(:conditions => {'channel_type' => params[:type_filter]})
+          options.merge!(:conditions => ["channel_type = ?", params[:type_filter]])
         end
       elsif params[:include_private] != "true"
         options.merge!(:conditions => ["channel_type != 'private'"])
       end
-          
-      @channels = Channel.all(options)
+
+      @channels = Channel.not_hidden.all(options)
     end
 
     @channels.filter_paginate!(params[:per_page], params[:page]) { |c| c.can_read?(@user) }
@@ -81,6 +81,7 @@ param:: channel
   param:: name - Channel name. Must be at least two characters long.
   param:: description - Channel description.
   param:: channel_type - Currently public, group, friend and private channels are supported. Default is public.
+  param:: hidden - Whether the channel shows up in listings and searches (irrespective of the access controls determined by channel_type). Defaults to false.
   param:: group_id - A single group's id which is then subscribed to the channel if channel_type == 'group'. Current user must have admin rights to that group.
   param:: person_id - A single person's id which is then subscribed to the channel if channel_type == 'private'.
 

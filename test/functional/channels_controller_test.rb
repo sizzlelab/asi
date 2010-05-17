@@ -62,6 +62,24 @@ class ChannelsControllerTest < ActionController::TestCase
     json['entry'].each do |channel|
       assert_not_equal 'public', channel['channel_type']
     end
+
+    # test hidden flag
+    get :index, { :search => "channel", :format => "json"}, { :cos_session_id => sessions(:session1).id }
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert_not_equal 0, json['entry'].length
+    json['entry'].each do |channel|
+      assert_equal false, channel['hidden']
+    end
+
+    get :index, { :format => "json" }, { :cos_session_id => sessions(:session1).id}
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    assert_not_equal 0, json['entry'].length
+    json['entry'].each do |channel|
+      assert_equal false, channel['hidden']
+    end
+
   end
 
   def test_create_channel
@@ -86,6 +104,13 @@ class ChannelsControllerTest < ActionController::TestCase
     post :create, {:format => "json", :channel => {:channel_type => "group", :description => "gsdgsGD", :name => "testiryhmä", :group_id => groups(:open)}}, { :cos_session_id => sessions(:session1).id }
     assert_response :created, @response.body
     assert_equal 1, assigns["channel"].group_subscribers.size
+
+    # test create hidden (public) channel
+    post :create, {:format => "json", :channel => {:name => "anotherhiddenchannel", :description => "Another hidden (public) channel", :channel_type => "public", :hidden => true} }, { :cos_session_id => sessions(:session1).id }
+    assert_response :created, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal "anotherhiddenchannel", json["entry"]["name"]
+    assert_equal true, json["entry"]["hidden"]
 
     # test fail person_id with create non-private channel
     post :create, {:format => "json", :channel => {:channel_type => "public", :description => "", :name => "footestcreate", :person_id => people(:joe_public).id}}, { :cos_session_id => sessions(:session1).id }
@@ -123,6 +148,11 @@ class ChannelsControllerTest < ActionController::TestCase
 
     get :show, {:format => "json", :channel_id => channels(:ryhmakanava).guid }, { :cos_session_id => sessions(:session5).id }
     assert_response :forbidden, @response.body
+
+    get :show, {:format => "json", :channel_id => channels(:hiddenchannel).guid }, { :cos_session_id => sessions(:session1).id }
+    assert_response :ok, @response.body
+    json = JSON.parse(@response.body)
+    assert_equal channels(:hiddenchannel).name, json["entry"]["name"]
   end
 
   def test_edit_channel

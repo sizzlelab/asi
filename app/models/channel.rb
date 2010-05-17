@@ -7,6 +7,7 @@
 #  description    :string(255)
 #  owner_id       :integer(4)
 #  channel_type   :string(255)
+#  hidden         :boolean(1)      default(FALSE), not null
 #  created_at     :datetime
 #  updated_at     :datetime
 #  creator_app_id :string(255)
@@ -26,8 +27,10 @@ class Channel < ActiveRecord::Base
   has_many :user_subscribers, :through => :user_subscriptions, :source => :person
   has_many :group_subscribers, :through => :group_subscriptions, :source => :group
 
-  attr_accessible :name, :description, :channel_type, :owner, :creator_app
-  attr_readonly :channel_type, :creator_app
+  attr_accessible :name, :description, :channel_type, :hidden, :owner, :creator_app
+  attr_readonly :channel_type, :creator_app, :hidden
+
+  named_scope :not_hidden, :conditions => { :hidden => 0 }
 
   after_create :subscribe
   before_validation_on_create :set_default_type
@@ -50,6 +53,8 @@ class Channel < ActiveRecord::Base
     has :guid
     has :created_at
     has :updated_at
+
+    where "hidden = 0"
 
     set_property :field_weights => { 'name' => 10,
                                      'description' => 5,
@@ -98,6 +103,7 @@ class Channel < ActiveRecord::Base
       :created_at => created_at,
       :updated_at => updated_at,
       :channel_type => channel_type,
+      :hidden => hidden,
       :message_count => self.messages.size
     }
 

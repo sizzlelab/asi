@@ -7,6 +7,7 @@
 #  description    :string(255)
 #  owner_id       :integer(4)
 #  channel_type   :string(255)
+#  hidden         :boolean(1)      default(FALSE), not null
 #  created_at     :datetime
 #  updated_at     :datetime
 #  creator_app_id :string(255)
@@ -41,6 +42,12 @@ class ChannelTest < ActiveSupport::TestCase
   def test_private_channel_type
     channel1 = Channel.new( :name => "testi P", :description => "testikanava PRIVATE" , :owner => people(:test), 
                             :creator_app => clients(:one), :channel_type => "private")
+    assert channel1.valid?
+  end
+  
+  def test_hidden_channel
+    channel1 = Channel.new( :name => "testi H", :description => "testikanava HIDDEN" , :owner => people(:test), 
+                            :creator_app => clients(:one), :hidden => true)
     assert channel1.valid?
   end
   
