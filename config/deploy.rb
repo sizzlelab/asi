@@ -51,13 +51,13 @@ namespace :deploy do
   before "deploy:migrate", "db:backup"
 
   task :after_symlink do
+    run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+    run "ln -nfs #{shared_path}/config/session_secret #{release_path}/config/session_secret"
+    run "ln -nfs #{shared_path}/config/config.yml #{release_path}/config/config.yml"
     run "mv #{current_path}/REVISION #{current_path}/app/views/layouts/_revision.html.erb"
     run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
     rapidoc.generate
     run "cd #{current_path} && cp config/#{server_name}.rb config/initializers"
-    run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-    run "ln -nfs #{shared_path}/config/session_secret #{release_path}/config/session_secret"
-    run "ln -nfs #{shared_path}/config/config.yml #{release_path}/config/config.yml"
   end
   
   task :before_start do
