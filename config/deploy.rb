@@ -61,8 +61,6 @@ namespace :deploy do
   end
 
   task :after_symlink do
-    deploy.symlink_nonscm_configs
-
     run "mv #{current_path}/REVISION #{current_path}/app/views/layouts/_revision.html.erb"
     run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
     rapidoc.generate
