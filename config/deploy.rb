@@ -48,12 +48,21 @@ namespace :deploy do
     thinking_sphinx.stop rescue nil
   end
 
+  task :after_update_code do
+    deploy.symlink_nonscm_configs
+  end
+
   before "deploy:migrate", "db:backup"
 
-  task :after_symlink do
+  task :symlink_nonscm_configs do
     run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
     run "ln -nfs #{shared_path}/config/session_secret #{release_path}/config/session_secret"
     run "ln -nfs #{shared_path}/config/config.yml #{release_path}/config/config.yml"
+  end
+
+  task :after_symlink do
+    deploy.symlink_nonscm_configs
+
     run "mv #{current_path}/REVISION #{current_path}/app/views/layouts/_revision.html.erb"
     run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
     rapidoc.generate
