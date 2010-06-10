@@ -63,7 +63,6 @@ namespace :deploy do
   task :after_symlink do
     run "mv #{current_path}/REVISION #{current_path}/app/views/layouts/_revision.html.erb"
     run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
-    rapidoc.generate
     run "cd #{current_path} && cp config/#{server_name}.rb config/initializers"
   end
   
@@ -76,6 +75,11 @@ namespace :deploy do
   end
 
   before "deploy:restart", "deploy:sphinx"
+  before "deploy:sphinx", "deploy:rapidocs"
+
+  task :rapidocs do
+    rapidoc.generate
+  end
 
   task :sphinx do
     symlink_sphinx_indexes
