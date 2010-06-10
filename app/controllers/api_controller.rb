@@ -14,7 +14,12 @@ class ApiController < ApplicationController
   private
 
   def api_changed?
-    last_modified("app/controllers") > last_modified("app/views/api")
+    a = last_modified("app/controllers")
+    b = last_modified("app/views/api")
+    if a && b
+      return a > b
+    end
+    return false
   end
 
   def last_modified(dir)
