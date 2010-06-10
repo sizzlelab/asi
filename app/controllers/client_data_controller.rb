@@ -8,9 +8,6 @@ class ClientDataController < ApplicationController
 =begin rapidoc
 access:: Self
 return_code:: 200
-json:: { "entry":
-  { "foo": 1,
-    "bar": "baz" }  }
 description:: Gets every key-value pair that has been saved for this user by this application.
 =end
   def show
@@ -20,9 +17,6 @@ description:: Gets every key-value pair that has been saved for this user by thi
 =begin rapidoc
 access:: Self
 return_code:: 200
-json:: { "entry":
-  { "foo": 1,
-    "bar": "baz" }  }
 param:: data
   param:: any_key - any value
   param:: any_other_key - any other value
