@@ -5,7 +5,7 @@ class ApiController < ApplicationController
   skip_before_filter :log
 
   def api
-    if api_changed? && ENV['RAILS_ENV'] == "development"
+    if  ENV['RAILS_ENV'] == "development" && api_changed?
       system("script/rapidoc/generate")
     end
     render :action => request.path[1..-1].gsub(/\/$/, "").gsub("doc/", ""), :layout => "doc"
