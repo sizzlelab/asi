@@ -2,7 +2,7 @@
 
 # Uncomment below to force Rails into production mode when
 # you don't control web/app server and can't set it the proper way
-ENV['RAILS_ENV'] ||= 'production'
+# ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
@@ -69,8 +69,8 @@ Rails::Initializer.run do |config|
     :session_key => '_trunk_session',
     :secret      => secret
   }
-  
-  
+
+
   # Use SQL instead of Active Record's schema dumper when creating the test database.
   # This is necessary if your schema can't be completely dumped by the schema dumper,
   # like if you have constraints or database-specific column types
@@ -86,11 +86,11 @@ Rails::Initializer.run do |config|
   RESSI_URL = "http://localhost:9000"
   RESSI_TIMEOUT = 5
   RESSI_UPLOAD_HOUR = 3
-  
+
   CAS_BASE_URL = "http://cos.alpha.sizl.org:8180/cas"
   #CAS_BASE_URL = "https://zeus.cs.hut.fi/cs/shib/cos"
   CAS_VALIDATE_URL = "https://zeus.cs.hut.fi/cs/shib/9997/proxyValidate"
-  
+
   LOG_TO_RESSI = false
 
   #If following is true, created users must validate their emails before they can log in.
