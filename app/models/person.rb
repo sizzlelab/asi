@@ -66,6 +66,8 @@ class Person < ActiveRecord::Base
 
   has_many :rules
   
+  has_many :authentication_service_links, :dependent => :destroy
+  
   define_index do
     indexes username
     indexes name(:given_name), :as => :given_name
@@ -171,6 +173,13 @@ class Person < ActiveRecord::Base
       return model
     end
   end
+
+  def self.find_by_username_and_auth_link(param)
+    model = self.find_by_username(param) || AuthenticationServiceLink.find_by_link(param).andand.person
+
+    return model
+  end
+
 
   def updated_at
     [super, name.andand.updated_at, address.andand.updated_at].compact.sort.last

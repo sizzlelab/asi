@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SessionsController < ApplicationController
 
   before_filter :ensure_client_logout, :only => :create
@@ -23,6 +24,7 @@ json:: { "entry" =>
 =begin rapidoc
 access:: Free
 return_code:: 201 - Successfully logged in.
+return_code:: 303 - In case of CAS login further actions are required. See below.
 return_code:: 401 - Invalid login details.
 return_code:: 409 - A session already exists.
 param:: session
@@ -34,7 +36,11 @@ param:: session
 
 description:: Starts a new session. Sessions can be associated either
 with an application only or with an application and a user. To start a session without logging a user in, provide no <tt>username</tt> or <tt>password</tt>.</p>
-<p>Using HTTPS for logging in is recommended.
+<p>Using HTTPS for logging in is recommended.</p>
+<p>When using CAS for logging in, expect possible response with 303 - See other. This happens when user has not logged in before using CAS and the credentials cannot be
+linked with existing ASI account. Response will contain a JSON with fields {"redirect" => {"message" => "Redirect to given uri.", "uri" => "http://cos.sizl.org/coreui/profile?guid=<guid>" }, where redirect will contain an URI with a guid. Extract redirect address from JSON's uri field and add to that uri
+two extra parameters: redirect and fallback. Redirect will be used in case of succesfull ASI account creation and linking with CAS credentials and fallback in case something goes wrong. New login with CAS is required
+after the operation.</p> 
 
 json:: { "entry" =>
   { "user_id" => "tmoCBomrl993MCurh",
@@ -113,9 +119,19 @@ json:: { "entry" =>
           st_resp = cas_client.validate_proxy_ticket(st)
 
           if st_resp.is_valid?
-            @session.person_match = Person.find_by_username(params[:username])
-            @session.person_id = @session.person_match.id
-            @session.save
+            @session.person_match = Person.find_by_username_and_auth_link(params[:username])
+            
+            if(!@session.person_match)
+              uuid = UUID.timestamp_create.to_s
+              Rails.cache.write(uuid, params[:username], :expires_in => 5.minutes )
+              @session.destroy
+              render_json :status => 303, :entry => { :message => "Redirect to the given uri using GET. Check documentation for further info",  
+                                                      :uri => SERVER_DOMAIN + "/coreui/profile/question?guid=" + uuid } and return
+            else
+              @session.person_id = @session.person_match.id
+              @session.save
+            end
+          
           else
             @session.destroy
           end
