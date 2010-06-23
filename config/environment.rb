@@ -89,7 +89,7 @@ Rails::Initializer.run do |config|
 
   #CAS_BASE_URL = "http://cos.alpha.sizl.org:8180/cas"
   CAS_BASE_URL = "https://zeus.cs.hut.fi/cs/shib/cos"
-  CAS_VALIDATE_URL = "https://zeus.cs.hut.fi/cs/shib/9997/proxyValidate"
+  CAS_VALIDATE_URL = "https://zeus.cs.hut.fi/cs/shib/8888/proxyValidate"
 
   LOG_TO_RESSI = false
 
