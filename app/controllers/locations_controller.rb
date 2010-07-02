@@ -59,6 +59,10 @@ description:: Sets the location of the user. If only some of the fields are upda
     render_json :status => :ok
   end
 
+=begin rapidoc
+description:: clears the location of a user.
+=end
+
   def destroy
     
     user = Person.find_by_guid(params['user_id'])
