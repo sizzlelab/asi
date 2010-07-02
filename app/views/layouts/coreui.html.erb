@@ -1,8 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" /> 
-
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <title>OtaSizzle Account Management</title>
     <%= stylesheet_link_tag("cos") %>
     <%= javascript_include_tag :defaults %>
@@ -14,7 +13,6 @@
     <div id="navi">
       [ <%= link_to_unless_current "Home", coreui_root_path %> ]
       [ <%= link_to_unless_current "Profile", edit_coreui_profile_path(:id => @person.id) %> ]
-      [ <%= link_to_unless_current "Privacy", edit_coreui_privacy_path(:id => @person.id) %> ]
       [ <%= link_to_unless_current "Logout", "/session", :method=>"delete" %> ]
     </div>
     <% else %>

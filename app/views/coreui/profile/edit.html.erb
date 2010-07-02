@@ -52,7 +52,7 @@
     <% end %>
     <br/>
     <br/>
-    <%= file_field_tag "file" %>
+    <%= file_field_tag "file", :size => 30, :id => "avatar_file" %>
     </div>
   </div>
   
@@ -190,8 +190,8 @@
         <small>(<%= distance_of_time_in_words_to_now(l.updated_at) %> ago)</small>
         <%= button_to_remote "Clear", 
           :update => "location_data",
-          :url => { :controller => "/locations", :format => "json", :action => "destroy", :user_id => @person.id },
-          :method => :delete
+          :url => { :controller => "/people/@me/@location"  },
+         :method => :delete
         %>
       </div>
     </div>

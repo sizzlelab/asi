@@ -3,13 +3,13 @@
   <h2>Welcome<%= @person.name_or_username.strip.empty? ? "!" : ", " + @person.name_or_username %></h2>
 
 
-  <p>This page allows you to edit your OtaSizzle profile and privacy settings.</p>
+  <p>This page allows you to edit your OtaSizzle profile </p>
 
   <div class="profile_box" id="<%= @person.id %>">
     <div class="info">
       <p class="links">
         <%= link_to "Edit your profile", edit_coreui_profile_path(:id => @person.id) %><br />
-        <%= link_to "Edit your privacy settings", edit_coreui_privacy_path(:id => @person.id) %>
+        
       </p>
     </div>
     <div class="box_footer"></div>

@@ -128,7 +128,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resource '/people/:user_id/@location', :controller => 'locations',
                                              :get => 'get',
                                              :put => 'update',
-                                             :post => 'update'
+                                             :post => 'update',
+					     :delete => 'destroy'	
 
   map.resource '/people/:user_id/@location/@location_security_token', :controller => 'locations',
                                                                      :get => 'fetch_location_security_token'
