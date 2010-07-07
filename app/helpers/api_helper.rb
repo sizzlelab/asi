@@ -5,6 +5,7 @@ module ApiHelper
              "201" => "Created",
              "202" => "Accepted",
              "203" => "Non-authoritative Information",
+             "303" => "See Other",
              "400" => "Bad Request",
              "401" => "Unauthorized",
              "403" => "Forbidden",
