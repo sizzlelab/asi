@@ -137,10 +137,10 @@ description:: List replies to a given channel message. By default the messages a
 
 =begin rapidoc
 return_code:: 201 - Message deleted.
-return_code:: 403 - User has no access to channel.
+return_code:: 403 - User has no access to message.
 return_code:: 404 - Message not found.
 
-description:: Delete message.
+description:: Delete message. Deleting user has to be either message poster or channel owner.
 =end
   def delete
     if ensure_same_as_logged_person(@message.poster.guid)
