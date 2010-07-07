@@ -26,7 +26,6 @@ set :deploy_to, "/var/datat/cos/common-services"
 set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
 set :rails_env, :production
 
-
 set :path, "$PATH:/var/lib/gems/1.8/bin"
 set :mongrel_conf, "#{shared_path}/config/mongrel_cluster.yml"
 
@@ -74,10 +73,14 @@ namespace :deploy do
     thinking_sphinx.start
   end
 
+  after %w(deploy deploy:migrations deploy:cold), "deploy:finalize"
+
   before "deploy:restart", "deploy:sphinx"
   before "deploy:sphinx", "deploy:rapidocs"
 
   task :rapidocs do
+    #required for the Factory in rapidoc generation to work
+    run "cd #{current_path} && rake db:migrate RAILS_ENV=development"
     rapidoc.generate
   end
 
@@ -86,8 +89,6 @@ namespace :deploy do
     thinking_sphinx.configure
     thinking_sphinx.start
   end
-
-  after %w(deploy deploy:migrations deploy:cold), "deploy:finalize"
 
   task :finalize do
     whenever.write_crontab
