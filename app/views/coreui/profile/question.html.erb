@@ -1,0 +1,14 @@
+<p>Have you logged in to 
+<%= link_to "Kassi", "http://kassi.sizl.org"%>,
+<%= link_to "Ossi", "http://ossi.sizl.org"%> or other OtaSizzle services before?</p>
+
+<div id="buttons">
+   <% form_tag '/coreui/profile/link' do -%>
+     <%= submit_tag "Yes" %>
+     <%= submit_tag "No" %>
+     <%= hidden_field_tag "guid", @guid %>
+     <%= hidden_field_tag "redirect_uri", @redirect_uri %>
+     <%= hidden_field_tag "fallback_uri", @fallback_uri %>
+   <% end -%>
+
+</div>

@@ -12,6 +12,39 @@ class Coreui::ProfileController < ApplicationController
   end
 
   def create
+    if params[:person][:password] != params[:person][:password2]
+      flash[:error] = "Passwords didn't match."
+      render :action => "link" and return
+    end
+    
+    person = Person.new(:username => params[:person][:username], :password => params[:person][:password], :email => params[:person][:email])
+    if !person.save
+      flash[:error] = @person.errors.full_messages
+      render :action => "link" and return
+    end
+
+    cas_credentials = Rails.cache.read(params[:guid]) if params[:guid]
+    if cas_credentials
+      person.authentication_service_links.create(:link => cas_credentials)
+      redirect_to params[:redirect_uri]
+    end
+  end
+
+  def link
+    if params[:commit] == "No"
+      @person = Person.new
+    end
+    @guid = params[:guid]
+    @redirect_uri = params[:redirect_uri]
+    @fallbac_uri = params[:fallback]
+  end
+
+  def question
+    @guid = params[:guid]
+    @redirect_uri = params[:redirect]
+    @fallback_uri = params[:fallback]
+
+    redirect_to params[:fallback] if !@guid
   end
 
   def show

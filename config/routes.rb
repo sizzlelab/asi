@@ -39,7 +39,7 @@ ActionController::Routing::Routes.draw do |map|
     coreui.root :controller => 'profile',
                 :action => 'index',
                 :conditions => { :method => :get }
-    coreui.resources :profile
+    coreui.resources :profile, :collection => { :question => [:get], :create => [:post], :link => [:post]}
     coreui.resources :privacy
   end
 

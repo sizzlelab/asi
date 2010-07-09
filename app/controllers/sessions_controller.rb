@@ -123,7 +123,7 @@ json:: { "entry" =>
             
             if(!@session.person_match)
               uuid = UUID.timestamp_create.to_s
-              Rails.cache.write(uuid, params[:username], :expires_in => 5.minutes )
+              Rails.cache.write(uuid, params[:username], :expires_in => 15.minutes )
               @session.destroy
               render_json :status => 303, :entry => { :message => "Redirect to the given uri using GET. Check documentation for further info",  
                                                       :uri => SERVER_DOMAIN + "/coreui/profile/question?guid=" + uuid } and return
