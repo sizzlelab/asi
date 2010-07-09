@@ -19,7 +19,7 @@ class Coreui::ProfileController < ApplicationController
     
     person = Person.new(:username => params[:person][:username], :password => params[:person][:password], :email => params[:person][:email])
     if !person.save
-      flash[:error] = @person.errors.full_messages
+      flash[:error] = person.errors.full_messages
       render :action => "link" and return
     end
 
