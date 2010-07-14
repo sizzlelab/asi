@@ -1,23 +1,21 @@
-<% if @person %>
-
-<p> Please, enter your personal info. After filling in your personal info, you will be redicted back to the originating service.</p>
-
-<% form_for :person, @person, :url => { :controller => "profile", :action => "create"}, :html => {:multipart => true} do |f| %>
-<%= render :partial => 'form', :locals => { :f => f } %>
-<div class="profile_update_form_buttons">
-  <%= submit_tag "Submit" %>
-  <%= submit_tag "Cancel" %>
-  </div>
-  <%= hidden_field_tag "guid", @guid %>
-  <%= hidden_field_tag "redirect_uri", @redirect_uri %>
-  <%= hidden_field_tag "fallback_uri", @fallback_uri %>
-<% end %>
-
-<% else %>
+<% unless @person %>
 
 <p>Please, enter your existing OtaSizzle username and password. This will create a link between your existing OtaSizzle account and the account you used to log in. This is required in order to make your old actions visible with your new account. If you choose to press cancel, linking will not take place and you will be redirected back to the originating service.</p>
 
-<%= render :partial => "login", :locals => { :zone => "link", :casCredentials => @casCredentials } %>
+<%= render :partial => "login", :locals => { :zone => "link"} %>
+
+<% else %>
+
+<p>Please, check your personal information below. If everything is ok, your current profile will be linked with the account you used to log in. If you press cancel, linking will not take place and you will be redirected back to originating service.</p>
+
+  <% form_for @person, :url => { :controller => "profile", :action => "update", :id => @person.id }, :html => {:multipart => true} do |f| %>
+    <%= render :partial => "edit", :locals => { :f => f } %>
+    <div class="profile_update_form_buttons">
+      <%= submit_tag "OK" %>
+      <%= link_to("Cancel", session[:fallback_uri]) %>
+    </div>
+    <%= hidden_field_tag "cas_credentials", @cas_credentials %>
+  <%end%>  
 
 <%end%>
 

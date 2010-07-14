@@ -13,7 +13,6 @@
         <%= submit_tag zone == "link" ? "Submit" : "Login" %>
 
         <% if zone == "link" %>
-            <%= submit_tag "Cancel" %>
-            <%= hidden_field_tag "casCredentials", casCredentials %>
+            <%= link_to("Cancel", session[:fallback_uri]) %>
         <% end %>
 </form>

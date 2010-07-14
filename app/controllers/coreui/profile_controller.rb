@@ -9,6 +9,7 @@ class Coreui::ProfileController < ApplicationController
   end
 
   def new
+    @person = Person.new
   end
 
   def create
@@ -17,34 +18,45 @@ class Coreui::ProfileController < ApplicationController
       render :action => "link" and return
     end
     
-    person = Person.new(:username => params[:person][:username], :password => params[:person][:password], :email => params[:person][:email])
-    if !person.save
-      flash[:error] = person.errors.full_messages
+    @person = Person.new(:username => params[:person][:username], :password => params[:person][:password], :email => params[:person][:email])
+    if !@person.save
+      errors = ""
+      @person.errors.each_full { |msg| errors = msg + "\n"}
+      flash[:error] = errors
       render :action => "link" and return
     end
 
-    cas_credentials = Rails.cache.read(params[:guid]) if params[:guid]
+    cas_credentials = Rails.cache.read(session[:guid]) if session[:guid]
     if cas_credentials
-      person.authentication_service_links.create(:link => cas_credentials)
+      @person.authentication_service_links.create(:link => cas_credentials)
       redirect_to params[:redirect_uri]
     end
   end
 
   def link
-    if params[:commit] == "No"
-      @person = Person.new
+    if @user
+      @person = @user
+      
+      @cas_credentials = Rails.cache.read(session[:guid])
+      @cas_credentials = "arvo"
+      if !@cas_credentials
+ #       redirect_to session[:fallback_uri]
+      end
+
     end
-    @guid = params[:guid]
-    @redirect_uri = params[:redirect_uri]
-    @fallbac_uri = params[:fallback]
   end
 
   def question
-    @guid = params[:guid]
-    @redirect_uri = params[:redirect]
-    @fallback_uri = params[:fallback]
+    session[:guid] = params[:guid]
+    session[:redirect_uri] = params[:redirect]
+    session[:fallback_uri] = params[:fallback]
+    
+    logger.debug session[:guid]
+    logger.debug session[:redirect_uri]
+    logger.debug session[:fallback_uri]
 
-    redirect_to params[:fallback] if !@guid
+    redirect_to params[:fallback] if !params[:guid]
+    #TODO Error handling
   end
 
   def show
@@ -96,12 +108,20 @@ class Coreui::ProfileController < ApplicationController
       end
     end
 
+    if params[:cas_credentials]
+      @person.authentication_service_links.create(:link => params[:cas_credentials])
+    end
+
     if @person.update_attributes(params[:person].except(:password2))
+      #if updated correctly with cas credentials, redirect user back to originating service
+      redirect_to session[:redirect_uri] and return if params[:cas_credentials]
+
       flash[:notice] = "Profile information updated."
       redirect_to edit_coreui_profile_path and return
     else
       render :action => "edit" and return
     end
+
   end
 
   def destroy

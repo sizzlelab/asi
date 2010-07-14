@@ -1,2 +1,11 @@
-<h1>Coreui::Profile#new</h1>
-<p>Find me in app/views/coreui/profile/new.html.erb</p>
+<% if session[:guid] %>
+<p> Please, enter your personal info. After filling in your personal info, you will be redicted back to the originating service.</p>
+<% end %>
+
+<% form_for :person, @person, :url => { :controller => "profile", :action => "create"}, :html => {:multipart => true} do |f| %>
+<%= render :partial => 'form', :locals => { :f => f } %>
+<div class="profile_update_form_buttons">
+  <%= submit_tag "Submit" %>
+  <%= link_to("Cancel", session[:fallback_uri]) %>
+  </div>
+<% end %>
