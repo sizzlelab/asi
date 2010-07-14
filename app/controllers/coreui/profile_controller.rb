@@ -38,9 +38,8 @@ class Coreui::ProfileController < ApplicationController
       @person = @user
       
       @cas_credentials = Rails.cache.read(session[:guid])
-      @cas_credentials = "arvo"
       if !@cas_credentials
- #       redirect_to session[:fallback_uri]
+        redirect_to session[:fallback_uri]
       end
 
     end
