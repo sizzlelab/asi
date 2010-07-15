@@ -36,7 +36,10 @@ class Coreui::ProfileController < ApplicationController
   def link 
     if params[:username] && params[:password]
       person = Person.find_by_username_and_password(params[:username], params[:password])
-      flash[:errors] = "Wrong username or password." and return if !person
+      if !person
+        flash[:error] = "Wrong username or password." 
+        render :action => "link" and return
+      end      
 
       cas_credentials = Rails.cache.read(session[:guid])
       if !cas_credentials
