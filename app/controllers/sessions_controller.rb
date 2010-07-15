@@ -175,8 +175,7 @@ json:: { "entry" =>
       end
 
       if ui_mode
-        #redirect_to coreui_profile_index_path and return
-        redirect_to request.referer
+        redirect_to coreui_profile_index_path and return
       else
         render_json :status => :created, :entry => { :user_id => @session.person.andand.guid,
                                                      :app_id => @session.client_id }

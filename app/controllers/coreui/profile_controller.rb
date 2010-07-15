@@ -29,33 +29,34 @@ class Coreui::ProfileController < ApplicationController
     cas_credentials = Rails.cache.read(session[:guid]) if session[:guid]
     if cas_credentials
       @person.authentication_service_links.create(:link => cas_credentials)
-      redirect_to params[:redirect_uri]
+      redirect_to params[:redirect_uri] and return
     end
   end
 
-  def link
-    if @user
-      @person = @user
-      
-      @cas_credentials = Rails.cache.read(session[:guid])
-      if !@cas_credentials
-        redirect_to session[:fallback_uri]
+  def link 
+    if params[:username] && params[:password]
+      person = Person.find_by_username_and_password(params[:username], params[:password])
+      flash[:errors] = "Wrong username or password." and return if !person
+
+      cas_credentials = Rails.cache.read(session[:guid])
+      if !cas_credentials
+        redirect_to session[:fallback_uri] and return
+      else
+        person.authentication_service_links.create(:link => cas_credentials)
+        redirect_to session[:redirect_uri] and return
       end
 
     end
   end
 
   def question
-    session[:guid] = params[:guid]
-    session[:redirect_uri] = params[:redirect]
-    session[:fallback_uri] = params[:fallback]
-    
-    logger.debug session[:guid]
-    logger.debug session[:redirect_uri]
-    logger.debug session[:fallback_uri]
-
-    redirect_to params[:fallback] if !params[:guid]
-    #TODO Error handling
+    if !params[:guid] && params[:redirect] && params[:fallback]
+      flash[:errror] = "Insufficient amount of parameters. Please contact the admins of the originating service."
+    else
+      session[:guid] = params[:guid]
+      session[:redirect_uri] = params[:redirect]
+      session[:fallback_uri] = params[:fallback]
+    end
   end
 
   def show
@@ -112,9 +113,6 @@ class Coreui::ProfileController < ApplicationController
     end
 
     if @person.update_attributes(params[:person].except(:password2))
-      #if updated correctly with cas credentials, redirect user back to originating service
-      redirect_to session[:redirect_uri] and return if params[:cas_credentials]
-
       flash[:notice] = "Profile information updated."
       redirect_to edit_coreui_profile_path and return
     else
