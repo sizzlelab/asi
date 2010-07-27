@@ -261,6 +261,15 @@ ActionController::Routing::Routes.draw do |map|
   # End BinObjects
 
 
+  # SMS resource
+  map.resource '/sms',  :controller => 'sms',
+                        :post => 'smssend',
+                        :get => 'index'
+
+  map.resource '/sms/mark',   :controller => 'sms',
+                              :put => 'smsmark'
+
+  # End SMS resource
 
   map.confirmation '/confirmation', :controller => 'confirmations', :action => 'confirm_email'
 

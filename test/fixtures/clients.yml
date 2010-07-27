@@ -33,3 +33,11 @@ kassi:
    salt: ZB32fj38ueBG
    realname: "Kassi2"
    show_email: 1
+
+pysmsd:
+   id: acm-TkziJr3z9Tab_ZvnhG
+   name: "pysmsd_test"
+   encrypted_password: 1aedeb278c6b84f0f2cc9d8c15305a3c5a241c0c068e48714f4c663f42d8e09c
+   salt: ZB32fj38ueBG
+   realname: "pySMSd test"
+   show_email: 1

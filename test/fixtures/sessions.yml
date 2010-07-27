@@ -58,7 +58,7 @@ client_only_session:
 session6:
   id: 21
   person_id: 2
-  client_id: 1
+  client_id: 
   ip_address: 127.0.0.1
   path: /
 
@@ -111,3 +111,9 @@ session13:
   ip_address: 127.0.0.1
   path: /
 
+session14:
+  id: 987654321
+  person_id: 1
+  client_id: 'acm-TkziJr3z9Tab_ZvnhG'
+  ip_address: 127.0.0.1
+  path: /

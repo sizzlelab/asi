@@ -2,6 +2,21 @@ development: &non_production_settings
   coreui_app_name: "coreui"
   coreui_app_password: secret
   
+  pysmsd_enabled: false
+  pysmsd_test_application_name: "pysmsd_test"
+  pysmsd_test_application_password: "pysmsd_test_password"
+  pysmsd_app_name: "pysmsd_name"
+  pysmsd_app_password: "pysmsd_secret"
+  pysmsd_host: '0.0.0.0'
+  pysmsd_port: 443
+  pysmsd_use_ssl: true
+  pysmsd_number: '+35812356789'
+  pysmsd_use_proxy: false
+  pysmsd_proxy_host: nil
+  pysmsd_proxy_port: 0
+  pysmsd_proxy_username: nil
+  pysmsd_proxy_password: nil
+  
   asi_mail_from_address: "asi@example.com"
   error_mailer_recipients: 'admins@example.com'
   error_mailer_from_address: 'Error Mailer <ASIErrors@example.com>'
@@ -16,6 +31,21 @@ test:
 production:
   coreui_app_name: "coreui"
   coreui_app_password: secret
+  
+  pysmsd_enabled: false
+  pysmsd_test_application_name: "pysmsd_test"
+  pysmsd_test_application_password: "pysmsd_test_password"
+  pysmsd_app_name: "pysmsd_name"
+  pysmsd_app_password: "pysmsd_secret"
+  pysmsd_host: '0.0.0.0'
+  pysmsd_port: 443
+  pysmsd_use_ssl: true
+  pysmsd_number: '+358123456789'
+  pysmsd_use_proxy: false
+  pysmsd_proxy_host: nil
+  pysmsd_proxy_port: 0
+  pysmsd_proxy_username: nil
+  pysmsd_proxy_password: nil
   
   asi_mail_from_address: "asi@example.com"
   error_mailer_recipients: 'admins@example.com'
