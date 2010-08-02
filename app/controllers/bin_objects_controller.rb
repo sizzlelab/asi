@@ -8,9 +8,9 @@ return_code:: 200 - Returns binary objects posted by logged in user in json's en
 
 param:: page - Pagination page.
 param:: per_page - Pagination per page.
-param:: sort_order - Changes the sort order of messages. Allowed values are 'ascending' and 'descending'.
+param:: sort_order - Changes the sort order of entries. Allowed values are 'ascending' and 'descending'.
 
-description:: List binary objects posted by currently logged in user. By default the messages are ordered descending by 'updated_at'.
+description:: List binary objects posted by currently logged in user. By default entries are ordered descending by 'updated_at'.
 =end
   def index
     options = {}

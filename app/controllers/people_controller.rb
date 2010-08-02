@@ -115,10 +115,10 @@ param:: person
   param:: gender - Person's gender, either MALE or FEMALE.
   param:: description - A description of the person, or "about me".
   param:: website - A link to this person's website.
+  param:: phone_number - Person's phone number, stored as a string.
   param:: name
     param:: given_name - Person's given name.
     param:: family_name - Person's family name.
-    param:: phone_number - Person's phone number, stored as a string.
   param:: address
     param:: street_address - Person's street address
     param:: postal_code - Person's postal code, e.g. 02150
