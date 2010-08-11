@@ -342,3 +342,17 @@ div.profile_update_form_center {
 h3, div.profile_update_form_buttons { 
     clear:both
 }
+
+div#buttons{
+    margin-left: auto;
+    margin-right: auto;
+    width: 80px;
+}
+
+div#link_button_left{
+    float: left;
+}
+
+div#link_button_right{
+    float: right;
+}

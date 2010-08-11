@@ -2,7 +2,7 @@
 
   <div class="profile_info_field">
     <div class="profile_update_form_left">
-      Username:
+      Username: *
     </div>
     <div class="profile_update_form_center">
       <%= f.text_field :username %> 
@@ -10,15 +10,15 @@
   </div>
   <div class="profile_info_field">
     <div class="profile_update_form_left">
-      E-mail:
+      E-mail: *
     </div>
     <div class="profile_update_form_center">
       <%= f.text_field :email %> 
     </div>
   </div>
-  <div class="profile_info_field">
+  <div class="profile_info_field" >
     <div class="profile_update_form_left">
-      New password:
+      New password: *
     </div>
     <div class="profile_update_form_center">
       <%= f.password_field :password %> 
@@ -26,29 +26,12 @@
   </div>
   <div class="profile_info_field">
     <div class="profile_update_form_left">
-      Confirm new password:
+      Confirm password: *
     </div>
     <div class="profile_update_form_center">
       <%= password_field_tag "person[password2]", "", :size => 30 %> 
     </div>
   </div>
-  <div class="profile_info_field">  
-    <div class="profile_update_form_left">
-      Avatar:
-    </div>
-    <div class="profile_update_form_right">
-    <% if @person.avatar %>
-      <%= link_to(image_tag("/people/#{@person.guid}/@avatar/large_thumbnail"), "/people/#{@person.guid}/@avatar") %>
-      <% else %>
-      (no avatar)
-    <% end %>
-    <br/>
-    <br/>
-    <%= file_field_tag "file" %>
-    </div>
-  </div>
-  
-  <h3>Personal information</h3>
 
 <% @person.build_name unless @person.name %>  
 <% f.fields_for :name, @person.name do |name_fields| %>
@@ -70,124 +53,16 @@
   </div>
 <% end %>
 
+<div class="profile_info_field">  
+  <div class="profile_update_form_left">
+    I give my consent to <%= link_to_function("the research study", "new Effect.toggle('consent', 'blind')")%> *
+  </div>
+  </div>
+  <div class="profile_update_form_center">
+     <%=f.check_box :consent, { }, "ASI1.0", "0" %>
+  </div>
+</div>
 
-  <div class="profile_info_field">
-    <div class="profile_update_form_left">
-      Status message:
-    </div>
-    <div class="profile_update_form_center">
-      <%= f.text_field :status_message %> 
-    </div>
-  </div>
-  <div class="profile_info_field">
-    <div class="profile_update_form_left">
-      Birthdate:
-    </div>
-    <div class="profile_update_form_center">
-      <%= f.text_field :birthdate %> (yyyy-mm-dd)
-    </div>
-  </div>
-  <div class="profile_info_field">
-    <div class="profile_update_form_left">
-      Phone number:
-    </div>
-    <div class="profile_update_form_center">
-      <%= f.text_field :phone_number %> 
-    </div>
-  </div>
-  <div class="profile_info_field">
-    <div class="profile_update_form_left">
-      Website:
-    </div>
-    <div class="profile_update_form_center">
-      <%= f.text_field :website %> 
-    </div>
-  </div>
-  <div class="profile_info_field">
-    <div class="profile_update_form_left">
-      Gender:
-    </div>
-    <div class="profile_update_form_center">
-      <%= select_tag 'person[gender]', 
-                     options_for_select([""].concat(Person::VALID_GENDERS), 
-                     @person.gender) 
-      %>
-    </div>
-  </div>
-  <div class="profile_info_field">
-    <div class="profile_update_form_left">
-      About me:
-    </div>
-    <div class="profile_update_form_center">
-      <%= f.text_field :description %> 
-    </div>
-  </div>
-  <div class="profile_info_field">
-    <div class="profile_update_form_left">
-      IRC nickname:
-    </div>
-    <div class="profile_update_form_center">
-      <%= f.text_field :irc_nick %> 
-    </div>
-  </div>
-  <div class="profile_info_field">
-    <div class="profile_update_form_left">
-      MSN nickname:
-    </div>
-    <div class="profile_update_form_center">
-      <%= f.text_field :msn_nick %> 
-    </div>
-  </div>
-
-
-<h3>Address and location</h3>
-
-<% @person.build_address unless @person.address %>
-<% f.fields_for :address, @person.address do |address_fields| %>
-  <div class="profile_info_field">  
-    <div class="profile_update_form_left">
-      Street address:
-    </div>
-    <div class="profile_update_form_right">
-      <%= address_fields.text_field :street_address %>
-    </div>
-  </div>
-  <div class="profile_info_field">  
-    <div class="profile_update_form_left">
-      Postal code:
-    </div>
-    <div class="profile_update_form_right">
-      <%= address_fields.text_field :postal_code, :class => "update_postal_code" %>
-    </div>
-  </div>
-  <div class="profile_info_field">  
-    <div class="profile_update_form_left">
-      Locality:
-    </div>
-    <div class="profile_update_form_right">
-      <%= address_fields.text_field :locality %>
-    </div>
-  </div>
-<% end %>
-
-  <div class="profile_info_field">
-    <% if l = @person.location %>
-    <div class="profile_update_form_left">
-      Last location:
-    </div>
-    <div class="profile_update_form_two_columns" id="location_data">
-      <div class="left_float">
-        <%= "\"#{l.label}\"<br /> at " unless ! l.label %>
-        <%= link_to("#{l.latitude}, #{l.longitude}", "http://maps.google.com/maps?q=#{l.latitude}+#{l.longitude}") %>
-      </div>
-      <div class="right_float">
-        <small>(<%= distance_of_time_in_words_to_now(l.updated_at) %> ago)</small>
-        <%= button_to_remote "Clear", 
-          :update => "location_data",
-          :url => { :controller => "/locations", :format => "json", :action => "destroy", :user_id => @person.id },
-          :method => :delete
-        %>
-      </div>
-    </div>
-    <%end%>
-  </div>
+<div id="consent" class="consent" style="display:none; clear:both;">
+  <%= render :partial => "coreui/consents/consent" %>
+</div>

@@ -1,5 +1,5 @@
 <% if session[:guid] %>
-<p> Please, enter your personal info. After filling in your personal info, you will be redicted back to the originating service.</p>
+<p> Please, enter your personal info. After filling in your personal info, you will be redicted back to the originating service. Fill in at least the fields marked with a star (*).</p>
 <% end %>
 
 <% form_for :person, @person, :url => { :controller => "profile", :action => "create"}, :html => {:multipart => true} do |f| %>

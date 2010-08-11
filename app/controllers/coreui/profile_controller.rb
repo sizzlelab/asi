@@ -19,11 +19,13 @@ class Coreui::ProfileController < ApplicationController
     end
     
     @person = Person.new(:username => params[:person][:username], :password => params[:person][:password], :email => params[:person][:email])
-    if !@person.save
-      errors = ""
+    @person.create_name(:given_name => params[:person][:name_attributes][:given_name], :family_name => params[:person][:name_attributes][:family_name])
+    @person.consent = params[:person][:consent]
+    if !@person.save || params[:person][:consent] == 0
+      errors = params[:person][:consent] == 0 ? "You must give your consent to the research study." : ""
       @person.errors.each_full { |msg| errors = msg + "\n"}
       flash[:error] = errors
-      render :action => "link" and return
+      render :action => "new" and return
     end
 
     cas_credentials = Rails.cache.read(session[:guid]) if session[:guid]
