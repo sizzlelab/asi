@@ -36,10 +36,10 @@ param::location
 description:: Sets the location of the user. If only some of the fields are updated, rest will be set to null.
 =end
   def update
-    user_id = params['user_id'] || role.person.guid unless person
+    user_id = params['user_id'] || @role.person.guid unless @person
 
     if !user_id
-      user_id = person.guid
+      user_id = @person.guid
     end
 
     user = Person.find_by_guid(user_id)
@@ -60,9 +60,8 @@ description:: Sets the location of the user. If only some of the fields are upda
   end
 
 =begin rapidoc
-description:: clears the location of a user.
+description:: Clears the location of a user.
 =end
-
   def destroy
     
     user = Person.find_by_guid(params['user_id'])
@@ -94,15 +93,15 @@ def user_authorized?
       # ...unless the correct username and password is given
       # TODO: DEPRECATED, REMOVE WHEN SISSI IS MODIFIED
       if params['username'] or params['password']
-        person = Person.find_by_username_and_password(params['username'], params['password'])
-        if !person or (params['user_id'] && params['user_id'] != person.guid)
+        @person = Person.find_by_username_and_password(params['username'], params['password'])
+        if !@person or (params['user_id'] && params['user_id'] != @person.guid)
           render_json :status => :forbidden, :json => "Password and username didn't match the person.".to_json and return
         end
       end
 
       #...unless security token is given
-      role = Role.find_by_location_security_token_and_client_id(params['location_security_token'], @client.id) if params['location_security_token']
-      if !role and !person
+      @role = Role.find_by_location_security_token_and_client_id(params['location_security_token'], @client.id) if params['location_security_token']
+      if !@role and !@person
         render_json :status => :forbidden and return
       end
     end
