@@ -3,7 +3,7 @@ require 'test_helper'
 class SmsControllerTest < ActionController::TestCase
   def test_should_get_index
     unless APP_CONFIG.pysmsd_enabled
-      assert_response :success
+      assert(true)
     else
       get :index, {:format => "json" }, { :cos_session_id => sessions(:session14).id } 
       assert_response :success 
@@ -11,7 +11,7 @@ class SmsControllerTest < ActionController::TestCase
   end
   def test_should_send_and_mark_sms
     unless APP_CONFIG.pysmsd_enabled
-      assert_response :success
+      assert(true)
     else
       post :smssend, {:format => "json", :text => 'pysmsd_test test message for functional tests.', :number => APP_CONFIG.pysmsd_number }, { :cos_session_id => sessions(:session14).id }
       assert_response :success
@@ -30,7 +30,7 @@ class SmsControllerTest < ActionController::TestCase
   end
   def test_invalid_send_sms_methods
     unless APP_CONFIG.pysmsd_enabled
-      assert_response :success
+      assert(true)
     else
       [:get, :put, :delete].each do |http_method|
         send http_method, :smssend, {:format => "json", :text => 'text', :number => '+358503012496' }, { :cos_session_id => sessions(:session14).id }
@@ -40,7 +40,7 @@ class SmsControllerTest < ActionController::TestCase
   end
   def test_invalid_index_methods
     unless APP_CONFIG.pysmsd_enabled
-      assert_response :success
+      assert(true)
     else
       [:post, :put, :delete].each do |http_method|
         send http_method, :index, {:format => "json" }, { :cos_session_id => sessions(:session14).id }
