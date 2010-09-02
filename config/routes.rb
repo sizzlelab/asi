@@ -136,6 +136,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource '/people/recover_password', :controller => 'people',
                                            :post => 'recover_password'
+  
+  map.resource '/people/availability', :controller => 'people',
+                                           :get => 'availability'
 
   map.connect '/people/reset_password', :controller => 'people',
                                         :action => 'reset_password', :conditions => { :method => :get }

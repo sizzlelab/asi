@@ -327,6 +327,15 @@ module COSTestingDSL
     assert_response :success, @response.body
     JSON.parse(@response.body)["entry"]
   end
+  
+  def checks_availability_for(options)
+    query_string = "/people/availability?"
+    query_string += "email=#{options[:email]}&" if options[:email]
+    query_string += "username=#{options[:username]}&" if options[:username]
+    get query_string
+    assert_response :success, @response.body
+    JSON.parse(@response.body)["entry"][0]
+  end
 
 
   private

@@ -103,6 +103,41 @@ class PeopleTest < ActionController::IntegrationTest
     end
   end
 
+  def test_availability_checks
+    new_session do |kassi|
+      kassi.logs_in_with({:app_name => clients(:one).name, :app_password => "testi"})
+      
+      # unavailable email
+      resp = kassi.checks_availability_for(:email => people(:valid_person).email)
+      assert resp["email"] == "unavailable", "Taken email falsely reported to be free."
+      
+      # available email
+      resp = kassi.checks_availability_for(:email => "email.not_really@use.by.any.one")
+      assert resp["email"] == "available", "Available email falsely reported to be taken."
+      
+      # unavailable username
+      resp = kassi.checks_availability_for(:username => people(:valid_person).username)
+      assert resp["username"] == "unavailable", "Taken username falsely reported to be free."
+      
+      # available username
+      resp = kassi.checks_availability_for(:username => "suchastrange_username_that_it_is_not_used")
+      assert resp["username"] == "available", "Available username falsely reported to be taken."
+      
+      # Other one available
+      resp = kassi.checks_availability_for(:email => people(:valid_person).email, 
+        :username => "suchastrange_username_that_it_is_not_used")
+      assert resp["username"] == "available", "Available username falsely reported to be taken."
+      assert resp["email"] == "unavailable", "Taken email falsely reported to be free."
+      
+      # both unavailable
+      resp = kassi.checks_availability_for(:email => people(:valid_person).email, 
+        :username => people(:valid_person).username)
+      assert resp["username"] == "unavailable", "Taken username falsely reported to be free."
+      assert resp["email"] == "unavailable", "Taken email falsely reported to be free."
+    end
+    
+  end
+
   private
 
   def new_session

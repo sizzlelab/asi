@@ -331,6 +331,39 @@ description:: Rejects this friend request.
     end
   end
 
+=begin rapidoc
+access:: Application
+return_code:: 200 - OK
+json:: {"entry" =>
+[ "email" => "unavailable", "username" => "available" ]
+}
+
+param:: username - returns unavailable, if this username is already in use, otherwise returns available.
+param:: email - returns unavailable, if this email is already in use, otherwise returns available.
+
+description:: Checks if the username or email given in parameters are already in use in ASI.
+=end
+  def availability
+    resp = {}
+    if params["username"]
+      if Person.find_by_username(params["username"])
+        resp["username"]  = "unavailable"
+      else
+        resp["username"] = "available"
+      end
+    end
+    
+    if params["email"]
+      if Person.find_by_email(params["email"])
+        resp["email"]  = "unavailable"
+      else
+        resp["email"] = "available"
+      end
+    end
+    
+    render_json :entry => [resp]
+  end
+
 
   private
 
