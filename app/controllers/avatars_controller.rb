@@ -38,7 +38,7 @@ description:: Replaces this user's avatar. Each user is given an implicit defaul
   def update
 
     if ! ensure_same_as_logged_person(params['user_id'])
-       render :status => :forbidden and return
+       render_json :status => :forbidden, :messages => "You must be logged as the owner of the profile to update avatar." and return
     end
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
