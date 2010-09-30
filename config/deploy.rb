@@ -1,7 +1,9 @@
 set :application, "cos"
 set :user, "cos"
 
-set :repository, "http://svn.github.com/sizzlelab/asi.git"
+set :scm, :git
+set :repository, "git://github.com/sizzlelab/asi.git"
+set :deploy_via, :remote_cache
 
 if ENV['DEPLOY_ENV']
   set :server_name, ENV['DEPLOY_ENV']
