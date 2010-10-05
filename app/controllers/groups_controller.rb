@@ -259,7 +259,7 @@ description:: Changes the membership status. User's admin status in group can be
         result = change_admin_status
       end
 
-      if params[:accepted]
+      if params[:accept_request]
         result = accept_pending_membership_request
       end
       render_json :status => result[:status], :messages => result[:message] and return
