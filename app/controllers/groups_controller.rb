@@ -248,7 +248,7 @@ description:: Returns the member list of this group.
 
 =begin rapidoc
 return_code:: 200
-param:: accept_request - True to accept a pending request.
+param:: accepted - True to accept a pending request.
 param:: admin_status - True to grant admin rights, false to revoke them.
 description:: Changes the membership status. User's admin status in group can be changed. Also, pending membership requests can be accepted. User's own admin status cannot be changed, changing of admin status must be done by different group admin.
 =end
@@ -259,7 +259,7 @@ description:: Changes the membership status. User's admin status in group can be
         result = change_admin_status
       end
 
-      if params[:accept_request]
+      if params[:accepted]
         result = accept_pending_membership_request
       end
       render_json :status => result[:status], :messages => result[:message] and return
