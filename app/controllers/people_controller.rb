@@ -39,7 +39,7 @@ description:: Finds users based on their real names and usernames.
                               :page => params[:page] ? params[:page].to_i : nil)
       size = Rails.cache.fetch(Person.build_cache_key(:person_count, modified), :expires_in => 15.minutes) { @people.total_entries }
     end
-    render_json :entry => @people.collect { |p| p.to_hash(@user, @client)  }, :size => size
+    render_json :entry => @people.compact.collect { |p| p.to_hash(@user, @client)  }, :size => size
   end
 
 =begin rapidoc
