@@ -463,6 +463,27 @@ class PeopleControllerTest < ActionController::TestCase
     search("kusti")
     #search("Järnö Törnävä") # Latin-1
   end
+  
+  def test_search_by_phone_number
+    # normal case, should be found
+    number = people(:valid_person).phone_number
+    get :index, {:phone_number => number, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_not_nil(json["entry"][0])
+    assert_equal people(:valid_person).username, json["entry"][0]["username"]
+    
+    # search without the "+" in front, should be found
+    number.gsub!("+", "")
+    get :index, {:phone_number => number, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_not_nil(json["entry"][0])
+    assert_equal people(:valid_person).username, json["entry"][0]["username"]
+    
+    
+    
+  end
 
   def test_routing
     user_id = "hfr2kf38s7"

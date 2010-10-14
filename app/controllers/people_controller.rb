@@ -14,7 +14,8 @@ json:: {"entry" =>
 [ Factory.create_person, Factory.create_person ]
 }
 
-param:: search - The search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all charactersin the search term are interpreted as literals rather than special regexp characters.
+param:: search - (optional) The search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all charactersin the search term are interpreted as literals rather than special regexp characters.
+param:: phone_number - (optional) If this is entered (without search), returns only one person who has the exact same phone number stored (358501234567 will match also +358501234567). This parameter is ignored if "search" parameter is submited.
 
 description:: Finds users based on their real names and usernames.
 =end
@@ -30,15 +31,26 @@ description:: Finds users based on their real names and usernames.
       modified = Rails.cache.fetch(Person.build_cache_key(:person_modified)) {
         Time.now
       }
-      @people = Person.all(options)
-      size = Rails.cache.fetch(Person.build_cache_key(:person_count, modified), :expires_in => 15.minutes) { Person.count }
+      if params[:phone_number]
+        @people = Person.find_by_phone_number(params[:phone_number])
+        if @people.nil?
+          # try again with + added in front of the number
+          @people = Person.find_by_phone_number("+#{params[:phone_number]}")
+        end
+        @people = [@people] #wrap in an array as normal results
+        
+      else
+        @people = Person.all(options)
+        size = Rails.cache.fetch(Person.build_cache_key(:person_count, modified), :expires_in => 15.minutes) { Person.count }
+      end
     else
       query = (params['search'] || "").strip
       @people = Person.search("*#{query}*", :without => { :name_id => 0 },
                               :per_page => params[:per_page] ? params[:per_page].to_i : nil,
                               :page => params[:page] ? params[:page].to_i : nil)
-      size = Rails.cache.fetch(Person.build_cache_key(:person_count, modified), :expires_in => 15.minutes) { @people.total_entries }
+      size = @people.total_entries
     end
+    
     render_json :entry => @people.compact.collect { |p| p.to_hash(@user, @client)  }, :size => size
   end
 
