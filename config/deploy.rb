@@ -13,23 +13,21 @@ else
   set :host, "localhost"
 end
 
-mongrel_cluster_size = {
-  "alpha" => 7,
-  "beta" => 13,
-  "localhost" => 1
-}
-
-set :mongrel_cluster_size, mongrel_cluster_size[server_name]
-
 role :app, "#{user}@#{host}"
 role :db, "#{user}@#{host}", :primary => true
 
 set :deploy_to, "/var/datat/cos/common-services"
-set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
 set :rails_env, :production
 
 set :path, "$PATH:/var/lib/gems/1.8/bin"
-set :mongrel_conf, "#{shared_path}/config/mongrel_cluster.yml"
+
+namespace :deploy do
+  task :start do ; end
+  task :stop do ; end
+  task :restart, :roles => :app, :except => { :no_release => true } do
+    run "touch #{File.join(current_path,'tmp','restart.txt')}"
+  end
+end
 
 namespace :deploy do
 
@@ -41,7 +39,6 @@ namespace :deploy do
   end
 
   task :before_cold do
-    run "killall mongrel_rails" rescue nil
     run "killall searchd" rescue nil
   end
 
@@ -68,7 +65,6 @@ namespace :deploy do
   end
   
   task :before_start do
-    mongrel.configure
     symlink_sphinx_indexes
     thinking_sphinx.configure
     thinking_sphinx.index
@@ -94,18 +90,11 @@ namespace :deploy do
 
   task :finalize do
     whenever.write_crontab
-    apache.restart
   end
 
   desc "Link up Sphinx's indexes."
   task :symlink_sphinx_indexes, :roles => [:app] do
     run "ln -nfs #{shared_path}/db/sphinx #{current_path}/db/sphinx"
-  end
-
-  [ :stop, :start, :restart ].each do |t|
-    task t, :roles => :app do
-      mongrel.send(t)
-    end
   end
 
 end
