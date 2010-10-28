@@ -207,7 +207,7 @@ class ApplicationController < ActionController::Base
 
     begin
 
-      if RAILS_ENV == "production"
+      if RAILS_ENV == "production" && !APP_CONFIG.error_mailer_recipients.blank?
         ErrorMailer.deliver_snapshot(
           exception,
           clean_backtrace(exception),

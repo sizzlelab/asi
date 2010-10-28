@@ -1,13 +1,20 @@
 set :application, "cos"
-set :user, "cos"
+
 
 set :scm, :git
 set :repository, "git://github.com/sizzlelab/asi.git"
 set :deploy_via, :remote_cache
 
-if ENV['DEPLOY_ENV']
+if ENV['DEPLOY_ENV'] == "beta" ||  ENV['DEPLOY_ENV'] == "alpha" 
+  set :deploy_to, "/var/datat/cos/common-services"
   set :server_name, ENV['DEPLOY_ENV']
   set :host, "#{ENV['DEPLOY_ENV']}.sizl.org"
+  set :user, "cos"
+elsif ENV['DEPLOY_ENV'] == "icsi"
+  set :deploy_to, "/opt/asi"
+  set :server_name, "icsi"
+  set :host, "sizl.icsi.berkeley.edu"
+  set :user, ENV['USER']
 else
   set :server_name, "localhost"
   set :host, "localhost"
@@ -16,7 +23,7 @@ end
 role :app, "#{user}@#{host}"
 role :db, "#{user}@#{host}", :primary => true
 
-set :deploy_to, "/var/datat/cos/common-services"
+
 set :rails_env, :production
 
 set :path, "$PATH:/var/lib/gems/1.8/bin"
