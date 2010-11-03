@@ -12,5 +12,7 @@ doc/api
 doc/app
 public/images/listing_images
 index/
+db/test_structure.sql
 db/development_structure.sql
+db/production_structure.sql
 app/views/api
