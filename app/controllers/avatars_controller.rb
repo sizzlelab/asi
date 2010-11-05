@@ -51,7 +51,7 @@ description:: Replaces this user's avatar. Each user is given an implicit defaul
         end
       end
       avatar = @person.create_avatar(:file => params[:file])
-      if avatar.valid?
+      if avatar.valid? and avatar.valid_image_data?
         render_json :status  => :ok and return
       else
         render_json :status  => :bad_request, :messages => avatar.errors.full_messages and return

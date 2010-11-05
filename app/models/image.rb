@@ -87,6 +87,30 @@ class Image < ActiveRecord::Base
     return Base64.decode64(large_thumb)
   end
 
+  # return true if all the image data fields are populated
+  def valid_image_data?
+
+    #There should be image data.
+    unless self.data?
+      errors.add_to_base("No image data.")
+      return false
+    end
+
+    #There should be large thumbnail data.
+    unless self.large_thumb?
+      errors.add_to_base("No large thumbnail image data.")
+      return false
+    end
+
+    #There should be small thumbnail data.
+    unless self.small_thumb?
+      errors.add_to_base("No small thumbnail image data.")
+      return false
+    end
+
+    return true
+  end
+
   private
 
   def file_to_db
@@ -106,7 +130,7 @@ class Image < ActiveRecord::Base
       return false
     end
 
-    #The upload should have file suffix
+    #The upload should have file suffix.
     unless filename =~ /\.(jpg)|(jpeg)|(png)|(gif)$/i
       errors.add_to_base("Please use image file with a filename suffix")
       return false
@@ -124,11 +148,12 @@ class Image < ActiveRecord::Base
   def convert(filename)
 
     uuid = UUID.timestamp_create().to_s22
+    convert = 'convert'
 
-    source_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "#{uuid}_#{filename}")
-    full_size_image_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "#{uuid}_full_image.jpg")
-    large_thumbnail_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "#{uuid}_large_thumb_image.jpg")
-    small_thumbnail_file = File.join("#{RAILS_ROOT}/#{DIRECTORY}", "#{uuid}_small_thumb_image.jpg")
+    source_file          = File.join(RAILS_ROOT, DIRECTORY, "#{uuid}_#{filename}")
+    full_size_image_file = File.join(RAILS_ROOT, DIRECTORY, "#{uuid}_full_image.jpg")
+    large_thumbnail_file = File.join(RAILS_ROOT, DIRECTORY, "#{uuid}_large_thumb_image.jpg")
+    small_thumbnail_file = File.join(RAILS_ROOT, DIRECTORY, "#{uuid}_small_thumb_image.jpg")
 
     # Write the source file to directory.
     f = File.new(source_file, "wb")
@@ -137,35 +162,34 @@ class Image < ActiveRecord::Base
 
     # Then resize the source file to the size defined by full_image_size parameter
     # and convert it to .jpg file. Resize uses ImageMagick directly from command line.
-    img = system("#{'convert'} '#{source_file}' -resize #{FULL_IMAGE_SIZE} '#{full_size_image_file}' > #{RAILS_ROOT}/log/convert.log")
-    large_thumb = system("#{'convert'} '#{source_file}' -resize #{LARGE_THUMB_SIZE} '#{large_thumbnail_file}' > #{RAILS_ROOT}/log/convert.log")
+    # System calls return true on success and the empty string on failure.
+    system("#{convert} '#{source_file}' -resize #{FULL_IMAGE_SIZE} '#{full_size_image_file}'")
+    system("#{convert} '#{source_file}' -resize #{LARGE_THUMB_SIZE} '#{large_thumbnail_file}'")
 
-    # If new file exists, it means that the original file is a valid image file. If so,
-    # make a thumbnail using RMagick. Thumbnail is created by cutting as big as possible
+    # Make a thumbnail using RMagick. Thumbnail is created by cutting as big as possible
     # square-shaped piece from the center of the image and then resizing it to 50x50px.
-    if img
-      small_thumb = Magick::Image.read(source_file).first
-      small_thumb.crop_resized!(SMALL_THUMB_WIDTH, SMALL_THUMB_HEIGHT, Magick::NorthGravity)
-      small_thumb.write(small_thumbnail_file)
-    end
+    small_thumb = Magick::Image.read(source_file).first
+    small_thumb.crop_resized!(SMALL_THUMB_WIDTH, SMALL_THUMB_HEIGHT, Magick::NorthGravity)
+    small_thumb.write(small_thumbnail_file)
 
-    # Delete source file if it exists.
-    File.delete(source_file) if File.exists?(source_file)
-
-    # Both conversions must succeed, else it's an error, probably because image file
+    # All conversions must succeed, else it's an error, probably because image file
     # is somehow corrupted.
-    unless img and large_thumb and small_thumb
+    unless File.exists?(full_size_image_file) and File.exists?(large_thumbnail_file) and File.exists?(small_thumbnail_file)
       errors.add_to_base("File upload failed. Image file is probably corrupted.")
       return false
     end
 
     # Write new images to database and then delete image files.
     self.data = File.open(full_size_image_file,'rb').read
-    File.delete(full_size_image_file) if File.exists?(full_size_image_file)
+    File.delete(full_size_image_file)
     self.large_thumb = File.open(large_thumbnail_file,'rb').read
-    File.delete(large_thumbnail_file) if File.exists?(large_thumbnail_file)
+    File.delete(large_thumbnail_file)
     self.small_thumb = File.open(small_thumbnail_file,'rb').read
-    File.delete(small_thumbnail_file) if File.exists?(small_thumbnail_file)
+    File.delete(small_thumbnail_file)
+
+    # Delete source file if it exists.
+    File.delete(source_file)
+
     return true
   end
 end
