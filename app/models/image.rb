@@ -21,8 +21,8 @@ class Image < ActiveRecord::Base
 
   belongs_to :person
 
-  FULL_IMAGE_SIZE = '"600x800>"'
-  LARGE_THUMB_SIZE = '"200x350>"'
+  FULL_IMAGE_SIZE = '600x800>'
+  LARGE_THUMB_SIZE = '200x350>'
   SMALL_THUMB_WIDTH = 50
   SMALL_THUMB_HEIGHT = 50
   DIRECTORY = "tmp/images"
@@ -148,7 +148,6 @@ class Image < ActiveRecord::Base
   def convert(filename)
 
     uuid = UUID.timestamp_create().to_s22
-    convert = 'convert'
 
     source_file          = File.join(RAILS_ROOT, DIRECTORY, "#{uuid}_#{filename}")
     full_size_image_file = File.join(RAILS_ROOT, DIRECTORY, "#{uuid}_full_image.jpg")
@@ -160,11 +159,21 @@ class Image < ActiveRecord::Base
     f.write(self.raw_data)
     f.close
 
-    # Then resize the source file to the size defined by full_image_size parameter
-    # and convert it to .jpg file. Resize uses ImageMagick directly from command line.
-    # System calls return true on success and the empty string on failure.
-    system("#{convert} '#{source_file}' -resize #{FULL_IMAGE_SIZE} '#{full_size_image_file}'")
-    system("#{convert} '#{source_file}' -resize #{LARGE_THUMB_SIZE} '#{large_thumbnail_file}'")
+    # Use RMagick to resize the source file to the size defined by FULL_IMAGE_SIZE
+    # and write the result to full_size_image_file
+    full_size = Magick::Image.read(source_file).first
+    full_size.change_geometry(FULL_IMAGE_SIZE) { |cols, rows, img|
+      img.resize!(cols, rows)
+      }
+    full_size.write(full_size_image_file)
+
+    # Use RMagick to resize the source file to the size defined by LARGE_THUMB_SIZE
+    # and write the result to large_thumbnail_file
+    large_thumb = Magick::Image.read(source_file).first
+    large_thumb.change_geometry(LARGE_THUMB_SIZE) { |cols, rows, img|
+      img.resize!(cols, rows)
+      }
+    large_thumb.write(large_thumbnail_file)
 
     # Make a thumbnail using RMagick. Thumbnail is created by cutting as big as possible
     # square-shaped piece from the center of the image and then resizing it to 50x50px.
