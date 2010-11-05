@@ -122,6 +122,7 @@ return_code:: 400 - There's a problem with one of the parameters.
 param:: person
   param:: password - A new password.
   param:: email - Person's email address
+  param:: is_association - Person's association status, 'true' or 'false'.
   param:: status_message - Person's current status message.
   param:: birthdate - Person's birthdate as date. Format yyyy-mm-dd
   param:: gender - Person's gender, either MALE or FEMALE.
