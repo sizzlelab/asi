@@ -30,5 +30,3 @@ ActionMailer::Base.default_charset = "utf-8"
 # This is changed to match the server name in server specific finsih scripts
 # ActionController::AbstractRequest.relative_url_root = "http://cos.sizl.org"
 
-SERVER_DOMAIN = "http://cos.sizl.org"
-

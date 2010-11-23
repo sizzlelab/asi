@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   before_filter :change_me_to_userid
   before_filter :change_app_to_appid
 
-  after_filter :log, :except => [ :index, :doc ] if LOG_TO_RESSI
+  after_filter :log, :except => [ :index, :doc ] if  APP_CONFIG.log_to_ressi
 
   PARAMETERS_NOT_TO_BE_ESCAPED = ["password", "confirm_password", "search", "query"]
   before_filter :escape_parameters

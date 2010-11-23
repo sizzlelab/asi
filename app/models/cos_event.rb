@@ -1,4 +1,4 @@
 class CosEvent < ActiveResource::Base
-  self.site = RESSI_URL
+  self.site = APP_CONFIG.ressi_url
   self.timeout = RESSI_TIMEOUT
 end

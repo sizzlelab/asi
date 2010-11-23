@@ -110,9 +110,9 @@ json:: { "entry" =>
           conf = Hash.new()
           cas_logger = CASClient::Logger.new(RAILS_ROOT+'/log/cas.log')
           cas_logger.level = Logger::DEBUG
-          conf[:cas_base_url] = CAS_BASE_URL
+          conf[:cas_base_url] = APP_CONFIG.cas_base_url
           #conf[:validate_url] = conf[:cas_base_url] + '/proxyValidate'
-          conf[:validate_url] = CAS_VALIDATE_URL
+          conf[:validate_url] = APP_CONFIG.cas_validate_url
           conf[:logger] = cas_logger
           cas_client = CASClient::Client.new(conf)
           st = CASClient::ServiceTicket.new(params[:proxy_ticket], "#{request.protocol}#{request.env['HTTP_HOST']}", false)
@@ -126,7 +126,7 @@ json:: { "entry" =>
               Rails.cache.write(uuid, params[:username], :expires_in => 15.minutes )
               @session.destroy
               render_json :status => 303, :entry => { :message => "Redirect to the given uri using GET. Check documentation for further info",  
-                                                      :uri => SERVER_DOMAIN + "/coreui/profile/question?guid=" + uuid } and return
+                                                      :uri => APP_CONFIG.server_domain + "/coreui/profile/question?guid=" + uuid } and return
             else
               @session.person_id = @session.person_match.id
               @session.save

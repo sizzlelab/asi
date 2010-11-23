@@ -9,7 +9,7 @@ class ApplicationControllerTest < ActionController::TestCase
     @response = ActionController::TestResponse.new
   end
 
-  if LOG_TO_RESSI
+  if  APP_CONFIG.log_to_ressi
     def test_logging
       assert_difference "CachedCosEvent.count", 1 do
         get :test, { :app_id => clients(:one).id, :event_id => "index_test" }, { :cos_session_id => sessions(:session1).id }
@@ -24,7 +24,7 @@ class ApplicationControllerTest < ActionController::TestCase
         begin
           event.upload
         rescue Errno::ECONNREFUSED => e
-          puts "No connection to RESSI at #{RESSI_URL}"
+          puts "No connection to RESSI at #{APP_CONFIG.ressi_url}"
         end
       end
     end

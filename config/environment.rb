@@ -81,16 +81,12 @@ Rails::Initializer.run do |config|
   # Environment variable part for Common Services begins here
   DB_STRING_MAX_LENGTH = 255
   PURSE_LIMIT = -10
-  SERVER_DOMAIN = "http://localhost:3000"
-  RESSI_URL = "http://localhost:9000"
   RESSI_TIMEOUT = 5
   RESSI_UPLOAD_HOUR = 3
 
   #CAS_BASE_URL = "http://cos.alpha.sizl.org:8180/cas"
-  CAS_BASE_URL = "https://zeus.cs.hut.fi/cs/shib/cos"
-  CAS_VALIDATE_URL = "https://zeus.cs.hut.fi/cs/shib/8888/proxyValidate"
-
-  LOG_TO_RESSI = false
+  #CAS_BASE_URL = "https://zeus.cs.hut.fi/cs/shib/cos"
+  #CAS_VALIDATE_URL = "https://zeus.cs.hut.fi/cs/shib/8888/proxyValidate"
 
   #If following is true, created users must validate their emails before they can log in.
   VALIDATE_EMAILS = false
@@ -110,7 +106,7 @@ cas_logger = CASClient::Logger.new(RAILS_ROOT+'/log/cas.log')
 cas_logger.level = Logger::DEBUG
 
 CASClient::Frameworks::Rails::Filter.configure(
-  :cas_base_url => CAS_BASE_URL,
+  :cas_base_url => APP_CONFIG.cas_base_url,
   :logger => cas_logger,
   :validate_url  => "https://zeus.cs.hut.fi/cs/shib/9997/proxyValidate"
   #:proxy_retrieval_url => "https://kassi:3444/cas_proxy_callback/retrieve_pgt",

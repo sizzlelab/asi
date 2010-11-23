@@ -16,7 +16,7 @@ class SystemController < ApplicationController
   end
 
   def upload
-    if LOG_TO_RESSI
+    if  APP_CONFIG.log_to_ressi
       rake "ressi:upload"
       render :template => "system/default"
     end

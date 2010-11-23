@@ -240,7 +240,7 @@ description:: Sends a password recovery email to a specified email address.
     if person
       UserMailer.deliver_recovery(:key => CryptoHelper.encrypt("#{person.id}:#{person.salt}"),
                                   :email => person.email,
-                                  :domain => SERVER_DOMAIN)
+                                  :domain => APP_CONFIG.server_domain)
       render_json :messages => "Recovery mail sent to specified address.", :status => :ok and return
     else
       render_json :messages => "Record not found.", :status => :not_found and return
