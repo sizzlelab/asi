@@ -207,7 +207,10 @@ class ApplicationController < ActionController::Base
 
     begin
 
-      if RAILS_ENV == "production" && !APP_CONFIG.error_mailer_recipients.blank?
+      if RAILS_ENV == "production" && !APP_CONFIG.error_mailer_recipients.blank? 
+        if APP_CONFIG.error_mailer_ignore_routing && exception.kind_of?(ActionController::RoutingError)
+          return
+        end
         ErrorMailer.deliver_snapshot(
           exception,
           clean_backtrace(exception),

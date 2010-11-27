@@ -35,6 +35,7 @@ default: &default_settings
   asi_mail_from_address: "asi@example.com"
   error_mailer_recipients: 'admins@example.com'
   error_mailer_from_address: 'Error Mailer <ASIErrors@example.com>'
+  error_mailer_ignore_routing: false
   
   crypto_helper_key: "insert_random_generated_key_here4234+naosetuaoeu=23=324//a3245bHEHUoeuh.rcdyfR+ahbe"
 
