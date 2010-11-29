@@ -106,10 +106,12 @@ require 'actionpack_extend'
 cas_logger = CASClient::Logger.new(RAILS_ROOT+'/log/cas.log')
 cas_logger.level = Logger::DEBUG
 
-CASClient::Frameworks::Rails::Filter.configure(
-  :cas_base_url => APP_CONFIG.cas_base_url,
-  :logger => cas_logger,
-  :validate_url  => "https://zeus.cs.hut.fi/cs/shib/9997/proxyValidate"
-  #:proxy_retrieval_url => "https://kassi:3444/cas_proxy_callback/retrieve_pgt",
-  #:proxy_callback_url => "https://kassi:3444/cas_proxy_callback/receive_pgt"
-)
+if defined? APP_CONFIG
+  CASClient::Frameworks::Rails::Filter.configure(
+    :cas_base_url => APP_CONFIG.cas_base_url,
+    :logger => cas_logger,
+    :validate_url  => "https://zeus.cs.hut.fi/cs/shib/9997/proxyValidate"
+    #:proxy_retrieval_url => "https://kassi:3444/cas_proxy_callback/retrieve_pgt",
+    #:proxy_callback_url => "https://kassi:3444/cas_proxy_callback/receive_pgt"
+  )
+end
