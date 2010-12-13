@@ -26,7 +26,11 @@ role :db, "#{user}@#{host}", :primary => true
 
 set :rails_env, :production
 
-set :path, "$PATH:/var/lib/gems/1.8/bin"
+if ENV['DEPLOY_ENV'] == "icsi"
+  set :path, "$PATH:/usr/local/bin"
+else
+  set :path, "$PATH:/var/lib/gems/1.8/bin"
+end
 
 namespace :deploy do
   task :start do ; end
