@@ -73,7 +73,6 @@ namespace :deploy do
     run "chmod -R o+rx #{current_path}"
     run "cp #{current_path}/REVISION #{current_path}/app/views/layouts/_revision.html.erb"
     run "date > #{current_path}/app/views/layouts/_build_date.html.erb"
-    run "cd #{current_path} && cp config/#{server_name}.rb config/initializers"
   end
   
   task :before_start do
