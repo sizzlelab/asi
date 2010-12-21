@@ -5,11 +5,30 @@
 
 # Learn more: http://github.com/javan/whenever
 
+
+# use this if you are proxying through apache instead of running
+# ASI with mod_rails (passenger)
+
+#every 1.hour do
+#  command 'wget http://localhost:3000/system/reindex'
+#end
+
+#every 1.day, :at => '3am' do
+#  command 'wget http://localhost:3000/system/upload'
+#  command 'wget http://localhost:3000/system/clean_sessions'
+#end
+
+
+
+# use this if you are running ASI with mod_rails (passenger)
+
+ASI_ROOT = '/opt/asi/current'
+
 every 1.hour do
-  command 'wget http://localhost:3000/system/reindex'
+  command 'cd '+ASI_ROOT+'; rake thinking_sphinx:rebuild;'
 end
 
 every 1.day, :at => '3am' do
-  command 'wget http://localhost:3000/system/upload'
-  command 'wget http://localhost:3000/system/clean_sessions'
+  command 'cd '+ASI_ROOT+'; rake ressi:upload;'
+  Session.cleanup
 end
