@@ -30,5 +30,6 @@ end
 
 every 1.day, :at => '3am' do
   command 'cd '+ASI_ROOT+'; rake ressi:upload;'
-  Session.cleanup
+  command 'cd '+ASI_ROOT+'; rake tmp:sessions:clear;'
+  command 'cd '+ASI_ROOT+'; rake rake db:sessions:clear;'
 end
