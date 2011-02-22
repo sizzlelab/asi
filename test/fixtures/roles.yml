@@ -19,6 +19,36 @@ valid_user:
   person_id: 1
   client_id: 1
   title: user
+  
+valid_user2:
+  id: 22
+  person_id: 2
+  client_id: 1
+  title: user
+
+valid_user3:
+  id: 33
+  person_id: 3
+  client_id: 1
+  title: user
+
+valid_user4:
+  id: 44
+  person_id: 4
+  client_id: 1
+  title: user
+
+valid_user5:
+  id: 55
+  person_id: 5
+  client_id: 1
+  title: user
+  
+valid_user6:
+  id: 66
+  person_id: 6
+  client_id: 1
+  title: user
 
 valid_moderator:
   id: 2
@@ -52,3 +82,17 @@ missing_title:
   id: 7
   person_id: jkl
   client_id: def
+
+kassi_user:
+  id: 8
+  person_id: 1
+  client_id: acm-TkziGr3z9Tab_ZvnhG
+  title: user
+
+kassi_user2:
+  id: 9
+  person_id: 3
+  client_id: acm-TkziGr3z9Tab_ZvnhG
+  title: user
+
+

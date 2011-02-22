@@ -27,3 +27,11 @@ two:
   locality: MyString
   owner_id: "1"
   owner_type: person
+
+three:
+  street_address: MyString
+  postal_code: MyString
+  locality: MyString
+  owner_id: 3
+  owner_type: person
+  

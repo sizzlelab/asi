@@ -3,8 +3,8 @@ require 'test_helper'
 require 'json'
 
 class PeopleControllerTest < ActionController::TestCase
-  fixtures :sessions
-  fixtures :people
+  fixtures :sessions, :people
+  
 
   VALID_PERSON_JSON = '
   {"address":{"street_address":"MyString","postal_code":"MyString","unstructured":"MyString, MyString MyString","locality":"MyString"},"name":{"unstructured":"Juho Makkonen","family_name":"Makkonen","given_name":"Juho"},"birthdate":null,"connection":"you","is_association":null,"role":"user","username":"kusti","gender":{"displayvalue":null,"key":null},"avatar":{"status":"not_set","link":{"rel":"self","href":"\\/people\\/1\\/@avatar"}},"id":"1","phone_number":null,"msn_nick":null,"website":null,"location":{"updated_at":"2008-07-11T12:36:33Z","label":"Otaniemen Alepa","accuracy":58.0,"latitude":60.163389841749,"longitude":24.857125767506},"irc_nick":null,"description":null,"status":{"changed":null,"message":""},"email":"working@address.com"}
@@ -613,6 +613,37 @@ class PeopleControllerTest < ActionController::TestCase
     json = JSON.parse(@response.body)
     assert_equal people(:valid_person).email, json["entry"]["email"]
   end
+  
+  # ASI only gives profile details to those client applications from which the user has logged in (i.e. role exists)
+  def test_profile_info_filtering
+    
+    # Should show profile details when role exists
+    login_as people(:valid_person), clients(:kassi)
+    get :show, { :user_id => people(:contact).guid, :format => "json"}
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    puts json.inspect
+    assert_equal people(:contact).email, json["entry"]["email"]
+    
+    # Should not show profile details when role does not exist for this client
+    login_as people(:valid_person), clients(:two)
+    get :show, { :user_id => people(:contact).guid, :format => "json"}
+    assert_response :success, @response.body
+    json = JSON.parse(@response.body)
+    puts json.inspect
+    assert_nil(json["entry"]["email"])
+    assert_nil(json["entry"]["name"])
+    assert_nil(json["entry"]["address"])
+    assert_nil(json["entry"]["website"])
+    assert_nil(json["entry"]["status"])
+    assert_nil(json["entry"]["birthdate"])
+    assert_nil(json["entry"]["gender"])
+    assert_nil(json["entry"]["avatar"])
+    assert_nil(json["entry"]["msn_nick"])
+    assert_nil(json["entry"]["phone_number"])
+    assert_nil(json["entry"]["msn_nick"])
+    assert_nil(json["entry"]["location"])
+  end
 
   private
 
@@ -633,20 +664,22 @@ class PeopleControllerTest < ActionController::TestCase
     reg = Regexp.new(search.downcase.tr("*", ""))
 
     json["entry"].each do |person|
+      
+      # connection should not be missing, unless that user has no role in the requesting client app
+      if person["role"]
+        assert_not_nil person["connection"], "Missing connection" 
 
-#      assert_not_nil person["name"]
-      assert_not_nil person["connection"], "Missing connection"
-
-      if (Person.find(sessions(:session1).person_id).contacts.include?(Person.find_by_guid(person["id"])))
-        assert_equal("friend", person["connection"]  )
-      elsif (Person.find(sessions(:session1).person_id).pending_contacts.include?(Person.find_by_guid(person["id"])))
-        assert_equal("pending", person["connection"]  )
-      elsif (Person.find(sessions(:session1).person_id).requested_contacts.include?(Person.find_by_guid(person["id"])))
-        assert_equal("requested", person["connection"]  )
-      elsif (sessions(:session1).person == Person.find_by_guid(person["id"]))
-        assert_equal("you", person["connection"]  )
-      else
-        assert_equal("none", person["connection"]  )
+        if (Person.find(sessions(:session1).person_id).contacts.include?(Person.find_by_guid(person["id"])))
+          assert_equal("friend", person["connection"]  )
+        elsif (Person.find(sessions(:session1).person_id).pending_contacts.include?(Person.find_by_guid(person["id"])))
+          assert_equal("pending", person["connection"]  )
+        elsif (Person.find(sessions(:session1).person_id).requested_contacts.include?(Person.find_by_guid(person["id"])))
+          assert_equal("requested", person["connection"]  )
+        elsif (sessions(:session1).person == Person.find_by_guid(person["id"]))
+          assert_equal("you", person["connection"]  )
+        else
+          assert_equal("none", person["connection"]  )
+        end
       end
     end
   end

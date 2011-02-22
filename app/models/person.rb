@@ -226,6 +226,14 @@ class Person < ActiveRecord::Base
   
   def to_hash(user=nil, client=nil)
 
+    # if the requested user is not a user of the requesting client service (i.e. no role yet)
+    # return only minimal hash, without any real details.
+    # The reason is that we don't wan't users' details to appear in services they don't possibly
+    # even know about.
+    if (client && role_title(client.id).blank?)
+      return {'id' => guid, 'username' => username, 'description' => "Profile details are not shown, because this user has never logged in to this service."}
+    end
+
     person_hash = {
       'id' => guid,
       'avatar' => { :link => { :rel => "self", :href => "/people/#{guid}/@avatar" },
