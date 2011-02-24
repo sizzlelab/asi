@@ -12,6 +12,6 @@ class ActionController::Base
       
     end
     
-      old_render options, extra_options, &block
+    old_render options, extra_options, &block
   end
 end

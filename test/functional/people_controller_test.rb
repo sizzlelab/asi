@@ -171,7 +171,7 @@ class PeopleControllerTest < ActionController::TestCase
       post :change_password, { :format => 'html', :id => id,
                                :password => password, :confirm_password => confirm_password},
                              { :cos_session_id => sessions(:client_only_session).id}
-      assert_redirected_to("people/reset_password?id=#{id}",
+      assert_redirected_to("/people/reset_password?id=#{id}",
                            "Testing invalid password combinations. Password: #{password}, Confirmation: #{confirm_password}")
     end
   end
@@ -622,7 +622,6 @@ class PeopleControllerTest < ActionController::TestCase
     get :show, { :user_id => people(:contact).guid, :format => "json"}
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    puts json.inspect
     assert_equal people(:contact).email, json["entry"]["email"]
     
     # Should not show profile details when role does not exist for this client
@@ -630,7 +629,6 @@ class PeopleControllerTest < ActionController::TestCase
     get :show, { :user_id => people(:contact).guid, :format => "json"}
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    puts json.inspect
     assert_nil(json["entry"]["email"])
     assert_nil(json["entry"]["name"])
     assert_nil(json["entry"]["address"])

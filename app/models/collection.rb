@@ -228,7 +228,7 @@ class Collection < ActiveRecord::Base
       if  !(id =~ /^[A-Z0-9_]{8,22}$/i)
         errors.add :id, "is not in valid format. Use only letters, numbers and underscore. Length preferably 22. (min 8)"
       elsif Collection.find_by_id(id)
-        errors.add(:id, "is already taken.")
+        errors.add :id, "is already taken."
       else
         self.user_set_id = id #store id from params to temporary attribute which is used in after_initialize
       end

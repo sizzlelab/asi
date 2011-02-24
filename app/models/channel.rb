@@ -121,7 +121,7 @@ class Channel < ActiveRecord::Base
 
 
   def to_json(*a)
-    return to_hash.to_json
+    return to_hash.to_json(*a)
   end
 
   def touch

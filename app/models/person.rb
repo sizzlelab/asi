@@ -224,13 +224,13 @@ class Person < ActiveRecord::Base
     return success
   end
   
-  def to_hash(user=nil, client=nil)
+  def to_hash(asking_person=nil, asking_client=nil)
 
-    # if the requested user is not a user of the requesting client service (i.e. no role yet)
+    # if the requested user is not a user of the asking_client service (i.e. no role yet)
     # return only minimal hash, without any real details.
     # The reason is that we don't wan't users' details to appear in services they don't possibly
     # even know about.
-    if (client && role_title(client.id).blank?)
+    if (asking_client && role_title(asking_client.id).blank?)
       return {'id' => guid, 'username' => username, 'description' => "Profile details are not shown, because this user has never logged in to this service."}
     end
 
@@ -247,39 +247,29 @@ class Person < ActiveRecord::Base
       person_hash.merge!({ field => self.send(field) })
     end
 
-
-    if user == self || client.andand.show_email?
-      person_hash.merge!({'email' => email})
-    end
-
-    if user
-      person_hash.merge!({'connection' => get_connection_string(user)})
+    if asking_person and asking_person.type == Person
+      person_hash.merge!({'connection' => get_connection_string(asking_person)})
       # if the asker is a friend (or self), include location
-      if location && (person_hash['connection'] == ACCEPTED_CONNECTION_STRING || user == self)
+      if location && (person_hash['connection'] == ACCEPTED_CONNECTION_STRING || asking_person == self)
         person_hash.merge!({:location => location})
       end
     end
 
-    if client
-      person_hash.merge!({'role' => role_title(client.id)})
+    if asking_client
+      person_hash.merge!({'role' => role_title(asking_client.id)})
     end
 
-   #Added by Marcos to possibilite the person_hash to use the rules system with the authorize method
-#    logger.debug "HASH in the begging. Complete: #{person_hash.inspect}"
-    # loop trough the Profile_fields and check if the user is authorize
+    # Added by Marcos to possibilite the person_hash to use the rules system with the authorize method
+    # loop trough the Profile_fields and check if the asking_person is authorized
     # to view each field with the method Rule.Authorize.
-    # if the user is not able to see will delete this entry from the person_hash
+    # if the asking_person is not able to see will delete this entry from the person_hash
     PROFILE_FIELDS.each do |field|
-      if !Rule.authorize?(user, id, "view", field)
-#        logger.debug "Wasnt authorize by the rule"
+      if !Rule.authorize?(asking_person, id, "view", field)
         person_hash.delete(field)
- #       p "Deleted the filed = "+field
-      else
-  #      p "AUTHORIZED the field "+ field
       end
     end
-#    logger.debug "HASH after pass trough the rules : #{person_hash.inspect}"
-   if user == self || client.andand.show_email?
+
+    if asking_person == self || asking_client.andand.show_email?
       person_hash.merge!({'email' => email})
     end
 
@@ -288,8 +278,8 @@ class Person < ActiveRecord::Base
 
 public
 
-  def to_json(client_id=nil, connection=nil, *a)
-    to_hash(connection, Client.find_by_id(client_id)).to_json(*a)
+  def to_json(asking_person=nil, asking_client=nil, *a)
+    to_hash(asking_person, asking_client).to_json(*a)
   end
 
   def moderator?(client)
@@ -377,8 +367,8 @@ public
   private
 
   #returns a string representing the connection between the user and the asker
-  def get_connection_string(asker)
-    type = Connection.type(asker, self)
+  def get_connection_string(asking_person)
+    type = Connection.type(asking_person, self)
     if type == "accepted"
       type = ACCEPTED_CONNECTION_STRING
     end

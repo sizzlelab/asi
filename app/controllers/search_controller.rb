@@ -30,7 +30,7 @@ description:: Performs a fulltext search spanning people, channels, messages and
     query = (params['search'] || "").strip
     result = ThinkingSphinx::Search.search("*#{query}*")
     result.filter_paginate!(params[:per_page], params[:page]) { |r| r.show?(@user, @client) }
-    result.collect! { |r| { :type => r.type, :result => r.to_hash(@user, @client) } }
+    result.collect! { |r| { :type => r.type.to_s, :result => r.to_hash(@user, @client) } }
     render_json :entry => result, :size => result.count_available
   end
 

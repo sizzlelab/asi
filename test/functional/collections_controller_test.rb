@@ -557,24 +557,24 @@ class CollectionsControllerTest < ActionController::TestCase
     assert_equal(test_id, json['entry']["id"])
 
     # Test that can't make an other collection with same id
-     post :create, { :app_id => clients(:one).id, :format => 'json', :title => "test-collection", :id => test_id},
+    post :create, { :app_id => clients(:one).id, :format => 'json', :collection => { :title => "test-collection", :id => test_id} },
                     { :client => clients(:one).id, :cos_session_id => sessions(:session1).id }
     assert_response :bad_request, @response.body
     json = JSON.parse(@response.body)
     assert(json.to_s.match(/is already taken/), "No message about the id being already taken")
 
     # Test that can't make with too short ID
-     post :create, { :app_id => clients(:one).id, :format => 'json', :title => "shortID", :id => test_id},
+     post :create, { :app_id => clients(:one).id, :format => 'json', :collection => { :title => "shortID", :id => "shortID"} },
                     { :client => clients(:one).id, :cos_session_id => sessions(:session1).id }
     assert_response :bad_request, @response.body
 
     # Test that can't make with too long ID
-     post :create, { :app_id => clients(:one).id, :format => 'json', :title => "over_22_chars_long_id12", :id => test_id},
+    post :create, { :app_id => clients(:one).id, :format => 'json', :collection => { :title => "over_22_chars_long_id12", :id => "over_22_chars_long_id12"} },
                     { :client => clients(:one).id, :cos_session_id => sessions(:session1).id }
     assert_response :bad_request, @response.body
 
     # Test that can't make id with illegal characters
-     post :create, { :app_id => clients(:one).id, :format => 'json', :title => "id_with_€%&_spice", :id => test_id},
+    post :create, { :app_id => clients(:one).id, :format => 'json', :collection => { :title => "id_with_€%&_spice", :id => "id_with_€%&_spice"} },
                     { :client => clients(:one).id, :cos_session_id => sessions(:session1).id }
     assert_response :bad_request, @response.body
 

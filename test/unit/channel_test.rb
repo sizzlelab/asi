@@ -98,7 +98,7 @@ class ChannelTest < ActiveSupport::TestCase
     assert_nothing_raised(ActiveRecord::RecordNotFound) {channel1.group_subscribers.find_by_id(groups(:open))}
     assert_not_nil channel1.group_subscribers.find_by_id(groups(:open))
     
-    assert_raise(ActiveRecord::RecordNotFound) {channel1.group_subscriber_ids = %w( foo bar)}
+    assert_raise(ActiveRecord::AssociationTypeMismatch) {channel1.group_subscriber_ids = %w( foo bar )}
     
     assert channel1.valid?
   end

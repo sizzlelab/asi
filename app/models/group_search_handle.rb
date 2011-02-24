@@ -39,8 +39,8 @@ class GroupSearchHandle < ActiveRecord::Base
     group.to_hash(user, client)
   end
 
-  def to_json
-    group.to_json
+  def to_json(*a)
+    group.to_json(*a)
   end
 
   def type

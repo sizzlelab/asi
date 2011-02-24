@@ -67,7 +67,7 @@ description:: Get the binary object data only.
     end
 
     unless @bin_object.data
-      @bin_object.data = []
+      @bin_object.data = ""
     end
 
     send_data(@bin_object.data, options)

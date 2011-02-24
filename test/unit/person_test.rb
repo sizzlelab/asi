@@ -141,7 +141,7 @@ class PersonTest < ActiveSupport::TestCase
     person.rules.each { |r| r.destroy }
     person.reload
     
-    raw_json = person.to_json(person.roles[0].client.id, person)
+    raw_json = person.to_json(person, person.roles[0].client)
     
     assert_equal raw_json.gsub("gender", ""), raw_json.sub("gender", ""), "Duplicate gender key"
 
@@ -217,13 +217,13 @@ class PersonTest < ActiveSupport::TestCase
 
   def test_self_connection
     p = @valid_person
-    json = JSON.parse(p.to_json(clients(:one), p))
+    json = JSON.parse(p.to_json(p, clients(:one)))
     assert_equal "you", json["connection"]
   end
 
   def test_friend_connection
     p = @valid_person
-    json = JSON.parse(p.to_json(clients(:one), p.contacts[0]))
+    json = JSON.parse(p.to_json(p.contacts[0], clients(:one)))
     assert_equal "friend", json["connection"]
   end
 
@@ -232,7 +232,7 @@ class PersonTest < ActiveSupport::TestCase
     json = JSON.parse(p.to_json)
     assert_nil json["email"]
 
-    json = JSON.parse(p.to_json(clients(:kassi).id))
+    json = JSON.parse(p.to_json(nil, clients(:kassi)))
     assert_equal p.email, json["email"]
   end
 
