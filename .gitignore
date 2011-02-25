@@ -17,3 +17,4 @@ db/development_structure.sql
 db/production_structure.sql
 app/views/api
 .rvmrc
+.bundle
