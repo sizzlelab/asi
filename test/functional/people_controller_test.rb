@@ -56,7 +56,7 @@ class PeopleControllerTest < ActionController::TestCase
     user = assigns["person"]
     assert_not_nil user
     json = JSON.parse(@response.body)
-    if VALIDATE_EMAILS
+    if Asi::Application.config.VALIDATE_EMAILS
       assert_equal(1, @emails.length)
       assert_not_nil(user.pending_validation)
       assert_equal(user.id, user.pending_validation.person_id)
@@ -135,7 +135,7 @@ class PeopleControllerTest < ActionController::TestCase
 
     mail = ActionMailer::Base.deliveries.first
 
-    id = mail.body[/id=(.*)/, 1]
+    id = mail.body.decoded[/id=(.*)/, 1]
 
     get :reset_password, { :format => 'html', :id => id },
                          { :cos_session_id => sessions(:client_only_session).id}
@@ -165,7 +165,7 @@ class PeopleControllerTest < ActionController::TestCase
     assert !ActionMailer::Base.deliveries.empty?
 
     mail = ActionMailer::Base.deliveries.first
-    id = mail.body[/id=(.*)/, 1]
+    id = mail.body.decoded[/id=(.*)/, 1]
 
     { "password" => "pass" , "o" => "o", "" => "" }.each do |password, confirm_password|
       post :change_password, { :format => 'html', :id => id,
@@ -227,8 +227,6 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :bad_request
     #assert_not_equal("Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa", assigns["person"].name.given_name)
     json = JSON.parse(@response.body)
-   # puts json
-
 
     # try to update with too long given name
     put :update, {
@@ -368,7 +366,9 @@ class PeopleControllerTest < ActionController::TestCase
     assert_not_nil assigns["person"]
     assert_not_nil assigns["friends"]
     assert_equal(assigns["person"].contacts, assigns["friends"])
+
     json = JSON.parse(@response.body)
+    assert !json["entry"].empty?
     assert_equal people(:invalid_person).username, json["entry"][0]["username"]
     assert_equal people(:friend).username, json["entry"][1]["username"]
 

@@ -4,6 +4,7 @@ development:
   adapter: mysql
   database: commonservices_development
   encoding: utf8
+  collation: utf8_general_ci
   username: cos
   password: put_your_db_password_here
   host: localhost
@@ -15,6 +16,7 @@ test:
   adapter: mysql
   database: commonservices_test
   encoding: utf8
+  collation: utf8_general_ci
   username: cos
   password: put_your_db_password_here
   host: localhost
@@ -23,6 +25,7 @@ production:
   adapter: mysql
   database: commonservices_production
   encoding: utf8
+  collation: utf8_general_ci
   username: cos
   password: put_your_db_password_here
   host: localhost

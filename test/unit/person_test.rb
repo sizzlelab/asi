@@ -52,7 +52,7 @@ class PersonTest < ActiveSupport::TestCase
      assert !@invalid_person.valid?
      attributes = [:username, :email]
      attributes.each do |attribute|
-       assert @invalid_person.errors.invalid?(attribute)
+       assert @invalid_person.errors[attribute].any?
      end
    end
 
@@ -60,14 +60,14 @@ class PersonTest < ActiveSupport::TestCase
   def test_uniqueness_of_username
     person_repeat = Person.new(:username => @valid_person.username.upcase)
     assert !person_repeat.valid?
-    assert_equal @error_messages[:taken], person_repeat.errors.on(:username), "Test must be case sensitive."
+    assert_equal @error_messages[:taken], person_repeat.errors[:username][0], "Test must be case sensitive."
   end
 
   # Check uniqueness of email.
   def test_uniqueness_of_email
     person_repeat = Person.new(:email => @valid_person.email.upcase)
     assert !person_repeat.valid?
-    assert_equal @error_messages[:taken], person_repeat.errors.on(:email), "Test must be case sensitive."
+    assert_equal @error_messages[:taken], person_repeat.errors[:email][0], "Test must be case sensitive."
   end
 
   # Check that username is not too long or too short.
@@ -128,7 +128,7 @@ class PersonTest < ActiveSupport::TestCase
     invalid_emails.each do |email|
       person.email = email
       assert !person.valid?, "#{email} tests as valid but shouldn't be"
-      assert_equal "is invalid", person.errors.on(:email)
+      assert_equal "is invalid", person.errors[:email][0]
     end
   end
 
@@ -142,7 +142,7 @@ class PersonTest < ActiveSupport::TestCase
     person.reload
     
     raw_json = person.to_json(person, person.roles[0].client)
-    
+
     assert_equal raw_json.gsub("gender", ""), raw_json.sub("gender", ""), "Duplicate gender key"
 
     json = JSON.parse(raw_json)

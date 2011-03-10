@@ -4,7 +4,7 @@ class ClientController < ApplicationController
     # TODO: now returns roles, would people be better?
     if params['roles']
       role = params['roles'].singularize
-      @people = Role.find(:all, :conditions => {:client_id => params['app_id'], :title => role})
+      @people = Role.all.where(:client_id => params['app_id'], :title => role)
     elsif params['user_id']
       @people = Role.find_all_by_person_and_client_id(params['user_id'], params['app_id'])
     else

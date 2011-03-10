@@ -10,7 +10,7 @@ class RuleTest < ActiveSupport::TestCase
     rule = Rule.new
     assert !rule.valid?
     # The owner field should have validation errors
-    assert rule.errors.invalid?(:owner)
+    assert rule.errors[:owner].any?
   end
 
   # test validates_presence_of [:rule_name, :state, :logic]
@@ -19,11 +19,11 @@ class RuleTest < ActiveSupport::TestCase
     rule = Rule.new(:person_id => owner.id)
     assert !rule.valid?
     # The rule_name field should have validation errors
-    assert rule.errors.invalid?(:rule_name)
+    assert rule.errors[:rule_name].any?
     # The state field should have validation errors
-    assert rule.errors.invalid?(:state)
+    assert rule.errors[:state].any?
     # The logic field should have validation errors
-    assert rule.errors.invalid?(:logic)
+    assert rule.errors[:logic].any?
   end
 
   # test validates_length_of :rule_name, :within => NAME_MIN_LENGTH..NAME_MAX_LENGTH
@@ -61,7 +61,7 @@ class RuleTest < ActiveSupport::TestCase
                     :logic=>"and")
     assert !rule.valid?
     # The state field should have validation errors
-    assert rule.errors.invalid?(:state)
+    assert rule.errors[:state].any?
   end
 
   # test validates_inclusion_of :logic,
@@ -76,7 +76,7 @@ class RuleTest < ActiveSupport::TestCase
                     :logic=>"aaaaaand")
     assert !rule.valid?
     # The logic field should have validation errors
-    assert rule.errors.invalid?(:logic)
+    assert rule.errors[:logic].any?
   end
 
   # test update_attributes

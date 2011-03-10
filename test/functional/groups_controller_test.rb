@@ -520,7 +520,7 @@ class GroupsControllerTest < ActionController::TestCase
   end
 
   test "show_membership" do
-    group = Factory.create_group
+    group = Factory(:group)
     login_as group.creator
     get :show_membership, { :user_id => group.creator.guid, :group_id => group.id, :format => 'json' }
     assert_response :ok, @response.body
@@ -529,8 +529,8 @@ class GroupsControllerTest < ActionController::TestCase
   end
 
   test "show_membership_not_there" do
-    user = Factory.create_person
-    group = Factory.create_group
+    user = Factory(:person)
+    group = Factory(:group)
     login_as user
     [ [user.guid, "myrandomstring"], ["myrandomstring", group.id], [ "nosuchuser", "nosuchgroup" ] ].each do |a|
       get :show_membership, { :user_id => a[0], :group_id => a[1], :format => 'json' }
@@ -544,7 +544,7 @@ class GroupsControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal 1, Group.find_by_id(groups(:personal).id).members.count
     
-    post :add_member, {:group_id =>  groups(:personal).id, :user_id => Factory.create_person.guid, :format => 'json' },
+    post :add_member, {:group_id =>  groups(:personal).id, :user_id => Factory(:person).guid, :format => 'json' },
                       { :cos_session_id => sessions(:session4).id }
     assert_response :forbidden
     assert_equal 1, Group.find_by_id(groups(:personal).id).members.count

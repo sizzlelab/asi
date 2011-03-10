@@ -48,8 +48,8 @@ json:: { "entry" =>
 =end
   def create
 
-    if REQUIRE_SSL_LOGIN
-      unless request.ssl? || local_request?
+    if Asi::Application.config.REQUIRE_SSL_LOGIN
+      unless request.ssl? || request.local?
         redirect_to :protocol => "https://" and return
       end
     end
@@ -108,7 +108,7 @@ json:: { "entry" =>
 
         if (params[:proxy_ticket]) # CAS Proxy Ticket
           conf = Hash.new()
-          cas_logger = CASClient::Logger.new(RAILS_ROOT+'/log/cas.log')
+          cas_logger = CASClient::Logger.new(Rails.root.join('log/cas.log'))
           cas_logger.level = Logger::DEBUG
           conf[:cas_base_url] = APP_CONFIG.cas_base_url
           #conf[:validate_url] = conf[:cas_base_url] + '/proxyValidate'
@@ -148,7 +148,7 @@ json:: { "entry" =>
         end
       end
 
-      if VALIDATE_EMAILS && PendingValidation.find_by_person_id(@session.person_id)
+      if Asi::Application.config.VALIDATE_EMAILS && PendingValidation.find_by_person_id(@session.person_id)
          @session.destroy
          if ui_mode
            flash[:warning] = "The email address for this user account is not yet confirmed. Logging in requires confirmation."

@@ -1,7 +1,9 @@
 #A class for representing the resource structure of an RESTful rails application
 #Sampo Toiva
-app_root = File.join(File.dirname(__FILE__), '..', '..', '..') 
-require File.join(app_root, 'config', 'environment.rb')
+#app_root = File.join(File.dirname(__FILE__), '..', '..', '..') 
+#puts File.join(app_root, 'config', 'environment.rb')
+require ::File.expand_path('../../../../config/environment',  __FILE__)
+#require File.join(app_root, 'config', 'environment.rb')
 
 require File.join(File.dirname(__FILE__), 'resource_node.rb')
 
@@ -10,8 +12,16 @@ class ResourceTree
   
   def initialize(exceptions = [])
     self.resources = Array.new
-    @routes = ActionController::Routing::Routes
+    #@routes = ActionController::Routing::Routes
+    @routes = Rails.application.routes
+    
     @exceptions = exceptions << ":controller"
+    @exceptions = exceptions << "/rails/info/properties(.:format)"
+    @exceptions = exceptions << "/rules(.:format)"
+    @exceptions = exceptions << "/rules/new(.:format)"
+    @exceptions = exceptions << "/rules/:id/edit(.:format)"
+    @exceptions = exceptions << "/rules/:id(.:format)"
+    
     init_structure
   end
   
@@ -38,15 +48,16 @@ class ResourceTree
   def read_routes_into_nodes
     puts 'Reading routes into nodes'
     @routes.routes.each do |d|
-      path = d.segments.inject("") { |str,s| str << s.to_s }
+      #path = d.segment_keys.inject("") { |str,s| str << s.to_s }
+      path = d.path
      
       unless @exceptions.include?(path) || @exceptions.include?(path.split(/\//)[1]) || @exceptions.include?(path[1, path.length-2])
-        node = ResourceNode.new(path, d.defaults[:controller], d.parameter_shell[:description])
+        node = ResourceNode.new(path, d.requirements[:controller], '')
         unless self.resources.include? node
           self.resources << node
         end
         node =  self.resources.find { |r| r == node }
-        node.add_method(d.conditions[:method], d.parameter_shell[:action])
+        node.add_method(d.conditions[:method], d.requirements[:action])
       end
     end
     

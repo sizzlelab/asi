@@ -12,6 +12,7 @@ p { margin: 0 }
 -->
 </style>
 <h2>Error report from <%= Time.now %></h2>
+<p>[sent on: <%= @sent_on %>]</p>
 
 <table border="0">
 <tr><td>Message</td><td><%= @exception.message %></td></tr>

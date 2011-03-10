@@ -10,7 +10,7 @@ class UserMailerTest < ActionMailer::TestCase
   def test_welcome
     person = people(:valid_person)
     client = clients(:one)
-    UserMailer.deliver_welcome(person, client)
+    UserMailer.welcome(person, client).deliver
     
     assert !ActionMailer::Base.deliveries.empty?
     mail = ActionMailer::Base.deliveries.first
@@ -22,7 +22,7 @@ class UserMailerTest < ActionMailer::TestCase
 
   def test_registration_confirmation
     person = people(:valid_person)
-    mail = UserMailer.create_registration_confirmation(person, "random_key")
+    mail = UserMailer.registration_confirmation(person, "random_key")
     assert_equal(APP_CONFIG.asi_mail_from_address, mail.from.first)
     assert_equal( "OtaSizzle registration confirmation", mail.subject)
     assert_equal(person.email, mail.to.first)
@@ -35,9 +35,9 @@ class UserMailerTest < ActionMailer::TestCase
 
     key = CryptoHelper.encrypt("#{person.id}:#{person.salt}")
 
-    UserMailer.deliver_recovery(:key => key,
-                                  :email => person.email,
-                                  :domain => APP_CONFIG.server_domain)
+    UserMailer.recovery(:key => key,
+                        :email => person.email,
+                        :domain => APP_CONFIG.server_domain).deliver
                                                             
     assert !ActionMailer::Base.deliveries.empty?
 

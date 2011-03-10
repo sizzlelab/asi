@@ -16,5 +16,6 @@ db/test_structure.sql
 db/development_structure.sql
 db/production_structure.sql
 app/views/api
+vendor/plugins/rails_upgrade/
 .rvmrc
 .bundle

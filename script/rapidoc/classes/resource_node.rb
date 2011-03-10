@@ -88,6 +88,7 @@ class ResourceNode
 
   # returns the location of the controller that is to be parsed
   def controller_location
+    #puts self.controller
     File.join(File.dirname(__FILE__), '..', '..', '..', 'app', 'controllers', "#{self.controller}_controller.rb")
   end
 
@@ -165,7 +166,7 @@ class ResourceNode
 
     #self.parent ? view_path = "#{self.parent.path}" : view_path = ""
     view_path = self.path.delete(':')
-    view_path = view_path.match(/(.*)\/[^\/]+\//)[1]
+    view_path = view_path.match(/(.*)\/[^\/]+\/?/)[1]
 
     FileUtils.mkdir_p File.join(File.dirname(__FILE__), '..', '..', '..', 'app', 'views', 'api', view_path )
     File.open(File.join(File.dirname(__FILE__), '..', '..', '..', 'app', 'views', 'api', view_path, self.name.delete(':') + ".html.erb"), 'w') do

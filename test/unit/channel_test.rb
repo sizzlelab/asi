@@ -18,6 +18,7 @@
 require 'test_helper'
 
 class ChannelTest < ActiveSupport::TestCase
+  fixtures :channels, :groups
 
   def test_name
     channel1 = Channel.new(:description => "testikanava" , :owner => people(:test), 
@@ -98,15 +99,15 @@ class ChannelTest < ActiveSupport::TestCase
     assert_nothing_raised(ActiveRecord::RecordNotFound) {channel1.group_subscribers.find_by_id(groups(:open))}
     assert_not_nil channel1.group_subscribers.find_by_id(groups(:open))
     
-    assert_raise(ActiveRecord::AssociationTypeMismatch) {channel1.group_subscriber_ids = %w( foo bar )}
+    assert_raise(ActiveRecord::RecordNotFound) {channel1.group_subscriber_ids = %w( foo bar )}
     
     assert channel1.valid?
   end
 
-  test "group_subscription" do
-    group = Factory.create_group(nil, { :title => "Kamppi"})
-    channel = Factory.create_channel(nil, { :channel_type => "group", :name => "Kamppi" })
-    channel.save
+  def test_group_subscription
+    group = Factory(:group, { :title => "Kamppi"})
+    channel = Factory(:channel, { :channel_type => "group", :name => "Kamppi" })
+    group.save
     channel.save
   end
   

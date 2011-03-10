@@ -34,7 +34,7 @@
   </div>
 
 <% @person.build_name unless @person.name %>  
-<% f.fields_for :name, @person.name do |name_fields| %>
+<%= f.fields_for :name, @person.name do |name_fields| %>
   <div class="profile_info_field">  
     <div class="profile_update_form_left">
       Given name:

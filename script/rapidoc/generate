@@ -1,11 +1,7 @@
-#!/usr/bin/ruby
-require 'fileutils'
+#!/bin/bash
 
-require File.join(File.dirname(__FILE__), 'classes', 'resource_tree.rb')
-require File.join(File.dirname(__FILE__), 'classes', 'doc_util.rb')
+# 'import' rvm
+# source ~/.rvm/scripts/rvm
 
-tree = ResourceTree.new ['/', 'confirmation', 'api', 'doc', 'admin', 'coreui', 'tutorial', 'test', 'transactions', 'people/change_password', 'people/reset_password', 'system']
-
-FileUtils.rm_rf(File.join(FileUtils.pwd, 'app', 'views', 'api'))
-
-tree.generate_doc
+cd `dirname $0`
+ruby generate.rb

@@ -1,304 +1,203 @@
-module COSRoutes
 
-  def documentation(route)
-    connect "doc" + route, :controller => 'api',
-                           :format => 'html',
-                           :action => 'api'
-    connect "api" + route, :controller => 'api',
-                           :format => "html",
-                           :action => 'api'
-  end
 
-  def resource(route, options)
-    documentation route.gsub(":", "")
-    options.except(:controller, :format_get, :format_put, :format_post).each do |method, action|
-      if method.to_s.eql?("get")
-        format = options[:format_get] || 'json'
-      elsif method.to_s.eql?("post") || method.to_s.eql?("put")
-        format = options[:format_post] || 'json'
-      else
-        format = 'json'
+
+
+Asi::Application.routes.draw do
+  # admin
+  namespace :admin do
+    resources :feedbacks do
+      member do
+        put :handle
       end
-      connect route, :controller => options[:controller],
-                     :format => format,
-                     :action => action,
-                     :conditions => { :method => method }
     end
   end
-end
-
-ActionController::Routing::Routes.draw do |map|
-
-  map.extend(COSRoutes)
-
-  map.namespace :admin do |admin|
-    admin.resources :feedbacks, :member => { :handle => :put }
-  end
-
-  map.namespace :coreui do |coreui|
-    coreui.root :controller => 'profile',
-                :action => 'index',
-                :conditions => { :method => :get }
-    coreui.resources :profile, :collection => { :question => [:get], :create => [:post], :new => [:post], :link => [:post, :get]}
-    coreui.resources :privacy
+  
+  # coureui
+  namespace :coreui do
+    match '/', :to => 'profile#index', :via => :get
+    resources :profile do
+      collection do
+        get :question
+        post :create
+        post :new
+        post :link
+        get :link
+      end
+    end
+    resources :privacy
   end
 
   # Application-specific client data
-  map.resource '/appdata', :controller => 'appdata',
-                           :get => 'index'
+  match '/appdata', :to => 'appdata#index', :format => 'json'
+  match '/appdata/:user_id/@self/:app_id', :to => 'client_data#show', :via => :get, :format => 'json'
+  match '/appdata/:user_id/@self/:app_id', :to => 'client_data#update', :via => :put, :format => 'json'
 
-  map.resource '/appdata/:user_id/@self/:app_id', :controller => 'client_data',
-                                                  :get => 'show',
-                                                  :put => 'update'
+  match '/appdata/:app_id/@collections', :to => 'collections#index', :via => :get, :format => 'json'
+  match '/appdata/:app_id/@collections', :to => 'collections#create', :via => :post, :format => 'json'
 
-  map.resource '/appdata/:app_id/@collections', :controller => 'collections',
-                                                :get => 'index',
-                                                :post => 'create'
+  match '/appdata/:app_id/@collections/:id', :to => 'collections#show', :via => :get, :format => 'json'
+  match '/appdata/:app_id/@collections/:id', :to => 'collections#delete', :via => :delete, :format => 'json'
+  match '/appdata/:app_id/@collections/:id', :to => 'collections#add', :via => :post, :format => 'json'
+  match '/appdata/:app_id/@collections/:id', :to => 'collections#update', :via => :put, :format => 'json'
 
-  map.resource '/appdata/:app_id/@collections/:id', :controller => 'collections',
-                                                    :get => 'show',
-                                                    :delete => 'delete',
-                                                    :post => 'add',
-                                                    :put => 'update'
-
-  map.resource '/appdata/:app_id/@collections/:id/@items/:item_id', :controller => 'collections',
-                                                   # :get => 'show_item',
-                                                    :delete => 'delete_item'
+  match '/appdata/:app_id/@collections/:id/@items/:item_id', :to => 'collections#delete_item', :via => :delete, :format => 'json'
 
   #shortcut for the longer url above (without collection id)
-  map.resource '/appdata/:app_id/@collection_items/:item_id', :controller => 'collections',
-                                                   # :get => 'show_item',
-                                                    :delete => 'delete_item'
+  match '/appdata/:app_id/@collection_items/:item_id', :to => 'collections#delete_item', :via => :delete, :format => 'json'
 
-  # Role management (Person-client-connection)
 
-  # map.resource '/appdata/:app_id/@people', :controller => 'client', :get => 'index'
-
-  # map.resource '/appdata/:app_id/@people/:roles', :controller => 'client', :get => 'index'
-
-  # map.resource '/people/:user_id/@apps', :controller => 'client', :get => 'index_services',
-  #                                                                 :post => 'create'
-
-  # map.resource '/people/:user_id/@apps/:app_id/@role', :controller => 'client', :get => 'show',
-  #                                                                               :delete => 'delete',
-  #                                                                               :post => 'create',
-  #                                                                               :put => 'update'
 
   # People
+  match '/people/:user_id/@self', :to => 'people#show', :via => :get, :format => 'json'
+  match '/people/:user_id/@self', :to => 'people#update', :via => :put, :format => 'json'
+  match '/people/:user_id/@self', :to => 'people#delete', :via => :delete, :format => 'json'
 
-  map.resource '/people/:user_id/@self', :controller => 'people',
-                                         :get => 'show',
-                                         :put => 'update',
-                                         :delete => 'delete'
+  match '/people/:user_id/@avatar', :to => 'avatars#show', :via => :get, :format => 'jpg'
+  match '/people/:user_id/@avatar', :to => 'avatars#update', :via => :post, :format => 'html'
+  match '/people/:user_id/@avatar', :to => 'avatars#delete', :via => :delete, :format => 'json'
 
-  map.resource '/people/:user_id/@avatar', :controller => 'avatars',
-                                           :get => 'show',
-                                           :post => 'update',
-                                           :delete => 'delete',
-                                           :format_get => 'jpg',
-                                           :format_post => 'html'
+  match '/people/:user_id/@avatar/large_thumbnail', :to => 'avatars#show_large_thumbnail', :via => :get, :format => 'jpg'
+  match '/people/:user_id/@avatar/small_thumbnail', :to => 'avatars#show_small_thumbnail', :via => :get, :format => 'jpg'
 
+  match '/people', :to => 'people#index', :via => :get, :format => 'json'
+  match '/people', :to => 'people#create', :via => :post, :format => 'json'
 
-  map.resource '/people/:user_id/@avatar/large_thumbnail', :controller => 'avatars',
-                                                           :get => 'show_large_thumbnail',
-                                                           :format_get => 'jpg'
+  match '/people/:user_id/@friends', :to => 'people#get_friends', :via => :get, :format => 'json'
+  match '/people/:user_id/@friends', :to => 'people#add_friend', :via => :post, :format => 'json'
 
-  map.resource '/people/:user_id/@avatar/small_thumbnail', :controller => 'avatars',
-                                                           :get => 'show_small_thumbnail',
-                                                           :format_get => 'jpg'
+  match '/people/:user_id/@pending_friend_requests', :to => 'people#pending_friend_requests', :via => :get, :format => 'json'
 
-  map.resource '/people', :controller => 'people',
-                          :post => 'create',
-                          :get => 'index'
+  match '/people/:user_id/@pending_friend_requests/:friend_id', :to => 'people#reject_friend_request', :via => :delete, :format => 'json'
 
-  map.resource '/people/:user_id/@friends', :controller => 'people',
-                                            :get => 'get_friends',
-                                            :post => 'add_friend'
+  match '/people/:user_id/@friends/:friend_id', :to => 'people#remove_friend', :via => :delete, :format => 'json'
 
-  map.resource '/people/:user_id/@pending_friend_requests', :controller => 'people',
-                                                            :get => 'pending_friend_requests'
+  match '/people/:user_id/@location', :to => 'locations#get', :via => :get, :format => 'json'
+  match '/people/:user_id/@location', :to => 'locations#update', :via => :put, :format => 'json'
+  match '/people/:user_id/@location', :to => 'locations#update', :via => :post, :format => 'json'
+  match '/people/:user_id/@location', :to => 'locations#destroy', :via => :delete, :format => 'json'
 
-  map.resource '/people/:user_id/@pending_friend_requests/:friend_id', :controller => 'people',
-                                                                       :delete => 'reject_friend_request'
+  match '/people/:user_id/@location/@location_security_token', :to => 'locations#fetch_location_security_token', :via => :get, :format => 'json'
 
-
-  map.resource '/people/:user_id/@friends/:friend_id', :controller => 'people',
-                                                       :delete => 'remove_friend'
-
-  map.resource '/people/:user_id/@location', :controller => 'locations',
-                                             :get => 'get',
-                                             :put => 'update',
-                                             :post => 'update',
-					     :delete => 'destroy'	
-
-  map.resource '/people/:user_id/@location/@location_security_token', :controller => 'locations',
-                                                                     :get => 'fetch_location_security_token'
-
-  map.resource '/people/recover_password', :controller => 'people',
-                                           :post => 'recover_password'
+  match '/people/recover_password', :to => 'people#recover_password', :via => :post, :format => 'json'
   
-  map.resource '/people/availability', :controller => 'people',
-                                           :get => 'availability'
+  match '/people/availability', :to => 'people#availability', :via => :get, :format => 'json'
 
-  map.connect '/people/reset_password', :controller => 'people',
-                                        :action => 'reset_password', :conditions => { :method => :get }
+  match '/people/reset_password', :to => 'people#reset_password', :via => :get, :format => 'json'
 
-  map.connect '/people/change_password', :controller => 'people',
-                                         :action => 'change_password', :format => 'html', :conditions => { :method => :post }
+  match '/people/change_password', :to => 'people#change_password', :via => :post, :format => 'html'
 
-  map.resource '/people/:user_id/@groups', :controller => 'groups',
-                                           :get => 'get_groups_of_person',
-                                           :post => 'add_member'
+  match '/people/:user_id/@groups', :to => 'groups#get_groups_of_person', :via => :get, :format => 'json'
+  match '/people/:user_id/@groups', :to => 'groups#add_member', :via => :post, :format => 'json'
 
-  map.resource '/people/:user_id/@groups/@invites', :controller => 'groups',
-                                                    :get => 'get_invites'
+  match '/people/:user_id/@groups/@invites', :to => 'groups#get_invites', :via => :get, :format => 'json'
 
+  match '/people/:user_id/@groups/:group_id', :to => 'groups#show_membership', :via => :get, :format => 'json'
+  match '/people/:user_id/@groups/:group_id', :to => 'groups#update_membership_status', :via => :put, :format => 'json'
+  match '/people/:user_id/@groups/:group_id', :to => 'groups#remove_person_from_group', :via => :delete, :format => 'json'
 
-  map.resource '/people/:user_id/@groups/:group_id', :controller => 'groups',
-                                                     :put => 'update_membership_status',
-                                                     :get => 'show_membership',
-                                                     :delete => 'remove_person_from_group'
+  match '/people/:user_id/@groups', :to => 'groups#get_groups_of_person', :via => :get, :format => 'json'
+  match '/people/:user_id/@groups', :to => 'groups#add_member', :via => :post, :format => 'json'
 
-  map.resource '/people/:user_id/@groups', :controller => 'groups',
-                                           :get => 'get_groups_of_person',
-                                           :post => 'add_member'
   # Groups
+  match '/groups', :to => 'groups#create', :via => :post, :format => 'json'
 
-  map.resource '/groups', :controller => 'groups',
-                          :post => 'create'
-
-  map.resource '/groups/@public', :controller => 'groups',
-                                  :get => 'public_groups'
+  match '/groups/@public', :to => 'groups#public_groups', :via => :get, :format => 'json'
 
   # Deprecated
-  map.resource '/groups/:group_id', :controller => 'groups',
-                                    :get => 'show',
-                                    :put => 'update'
+  match '/groups/:group_id', :to => 'groups#show', :via => :get, :format => 'json'
+  match '/groups/:group_id', :to => 'groups#update', :via => :put, :format => 'json'
 
-
-  map.resource '/groups/:group_id/@members', :controller => 'groups',
-                                                     :get => 'get_members'
+  match '/groups/:group_id/@members', :to => 'groups#get_members', :via => :get, :format => 'json'
 
   # New version
-  map.resource '/groups/@public/:group_id', :controller => 'groups',
-                                            :get => 'show',
-                                            :put => 'update'
+  match '/groups/@public/:group_id', :to => 'groups#show', :via => :get, :format => 'json'
+  match '/groups/@public/:group_id', :to => 'groups#update', :via => :put, :format => 'json'
 
-  map.resource '/groups/@public/:group_id/@members', :controller => 'groups',
-                                             :get => 'get_members'
+  match '/groups/@public/:group_id/@members', :to => 'groups#get_members', :via => :get, :format => 'json'
 
   # Location shortcut
-
-  map.resource '/groups/@public/:group_id/@pending', :controller => 'groups',
-                   :get => 'get_pending_members'
+  match '/groups/@public/:group_id/@pending', :to => 'groups#get_pending_members', :via => :get, :format => 'json'
   
-  map.resource '/location/single_update', :controller => 'locations',
-                                          :post => 'update'
+  match '/location/single_update', :to => 'locations#update', :via => :post, :format => 'json'
 
 
-  #Rules
+  # Rules
+  # Define ways to access the enable and disable from the view with the put method
+  match '/coreui/privacy/:user_id/rules/:rule_id/enable',  :to => 'rules#enable', :via => :put
+  match '/coreui/privacy/:user_id/rules/:rule_id/disable',  :to => 'rules#disable', :via => :put
 
-    #Define ways to access the enable and disable from the view with the put method
-  map.connect '/coreui/privacy/:user_id/rules/:rule_id/enable',  :controller => 'rules',
-                                                         :action => 'enable',
-                                                         :method => 'put'
+  # Rails will create the default routes like http://guides.rubyonrails.org/routing.html 3.2 CRUD, Verbs, and Actions
+  resources :rules, :path_prefix => '/coreui/privacy/:user_id'
 
-  map.connect '/coreui/privacy/:user_id/rules/:rule_id/disable',  :controller => 'rules',
-                                                          :action => 'disable',
-                                                          :method => 'put'
+  # Session
+  match '/session', :to => 'sessions#show', :via => :get, :format => 'json'
+  match '/session', :to => 'sessions#destroy', :via => :delete, :format => 'json'
+  match '/session', :to => 'sessions#create', :via => :post, :format => 'json'
 
-    #Rails will create the default routes like http://guides.rubyonrails.org/routing.html 3.2 CRUD, Verbs, and Actions
-  map.resources :rules, :path_prefix => '/coreui/privacy/:user_id'
 
-  # Others
+  # Search
+  match '/search', :to => 'search#search', :via => :get, :format => 'json'
 
-  map.resource '/session', :controller => 'sessions',
-                           :get => 'show',
-                           :delete => 'destroy',
-                           :post => 'create'
-
-  map.resource '/search', :controller => 'search',
-                          :get => 'search'
 
   # Channels
-  map.resource '/channels', :controller => 'channels',
-                            :get => 'index',
-                            :post => 'create'
+  match '/channels', :to => 'channels#index', :via => :get, :format => 'json'
+  match '/channels', :to => 'channels#create', :via => :post, :format => 'json'
 
-  map.resource '/channels/:channel_id/', :controller => 'channels',
-                                         :get => 'show',
-                                         :put => 'edit',
-                                         :delete => 'delete'
+  match '/channels/:channel_id/', :to => 'channels#show', :via => :get, :format => 'json'
+  match '/channels/:channel_id/', :to => 'channels#edit', :via => :put, :format => 'json'
+  match '/channels/:channel_id/', :to => 'channels#delete', :via => :delete, :format => 'json'
 
-  map.resource '/channels/:channel_id/@subscriptions/', :controller => 'channels',
-                                                        :get => 'list_subscriptions',
-                                                        :post => 'subscribe',
-                                                        :delete => 'unsubscribe'
+  match '/channels/:channel_id/@subscriptions/', :to => 'channels#list_subscriptions', :via => :get, :format => 'json'
+  match '/channels/:channel_id/@subscriptions/', :to => 'channels#subscribe', :via => :post, :format => 'json'
+  match '/channels/:channel_id/@subscriptions/', :to => 'channels#unsubscribe', :via => :delete, :format => 'json'
 
-  map.resource '/channels/:channel_id/@messages', :controller => 'messages',
-                                                  :get => 'index',
-                                                  :post => 'create'
+  match '/channels/:channel_id/@messages', :to => 'messages#index', :via => :get, :format => 'json'
+  match '/channels/:channel_id/@messages', :to => 'messages#create', :via => :post, :format => 'json'
 
-  map.resource '/channels/:channel_id/@messages/:msg_id', :controller => 'messages',
-                                                          :get => 'show',
-                                                          :delete => 'delete'
+  match '/channels/:channel_id/@messages/:msg_id', :to => 'messages#show', :via => :get, :format => 'json'
+  match '/channels/:channel_id/@messages/:msg_id', :to => 'messages#delete', :via => :delete, :format => 'json'
 
-  map.resource '/channels/:channel_id/@messages/:msg_id/@replies', :controller => 'messages',
-                                                          :get => 'replies'
-
-  # End channels
+  match '/channels/:channel_id/@messages/:msg_id/@replies', :to => 'messages#replies', :via => :get, :format => 'json'
 
 
   # BinObjects
-  map.resource '/binobjects', :controller => 'bin_objects',
-                            :get => 'index',
-                            :post => 'create'
+  match '/binobjects', :to => 'bin_objects#index', :via => :get, :format => 'json'
+  match '/binobjects', :to => 'bin_objects#create', :via => :post, :format => 'json'
 
-  map.resource '/binobjects/:binobject_id/', :controller => 'bin_objects',
-                                         :get => 'show_data',
-                                         :put => 'edit',
-                                         :delete => 'delete'
+  match '/binobjects/:binobject_id/', :to => 'bin_objects#show_data', :via => :get
+  match '/binobjects/:binobject_id/', :to => 'bin_objects#edit', :via => :put
+  match '/binobjects/:binobject_id/', :to => 'bin_objects#delete', :via => :delete
 
-  map.resource '/binobjects/:binobject_id/@metadata/', :controller => 'bin_objects',
-                                                        :get => 'show'
-
-  # End BinObjects
+  match '/binobjects/:binobject_id/@metadata/', :to => 'bin_objects#show', :via => :get, :format => 'json'
 
 
   # SMS resource
-  map.resource '/sms',  :controller => 'sms',
-                        :post => 'smssend',
-                        :get => 'index'
+  match '/sms', :to => 'sms#index', :via => :get, :format => 'json'
+  match '/sms', :to => 'sms#smssend', :via => :post, :format => 'json'
 
-  map.resource '/sms/mark',   :controller => 'sms',
-                              :put => 'smsmark'
+  match '/sms/mark', :to => 'sms#smsmark', :via => :put, :format => 'json'
 
-  # End SMS resource
 
-  map.confirmation '/confirmation', :controller => 'confirmations', :action => 'confirm_email'
+  # Documentation
+  namespace :doc do
+    match '*', :to => 'api#api', :format => :html
+  end
 
-  map.request_new_confirm_email "confirmation/request_new_confirm_email", :controller => 'confirmations', :action => "request_new_confirm_email", :format => "html", :format_get => "html"
 
-  map.documentation '/appdata'
+  # Others
+  match '/confirmation', :to => 'confirmations#confirm_email'
 
-  map.connect "doc/tutorial", :controller => 'application',
-                           :format => 'html',
-                           :action => 'doc'
+  match 'confirmation/request_new_confirm_email', :to => 'confirmations#request_new_confirm_email', :format => 'html'
 
- # map.apidoc '/api', :controller => 'api', :get => 'index', :format => "html"
- # map.peopleapi '/api/people', :controller => 'api',:action => 'people' ,:get => 'people', :format => 'html'
+  match "doc/tutorial", :to => 'application#doc', :format => 'html'
+  match '/doc', :to => 'application#index'
+  match '/test', :to => 'application#test', :action => 'test'
 
-  map.connect '/doc', :controller => 'application', :action => 'index'
+  match '/system/:action', :to => 'system'
 
-  map.connect '/test', :controller => 'application', :action => 'test'
-
-  map.connect '/system/:action', :controller => 'system'
-
-  map.root :controller => 'application',
-           :action => 'index',
-           :conditions => { :method => :get }
-  map.connect '/:controller/:action/:id', :format => 'json'
-  map.connect '/:controller/:action/:id'
-  map.connect '/:controller/:action'
-
+  root :to => 'application#index', :via => :get
+  match '/:controller/:action/:id', :format => 'json'
+  match '/:controller/:action/:id'
+  match '/:controller/:action'
+  
 end

@@ -95,7 +95,7 @@ class Person < ActiveRecord::Base
   START_YEAR = 1900
   VALID_DATES = DateTime.new(START_YEAR)..DateTime.now
 
-  validates_length_of STRING_FIELDS, :maximum => DB_STRING_MAX_LENGTH, :allow_nil => true, :allow_blank => true
+  validates_length_of STRING_FIELDS, :maximum => Asi::Application.config.DB_STRING_MAX_LENGTH, :allow_nil => true, :allow_blank => true
   validates_length_of :phone_number, :maximum => 25, :allow_nil => true, :allow_blank => true
 
   validates_inclusion_of :gender,
@@ -223,14 +223,23 @@ class Person < ActiveRecord::Base
     
     return success
   end
-  
-  def to_hash(asking_person=nil, asking_client=nil)
 
-    # if the requested user is not a user of the asking_client service (i.e. no role yet)
+public
+
+  def to_json(client_id=nil, connection=nil, *a)
+    to_hash(client_id, connection, *a).to_json(*a)
+  end
+  
+  def as_json(*a)
+    to_hash
+  end
+
+  def to_hash(user=nil, client=nil)
+    # if the requested user is not a user of the client service (i.e. no role yet)
     # return only minimal hash, without any real details.
     # The reason is that we don't wan't users' details to appear in services they don't possibly
     # even know about.
-    if (asking_client && role_title(asking_client.id).blank?)
+    if (client && role_title(client.id).blank?)
       return {'id' => guid, 'username' => username, 'description' => "Profile details are not shown, because this user has never logged in to this service."}
     end
 
@@ -247,39 +256,33 @@ class Person < ActiveRecord::Base
       person_hash.merge!({ field => self.send(field) })
     end
 
-    if asking_person and asking_person.type == Person
-      person_hash.merge!({'connection' => get_connection_string(asking_person)})
+    if user and user.class == Person
+      person_hash.merge!({'connection' => get_connection_string(user)})
       # if the asker is a friend (or self), include location
-      if location && (person_hash['connection'] == ACCEPTED_CONNECTION_STRING || asking_person == self)
+      if location && (person_hash['connection'] == ACCEPTED_CONNECTION_STRING || user == self)
         person_hash.merge!({:location => location})
       end
     end
 
-    if asking_client
-      person_hash.merge!({'role' => role_title(asking_client.id)})
+    if client
+      person_hash.merge!({'role' => role_title(client.id)})
     end
 
     # Added by Marcos to possibilite the person_hash to use the rules system with the authorize method
-    # loop trough the Profile_fields and check if the asking_person is authorized
+    # loop trough the Profile_fields and check if the user is authorized
     # to view each field with the method Rule.Authorize.
-    # if the asking_person is not able to see will delete this entry from the person_hash
+    # if the user is not able to see will delete this entry from the person_hash
     PROFILE_FIELDS.each do |field|
-      if !Rule.authorize?(asking_person, id, "view", field)
+      if !Rule.authorize?(user, id, "view", field)
         person_hash.delete(field)
       end
     end
 
-    if asking_person == self || asking_client.andand.show_email?
+    if user == self || client.andand.show_email?
       person_hash.merge!({'email' => email})
     end
 
     return person_hash
-  end
-
-public
-
-  def to_json(asking_person=nil, asking_client=nil, *a)
-    to_hash(asking_person, asking_client).to_json(*a)
   end
 
   def moderator?(client)

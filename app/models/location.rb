@@ -37,13 +37,17 @@ class Location < ActiveRecord::Base
   end
 
   def to_json(*a)
-    location_hash.to_json(*a)
+    as_json(*a).to_json(*a)
   end
 
-  def location_hash
+  def as_json(*a)
+    to_hash(*a)
+  end
+
+  def to_hash(*a)    
     {
-      :latitude => self.latitude,
-      :longitude => self.longitude,
+      :latitude => self.latitude.to_f,
+      :longitude => self.longitude.to_f,
       :label => self.label,
       :accuracy => self.accuracy,
       :updated_at => self.updated_at

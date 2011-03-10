@@ -133,15 +133,14 @@ class Group < ActiveRecord::Base
   end
 
   def to_json(asking_person=nil, *a)
-    group_hash = get_group_hash(asking_person)
-    return group_hash.to_json(*a)
+    as_json(asking_person, *a).to_json(*a)
   end
 
-  def to_hash(asking_person, asking_client)
-    get_group_hash(asking_person)
+  def as_json(asking_person=nil, *a)
+    to_hash(asking_person)
   end
 
-  def get_group_hash(asking_person=nil)
+  def to_hash(user=nil, client=nil)
     group_hash = {
       'id' => id,
       'title' => title,
@@ -152,9 +151,9 @@ class Group < ActiveRecord::Base
       'number_of_members' => members.count
       }
     
-    if asking_person && group_type != 'personal'
-      group_hash.merge!({'is_member' => (has_member?(asking_person))})
-      group_hash.merge!({'is_admin' => asking_person.is_admin_of?(self)}) if has_member?(asking_person)
+    if user && group_type != 'personal'
+      group_hash.merge!({'is_member' => (has_member?(user))})
+      group_hash.merge!({'is_admin' => user.is_admin_of?(self)}) if has_member?(user)
     end
     return group_hash
   end

@@ -54,7 +54,7 @@ description:: Returns the details of this group.
     unless @group.show?(@user)
       render_json :status => :forbidden, :messages => "You are not allowed to view this group." and return
     end
-    render_json :entry => @group.get_group_hash(@user)
+    render_json :entry => @group.to_hash(@user)
   end
 
 =begin rapidoc
@@ -110,7 +110,7 @@ description:: Returns all the groups visible in the current session.
     groups.filter_paginate!(params[:per_page], params[:page]) { |g| g.show?(@user) }
 
     @groups = groups.collect do |group|
-      group.get_group_hash(@user)
+      group.to_hash(@user)
     end
     render_json :entry => @groups, :size => groups.count_available and return
   end
@@ -228,7 +228,7 @@ description:: Returns the groups in which this user is a member.
   def get_groups_of_person
     @groups = Person.find_by_guid(params[:user_id]).groups
     @groups_hash = @groups.find_all{|g| g.show?(@user)}.collect do |group|
-      group.get_group_hash(@user)
+      group.to_hash(@user)
     end
     render_json :entry => @groups and return
   end
@@ -316,7 +316,7 @@ json:: { "entry": [
     @groups = @user.invited_groups
     
     @groups_hash = @groups.collect do |group|
-      group.get_group_hash(@user)
+      group.to_hash(@user)
     end
     render_json :entry => @groups and return
   end

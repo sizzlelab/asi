@@ -115,7 +115,7 @@ private
       service_name = "cos"
     end
 
-    full_filename = "#{RAILS_ROOT}/public/images/#{Image::DEFAULT_AVATAR_IMAGES[service_name][image_type]}"
+    full_filename = "#{Rails.root}/public/images/#{Image::DEFAULT_AVATAR_IMAGES[service_name][image_type]}"
 
     @data = File.open(full_filename,'rb').read
     @filename = "default-avatar.jpg"

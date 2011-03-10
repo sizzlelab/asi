@@ -2,10 +2,9 @@ require 'test_helper'
 
 class MembershipTest < ActiveSupport::TestCase
 
-  test "status" do
-    group = Factory.create_group
-    group.group_type = "closed"
-    person = Factory.create_person
+  def test_status
+    group = Factory(:group, :group_type => "closed")
+    person = Factory(:person)
 
     assert_equal "active", group.membership(group.creator).status
 

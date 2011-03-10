@@ -3,6 +3,7 @@
 require 'logging_helper'
 
 class ApplicationController < ActionController::Base
+  protect_from_forgery
 
   helper :all
   layout 'default'
@@ -16,8 +17,6 @@ class ApplicationController < ActionController::Base
   PARAMETERS_NOT_TO_BE_ESCAPED = ["password", "confirm_password", "search", "query"]
   before_filter :escape_parameters
 
-  filter_parameter_logging :password
-
   def index
     render :layout => "doc"
   end
@@ -26,7 +25,7 @@ class ApplicationController < ActionController::Base
     render :action => request.path[1..-1].gsub(/\/$/, ""), :layout => "doc"
   end
 
-  if RAILS_ENV == "test"
+  if Rails.env.test?
     def test
       render :layout => "doc"
     end
@@ -206,17 +205,17 @@ class ApplicationController < ActionController::Base
 
     begin
 
-      if RAILS_ENV == "production" && !APP_CONFIG.error_mailer_recipients.blank? 
+      if Rails.env.production? && !APP_CONFIG.error_mailer_recipients.blank? 
         if APP_CONFIG.error_mailer_ignore_routing && exception.kind_of?(ActionController::RoutingError)
           return
         end
-        ErrorMailer.deliver_snapshot(
+        ErrorMailer.snapshot(
           exception,
           clean_backtrace(exception),
           session,
           params,
           request,
-          @user)
+          @user).deliver
       end
     rescue => e
       logger.error(e)

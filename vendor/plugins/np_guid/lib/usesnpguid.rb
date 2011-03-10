@@ -26,7 +26,7 @@ module ActiveRecord
           # recommended practice of defining an empty after_initialize method and then
           # calling the custom code in a method declared with the after_initialize filter
 
-          def after_initialize; end
+          #def after_initialize; end
 
           after_initialize :set_npuuid
 

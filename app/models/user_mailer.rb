@@ -1,26 +1,28 @@
 class UserMailer < ActionMailer::Base
+  default :from => APP_CONFIG.asi_mail_from_address
 
   def registration_confirmation(user, confirmation_url)
-    recipients user.email
-    from       APP_CONFIG.asi_mail_from_address
-    subject    "OtaSizzle registration confirmation"
-    body       :user => user, :confirmation_url => confirmation_url
-  end
+    @user = user
+    @confirmation_url = confirmation_url
 
+    mail(:to => user.email,
+         :subject => "OtaSizzle registration confirmation")
+  end
+    
   def welcome(user, client)
-    recipients user.email
-    from APP_CONFIG.asi_mail_from_address
-    subject "Tervetuloa #{client.realname || client.name}-käyttäjäksi! | Welcome to #{client.realname || client.name}!"
-    body :user => user, :client => client
+    @user = user
+    @client = client
+
+    mail(:to => user.email,
+         :subject => "Tervetuloa #{client.realname || client.name}-käyttäjäksi! | Welcome to #{client.realname || client.name}!")
   end
   
   def recovery(options)
-    recipients options[:email]
-    from APP_CONFIG.asi_mail_from_address
-    subject "OtaSizzle password recovery"
-    content_type 'text/html'
+    @key = options[:key]
+    @domain = options[:domain]
 
-    body :key => options[:key], :domain => options[:domain]
+    mail(:to => options[:email],
+         :subject => "OtaSizzle password recovery")
   end
 
 end

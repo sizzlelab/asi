@@ -17,7 +17,7 @@ class BinObjectsControllerTest < ActionController::TestCase
   end
 
   def test_should_create_and_get_bin_object_from_upload
-    post :create, {:binobject => { :data => fixture_file_upload("Australian_painted_lady.jpg","image/jpeg") }}, { :cos_session_id => sessions(:session1).id }
+    post :create, {:binobject => { :data => fixture_file_upload("Australian_painted_lady.jpg","image/jpeg") }, :format => :json }, { :cos_session_id => sessions(:session1).id }
 
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
@@ -40,7 +40,7 @@ class BinObjectsControllerTest < ActionController::TestCase
   end
 
   def test_should_create_and_get_bin_object_from_regular_post
-    post :create, {:binobject => { :data => "testbinobjDATA" }}, { :cos_session_id => sessions(:session1).id }
+    post :create, {:binobject => { :data => "testbinöbjDATA" }}, { :cos_session_id => sessions(:session1).id }
 
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
@@ -52,7 +52,7 @@ class BinObjectsControllerTest < ActionController::TestCase
     # try to show the created bin_object
     get :show_data, { :binobject_id => create_guid }, { :cos_session_id => sessions(:session1).id }
     assert_response :success, @response.body
-    assert_equal "testbinobjDATA", @response.body
+    assert_equal "testbinöbjDATA", @response.body
 
     # try to show the created bin_object metadata
     get :show, { :binobject_id => create_guid }, { :cos_session_id => sessions(:session1).id }

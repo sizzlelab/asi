@@ -31,7 +31,7 @@ class PersonSpec < ActiveRecord::Base
   START_YEAR = 1900
   VALID_DATES = DateTime.new(START_YEAR)..DateTime.now
 
-  validates_length_of STRING_FIELDS, :maximum => DB_STRING_MAX_LENGTH, :allow_nil => true, :allow_blank => true
+  validates_length_of STRING_FIELDS, :maximum => Asi::Application.config.DB_STRING_MAX_LENGTH, :allow_nil => true, :allow_blank => true
   validates_length_of :phone_number, :maximum => 25, :allow_nil => true, :allow_blank => true
 
   validates_inclusion_of :gender,
@@ -54,9 +54,16 @@ class PersonSpec < ActiveRecord::Base
   end
 
   def to_json(*a)
-    {
-      :gender => {"displayname" => self.gender, "key" => self.gender}
-    }.to_json(*a)
+    as_json(*a).to_json(*a)
   end
 
+  def as_json(*a)
+    to_hash(*a)
+  end
+
+  def to_hash(*a)  
+    {
+      :gender => {"displayname" => self.gender, "key" => self.gender}
+    }
+  end
 end

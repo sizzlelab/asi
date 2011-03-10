@@ -13,6 +13,7 @@ class SearchControllerTest < ActionController::TestCase
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
     types = []
+
     all_types = %w(Group Person Channel Message)
     json["entry"].each do |e|
       assert_not_nil e["type"]

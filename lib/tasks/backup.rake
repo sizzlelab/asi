@@ -9,9 +9,9 @@ namespace :db do
     base_path = ENV["DIR"] || "db"
     backup_base = File.join(base_path, 'backup')
     backup_folder = File.join(backup_base, datestamp)
-    backup_file = File.join(backup_folder, "#{RAILS_ENV}_dump.sql.gz")
+    backup_file = File.join(backup_folder, "#{Rails.env.to_s}_dump.sql.gz")
     FileUtils.makedirs(backup_folder)
-    db_config = ActiveRecord::Base.configurations[RAILS_ENV]
+    db_config = ActiveRecord::Base.configurations[Rails.env.to_s]
     sh "mysqldump -u #{db_config['username']} -p#{db_config['password']} -Q --add-drop-table -O add-locks=FALSE -O lock-tables=FALSE #{db_config['database']} | gzip -c > #{backup_file}"
     dir = Dir.new(backup_base)
     all_backups = dir.entries[2..-1].sort.reverse

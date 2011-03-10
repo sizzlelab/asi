@@ -19,10 +19,18 @@ class ClientDataSet < ActiveRecord::Base
   attr_protected :created_at, :updated_at
 
   def to_json(*a)
-    if ! data
-      return {}.to_json(*a)
+    as_json(*a).to_json(*a)
+  end
+
+  def as_json(*a)
+    to_hash(*a)
+  end
+
+  def to_hash(*a)  
+    if !data
+      return {}
     end
-    data.to_json(*a)
+    data
   end
 
   # Merges the parameter hash with the current metadata

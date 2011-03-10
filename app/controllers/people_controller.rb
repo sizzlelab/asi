@@ -104,7 +104,7 @@ description:: Creates a new user. If creation is succesful the current app-only 
       @application_session.save
 
       unless params[:welcome_email] == "false"
-        UserMailer.deliver_welcome(@person, @client)
+        UserMailer.welcome(@person, @client).deliver
       end
 
       render_json :status => :created, :entry => @person.to_hash(@user, @client)
@@ -238,9 +238,9 @@ description:: Sends a password recovery email to a specified email address.
     person = Person.find_by_email(params[:email])
 
     if person
-      UserMailer.deliver_recovery(:key => CryptoHelper.encrypt("#{person.id}:#{person.salt}"),
-                                  :email => person.email,
-                                  :domain => APP_CONFIG.server_domain)
+      UserMailer.recovery(:key => CryptoHelper.encrypt("#{person.id}:#{person.salt}"),
+                          :email => person.email,
+                          :domain => APP_CONFIG.server_domain).deliver
       render_json :messages => "Recovery mail sent to specified address.", :status => :ok and return
     else
       render_json :messages => "Record not found.", :status => :not_found and return

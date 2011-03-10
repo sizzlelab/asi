@@ -27,13 +27,15 @@ class Collection < ActiveRecord::Base
 
   validates_presence_of :client
 
+  after_initialize :do_after_initialize
+
   def initialize(params={})
     handle_user_requested_id_param(params[:id])
     super(params)
   end
 
   # GUID plugin sets its own random id automatically, but if user set an id, use it here
-  def after_initialize
+  def do_after_initialize
     if self.user_set_id
       self.id = self.user_set_id
     end

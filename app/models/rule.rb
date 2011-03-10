@@ -33,7 +33,8 @@ class Rule < ActiveRecord::Base
   def Rule.authorize?(subject_person=nil, object_person_id=nil, action_type=nil, action_value=nil)
     # print "************ in rule/authorize? ******************* \n"
     # if subject_person
-    #  print "subject_person.id: #{subject_person.id} \n"
+    #   print "%%% #{subject_person.inspect} %%%"
+    #   print "subject_person.id: #{subject_person.id} \n"
     # end
     #print "object_person_id: #{object_person_id} \n"
     #print "action_type: #{action_type} \n"
@@ -112,7 +113,6 @@ class Rule < ActiveRecord::Base
 
     sets_hash.each_pair do |key, value|
       action = Action.get_or_create(:action_type => "view", :action_value => key)
-      puts action
       if value == "public"
         condition_id = condition_public.id
       elsif value == "friends_only"
@@ -142,25 +142,7 @@ class Rule < ActiveRecord::Base
     condition_action_sets.find(:all, :conditions => { :actions => { :action_value => action_value } }, :joins => [:action] ).inspect
   end
 
-  # get the rule
-  def get_rule_hash(asking_person)
-    if asking_person.id == self.person_id
-      rule_hash = {'rule'  => {
-          'id' => id,
-          'person_id' => person_id,
-          'rule_name' => rule_name,
-          'state' => state,
-          'logic' => logic,
-          'created_at' => created_at,
-          'updated_at' => updated_at
-        }
-      }
-    end
-
-    return rule_hash
-  end
-
-    # check if the rule is active
+  # check if the rule is active
   def active?
     return true if self.state == "active"
   end
@@ -175,12 +157,29 @@ class Rule < ActiveRecord::Base
       self.update_attribute(:state, 'inactive')
   end
 
+  def to_json(asking_person, *a)
+    as_json(asking_person, *a).to_json(*a)
+  end
 
+  def as_json(asking_person, *a)
+    to_hash(asking_person, *a)
+  end
 
-
-  def to_json (asking_person, *a)
-    rule_hash = get_rule_hash(asking_person)
-    return rule_hash.to_json(*a)
+  def to_hash(asking_person, *a)
+    if asking_person.id == self.person_id
+      return {
+        'rule'  => {
+          'id' => id,
+          'person_id' => person_id,
+          'rule_name' => rule_name,
+          'state' => state,
+          'logic' => logic,
+          'created_at' => created_at,
+          'updated_at' => updated_at
+        }
+      }
+    end
+    return {}
   end
 
   # get all the condition_action_sets belong to this rule
