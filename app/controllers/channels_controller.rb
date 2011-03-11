@@ -16,8 +16,8 @@ param:: include_private - Include private channels in the results. Defaults to f
 param:: type_filter - Restrict the results to one type of channel. This parameter overrides include_private. Parameter can be negated by prefixing with '!' e.g. type_filter=!friend returns all channels except those of type 'friend'.
 
 json:: { "entry" => [
-  Factory.create_example_channel(:name => "Chanel 9"),
-  Factory.create_example_channel(:name => "Chanel 10")
+  APIFactory.create_example_channel(:name => "Chanel 9"),
+  APIFactory.create_example_channel(:name => "Chanel 10")
 ] }
 =end
   def index
@@ -86,7 +86,7 @@ param:: channel
   param:: person_id - A single person's id which is then subscribed to the channel if channel_type == 'private'.
 
 json:: { "entry" =>
-   Factory.create_example_channel(:name => "Chanel 9")
+   APIFactory.create_example_channel(:name => "Chanel 9")
 }
 =end
   def create
@@ -99,7 +99,7 @@ json:: { "entry" =>
     end
 
     if @channel.channel_type == "group" && params[:channel][:group_id]
-      group = Group.find_by_id(params[:channel][:group_id])
+      group = Group.find(params[:channel][:group_id])
       if !group || !group.members.exists?(@user)
         render_json :status => :bad_request, :messages => "Group does not exist." and return
       end
@@ -142,7 +142,7 @@ param:: person_id - The user to subscribe to a private channel
       if !params[:group_id]
         render_json :status => :bad_request, :messages => "Must pass explicit group id to subscribe." and return
       end
-      group = Group.find_by_id(params[:group_id])
+      group = Group.find(params[:group_id])
       if !group.admins.exists?(@user)
         render :status => :forbidden and return
       end
@@ -155,7 +155,7 @@ param:: person_id - The user to subscribe to a private channel
       if !params[:person_id]
         render_json :status => :bad_request, :messages => "Must pass explicit person id to subscribe." and return
       end
-      person = Person.find_by_id(params[:person_id])
+      person = Person.find(params[:person_id])
       if @channel.owner.guid == @user.guid or @channel.user_subscribers.exists?(@user)
         @channel.user_subscribers << person rescue ActiveRecord::RecordInvalid
         render :status => :created and return
@@ -185,7 +185,7 @@ description:: Remove subscriptions. Single group can be unsubscribed by that gro
       if !params[:group_id]
         render_json :status => :bad_request, :messages => "Must declare explicit group id to unsubscribe." and return
       end
-      group = Group.find_by_id(params[:group_id])
+      group = Group.find(params[:group_id])
       if !group || !@channel.group_subscribers.exists?(group)
         render_json :status => :bad_request, :messages => "Group id does not exist or is not subscribed to the channel." and return
       end
@@ -219,7 +219,7 @@ return_code:: 200
 
 description:: Lists subscriptions.
 
-json:: { :entry => { :user_subscribers => [ Factory.create_example_person ], :group_subscribers => [] }}
+json:: { :entry => { :user_subscribers => [ APIFactory.create_example_person ], :group_subscribers => [] }}
 =end
   def list_subscriptions
     @group_subscriptions = @channel.group_subscribers
@@ -234,7 +234,7 @@ return_code:: 200
 
 description:: Returns the details of this channel.
 
-json:: { :entry => Factory.create_channel }
+json:: { :entry => APIFactory.create_channel }
 =end
   def show
     render_json :entry => @channel and return
@@ -250,11 +250,11 @@ param:: channel
 
 description:: Updates the details of this channel.
 
-json:: { :entry => Factory.create_channel }
+json:: { :entry => APIFactory.create_channel }
 =end
   def edit
     if params[:channel][:owner_id]
-      person = Person.find_by_id(params[:channel][:owner_id])
+      person = Person.find(params[:channel][:owner_id])
       if !person
         render_json :status => :bad_request, :messages => "Person does not exist." and return
       end

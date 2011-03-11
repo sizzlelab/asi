@@ -1,6 +1,6 @@
-require File.join(File.dirname(__FILE__), '../../../lib/json_printer.rb')
 require 'json'
-require File.join(File.dirname(__FILE__), '../../../test/factory.rb')
+require File.join(File.dirname(__FILE__), 'apifactory.rb')
+require File.join(File.dirname(__FILE__), '../../../lib/json_printer.rb')
 
 class DocUtil
 

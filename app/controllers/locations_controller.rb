@@ -8,7 +8,7 @@ class LocationsController < ApplicationController
 
 =begin rapidoc
 return_code:: 200
-json:: { :entry => Factory.create_location }
+json:: { :entry => APIFactory.create_location }
 description:: Returns this person's location.
 =end
   def get

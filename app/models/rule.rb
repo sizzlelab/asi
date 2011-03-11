@@ -40,7 +40,7 @@ class Rule < ActiveRecord::Base
     #print "action_type: #{action_type} \n"
     #print "action_value: #{action_value} \n"
 
-    active_rules = Rule.find(:all, :conditions => {'person_id'=>object_person_id, 'state'=>'active'})
+    active_rules = Rule.where('person_id'=>object_person_id, 'state'=>'active')
     
     if active_rules.length != 0
       undecided = true
@@ -139,7 +139,7 @@ class Rule < ActiveRecord::Base
 
   # added by ville
   def condition_action_sets_concerning(action_value)
-    condition_action_sets.find(:all, :conditions => { :actions => { :action_value => action_value } }, :joins => [:action] ).inspect
+    condition_action_sets.join(:action).where(:actions => { :action_value => action_value }).inspect
   end
 
   # check if the rule is active
@@ -331,7 +331,7 @@ class Rule < ActiveRecord::Base
   def check_condition_friend(connection_person=nil, object_person_id=nil, condition_value=nil)
     #print "************ in rule/check_condition_friend ******************* \n"
     if !connection_person.nil? && !object_person_id.nil? && condition_value
-      friend = Connection.find(:all, :conditions => {'person_id' =>  object_person_id, 'contact_id' => connection_person.id, 'status'=>'accepted'})
+      friend = Connection.where('person_id' =>  object_person_id, 'contact_id' => connection_person.id, 'status'=>'accepted')
       if friend.length != 0
         return true
       end
@@ -354,7 +354,7 @@ class Rule < ActiveRecord::Base
   def check_condition_user(connection_person=nil, condition_value=nil)
     #print "************ in rule/check_condition_user ******************* \n"
     if !connection_person.nil? && !condition_value.nil?
-      user = Person.find(:all, :conditions => {'username' => condition_value, 'id'=> connection_person.id})
+      user = Person.where('username' => condition_value, 'id'=> connection_person.id)
       if user.length != 0
         return true
       end

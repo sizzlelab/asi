@@ -11,9 +11,9 @@ json:: { "pagination" => {
     "page" => 1
   },
   "entry" => [
- { :type => "Person", :result => Factory.create_person },
- { :type => "Group", :result => Factory.create_group },
- { :type => "Channel", :result => Factory.create_channel },
+ { :type => "Person", :result => APIFactory.create_person },
+ { :type => "Group", :result => APIFactory.create_group },
+ { :type => "Channel", :result => APIFactory.create_channel },
 
 ] }
 param:: search - The search term. Sensible results for search terms under the length of 2 are not guaranteed. Wildcards are supported; the search is by default a wildcard search from both sides.

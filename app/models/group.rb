@@ -69,7 +69,7 @@ class Group < ActiveRecord::Base
   end
 
   def membership(person)
-    Membership.find(:first, :conditions => ['group_id = ? AND person_id = ?', self.id, person.id])
+    Membership.where(:group_id => self.id, :person_id => person.id).first
   end
 
   def request_membership(person)

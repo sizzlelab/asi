@@ -7,9 +7,9 @@ class DocTest < ActionController::IntegrationTest
     missing = []
     Rails.application.routes.routes.each do |r|
       #path = r.segment_keys.inject("") { |str,s| str << s.to_s }
-      path = r.path
-      if path.start_with? "/doc"
-        get path
+      path = r.path.gsub(/\(\.:format\)/, '')
+      if path.start_with? "/doc" and !path.include? "*"
+        get path, :format => :html
         assert_response :success, "If response is 500, check /app/helpers/api_helper.rb for correct http_status definitions."
         if @response.body =~ /Documentation missing/
           missing << path

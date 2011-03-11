@@ -17,7 +17,7 @@ param:: group
   param:: type - Can be open, closed, personal or hidden.
   param:: description - A descriptive text for the group (optional).
   param:: create_channel - If set to <tt>true</tt>, a channel for the group is also created with same name as group's title.
-json:: { "entry" => Factory.create_example_group }
+json:: { "entry" => APIFactory.create_example_group }
 description:: Creates a new group. The creator is automatically added to the new group as an admin.
 =end
   def create

@@ -30,7 +30,7 @@ class Channel < ActiveRecord::Base
   attr_accessible :name, :description, :channel_type, :hidden, :owner, :creator_app
   attr_readonly :channel_type, :creator_app, :hidden
 
-  scope :not_hidden, :conditions => { :hidden => 0 }
+  scope :not_hidden, where(:hidden => 0)
 
   after_create :subscribe
   before_validation(:on => :create){ set_default_type }

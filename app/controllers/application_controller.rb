@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   end
 
   def doc
-    render :action => request.path[1..-1].gsub(/\/$/, ""), :layout => "doc"
+    render :template => "application/#{request.path[1..-1].gsub(/\/$/, "")}", :layout => "doc"
   end
 
   if Rails.env.test?

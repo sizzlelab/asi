@@ -11,7 +11,7 @@ class PeopleController < ApplicationController
 access:: Application
 return_code:: 200 - OK
 json:: {"entry" =>
-[ Factory.create_person, Factory.create_person ]
+[ APIFactory.create_person, APIFactory.create_person ]
 }
 
 param:: search - (optional) The search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all charactersin the search term are interpreted as literals rather than special regexp characters.
@@ -57,7 +57,7 @@ description:: Finds users based on their real names and usernames.
 =begin rapidoc
 access:: Client login
 return_code:: 200 - OK
-json:: { :entry => Factory.create_person }
+json:: { :entry => APIFactory.create_person }
 description::  Gets the information of the user specified by user_id. Note that the timestamp for status_messages
 latest update is always in UTC time. The 'avatar' slot in the returned JSON contains the link to the avatar
 image and also the status of the avatar, which is 'set' or 'not_set' depending on if the user has uploaded an image or not.
@@ -79,7 +79,7 @@ return_code:: 201 - Created
 return_code:: 400 - Bad request
 return_code:: 409 - Conflict
 
-json:: {"entry" => Factory.create_person }
+json:: {"entry" => APIFactory.create_person }
 
 param:: person
   param:: username - The desired username. Must be unique in the system. Length 4-20 characters.
@@ -260,11 +260,13 @@ description:: Sends a password recovery email to a specified email address.
 
     begin
       key = CryptoHelper.decrypt(params[:id]).split(/:/);
-      person = Person.find(key[0], :conditions => {:salt => key[1]})
+
+      # use bang! version to throw ActiveRecord::RecordNotFound exception
+      person = Person.find_by_id_and_salt!(key[0], key[1])
 
       if(params[:password] == params[:confirm_password])
 
-        if person.update_attributes(:password => params[:password]);
+        if person && person.update_attributes(:password => params[:password]);
           flash[:notice] = "Changed password successfully."
         else
           flash[:error] = person.errors.full_messages

@@ -7,7 +7,7 @@ class Action < ActiveRecord::Base
   validates_presence_of [:action_type, :action_value]
 
   def Action.get_or_create(options)
-    action = Action.find(:first, :conditions => options)
+    action = Action.where(options).first
     if not action
       action = Action.new(options)
       if action.save

@@ -1,7 +1,4 @@
 
-
-
-
 Asi::Application.routes.draw do
   # admin
   namespace :admin do
@@ -178,19 +175,15 @@ Asi::Application.routes.draw do
   match '/sms/mark', :to => 'sms#smsmark', :via => :put, :format => 'json'
 
 
-  # Documentation
-  namespace :doc do
-    match '*', :to => 'api#api', :format => :html
-  end
-
-
   # Others
   match '/confirmation', :to => 'confirmations#confirm_email'
 
   match 'confirmation/request_new_confirm_email', :to => 'confirmations#request_new_confirm_email', :format => 'html'
 
-  match "doc/tutorial", :to => 'application#doc', :format => 'html'
+  # Documentation
   match '/doc', :to => 'application#index'
+  match '/doc/tutorial', :to => 'application#doc', :format => 'html'
+  match '/doc/*route', :to => 'api#api', :format => :html, :via => :get
   match '/test', :to => 'application#test', :action => 'test'
 
   match '/system/:action', :to => 'system'

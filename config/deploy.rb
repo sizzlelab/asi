@@ -89,7 +89,7 @@ namespace :deploy do
   before "deploy:sphinx", "deploy:rapidocs"
 
   task :rapidocs do
-    #required for the Factory in rapidoc generation to work
+    #required for the APIFactory in rapidoc generation to work
     run "cd #{current_path} && rake db:migrate RAILS_ENV=development"
     rapidoc.generate
   end

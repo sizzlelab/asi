@@ -20,7 +20,7 @@ description:: Retrieves a list of all collections accessible in the current sess
       conditions.merge!({:tags => params["tags"]})
     end
 
-    @collections = Collection.find(:all, :conditions => conditions, :order => 'updated_at DESC' )
+    @collections = Collection.where(conditions).order('updated_at DESC')
     @collections.reject! { |item| ! item.read?(@user, @client) }
 
     entries = Array.new

@@ -1,4 +1,4 @@
-<%= DocUtil.print_erb "doc_title '#{@title}'", true if @path%>
+<%= DocUtil.print_erb "raw doc_title '#{@title}'", true if @path%>
 <%= @description %>
 <% @documentation.each_pair do |method, comment| %>
 

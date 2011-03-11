@@ -172,7 +172,7 @@ class Collection < ActiveRecord::Base
     update_attributes({:updated_at => time, :updated_by => updater})
 
     #Check for parent collections and update them too
-    parent_relations = Ownership.find :all, :conditions => ['item_id = ?', id]
+    parent_relations = Ownership.where(:item_id => id)
     parent_relations.each do |parent_ref|
       parent = parent_ref.parent
       #check that not already updated to avoind loops

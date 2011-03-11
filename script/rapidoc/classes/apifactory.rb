@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-module Factory
+module APIFactory
 
   def self.metafactory(klass, default_attributes, prefix_attributes = [], finalize = "o")
     class_eval(%{

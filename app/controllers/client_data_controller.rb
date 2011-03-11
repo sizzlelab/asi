@@ -31,7 +31,7 @@ description:: Adds new key-value pairs about this user. Any previous data with t
   private
 
   def get_or_create
-      @set = ClientDataSet.find(:first, :conditions => { :client_id => @client.id, :person_id => @user.id }) ||
+      @set = ClientDataSet.where(:client_id => @client.id, :person_id => @user.id).first ||
              ClientDataSet.new(:client => @client, :person => @user)
   end
 
