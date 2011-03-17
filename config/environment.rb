@@ -19,6 +19,17 @@ else
   File.open(secret_file, 'w') { |f| f.write(secret) }
 end
 
+# see https://rails.lighthouseapp.com/projects/8994/tickets/4026-rubygems-136-warning-in-rails-235
+if Gem::VERSION >= "1.3.6"
+    module Rails
+        class GemDependency
+            def requirement
+                r = super
+                (r == Gem::Requirement.default) ? nil : r
+            end
+        end
+    end
+end
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
