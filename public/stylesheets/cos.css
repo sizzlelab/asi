@@ -241,7 +241,10 @@ tt {
     background: #ddd;
     padding: 2px;
     }
-code { font-size: 85%; }
+code {
+    font-family: "Courier new", courier, monospace;
+    font-size: 85%; 
+    }
 
 /* form styles */
 form ul {
@@ -377,14 +380,17 @@ nav ul {
 
 /* API doc styles */
 .rapidoc h2 {
-    font-family: "Andale-mono", courier, monospace;
-    font-size: 120%;
+    font-family: "Courier new", courier, monospace;
+    font-size: 130%;
     font-weight: normal;
     margin: 0 0 0.5em 0;
     padding-bottom: 0.5em;
     border-bottom: 2px solid #666;
     }
-    .rapidoc h2 a { text-decoration: none; }
+    .rapidoc h2 a {
+        text-decoration: none; 
+        color: #000 !important;
+        }
         .rapidoc h2 a:hover { text-decoration: underline; }
 
 .rapidoc h3 {
@@ -396,9 +402,9 @@ nav ul {
     }
     .rapidoc h3 .inlineNav {
         font-weight: normal;
-        font-size: 65%;
+        font-size: 70%;
         float: right;
-        padding-top: 0.75em;
+        padding-top: 0.55em;
         }
         .rapidoc h3 .inlineNav a {
             color: #fd8a07;
