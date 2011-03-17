@@ -1,31 +1,55 @@
-<html>
-  <head>
-    <title>ASI Console</title>
-    <script type="text/javascript" src="javascripts/jsontest.js"></script>
-    <link rel="stylesheet" href="stylesheets/cos.css" type="text/css" media="screen" />
-  </head>
-  <body>
-    <h1>ASI Console</h1>
-    <p>The URL must be absolute and start with a slash, e.g. <code>/session</code>.</p>
-    <p>The parameters should be in same format as in URL query parameters, for example:</p>
-    <code>session[app_name]=tussi&session[app_password]=secret</code><br/><br/>
-    <code>person[username]=testman&person[password]=sercret&person[email]=testman@example.com</code><br/>
-   <code>title=testCollection&metadata[someKey]=someValue</code><br/>
+<h2>ASI Console</h2>
+<ul class="instructions">
+    <li>The URL must be absolute and start with a slash, e.g. <code>/session</code>.</li>
+    <li>The parameters should be in same format as in URL query parameters, for example:
 
-   <p>Note that GET parameters must be given as a query string in the URL, e.g. <code>/search?search=test</code>.</p>
+        <ul>
+            <li><code>session[app_name]=tussi&amp;session[app_password]=secret</code></li>
+            <li><code>person[username]=testman&amp;person[password]=sercret&amp;person[email]=testman@example.com</code></li>
+            <li><code>title=testCollection&amp;metadata[someKey]=someValue</code></li>
+        </ul>
+    </li>
+    <li>Note that GET parameters must be given as a query string in the URL, e.g. <code>/search?search=test</code>.</li>
+</ul>
 
-    <select id="method">
-      <option>GET</option>
-      <option>POST</option>
-      <option>PUT</option>
-      <option>DELETE</option>
-    </select>
-    <input type="text" id="url" size="69"/>
-    <br/>with params<br/>
-    <textarea cols="70" rows="10" id="params"></textarea>
-    <input type="button" style="margin-top:1em" onClick="test('<%= form_authenticity_token %>')" value="Execute"/><br/>
-    <div id="responses">
-      <div></div>
-    </div>
-  </body>
-</html>
+<form id="console" action="/test">
+  <p class="method">
+      <select id="method">
+          <option>GET</option>
+          <option>POST</option>
+          <option>PUT</option>
+          <option>DELETE</option>
+      </select>
+      <input type="text" class="text" id="url" size="69"/>
+  </p>
+  <p class="params">
+      <label for="params">with params:</label>
+      <textarea cols="70" rows="10" id="params"></textarea>
+  </p>
+  <p class="prettyOption">
+      <input type="checkbox" name="pretty" id="pretty" value="1" checked="checked"/>
+      <label for="pretty" class="inline">pretty print</label>
+  </p>
+  <p class="exec">
+      <input type="hidden" name="authenticityToken" id="authenticityToken" value="<%= form_authenticity_token %>"/>
+      <input type="button" class="button" id="execButton" value="Execute"/>
+  </p>
+  <div id="responses">
+      <ol>
+        <li class="template response">
+          <p class="request">
+            <span class="method">GET</span>
+            <span class="url">/session</span>
+          </p>
+          <p class="status">404</p>
+          <pre class="responseText">{}</pre>
+        </li>
+      </ol>
+  </div>
+</form>
+<%= stylesheet_link_tag "prettify" %>
+<%= javascript_include_tag "json2" %>
+<%= javascript_include_tag "jquery.min" %>
+<%= javascript_include_tag "prettify" %>
+<%= javascript_include_tag "jsontest" %>
+

@@ -6,20 +6,18 @@ class ChannelsController < ApplicationController
   before_filter :ensure_channel_admin, :only => [:edit, :delete]
   before_filter :ensure_can_read_channel, :only => [:list_subscriptions, :show]
 
-=begin rapidoc
-access:: Application
-return_code:: 200
-
-description:: Lists channels. Parameters are optional but only one kind of listing (either search or by person id or by group id) is possible at a time. Only channels that current user has access to are listed.
-
-param:: include_private - Include private channels in the results. Defaults to false.
-param:: type_filter - Restrict the results to one type of channel. This parameter overrides include_private. Parameter can be negated by prefixing with '!' e.g. type_filter=!friend returns all channels except those of type 'friend'.
-
-json:: { "entry" => [
-  APIFactory.create_example_channel(:name => "Chanel 9"),
-  APIFactory.create_example_channel(:name => "Chanel 10")
-] }
-=end
+  ##
+  # access:: Application
+  # return_code:: 200 - OK
+  # json:: { "entry" => [
+  #        Factory.build(:channel, :name => "Chanel 9"),
+  #        Factory.build(:channel, :name => "Chanel 10")
+  #        ]}
+  # description:: Lists channels. Parameters are optional but only one kind of listing (either search or by person id or by group id) is possible at a time. Only channels that current user has access to are listed.
+  #
+  # params::
+  #   include_private:: Include private channels in the results. Defaults to false.
+  #   type_filter:: Restrict the results to one type of channel. This parameter overrides include_private. Parameter can be negated by prefixing with '!' e.g. type_filter=!friend returns all channels except those of type 'friend'.
   def index
     if params[:search]
       @channels = Channel.search( params[:search])
@@ -71,24 +69,20 @@ json:: { "entry" => [
     render_json :entry => @channels, :size => size and return
   end
 
-=begin rapidoc
-access:: Application
-return_code:: 200
-
-description:: Creates a channel. Parameters are optional except name. Current user is set to channel owner and current client is set to creator_app. Owner is subscribed to the channel (except for group channels).
-
-param:: channel
-  param:: name - Channel name. Must be at least two characters long.
-  param:: description - Channel description.
-  param:: channel_type - Currently public, group, friend and private channels are supported. Default is public.
-  param:: hidden - Whether the channel shows up in listings and searches (irrespective of the access controls determined by channel_type). Defaults to false.
-  param:: group_id - A single group's id which is then subscribed to the channel if channel_type == 'group'. Current user must have admin rights to that group.
-  param:: person_id - A single person's id which is then subscribed to the channel if channel_type == 'private'.
-
-json:: { "entry" =>
-   APIFactory.create_example_channel(:name => "Chanel 9")
-}
-=end
+  ##
+  # access:: Application
+  # return_code:: 200 - OK
+  # json:: { "entry" => Factory.build(:channel, :name => "Chanel 11") }
+  # description:: Creates a channel. Parameters are optional except name. Current user is set to channel owner and current client is set to creator_app. Owner is subscribed to the channel (except for group channels).
+  #
+  # params::
+  #   channel::
+  #     name:: Channel name. Must be at least two characters long.
+  #     description:: Channel description.
+  #     channel_type:: Currently public, group, friend and private channels are supported. Default is public.
+  #     hidden:: Whether the channel shows up in listings and searches (irrespective of the access controls determined by channel_type). Defaults to false.
+  #     group_id:: A single group's id which is then subscribed to the channel if channel_type == 'group'. Current user must have admin rights to that group.
+  #     person_id:: A single person's id which is then subscribed to the channel if channel_type == 'private'.
   def create
     @channel = Channel.new( params[:channel].except(:group_id) )
     @channel.owner = @user
@@ -120,15 +114,17 @@ json:: { "entry" =>
     render_json :status => :created, :entry => @channel and return
   end
 
-=begin rapidoc
-access:: Application
-return_code:: 201
-
-description:: Subscribes to this channel. Post without parameters subscribes current user to the channel. Channel of type group can have only a single group subscriber and no user subscribers. Public and friend channels can have only user subscribers. Only group admins can subscribe the group to a channel. The owner (or any existing subscriber) of a private channel can subscribe other users to the channel by passing the person_id parameter.
-
-param:: group_id - The group to be subscribed
-param:: person_id - The user to subscribe to a private channel
-=end
+  ##
+  # access:: Application
+  # return_code:: 201 - Created
+  # description:: Subscribes to this channel. Post without parameters subscribes current user to the channel. Channel of type group can have only a single group subscriber and no user subscribers.
+  #               Public and friend channels can have only user subscribers.
+  #               Only group admins can subscribe the group to a channel.
+  #               The owner (or any existing subscriber) of a private channel can subscribe other users to the channel by passing the person_id parameter.
+  # 
+  # params::
+  #   group_id:: The group to be subscribed
+  #   person_id:: The user to subscribe to a private channel
   def subscribe
     if params[:group_id] and @channel.channel_type != "group"
         render_json :status => :bad_request, :messages => "Cannot subscribe groups to channels not of type 'group'." and return
@@ -172,14 +168,16 @@ param:: person_id - The user to subscribe to a private channel
     end
   end
 
-=begin rapidoc
-return_code:: 200
-
-param:: group_id - The group to be unsubscribed.
-param:: person_id - The person to be unsubscribed.
-
-description:: Remove subscriptions. Single group can be unsubscribed by that group's admin. Single users can be unsubscribed by friend and public channel admins. If no parameters are given, unsubscribe current user.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Remove subscriptions.
+  #               Single group can be unsubscribed by that group's admin.
+  #               Single users can be unsubscribed by friend and public channel admins.
+  #               If no parameters are given, unsubscribe current user.
+  # 
+  # params::
+  #   group_id:: The group to be unsubscribed.
+  #   person_id:: The person to be unsubscribed.
   def unsubscribe
     if @channel.channel_type == "group"
       if !params[:group_id]
@@ -214,13 +212,10 @@ description:: Remove subscriptions. Single group can be unsubscribed by that gro
     end
   end
 
-=begin rapidoc
-return_code:: 200
-
-description:: Lists subscriptions.
-
-json:: { :entry => { :user_subscribers => [ APIFactory.create_example_person ], :group_subscribers => [] }}
-=end
+  ##
+  # return_code:: 200 - OK
+  # json:: { :entry => { :user_subscribers => [ Factory.build(:person) ], :group_subscribers => [] }}
+  # description:: Lists subscriptions.
   def list_subscriptions
     @group_subscriptions = @channel.group_subscribers
     @user_subscriptions = @channel.user_subscribers
@@ -229,29 +224,24 @@ json:: { :entry => { :user_subscribers => [ APIFactory.create_example_person ], 
                           } and return
   end
 
-=begin rapidoc
-return_code:: 200
-
-description:: Returns the details of this channel.
-
-json:: { :entry => APIFactory.create_channel }
-=end
+  ##
+  # return_code:: 200 - OK
+  # json:: { :entry => Factory.build(:channel) }
+  # description:: Returns the details of this channel.
   def show
     render_json :entry => @channel and return
   end
 
-=begin rapidoc
-return_code:: 200
-
-param:: channel
-  param:: name - Channel name. Must be at least two characters long.
-  param:: description - Channel description.
-  param:: owner_id - The new channel owner.
-
-description:: Updates the details of this channel.
-
-json:: { :entry => APIFactory.create_channel }
-=end
+  ##
+  # return_code:: 200 - OK
+  # json:: { :entry => Factory.build(:channel) }
+  # description:: Updates the details of this channel.
+  # 
+  # params::
+  #   channel::
+  #     name:: Channel name. Must be at least two characters long.
+  #     description:: Channel description.
+  #     owner_id:: The new channel owner.
   def edit
     if params[:channel][:owner_id]
       person = Person.find(params[:channel][:owner_id])
@@ -272,11 +262,9 @@ json:: { :entry => APIFactory.create_channel }
     render_json :status => :ok, :entry => @channel and return
   end
 
-=begin rapidoc
-return_code:: 200
-
-description:: Deletes this channel.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Deletes this channel.
   def delete
     @channel.delete
     render :status => :ok and return

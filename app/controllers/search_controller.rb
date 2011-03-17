@@ -2,27 +2,16 @@ class SearchController < ApplicationController
 
   before_filter :ensure_client_login
 
-=begin rapidoc
-access:: Client login
-return_code:: 200
-json:: { "pagination" => {
-    "size" => 42,
-    "per_page" => 3,
-    "page" => 1
-  },
-  "entry" => [
- { :type => "Person", :result => APIFactory.create_person },
- { :type => "Group", :result => APIFactory.create_group },
- { :type => "Channel", :result => APIFactory.create_channel },
-
-] }
-param:: search - The search term. Sensible results for search terms under the length of 2 are not guaranteed. Wildcards are supported; the search is by default a wildcard search from both sides.
-param:: per_page - How many results to show per page.
-param:: page - Which page to show. Indexing starts at 1.
-
-description:: Performs a fulltext search spanning people, channels, messages and groups. Results are sorted by relevance.
-
-=end
+  ##
+  # access:: Client login
+  # return_code:: 200
+  # json:: { "pagination" => { "size" => 42, "per_page" => 3, "page" => 1 }, "entry" => [ { :type => "Person", :result => Factory.build(:person) }, { :type => "Group", :result => Factory.build(:group) }, { :type => "Channel", :result => Factory.build(:channel) } ] }
+  # description:: Performs a fulltext search spanning people, channels, messages and groups. Results are sorted by relevance.
+  #
+  # params::
+  #   search:: The search term. Sensible results for search terms under the length of 2 are not guaranteed. Wildcards are supported; the search is by default a wildcard search from both sides.
+  #   per_page:: How many results to show per page.
+  #   page:: Which page to show. Indexing starts at 1.
   def search
     if not params[:search] or params[:search].empty?
       render_json :status => :bad_request, :messages => "No query parameter provided." and return

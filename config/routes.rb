@@ -25,7 +25,7 @@ Asi::Application.routes.draw do
   end
 
   # Application-specific client data
-  match '/appdata', :to => 'appdata#index', :format => 'json'
+  match '/appdata', :to => 'appdata#index', :via => :get, :format => 'json'
   match '/appdata/:user_id/@self/:app_id', :to => 'client_data#show', :via => :get, :format => 'json'
   match '/appdata/:user_id/@self/:app_id', :to => 'client_data#update', :via => :put, :format => 'json'
 

@@ -19,8 +19,8 @@ default: &default_settings
   
   # CAS is a centralized authentication system, it is completely optional
   # If not needed leave empty
-  cas_base_url: 
-  cas_validate_url:
+  cas_base_url: ""
+  cas_validate_url: ""
   
   pysmsd_enabled: false
   pysmsd_test_application_name: "pysmsd_test"

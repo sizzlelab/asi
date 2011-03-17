@@ -1,0 +1,19 @@
+<div id="feedback">
+    <%= form_for :feedback, :url => admin_feedbacks_path do |f| %>
+        <%= f.hidden_field :url, :value => request.fullpath %>
+        <ul>
+            <li>
+                <label for="feedbackText">Leave feedback:</label>
+                <%= f.text_area :content, :size => "60x5", :id => "feedbackText" %>
+            </li>
+            <li>
+                <label for="name">Name (if you want):</label>
+                <%= f.text_field :author_id, :id => "name" %>
+            </li>
+            <li>
+                <%= submit_tag "Send feedback", :onclick => "this.disabled=true,this.form.submit();" %>
+            </li>
+        </ul>
+    <% end %>
+</div>
+

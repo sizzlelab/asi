@@ -3,15 +3,15 @@ class BinObjectsController < ApplicationController
   before_filter :ensure_person_login, :except => :show
   before_filter :get_bin_object, :only => [ :delete, :edit, :show, :show_data ]
   before_filter :process_params, :only => [ :create, :edit ]
-=begin rapidoc
-return_code:: 200 - Returns binary objects posted by logged in user in json's entry -field.
 
-param:: page - Pagination page.
-param:: per_page - Pagination per page.
-param:: sort_order - Changes the sort order of entries. Allowed values are 'ascending' and 'descending'.
-
-description:: List binary objects posted by currently logged in user. By default entries are ordered descending by 'updated_at'.
-=end
+  ##
+  # return_code:: 200 - Returns binary objects posted by logged in user in json's entry -field.
+  # description:: List binary objects posted by currently logged in user. By default entries are ordered descending by 'updated_at'.
+  # 
+  # params::
+  #   page:: Pagination page.
+  #   per_page:: Pagination per page.
+  #   sort_order:: Changes the sort order of entries. Allowed values are 'ascending' and 'descending'.
   def index
     options = {}
     options[:conditions] = {:poster_id => @user.id }
@@ -38,24 +38,20 @@ description:: List binary objects posted by currently logged in user. By default
     render_json :entry => @bin_objects, :size => size and return
   end
 
-=begin rapidoc
-return_code:: 200 - Returns binary object, metadata only.
-return_code:: 403 - User has no access to binary object.
-return_code:: 404 - Binary object not found.
-
-description:: Get the binary object metadata only.
-=end
+  ##
+  # return_code:: 200 - Returns binary object, metadata only.
+  # return_code:: 403 - User has no access to binary object.
+  # return_code:: 404 - Binary object not found.
+  # description:: Get the binary object metadata only.
   def show
     render_json :entry => @bin_object
   end
 
-=begin rapidoc
-return_code:: 200 - Returns binary object data only.
-return_code:: 403 - User has no access to binary object.
-return_code:: 404 - Binary object not found.
-
-description:: Get the binary object data only.
-=end
+  ##
+  # return_code:: 200 - Returns binary object data only.
+  # return_code:: 403 - User has no access to binary object.
+  # return_code:: 404 - Binary object not found.
+  # description:: Get the binary object data only.
   def show_data
     options = { :disposition => 'inline' }
     if @bin_object.content_type
@@ -73,17 +69,16 @@ description:: Get the binary object data only.
     send_data(@bin_object.data, options)
   end
 
-=begin rapidoc
-return_code:: 200 - Returns binary object metadata in json's entry -field.
-
-description:: Creates a binary object. All parameters are optional. Current user is set to binary object owner. Binary objects can be created using a regular POST or a multipart/form-data upload. In the second case the orig_name and content_type may be supplied by the client, but you can override these by specifying them explicitly.
-
-param:: binobject
-  param:: name - Name of the binary object. If this is not specified and a orig_name if available, name will defaul to orig_name.
-  param:: data - Binary object data payload.
-  param:: content_type - Binary object's content type.
-  param:: orig_name - The original filename (if any) of the binary object.
-=end
+  ##
+  # return_code:: 200 - Returns binary object metadata in json's 'entry' field.
+  # description:: Creates a binary object. All parameters are optional. Current user is set to binary object owner. Binary objects can be created using a regular POST or a multipart/form-data upload. In the second case the orig_name and content_type may be supplied by the client, but you can override these by specifying them explicitly.
+  # 
+  # params::
+  #   binobject::
+  #     name:: Name of the binary object. If this is not specified and a orig_name if available, name will defaul to orig_name.
+  #     data:: Binary object data payload.
+  #     content_type:: Binary object's content type.
+  #     orig_name:: The original filename (if any) of the binary object.
   def create
     unless params[:binobject]
       render_json :status => :bad_request and return
@@ -98,18 +93,16 @@ param:: binobject
     render_json :status => :created, :entry => @bin_object and return
   end
 
-
-=begin rapidoc
-return_code:: 200 - Returns binary object metadata in json's entry -field.
-
-description:: Updates a binary object. All parameters are optional. Only the binary object owner can update. If the orig_name and content_type are supplied automatically by the client they will be used, but you can override these by specifying them explicitly.
-
-param:: binobject
-  param:: name - Name of the binary object. If this is not specified and a orig_name if available, name will defaul to orig_name.
-  param:: data - Binary object data payload.
-  param:: content_type - Binary object's content type.
-  param:: orig_name - The original filename (if any) of the binary object.
-=end
+  ##
+  # return_code:: 200 - Returns binary object metadata in json's 'entry' field.
+  # description:: Updates a binary object. All parameters are optional. Only the binary object owner can update. If the orig_name and content_type are supplied automatically by the client they will be used, but you can override these by specifying them explicitly.
+  # 
+  # params::
+  #   binobject::
+  #     name:: Name of the binary object. If this is not specified and a orig_name if available, name will defaul to orig_name.
+  #     data:: Binary object data payload.
+  #     content_type:: Binary object's content type.
+  #     orig_name:: The original filename (if any) of the binary object.
   def edit
     if ensure_same_as_logged_person(@bin_object.poster.guid)
       @bin_object.update_attributes(params[:binobject])
@@ -122,12 +115,9 @@ param:: binobject
     render :status => :forbidden and return
   end
 
-
-=begin rapidoc
-return_code:: 200
-
-description:: Deletes this binary object.
-=end
+  ##
+  # return_code:: 200
+  # description:: Deletes this binary object.
   def delete
     if ensure_same_as_logged_person(@bin_object.poster.guid)
       @bin_object.delete

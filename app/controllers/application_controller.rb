@@ -18,16 +18,14 @@ class ApplicationController < ActionController::Base
   before_filter :escape_parameters
 
   def index
-    render :layout => "doc"
   end
 
   def doc
-    render :template => "application/#{request.path[1..-1].gsub(/\/$/, "")}", :layout => "doc"
+    render :template => "application/#{request.path[1..-1].gsub(/\/$/, "")}"
   end
 
   if Rails.env.test?
     def test
-      render :layout => "doc"
     end
   end
 

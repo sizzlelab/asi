@@ -7,13 +7,12 @@ class CollectionsController < ApplicationController
 
   after_filter :update_updated_at_and_by, :except => [ :create, :index, :show, :delete ]
 
-=begin rapidoc
-return_code:: 200
-
-param:: tags - Limits the list to this collections whose tags are an exact match to this parameter.
-
-description:: Retrieves a list of all collections accessible in the current session. The list may be empty.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Retrieves a list of all collections accessible in the current session. The list may be empty.
+  # 
+  # params::
+  #   tags:: Limits the list to this collections whose tags are an exact match to this parameter.
   def index
     conditions = { :client_id => @client.id }
     if params["tags"]
@@ -31,15 +30,15 @@ description:: Retrieves a list of all collections accessible in the current sess
     end
     render_json :entry => entries and return
   end
-=begin rapidoc
-return_code:: 200
-return_code:: 403 - The current application or user doesn't have read access to this collection.
 
-param:: count - The number of items per page. If this parameter is unspecified, all items will be included.
-param:: startIndex - Index of the first returned item. Indexing starts at 1.
-
-description::  Returns this collection. If this collection contains references to other collections, those without read-access for the current user are hidden automatically from the results.
-=end
+  ##
+  # return_code:: 200 - OK
+  # return_code:: 403 - The current application or user doesn't have read access to this collection.
+  # description::  Returns this collection. If this collection contains references to other collections, those without read-access for the current user are hidden automatically from the results.
+  # 
+  # params::
+  #   count:: The number of items per page. If this parameter is unspecified, all items will be included.
+  #   startIndex:: Index of the first returned item. Indexing starts at 1.
   def show
     if ! @collection.read?(@user, @client)
       @collection = nil
@@ -52,23 +51,22 @@ description::  Returns this collection. If this collection contains references t
     render_json :entry => @collection.to_hash(@user, @client, params[:count], params[:startIndex]) and return
   end
 
-=begin rapidoc
-return_code:: 201
-
-param:: collection
-  param:: title - A title describing the collection.
-  param:: owner_id - The id of the user owning the collection. If unspecified, the collection will belong to the application (and will be visible to all users).
-  param:: priv - Whether the collection is private. A private collection is visible to only the owner and their friends.
-  param:: read_only - Whether the collection is read-only. Read-only collections can be written to only by their owner; other collections are writable by all users with read access
-  param:: indestructible - Whether the collection is indestructible. Indestructible collections cannot be deleted. Can be set only for collections without an owner.
-  param:: tags - Keywords for the collection.
-  param:: id - You can set the id for the collection yourself if you want. Must be a globally unique (GUID) string, 8-22 characters (preferably 22), and only letters, numbers and underscores allowed.
-  param:: metadata
-    param:: any_key - Any string
-    param:: another_key - Another string
-
-description:: Creates a collection. All parameters are optional.
-=end
+  ##
+  # return_code:: 201 - Created
+  # description:: Creates a collection. All parameters are optional.
+  # 
+  # params::
+  #   collection::
+  #     title:: A title describing the collection.
+  #     owner_id:: The id of the user owning the collection. If unspecified, the collection will belong to the application (and will be visible to all users).
+  #     priv:: Whether the collection is private. A private collection is visible to only the owner and their friends.
+  #     read_only:: Whether the collection is read-only. Read-only collections can be written to only by their owner; other collections are writable by all users with read access
+  #     indestructible:: Whether the collection is indestructible. Indestructible collections cannot be deleted. Can be set only for collections without an owner.
+  #     tags:: Keywords for the collection.
+  #     id:: You can set the id for the collection yourself if you want. Must be a globally unique (GUID) string, 8-22 characters (preferably 22), and only letters, numbers and underscores allowed.
+  #     metadata::
+  #       any_key:: Any string
+  #       another_key:: Another string
   def create
     if params[:collection]
       @collection = Collection.new( params[:collection] )
@@ -103,23 +101,20 @@ description:: Creates a collection. All parameters are optional.
     end
   end
 
-
-=begin rapidoc
-return_code:: 200
-return_code:: 403 - The current application or user doesn't have read access to this collection.
-
-param:: collection
-  param:: title - A title describing this collection.
-  param:: owner_id - The id of the user owning this collection. If unspecified, this collection will belong to the application (and will be visible to all users).
-  param:: priv - Whether this collection is private. A private collection is visible to only the owner and their friends.
-  param:: read_only - Whether this collection is read-only. Read-only collections can be written to only by their owner; other collections are writable by all users with read access
-  param:: tags - Keywords for this collection.
-  param:: metadata
-    param:: any_key - Any string
-    param:: another_key - Another string
-
-description:: Updates the attributes of this collection.
-=end
+  ##
+  # return_code:: 200 - OK
+  # return_code:: 403 - The current application or user doesn't have read access to this collection.
+  # description:: Updates the attributes of this collection.
+  # 
+  # param:: collection
+  #     title:: A title describing this collection.
+  #     owner_id:: The id of the user owning this collection. If unspecified, this collection will belong to the application (and will be visible to all users).
+  #     priv:: Whether this collection is private. A private collection is visible to only the owner and their friends.
+  #     read_only:: Whether this collection is read-only. Read-only collections can be written to only by their owner; other collections are writable by all users with read access
+  #     tags:: Keywords for this collection.
+  #     metadata
+  #       any_key:: Any string
+  #       another_key:: Another string
   def update
     render_json :status => :forbidden and return unless @collection.write?(@user, @client)
     if !params[:collection]
@@ -129,12 +124,10 @@ description:: Updates the attributes of this collection.
     render_json :entry => @collection.to_hash(@user, @client) and return
   end
 
-=begin rapidoc
-return_code:: 200
-return_code:: 403 - The current application or user doesn't have read access to this collection, or this collection is indestructible. You must contact an ASI administrator to delete an indestructible collection.
-
-description:: Deletes this collection.
-=end
+  ##
+  # return_code:: 200 - OK
+  # return_code:: 403 - The current application or user doesn't have read access to this collection, or this collection is indestructible. You must contact an ASI administrator to delete an indestructible collection.
+  # description:: Deletes this collection.
   def delete
     if ! @collection.delete?(@user, @client)
       render_json :status => :forbidden and return
@@ -144,19 +137,18 @@ description:: Deletes this collection.
   end
 
 
-=begin rapidoc
-return_code:: 201
-return_code:: 400 - A malformed or unsupported image type was uploaded.
-return_code:: 403 - The current application or user doesn't have read access to this collection, or this collection is indestructible. You must contact an ASI administrator to delete an indestructible collection.
-
-param:: item
-  param:: content_type - The content type of the new collection item. The content types currently supported are <tt>text/*</tt>, <tt>image/*</tt> and <tt>collection</tt> (a reference to another collection).
-  param:: file - A file to be added to the collection (optional).
-  param:: body - The body of the item. If a file is given or content_type is not text/*, this parameter is ignored.
-  param:: collection_id - Id of an existing collection where the reference will point to. If content_type is not collection this parameter is ignored.
-
-description:: Adds a new item to this collection.
-=end
+  ##
+  # return_code:: 201 - Created
+  # return_code:: 400 - A malformed or unsupported image type was uploaded.
+  # return_code:: 403 - The current application or user doesn't have read access to this collection, or this collection is indestructible. You must contact an ASI administrator to delete an indestructible collection.
+  # description:: Adds a new item to this collection.
+  #
+  # params::
+  #   item::
+  #     content_type:: The content type of the new collection item. The content types currently supported are <tt>text/*</tt>, <tt>image/*</tt> and <tt>collection</tt> (a reference to another collection).
+  #     file:: A file to be added to the collection (optional).
+  #     body:: The body of the item. If a file is given or content_type is not text/*, this parameter is ignored.
+  #     collection_id:: Id of an existing collection where the reference will point to. If content_type is not collection this parameter is ignored.
   def add
     if ! @collection.write?(@user, @client)
       render_json :status => :forbidden, :messages => "This collection belongs to another client." and return
@@ -167,13 +159,11 @@ description:: Adds a new item to this collection.
     render_json :status => :created, :entry => entry and return
   end
 
-=begin rapidoc
-return_code:: 200
-return_code:: 403 - The current combination of application and user is not allowed to delete this item.
-return_code:: 404 - The item with the specified id does not exist.
-
-description:: Deletes the item. If the item is a reference to a collection, only the reference is deleted, not the referenced collection.
-=end
+  ##
+  # return_code:: 200 - OK
+  # return_code:: 403 - The current combination of application and user is not allowed to delete this item.
+  # return_code:: 404 - The item with the specified id does not exist.
+  # description:: Deletes the item. If the item is a reference to a collection, only the reference is deleted, not the referenced collection.
   def delete_item
     item_id = params["item_id"]
 

@@ -4,15 +4,11 @@ class SessionsController < ApplicationController
   before_filter :ensure_client_logout, :only => :create
   #skip_before_filter :maintain_session_and_user, :only => [:create]
 
-=begin rapidoc
-access:: Free
-return_code:: 200
-description:: Returns the current session, if any.
-
-json:: { "entry" =>
-  { "user_id" => "tmoCBomrl993MCurh",
-    "app_id" => "aNfxPwHXmr3PkIacr-fEfL" } }
-=end
+  ##
+  # access:: Free
+  # return_code:: 200
+  # json:: { "entry" => { "user_id" => "tmoCBomrl993MCurh", "app_id" => "aNfxPwHXmr3PkIacr-fEfL" } }
+  # description:: Returns the current session, if any.
   def show
     @session = @application_session
     if !@session
@@ -21,31 +17,25 @@ json:: { "entry" =>
     render_json :status => :ok, :entry => @session and return
   end
 
-=begin rapidoc
-access:: Free
-return_code:: 201 - Successfully logged in.
-return_code:: 303 - In case of CAS login further actions are required. See below.
-return_code:: 401 - Invalid login details.
-return_code:: 409 - A session already exists.
-param:: session
-  param:: app_name - The application's name.
-  param:: app_password - The application's password.
-  param:: username - The user's username (optional).
-  param:: password - The user's password (optional).
-  param:: proxy_ticket - A CAS proxy ticket (optional).
-
-description:: Starts a new session. Sessions can be associated either
-with an application only or with an application and a user. To start a session without logging a user in, provide no <tt>username</tt> or <tt>password</tt>.</p>
-<p>Using HTTPS for logging in is recommended.</p>
-<p>When using CAS for logging in, expect possible response with 303 - See other. This happens when user has not logged in before using CAS and the credentials cannot be
-linked with existing ASI account. Response will contain a JSON with fields {"redirect" => {"message" => "Redirect to given uri.", "uri" => "http://cos.sizl.org/coreui/profile?guid=<guid>" }, where redirect will contain an URI with a guid. Extract redirect address from JSON's uri field and add to that uri
-two extra parameters: redirect and fallback. Redirect will be used in case of succesfull ASI account creation and linking with CAS credentials and fallback in case something goes wrong. New login with CAS is required
-after the operation.</p> 
-
-json:: { "entry" =>
-  { "user_id" => "tmoCBomrl993MCurh",
-    "app_id" => "aNfxPwHXmr3PkIacr-fEfL" } }
-=end
+  ##
+  # access:: Free
+  # return_code:: 201 - Successfully logged in.
+  # return_code:: 303 - In case of CAS login further actions are required. See below.
+  # return_code:: 401 - Invalid login details.
+  # return_code:: 409 - A session already exists.
+  # json:: { "entry" => { "user_id" => "tmoCBomrl993MCurh", "app_id" => "aNfxPwHXmr3PkIacr-fEfL" } }
+  # description:: Starts a new session. Sessions can be associated either with an application only or with an application and a user.
+  #               To start a session without logging a user in, provide no <tt>username</tt> or <tt>password</tt>.
+  #               Using HTTPS for logging in is recommended.
+  #               When using CAS for logging in, expect possible response with 303 - See other. This happens when user has not logged in before using CAS and the credentials cannot be linked with existing ASI account. Response will contain a JSON with fields {"redirect" => {"message" => "Redirect to given uri.", "uri" => "http://cos.sizl.org/coreui/profile?guid=<guid>" }, where redirect will contain an URI with a guid. Extract redirect address from JSON's uri field and add to that uri two extra parameters: redirect and fallback. Redirect will be used in case of succesfull ASI account creation and linking with CAS credentials and fallback in case something goes wrong. New login with CAS is required after the operation.
+  #
+  # params::
+  #   session::
+  #     app_name:: The application's name.
+  #     app_password:: The application's password.
+  #     username:: The user's username (optional).
+  #     password:: The user's password (optional).
+  #     proxy_ticket:: A CAS proxy ticket (optional).
   def create
 
     if Asi::Application.config.REQUIRE_SSL_LOGIN
@@ -191,10 +181,9 @@ json:: { "entry" =>
 
   end
 
-=begin rapidoc
-return_code:: 200
-description:: Ends the current session.
-=end
+  ##
+  # return_code:: 200
+  # description:: Ends the current session.
   def destroy
     ui_mode = (@client && @client == Client.find_by_name(APP_CONFIG.coreui_app_name))
 

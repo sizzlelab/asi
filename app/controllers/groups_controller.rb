@@ -9,17 +9,18 @@ class GroupsController < ApplicationController
   before_filter :get_group_or_not_found, :only => [ :get_members, :show, :add_member, :remove_person_from_group, :update_membership_status, :show_membership, :delete ] + ADMIN_METHODS
   before_filter :ensure_admin, :only => ADMIN_METHODS
 
-=begin rapidoc
-return_code:: 201
-return_code:: 400 - There was an error in one or more parameters.
-param:: group
-  param:: title - The title (or name) of the group.
-  param:: type - Can be open, closed, personal or hidden.
-  param:: description - A descriptive text for the group (optional).
-  param:: create_channel - If set to <tt>true</tt>, a channel for the group is also created with same name as group's title.
-json:: { "entry" => APIFactory.create_example_group }
-description:: Creates a new group. The creator is automatically added to the new group as an admin.
-=end
+  ##
+  # return_code:: 201 - Created
+  # return_code:: 400 - There was an error in one or more parameters.
+  # json:: { "entry" => Factory.build(:group) }
+  # description:: Creates a new group. The creator is automatically added to the new group as an admin.
+  #
+  # params::
+  #   group::
+  #     title:: The title (or name) of the group.
+  #     type:: Can be open, closed, personal or hidden.
+  #     description:: A descriptive text for the group (optional).
+  #     create_channel:: If set to <tt>true</tt>, a channel for the group is also created with same name as group's title.
   def create
     unless params[:group]
       render_json :status => :bad_request, :messages => "No group supplied. Note that params must be given as group[title] etc." and return
@@ -44,12 +45,11 @@ description:: Creates a new group. The creator is automatically added to the new
     end
   end
 
-=begin rapidoc
-access:: Application
-return_code:: 200
-json:: { "entry" => Factory.create_example_group }
-description:: Returns the details of this group.
-=end
+  ##
+  # access:: Application
+  # return_code:: 200 - OK
+  # json:: { "entry" => Factory.build(:group) }
+  # description:: Returns the details of this group.
   def show
     unless @group.show?(@user)
       render_json :status => :forbidden, :messages => "You are not allowed to view this group." and return
@@ -57,16 +57,17 @@ description:: Returns the details of this group.
     render_json :entry => @group.to_hash(@user)
   end
 
-=begin rapidoc
-access:: Group admin
-return_code:: 200
-param:: group
-  param:: title - The title (or name) of the group.
-  param:: type - Can be open, closed or hidden.
-  param:: description - A descriptive text for the group (optional).
-json:: { "entry": Factory.create_example_group }
-description:: Updates the information of this group. All parameters are optional; leave out the ones you do not wish to change. Personal groups cannot be changed to any other type and groups of other types cannot be changed to personal groups.
-=end
+  ##
+  # access:: Group admin
+  # return_code:: 200 - OK
+  # json:: { "entry" => Factory.build(:group) }
+  # description:: Updates the information of this group. All parameters are optional; leave out the ones you do not wish to change. Personal groups cannot be changed to any other type and groups of other types cannot be changed to personal groups.
+  #
+  # params::
+  #   group::
+  #     title:: The title (or name) of the group.
+  #     type:: Can be open, closed or hidden.
+  #     description:: A descriptive text for the group (optional).
   def update
     if @group.update_attributes(params[:group])
       render_json :entry => @group
@@ -76,17 +77,18 @@ description:: Updates the information of this group. All parameters are optional
     end
   end
 
-=begin rapidoc
-access:: Application
-return_code:: 200
-param:: query - A query to limit the group listing (optional). If this parameter is present, only groups whose title or description match the query are returned. The returned groups are sorted by relevance. Hidden groups that the possible logged-in user is a member of are present in the list.
-param:: per_page - Number of entries to display.
-param:: page - Page to display.
-param:: sort_by - Field to sort results by. Defaults to <tt>updated_at</tt>. Possible values are <tt>created_at</tt>, <tt>updated_at</tt>, <tt>title</tt>, <tt>description</tt>, <tt>creator</tt>.
-param:: sort_order - Possible values are <tt>ascending</tt> and <tt>descending</tt>. Defaults to <tt>descending</tt>.
-json:: { "entry": [ Factory.create_group, Factory.create_group, Factory.create_group ] }
-description:: Returns all the groups visible in the current session.
-=end
+  ##
+  # access:: Application
+  # return_code:: 200 - OK
+  # json:: { "entry" => [ Factory.build(:group), Factory.build(:group), Factory.build(:group) ] }
+  # description:: Returns all the groups visible in the current session.
+  #
+  # params::
+  #   query:: A query to limit the group listing (optional). If this parameter is present, only groups whose title or description match the query are returned. The returned groups are sorted by relevance. Hidden groups that the possible logged-in user is a member of are present in the list.
+  #   per_page:: Number of entries to display.
+  #   page:: Page to display.
+  #   sort_by:: Field to sort results by. Defaults to <tt>updated_at</tt>. Possible values are <tt>created_at</tt>, <tt>updated_at</tt>, <tt>title</tt>, <tt>description</tt>, <tt>creator</tt>.
+  #   sort_order:: Possible values are <tt>ascending</tt> and <tt>descending</tt>. Defaults to <tt>descending</tt>.
   def public_groups
     groups = []
     options = {}
@@ -115,17 +117,18 @@ description:: Returns all the groups visible in the current session.
     render_json :entry => @groups, :size => groups.count_available and return
   end
 
-=begin rapidoc
-access:: User
-return_code:: 200
-param:: per_page - Number of entries to display.
-param:: page - Page to display.
-param:: sort_by - Field to sort results by. Defaults to <tt>updated_at</tt>. Possible values are <tt>created_at</tt>, <tt>updated_at</tt>, <tt>title</tt>, <tt>description</tt>.
-param:: sort_order - Possible values are <tt>ascending</tt> and <tt>descending</tt>. Defaults to <tt>descending</tt>.
-json:: { "entry": [ Factory.create_group, Factory.create_group, Factory.create_group ] }
-description:: Returns all the personal groups of current user.
-return_code:: 403 - The logged in user is different than <user_id>
-=end 
+  ##
+  # access:: User
+  # return_code:: 200 - OK
+  # return_code:: 403 - The logged in user is different than <user_id>
+  # json:: { "entry": => [ Factory.build(:group), Factory.build(:group), Factory.build(:group) ] }
+  # description:: Returns all the personal groups of current user.
+  #
+  # params::
+  #   per_page:: Number of entries to display.
+  #   page:: Page to display.
+  #   sort_by:: Field to sort results by. Defaults to <tt>updated_at</tt>. Possible values are <tt>created_at</tt>, <tt>updated_at</tt>, <tt>title</tt>, <tt>description</tt>.
+  #   sort_order:: Possible values are <tt>ascending</tt> and <tt>descending</tt>. Defaults to <tt>descending</tt>.
   def personal_groups
     if !ensure_same_as_logged_person(params[:user_id])
       render_json :status => :forbidden, :messages => "A user's personal groups are only visible to that user." and return
@@ -147,13 +150,14 @@ return_code:: 403 - The logged in user is different than <user_id>
     render_json :entry => @groups, :size => count
   end
 
-=begin rapidoc
-return_code:: 201 - Succesfully deleted
-return_code:: 403 - The logged in user is not the creator of this group or the group is not of type <tt>personal</tt>
-access:: Group creator
-param:: group_id - The id of target group.
-description:: Deletes the group.
-=end
+  ##
+  # return_code:: 201 - Succesfully deleted
+  # return_code:: 403 - The logged in user is not the creator of this group or the group is not of type <tt>personal</tt>
+  # access:: Group creator
+  # description:: Deletes the group.
+  #
+  # params::
+  #   group_id:: The id of target group.
   def delete
     if @group.group_type != "personal"
       render_json :status => :forbidden, :messages => "Not a personal group." and return
@@ -165,14 +169,17 @@ description:: Deletes the group.
     render_json :status => :ok and return
   end
 
-=begin rapidoc
-return_code:: 201 - The join was successful.
-return_code:: 202 - The invitation or membership request was sent.
-return_code:: 403 - The logged in user is not allowed to send invitations to the group
-return_code:: 409 - The user is already a member of the group or an invitation has already been sent.
-param:: group_id - The id of the target group.
-description::  Attempts to add the person specified by user_id to a group. This will succeed immediately if the group is open or user_id is logged in and has an invitation. If the group is closed and user_id is logged in, a membership request is sent. If user_id is not logged in, an invitation is sent to user_id – but only if the group is open or the logged in user is an admin of the group.
-=end
+  ##
+  # return_code:: 201 - The join was successful.
+  # return_code:: 202 - The invitation or membership request was sent.
+  # return_code:: 403 - The logged in user is not allowed to send invitations to the group
+  # return_code:: 409 - The user is already a member of the group or an invitation has already been sent.
+  # description:: Attempts to add the person specified by user_id to a group. This will succeed immediately if the group is open or user_id is logged in and has an invitation.
+  #               If the group is closed and user_id is logged in, a membership request is sent.
+  #               If user_id is not logged in, an invitation is sent to user_id – but only if the group is open or the logged in user is an admin of the group.
+  #
+  # params::
+  #   group_id:: The id of the target group.
   def add_member
     if @group.group_type == "personal"
       if !ensure_same_as_logged_person(@group.creator.guid)
@@ -218,13 +225,9 @@ description::  Attempts to add the person specified by user_id to a group. This 
     render_json :status => :ok and return
   end
 
-=begin rapidoc
-return_code:: 200
-json:: { "entry": [
-
-] }
-description:: Returns the groups in which this user is a member.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Returns the groups in which this user is a member.
   def get_groups_of_person
     @groups = Person.find_by_guid(params[:user_id]).groups
     @groups_hash = @groups.find_all{|g| g.show?(@user)}.collect do |group|
@@ -233,11 +236,10 @@ description:: Returns the groups in which this user is a member.
     render_json :entry => @groups and return
   end
 
-=begin rapidoc
-access:: Application
-return_code:: 200
-description:: Returns the member list of this group.
-=end
+  ##
+  # access:: Application
+  # return_code:: 200 - OK
+  # description:: Returns the member list of this group.
   def get_members
     @members = @group.members
     @members.filter_paginate!(params[:per_page], params[:page]) { |r| true }
@@ -246,12 +248,13 @@ description:: Returns the member list of this group.
     render_json :entry => @members, :size => size and return
   end
 
-=begin rapidoc
-return_code:: 200
-param:: accepted - True to accept a pending request.
-param:: admin_status - True to grant admin rights, false to revoke them.
-description:: Changes the membership status. User's admin status in group can be changed. Also, pending membership requests can be accepted. User's own admin status cannot be changed, changing of admin status must be done by different group admin.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Changes the membership status. User's admin status in group can be changed. Also, pending membership requests can be accepted. User's own admin status cannot be changed, changing of admin status must be done by different group admin.
+  #
+  # params::
+  #   accepted:: True to accept a pending request.
+  #   admin_status:: True to grant admin rights, false to revoke them.
   def update_membership_status
 
     if @user.is_admin_of?(@group)
@@ -269,10 +272,11 @@ description:: Changes the membership status. User's admin status in group can be
     end
   end
 
-=begin rapidoc
-return_code:: 200
-description:: Removes this person from this group. Any user can remove their own membership. An admin user can remove any other user in the group (even other admins).
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Removes this person from this group.
+  #               Any user can remove their own membership.
+  #               An admin user can remove any other user in the group (even other admins).
   def remove_person_from_group
     if @group.group_type == "personal"
       if !ensure_same_as_logged_person(@group.creator.guid)
@@ -292,26 +296,17 @@ description:: Removes this person from this group. Any user can remove their own
     render_json :status => :ok
   end
 
-=begin rapidoc
-return_code:: 200
-description:: Returns the pending members of this group. These are users that have requested membership of the group. See <%= link_to_api("/people/user_id/@groups/group_id/") %> to accept requests.
-json:: { "entry": [
-
-] }
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Returns the pending members of this group. These are users that have requested membership of the group. See <%= link_to_api("/people/user_id/@groups/group_id/") %> to accept requests.
   def get_pending_members
     @requests = @group.pending_members - @group.invited_members
     render_json :entry => @requests
   end
 
-
-=begin rapidoc
-return_code:: 200
-description:: Returns the groups this user has been invited to.
-json:: { "entry": [
-
-] }
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Returns the groups this user has been invited to.
   def get_invites
     @groups = @user.invited_groups
     
@@ -321,14 +316,12 @@ json:: { "entry": [
     render_json :entry => @groups and return
   end
 
-=begin rapidoc
-return_code:: 200
-return_code:: 403 - Only the authenticated person can view their membership status.
-return_code:: 404 - The person or group doesn't exist or there is no connection between the two.
-
-description:: Returns the membership status of this person in this group.
-json:: { "entry" => Factory.create_group.memberships[0] }
-=end
+  ##
+  # return_code:: 200 - OK
+  # return_code:: 403 - Only the authenticated person can view their membership status.
+  # return_code:: 404 - The person or group doesn't exist or there is no connection between the two.
+  # json:: { "entry" => Factory.build(:group).memberships[0] }
+  # description:: Returns the membership status of this person in this group.
   def show_membership
     unless @person = Person.find_by_guid(params[:user_id])
       render_json :status => :not_found, :messages => "Person not found" and return

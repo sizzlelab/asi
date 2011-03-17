@@ -7,18 +7,17 @@ class PeopleController < ApplicationController
 
   PERSON_HASH_INCLUDES = [:address, :roles, :location, :avatar, :name]
 
-=begin rapidoc
-access:: Application
-return_code:: 200 - OK
-json:: {"entry" =>
-[ APIFactory.create_person, APIFactory.create_person ]
-}
-
-param:: search - (optional) The search term. Every user whose name matches the regular expression /.*search.*/ will be returned. However, all charactersin the search term are interpreted as literals rather than special regexp characters.
-param:: phone_number - (optional) If this is entered (without search), returns only one person who has the exact same phone number stored (358501234567 will match also +358501234567). This parameter is ignored if "search" parameter is submited.
-
-description:: Finds users based on their real names and usernames.
-=end
+  ##
+  # access:: Application
+  # return_code:: 200 - OK
+  # json:: {"entry" => [ Factory.build(:person), Factory.build(:person) ] }
+  # description:: Finds users based on their real names and usernames.
+  #
+  # params::
+  #   search:: (optional) The search term. Every user whose name matches the regular expression /.*search.*/ will be returned.
+  #            However, all charactersin the search term are interpreted as literals rather than special regexp characters.
+  #   phone_number:: (optional) If this is entered (without search), returns only one person who has the exact same phone number stored
+  #                  (358501234567 will match also +358501234567). This parameter is ignored if "search" parameter is submited.
   def index
     options = {:include => PERSON_HASH_INCLUDES}
     if params[:per_page]
@@ -54,14 +53,12 @@ description:: Finds users based on their real names and usernames.
     render_json :entry => @people.compact.collect { |p| p.to_hash(@user, @client)  }, :size => size
   end
 
-=begin rapidoc
-access:: Client login
-return_code:: 200 - OK
-json:: { :entry => APIFactory.create_person }
-description::  Gets the information of the user specified by user_id. Note that the timestamp for status_messages
-latest update is always in UTC time. The 'avatar' slot in the returned JSON contains the link to the avatar
-image and also the status of the avatar, which is 'set' or 'not_set' depending on if the user has uploaded an image or not.
-=end
+  ##
+  # access:: Client login
+  # return_code:: 200 - OK
+  # json:: { :entry => Factory.build(:person) }
+  # description::  Gets the information of the user specified by user_id. Note that the timestamp for status_messages latest update is always in UTC time.
+  #                The 'avatar' slot in the returned JSON contains the link to the avatar image and also the status of the avatar, which is 'set' or 'not_set' depending on if the user has uploaded an image or not.
   def show
 
       @person = Person.find_by_guid(params['user_id'])
@@ -73,24 +70,23 @@ image and also the status of the avatar, which is 'set' or 'not_set' depending o
     render_json :entry => @person.to_hash(@user, @client)
   end
 
-=begin rapidoc
-access:: Client login
-return_code:: 201 - Created
-return_code:: 400 - Bad request
-return_code:: 409 - Conflict
-
-json:: {"entry" => APIFactory.create_person }
-
-param:: person
-  param:: username - The desired username. Must be unique in the system. Length 4-20 characters.
-  param:: password - User's password.
-  param:: email - User's email address.
-  param:: is_association - 'true' if this user is an association. Associations may be displayed differently by applications, and they cannot send or receive friend requests.
-  param:: consent - The version of the consent that the user has agreed to. For example: 'FI1'/'EN1.5'/'SE4'
-param:: welcome_email - Optional parameter. If false, no welcome email is sent. Default is true.
-
-description:: Creates a new user. If creation is succesful the current app-only session is changed to be associated also to the user that was just created. Also sends a welcoming email to the users email address.
-=end
+  ##
+  # access:: Client login
+  # return_code:: 201 - Created
+  # return_code:: 400 - Bad request
+  # return_code:: 409 - Conflict
+  # json:: {"entry" => Factory.build(:person) }
+  # description:: Creates a new user. If creation is succesful the current app-only session is changed to be associated also to the user that was just created.
+  #               Also sends a welcoming email to the users email address.
+  #
+  # params::
+  #   person::
+  #     username:: The desired username. Must be unique in the system. Length 4-20 characters.
+  #     password:: User's password.
+  #     email:: User's email address.
+  #     is_association:: 'true' if this user is an association. Associations may be displayed differently by applications, and they cannot send or receive friend requests.
+  #     consent:: The version of the consent that the user has agreed to. For example: 'FI1'/'EN1.5'/'SE4'
+  #   welcome_email:: Optional parameter. If false, no welcome email is sent. Default is true.
   def create
     @person = Person.new(params[:person])
     if @person.save
@@ -115,30 +111,31 @@ description:: Creates a new user. If creation is succesful the current app-only 
     end
   end
 
-=begin rapidoc
-access:: Self
-return_code:: 200
-return_code:: 400 - There's a problem with one of the parameters.
-param:: person
-  param:: password - A new password.
-  param:: email - Person's email address
-  param:: is_association - Person's association status, 'true' or 'false'.
-  param:: status_message - Person's current status message.
-  param:: birthdate - Person's birthdate as date. Format yyyy-mm-dd
-  param:: gender - Person's gender, either MALE or FEMALE.
-  param:: description - A description of the person, or "about me".
-  param:: website - A link to this person's website.
-  param:: phone_number - Person's phone number, stored as a string.
-  param:: name
-    param:: given_name - Person's given name.
-    param:: family_name - Person's family name.
-  param:: address
-    param:: street_address - Person's street address
-    param:: postal_code - Person's postal code, e.g. 02150
-    param:: locality - Person's locality, e.g. Espoo
-
-description:: Update (or add) information to user's profile. The person-parameter needs to contain only the attributes that need to be changed. If an error occurs, both status code and an array of error messages are returned.
-=end
+  ##
+  # access:: Self
+  # return_code:: 200 - OK
+  # return_code:: 400 - There's a problem with one of the parameters.
+  # description:: Update (or add) information to user's profile. The person-parameter needs to contain only the attributes that need to be changed.
+  #               If an error occurs, both status code and an array of error messages are returned.
+  # 
+  # params::
+  #   person::
+  #     password:: A new password.
+  #     email:: Person's email address
+  #     is_association:: Person's association status, 'true' or 'false'.
+  #     status_message:: Person's current status message.
+  #     birthdate:: Person's birthdate as date. Format yyyy-mm-dd
+  #     gender:: Person's gender, either MALE or FEMALE.
+  #     description:: A description of the person, or "about me".
+  #     website:: A link to this person's website.
+  #     phone_number:: Person's phone number, stored as a string.
+  #     name::
+  #       given_name:: Person's given name.
+  #       family_name:: Person's family name.
+  #     address::
+  #       street_address:: Person's street address
+  #       postal_code:: Person's postal code, e.g. 02150
+  #       locality:: Person's locality, e.g. Espoo
   def update
     errors = {}
     if ! ensure_same_as_logged_person(params['user_id'])
@@ -162,12 +159,10 @@ description:: Update (or add) information to user's profile. The person-paramete
     @person = nil
   end
 
-=begin rapidoc
-access:: Self
-return_code:: 200
-
-description:: Deletes this user.
-=end
+  ##
+  # access:: Self
+  # return_code:: 200 - OK
+  # description:: Deletes this user.
   def delete
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
@@ -182,14 +177,14 @@ description:: Deletes this user.
     render_json :status => :ok
   end
 
-=begin rapidoc
-access:: Self
-return_code:: 200
-return_code:: 400 - If this user is an association.
-param:: friend_id - The id of the friend being requested.
-
-description:: Adds a new connection to this user. The connection is added as <em>pending</em> and changed to <em>accepted</em> after the friend accepts the request.
-=end
+  ##
+  # access:: Self
+  # return_code:: 200 - OK
+  # return_code:: 400 - If this user is an association.
+  # description:: Adds a new connection to this user. The connection is added as <em>pending</em> and changed to <em>accepted</em> after the friend accepts the request.
+  #
+  # params::
+  #   friend_id:: The id of the friend being requested.
   def add_friend
     # If there is no pending connection between persons,
     # add pendind/requested connections between them.
@@ -228,12 +223,13 @@ description:: Adds a new connection to this user. The connection is added as <em
     render_json :status => :ok
   end
 
-=begin rapidoc
-access:: Application
-return_code:: 200
-param:: email - The email address of the user.
-description:: Sends a password recovery email to a specified email address.
-=end
+  ##
+  # access:: Application
+  # return_code:: 200 - OK
+  # description:: Sends a password recovery email to a specified email address.
+  #
+  # params::
+  #   email:: The email address of the user.
   def recover_password
     person = Person.find_by_email(params[:email])
 
@@ -284,16 +280,16 @@ description:: Sends a password recovery email to a specified email address.
 
   end
 
-=begin rapidoc
-return_code:: 200
-
-param:: sortBy - (Optional) A field according to which the results should be sorted. Currently only supported is status_changed that will sort the results based on the date of last status message change.
-param:: sortOrder - (Optional) Valid values are ascending (default) and descending.
-param:: per_page - Number of items to show.
-param:: page - Page to show.
-
-description:: Gets a list of this user's friends.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Gets a list of this user's friends.
+  # 
+  # params::
+  #   sortBy:: (Optional) A field according to which the results should be sorted.
+  #            Currently only supported is status_changed that will sort the results based on the date of last status message change.
+  #   sortOrder:: (Optional) Valid values are ascending (default) and descending.
+  #   per_page:: Number of items to show.
+  #   page:: Page to show.
   def get_friends
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
@@ -312,22 +308,18 @@ description:: Gets a list of this user's friends.
     render_json :entry => @friends, :size => @friends.count_available and return
   end
 
-=begin rapidoc
-return_code:: 200
-
-description:: Removes this friend connection.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Removes this friend connection.
   def remove_friend
     return if !remove_any_connection_between(params['user_id'], params['friend_id'])
     render_json :status => :ok and return
   end
 
-
-=begin rapidoc
-return_code:: 200
-
-description:: Returns a list of people who have requested to connect to this user.</p><p>A friend request is accepted by making the same request in the opposite direction.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Returns a list of people who have requested to connect to this user.
+  #               A friend request is accepted by making the same request in the opposite direction.
   def pending_friend_requests
     if ! ensure_same_as_logged_person(params['user_id'])
       render_json :status => :forbidden and return
@@ -335,29 +327,24 @@ description:: Returns a list of people who have requested to connect to this use
     render_json :entry => @user.pending_contacts
   end
 
-=begin rapidoc
-return_code:: 200
-
-description:: Rejects this friend request.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Rejects this friend request.
   def reject_friend_request
     if remove_any_connection_between(params['user_id'], params['friend_id'])
       render_json :entry => {}
     end
   end
 
-=begin rapidoc
-access:: Application
-return_code:: 200 - OK
-json:: {"entry" =>
-[ "email" => "unavailable", "username" => "available" ]
-}
-
-param:: username - returns unavailable, if this username is already in use, otherwise returns available.
-param:: email - returns unavailable, if this email is already in use, otherwise returns available.
-
-description:: Checks if the username or email given in parameters are already in use in ASI.
-=end
+  ##
+  # access:: Application
+  # return_code:: 200 - OK
+  # json:: {"entry" => [ "email" => "unavailable", "username" => "available" ] }
+  # description:: Checks if the username or email given in parameters are already in use in ASI.
+  #
+  # params::
+  #   username:: returns unavailable, if this username is already in use, otherwise returns available.
+  #   email:: returns unavailable, if this email is already in use, otherwise returns available.
   def availability
     resp = {}
     if params["username"]

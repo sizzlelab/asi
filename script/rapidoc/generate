@@ -1,7 +1,4 @@
 #!/bin/bash
 
-# 'import' rvm
-# source ~/.rvm/scripts/rvm
-
 cd `dirname $0`
 ruby generate.rb

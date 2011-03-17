@@ -5,24 +5,23 @@ class ClientDataController < ApplicationController
   before_filter :authorize
   before_filter :get_or_create
 
-=begin rapidoc
-access:: Self
-return_code:: 200
-description:: Gets every key-value pair that has been saved for this user by this application.
-=end
+  ##
+  # access:: Self
+  # return_code:: 200 - OK
+  # description:: Gets every key-value pair that has been saved for this user by this application.
   def show
     render_json :entry => @set and return
   end
 
-=begin rapidoc
-access:: Self
-return_code:: 200
-param:: data
-  param:: any_key - any value
-  param:: any_other_key - any other value
-description:: Adds new key-value pairs about this user. Any previous data with the same key
-(or keys) is overwritten with the data provided.
-=end
+  ##
+  # access:: Self
+  # return_code:: 200 - OK
+  # description:: Adds new key-value pairs about this user. Any previous data with the same key (or keys) is overwritten with the data provided.
+  #
+  # params::
+  #   data::
+  #     any_key:: any value
+  #     any_other_key:: any other value
   def update
     @set.update_attributes({ :data => params[:data] })
     render_json :entry => @set and return

@@ -6,11 +6,10 @@ class LocationsController < ApplicationController
   before_filter :user_authorized?, :only => [:update , :destroy]
   #before_filter :ensure_client_login, :only => :update, #TODO Add this when SISSI is corrected
 
-=begin rapidoc
-return_code:: 200
-json:: { :entry => APIFactory.create_location }
-description:: Returns this person's location.
-=end
+  ##
+  # return_code:: 200
+  # json:: { :entry => Factory.build(:location) }
+  # description:: Returns this person's location.
   def get
     @person = Person.find_by_guid(params['user_id'])
     unless @person
@@ -26,15 +25,16 @@ description:: Returns this person's location.
     render_json :entry => @location
   end
 
-=begin rapidoc
-param:: location_security_token - (optional) The current user's security token, obtained via <tt><%= link_to_api("@location_security_token") %></tt> If this parameter is submited, the location can be updated without being logged in as this user.
-param::location
-  param::latitude - Latitude coordinates in Decimal Degree format
-  param::longitude - Longitude coordinate sin Decimal Degree format
-  param::label - Text label given to current location
-  param::accuracy - Accuracy of the location
-description:: Sets the location of the user. If only some of the fields are updated, rest will be set to null.
-=end
+  ##
+  # description:: Sets the location of the user. If only some of the fields are updated, rest will be set to null.
+  #
+  # params::
+  #   location_security_token:: (optional) The current user's security token, obtained via <tt><%= link_to_api("@location_security_token") %></tt> If this parameter is submited, the location can be updated without being logged in as this user.
+  #   location::
+  #     latitude:: Latitude coordinates in Decimal Degree format
+  #     longitude:: Longitude coordinate sin Decimal Degree format
+  #     label:: Text label given to current location
+  #     accuracy:: Accuracy of the location
   def update
     user_id = params['user_id'] || @role.person.guid unless @person
 
@@ -59,9 +59,8 @@ description:: Sets the location of the user. If only some of the fields are upda
     render_json :status => :ok
   end
 
-=begin rapidoc
-description:: Clears the location of a user.
-=end
+  ##
+  # description:: Clears the location of a user.
   def destroy
     
     user = Person.find_by_guid(params['user_id'])
@@ -70,13 +69,10 @@ description:: Clears the location of a user.
   end
 
   
-=begin rapidoc
-return_code:: 200
-
-description:: The returned JSON has a field location_security_token which contains UUID string that can be used as a security token
-
-json:: { :entry => { :location_security_token => UUID.timestamp_create.to_s } }
-=end
+  ##
+  # return_code:: 200
+  # json:: { :entry => { :location_security_token => UUID.timestamp_create.to_s } }
+  # description:: The returned JSON has a field location_security_token which contains UUID string that can be used as a security token
   def fetch_location_security_token
     role = @user.roles.find_by_client_id(@client.id)
     render_json :status => :ok, :json => { :location_security_token => role.location_security_token }.to_json

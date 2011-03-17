@@ -47,6 +47,7 @@ GEM
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.0.0)
     cgi_multipart_eof_fix (2.5.0)
+    coderay (0.9.7)
     columnize (0.3.2)
     daemons (1.1.0)
     erubis (2.6.6)
@@ -69,6 +70,7 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    memcache-client (1.8.5)
     mime-types (1.16)
     mongrel (1.1.5)
       cgi_multipart_eof_fix (>= 2.4)
@@ -103,6 +105,7 @@ GEM
       rake (>= 0.8.4)
       thor (~> 0.14.0)
     rake (0.8.7)
+    rdoc (3.5.3)
     redgreen (1.2.2)
     riddle (1.2.2)
     rmagick (2.13.1)
@@ -131,13 +134,16 @@ PLATFORMS
 DEPENDENCIES
   andand
   capistrano
+  coderay
   factory_girl_rails
   has_many_polymorphs!
   hoptoad_notifier
   json
+  memcache-client
   mongrel
   mysql (= 2.8.1)
   rails (= 3.0.0)
+  rdoc
   redgreen
   rmagick
   ruby-debug
