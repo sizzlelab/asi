@@ -52,7 +52,10 @@
         <% unless @verbs[verb][:comment][:json].empty? %>
           <div class="json">
             <h4>Response example</h4>
-            <%= DocUtil.pretty_print(@verbs[verb][:comment][:json]) %>
+            <pre class="prettyprint">
+<!-- don't indent this line because of pre tag -->
+<%= DocUtil.pretty_print(@verbs[verb][:comment][:json]) %>
+            </pre>
           </div>
         <% end %>
       </section>
@@ -69,3 +72,11 @@
     </section>
   <% end %>
 </div>
+<%= DocUtil.print_erb('stylesheet_link_tag "prettify"', true) %>
+<%= DocUtil.print_erb('javascript_include_tag "jquery.min"', true) %>
+<%= DocUtil.print_erb('javascript_include_tag "prettify"', true) %>
+<script type="text/javascript">
+    $(function() {
+        prettyPrint();
+    })
+</script>

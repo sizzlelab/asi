@@ -47,7 +47,6 @@ GEM
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.0.0)
     cgi_multipart_eof_fix (2.5.0)
-    coderay (0.9.7)
     columnize (0.3.2)
     daemons (1.1.0)
     erubis (2.6.6)
@@ -134,7 +133,6 @@ PLATFORMS
 DEPENDENCIES
   andand
   capistrano
-  coderay
   factory_girl_rails
   has_many_polymorphs!
   hoptoad_notifier

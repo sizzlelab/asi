@@ -1,5 +1,4 @@
 require 'json'
-require 'coderay'
 require 'rdoc/rdoc'
 require 'factory_girl_rails'
 require File.join(File.dirname(__FILE__), '../../../lib/json_printer.rb')
@@ -20,7 +19,7 @@ class DocUtil
 
     begin
       value = JSON.pretty_generate(JSON.parse(data.to_json))
-      value = CodeRay.scan(value, :json).div
+      #value = CodeRay.scan(value, :json).div
       return value
     rescue JSON::ParserError => e
       puts "Parser error in #{data}"

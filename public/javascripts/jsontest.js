@@ -1,5 +1,7 @@
 var jsontest = (function() {
     return {
+        INDENT: 2,
+
         template: null,
         _loading: false,
 
@@ -21,7 +23,7 @@ var jsontest = (function() {
                     return;
                 }
                 jsontest._loading = true;
-                $('#responses ol').append('<li class="loading"><img src="/images/loading.gif" alt="loading..."/></li>');
+                $('#responses ol').append('<li class="loading response"><img src="/images/loading.gif" alt="loading..."/></li>');
             },
             stop: function() {
                 $('#responses ol .loading').remove();
@@ -90,7 +92,7 @@ var jsontest = (function() {
         },
         makePrettySpacing: function(s) {
             try {
-                return JSON.stringify(JSON.parse(s), null, 4);
+                return JSON.stringify(JSON.parse(s), null, jsontest.INDENT);
             }
             catch(ex) {
                 return s;

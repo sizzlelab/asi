@@ -14,9 +14,9 @@ class Admin::FeedbacksController < ApplicationController
   def create
     @feedback = Feedback.new(params[:feedback])
     if @feedback.save
-      flash[:notice] = :feedback_saved
+      flash[:notice] = "Feedback sent. Thank you"
     else
-      flash[:error] = :feedback_not_saved
+      flash[:error] = "There was a problem sending feedback. Please try again later"
     end
     redirect_to params[:feedback][:url]    
   end

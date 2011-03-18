@@ -229,9 +229,13 @@ header {
     background: #eee;
     padding: 1.0em 1.5em 0.5em 1.5em;
     margin-bottom: 1.0em;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 3px solid #ddd;
     }
-    header h1 { color: #000; }
+    header h1 {
+        text-shadow: #ccc 2px 2px;
+        font-weight: bold;
+        color: #000;
+        }
     header h1 a {
         color: #000 !important;
         text-decoration: none;
@@ -457,8 +461,9 @@ nav ul {
 .rapidoc .json {
     margin-top: 1.0em;
     }
-    .rapidoc .json .code {
-        font-size: 75%;
+    .rapidoc .json pre {
+        font-size: 80%;
+        border-width: 0 !important;
         }
 .rapidoc .access p {
     margin: 0 0 0 1.0em;
@@ -507,15 +512,15 @@ nav ul {
 
 /* footer styles */
 footer {
-    background: #eee;
-    border-top: 1px solid #ddd;
+    background: #efefef;
+    border-top: 2px dotted #ddd;
     margin: 6.0em 0 0 0;
-    padding: 2.0em;
+    padding: 2.0em 2.0em 1.0em 2.0em;
     }
 
     footer .version {
         text-align: center;
-        font-size: 80%;
+        font-size: 75%;
 	    font-family: verdana, arial, helvetica, sans-serif;
         padding: 0.5em;
         background: #fff;
@@ -524,10 +529,12 @@ footer {
 
 /* feedback form styles */
 #feedback input {
-    width: 18em;
+    width: 24em;
+    font-size: 85%;
     }
 #feedback textarea {
-    width: 18em;
+    font-size: 85%;
+    width: 24em;
     height: 6em;
     }
 

@@ -19,7 +19,6 @@ gem "whenever"
 gem "has_many_polymorphs", :git => "http://github.com/jystewart/has_many_polymorphs.git"
 gem "will_paginate", "~> 3.0.pre2"
 gem "rdoc"
-gem "coderay"
 
 group :production do
   gem "memcache-client"
