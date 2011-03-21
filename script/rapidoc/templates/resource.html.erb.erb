@@ -1,4 +1,4 @@
-<section class="rapidoc">
+<div class="rapidoc">
   <h2 id="top"><a href="/doc#reference">ASI</a><%= DocUtil.render_breadcrumb(@path, @breadcrumb_hash) %></h2>
   <nav id="docNav">
     <ul>
@@ -18,7 +18,7 @@
       <section id="<%= verb %>">
         <h3>
           <%= verb %>
-          <span class="inlineNav"><a href="#top">^top</a><span>
+          <span class="inlineNav"><a href="#top">^top</a></span>
         </h3>
         <% unless @verbs[verb][:comment][:description].empty? %>
           <div class="description">
@@ -66,13 +66,12 @@
     <section id="subresources">
       <h3>
         SUBRESOURCES
-        <span class="inlineNav"><a href="#top">^top</a><span>
+        <span class="inlineNav"><a href="#top">^top</a></span>
       </h3>
       <%= DocUtil.render_subresources_to_ul(@subresources, @subresources_index) %>
     </section>
   <% end %>
 </div>
-<%= DocUtil.print_erb('stylesheet_link_tag "prettify"', true) %>
 <%= DocUtil.print_erb('javascript_include_tag "jquery.min"', true) %>
 <%= DocUtil.print_erb('javascript_include_tag "prettify"', true) %>
 <script type="text/javascript">

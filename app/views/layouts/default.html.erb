@@ -11,6 +11,7 @@
 
         <!-- CSS: implied media="all" -->
         <%= stylesheet_link_tag "cos" %>
+        <%= stylesheet_link_tag "prettify" %>
     </head>
     <body>
         <header>
@@ -42,5 +43,6 @@
               Aalto Social Interface <%= render :partial => "layouts/version" %> built <%= render :partial => "layouts/build_date" %>
             </p>
         </footer>
+        <%= javascript_include_tag "prettify" %>
     </body>
 </html>
