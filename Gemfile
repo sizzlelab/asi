@@ -12,7 +12,7 @@ gem "hoptoad_notifier"
 gem "json"
 gem "mongrel"
 gem "mysql", "2.8.1"
-gem "rmagick", :require => false
+gem "rmagick", "1.15.14"
 gem "rubycas-client"
 gem "thinking-sphinx", :require => "thinking_sphinx"
 gem "whenever"

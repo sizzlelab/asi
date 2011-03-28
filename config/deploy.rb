@@ -1,3 +1,4 @@
+require 'bundler/capistrano'
 set :application, "cos"
 
 
