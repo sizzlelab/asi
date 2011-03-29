@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/sizzlelab/rmagick.git
+  revision: 91796aecad8ec8fe31c076748a6a32108c73d9be
+  specs:
+    rmagick (0.0.0)
+
+GIT
   remote: http://github.com/jystewart/has_many_polymorphs.git
   revision: 36f15d24ca4200f657a5203d9fc0253b58477705
   specs:
@@ -107,7 +113,6 @@ GEM
     rdoc (3.5.3)
     redgreen (1.2.2)
     riddle (1.2.2)
-    rmagick (1.15.14)
     ruby-debug (0.10.4)
       columnize (>= 0.1)
       ruby-debug-base (~> 0.10.4.0)
@@ -143,7 +148,7 @@ DEPENDENCIES
   rails (= 3.0.0)
   rdoc
   redgreen
-  rmagick (= 1.15.14)
+  rmagick (= 0.0.0)!
   ruby-debug
   rubycas-client
   thinking-sphinx
