@@ -91,7 +91,8 @@ namespace :deploy do
 
   task :rapidocs do
     #required for the APIFactory in rapidoc generation to work
-    run "cd #{current_path} && rake db:migrate RAILS_ENV=development"
+    #run "cd #{current_path} && rake db:migrate RAILS_ENV=development"
+    run "cd #{current_path}"
     rapidoc.generate
   end
 
