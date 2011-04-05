@@ -2,6 +2,17 @@
 
 # Your secret key for verifying the integrity of signed cookies.
 # If you change this key, all old signed cookies will become invalid!
-# Make sure the secret is at least 30 characters and all random,
+# Make sure the secret is at least 30 characters and all random, 
 # no regular words or you'll be exposed to dictionary attacks.
-Asi::Application.config.secret_token = 'd4721b3f486d23620e887fe6bd0f68f7b15f62930d1594a1b3d0468c6f2fa4209fa5df13a16f8b9d28b03999e553dbe7a82e85e957f657c2aa920f445196bdaa'
+
+# Will use the secert found in the file if exists. Otherwise generate new and store.
+
+secret_file = File.join(Rails.root.to_s, "config/session_secret")
+if File.exist?(secret_file)
+  secret = File.read(secret_file)
+else
+  secret = ActiveSupport::SecureRandom.hex(64)
+  File.open(secret_file, 'w') { |f| f.write(secret) }
+end
+
+Rails.application.config.secret_token = secret
