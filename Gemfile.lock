@@ -143,7 +143,7 @@ DEPENDENCIES
   rails (= 3.0.0)
   rdoc
   redgreen
-  rmagick (= 2.13.1)
+  rmagick
   ruby-debug
   rubycas-client
   thinking-sphinx

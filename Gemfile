@@ -12,13 +12,16 @@ gem "hoptoad_notifier"
 gem "json"
 gem "mongrel"
 gem "mysql", "2.8.1"
-gem "rmagick", "2.13.1"
+gem "rmagick"
 gem "rubycas-client"
 gem "thinking-sphinx", :require => "thinking_sphinx"
 gem "whenever"
 gem "has_many_polymorphs", :git => "http://github.com/jystewart/has_many_polymorphs.git"
 gem "will_paginate", "~> 3.0.pre2"
 gem "rdoc"
+
+# this also needs to be in production so that rapidoc can run on the server
+gem "factory_girl_rails"
 
 group :production do
   gem "memcache-client"
@@ -31,6 +34,5 @@ end
 
 group :test do
   gem "redgreen"
-  gem "factory_girl_rails"
 end
 
