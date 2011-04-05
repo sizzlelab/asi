@@ -16,6 +16,16 @@ elsif ENV['DEPLOY_ENV'] == "icsi"
   set :server_name, "icsi"
   set :host, "sizl.icsi.berkeley.edu"
   set :user, ENV['USER']
+elsif ENV['DEPLOY_ENV'] == "alpha.aws"
+  set :deploy_to, "/opt/asi.alpha"
+  set :server_name, "alpha"
+  set :host, "46.137.99.187"
+  set :user, "cos"
+elsif ENV['DEPLOY_ENV'] == "beta.aws"
+  set :deploy_to, "/opt/asi"
+  set :server_name, "beta"
+  set :host, "46.137.99.187"
+  set :user, "cos"
 else
   set :server_name, "localhost"
   set :host, "localhost"
@@ -66,7 +76,7 @@ namespace :deploy do
   before "deploy:migrate", "db:backup"
 
   task :bundleconfig do
-    run "cd #{release_path} && bundle config build.rmagick --no-ri --no-rdoc"
+    #run "cd #{release_path} && bundle config build.rmagick --no-ri --no-rdoc"
   end
 
   task :symlink_nonscm_configs do
