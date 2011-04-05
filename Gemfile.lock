@@ -136,6 +136,7 @@ DEPENDENCIES
   factory_girl_rails
   has_many_polymorphs!
   hoptoad_notifier
+  i18n
   json
   memcache-client
   mongrel
