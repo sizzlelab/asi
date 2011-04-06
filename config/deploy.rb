@@ -55,7 +55,7 @@ namespace :deploy do
 
   task :setup do
     run "mkdir -p #{deploy_to}/releases"
-    %w(db/sphinx tmp/pids log config).each do |dir|
+    %w(db/sphinx tmp/pids log config bundle).each do |dir|
       run "mkdir -p #{shared_path}/#{dir}"
     end
   end
@@ -72,12 +72,7 @@ namespace :deploy do
     deploy.symlink_nonscm_configs
   end
 
-  before "bundle:install", "deploy:bundleconfig"
   before "deploy:migrate", "db:backup"
-
-  task :bundleconfig do
-    #run "cd #{release_path} && bundle config build.rmagick --no-ri --no-rdoc"
-  end
 
   task :symlink_nonscm_configs do
     run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
