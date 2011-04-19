@@ -3,8 +3,7 @@
 require 'logging_helper'
 
 class ApplicationController < ActionController::Base
-  protect_from_forgery
-
+  
   helper :all
   layout 'default'
 
