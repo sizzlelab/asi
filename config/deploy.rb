@@ -31,6 +31,9 @@ else
   set :host, "localhost"
 end
 
+# get branch from the environment or default to "master"
+set :branch, ENV['BRANCH'] || "master"
+
 role :app, "#{user}@#{host}"
 role :db, "#{user}@#{host}", :primary => true
 
