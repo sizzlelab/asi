@@ -79,7 +79,7 @@ Asi::Application.routes.draw do
   
   match '/people/availability', :to => 'people#availability', :via => :get, :format => 'json'
 
-  match '/people/reset_password', :to => 'people#reset_password', :via => :get, :format => 'json'
+  match '/people/reset_password', :to => 'people#reset_password', :via => :get, :format => 'html'
 
   match '/people/change_password', :to => 'people#change_password', :via => :post, :format => 'html'
 
