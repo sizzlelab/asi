@@ -26,10 +26,10 @@ elsif ENV['DEPLOY_ENV'] == "beta.aws"
   set :server_name, "beta"
   set :host, "46.137.99.187"
   set :user, "cos"
-elsif ENV['DEPLOY_ENV'] == "hetz"
+elsif ENV['DEPLOY_ENV'] == "mara"
   set :deploy_to, "/opt/asi"
-  set :server_name, "hetz"
-  set :host, "hetz.kassi.eu"
+  set :server_name, "mara"
+  set :host, "mara.kassi.eu"
   set :user, "kassi"
 else
   set :server_name, "localhost"
@@ -86,7 +86,6 @@ namespace :deploy do
     run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
     run "ln -nfs #{shared_path}/config/session_secret #{release_path}/config/session_secret"
     run "ln -nfs #{shared_path}/config/config.yml #{release_path}/config/config.yml"
-    run "ln -nfs #{shared_path}/bundle #{release_path}/vendor/bundle"
   end
 
   task :after_symlink do
