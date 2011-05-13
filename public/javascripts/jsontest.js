@@ -23,7 +23,7 @@ var jsontest = (function() {
                     return;
                 }
                 jsontest._loading = true;
-                $('#responses ol').append('<li class="loading response"><img src="/images/loading.gif" alt="loading..."/></li>');
+                $('#responses ol').prepend('<li class="loading response"><img src="/images/loading.gif" alt="loading..."/></li>');
             },
             stop: function() {
                 $('#responses ol .loading').remove();
@@ -82,7 +82,7 @@ var jsontest = (function() {
             r.find('.responseText').text(spec.responseText);
 
             // add the result to the page
-            $('#responses ol').append(r);
+            $('#responses ol').prepend(r);
 
             // colour
             if (spec.pretty) {
