@@ -31,6 +31,5 @@ end
 
 every 1.day, :at => '3am' do
   rake "ressi:upload"
-  rake "tmp:sessions:clear"
-  rake "db:sessions:clear"
+  rake "sessions:cleanup"
 end

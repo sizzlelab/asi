@@ -13,7 +13,7 @@
 
 class Session < ActiveRecord::Base
 
-  EXPIRES_IN = 2.weeks
+  EXPIRES_IN = APP_CONFIG.session_validity_time.to_i.weeks
 
   attr_accessor :username, :password, :client_name, :client_password, :person_match, :application_login
   belongs_to :person
