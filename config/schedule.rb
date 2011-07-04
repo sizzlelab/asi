@@ -26,7 +26,7 @@ ASI_ROOT = '/opt/asi/current'
 
 every 1.hour do
 #  command 'cd '+ASI_ROOT+'; rake thinking_sphinx:rebuild;'
-  rake "thinking_sphinx:rebuild"
+  rake "thinking_sphinx:index, :cron_log => "/dev/null"
 end
 
 every 1.day, :at => '3am' do

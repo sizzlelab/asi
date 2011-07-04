@@ -121,7 +121,7 @@ namespace :deploy do
   end
   
   task :finalize do
-    whenever.write_crontab
+    whenever.update_crontab
   end
 
   desc "Link up Sphinx's indexes."
