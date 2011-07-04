@@ -1,5 +1,5 @@
 require 'bundler/capistrano'
-set :application, "cos"
+set :application, "asi"
 
 
 set :scm, :git
@@ -21,6 +21,7 @@ elsif ENV['DEPLOY_ENV'] == "alpha.aws"
   set :server_name, "alpha"
   set :host, "46.137.99.187"
   set :user, "cos"
+  set :application, "asi.alpha"
 elsif ENV['DEPLOY_ENV'] == "beta.aws"
   set :deploy_to, "/opt/asi"
   set :server_name, "beta"
