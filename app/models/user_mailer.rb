@@ -20,6 +20,7 @@ class UserMailer < ActionMailer::Base
   def recovery(options)
     @key = options[:key]
     @domain = options[:domain]
+    @username = options[:username]
 
     mail(:to => options[:email],
          :subject => "OtaSizzle password recovery")
