@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 
+gem "rake", "0.8.7"
 gem "rails", "3.0.0"
 
 # Deploy with Capistrano
@@ -12,7 +13,7 @@ gem "hoptoad_notifier"
 gem "json"
 gem "mongrel"
 gem "mysql", "2.8.1"
-gem "rmagick"
+gem "rmagick", :require => false
 gem "rubycas-client"
 gem "thinking-sphinx", :require => "thinking_sphinx"
 gem "whenever"
