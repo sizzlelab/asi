@@ -90,6 +90,7 @@ class PeopleController < ApplicationController
   def create
     @person = Person.new(params[:person])
     @person.source_installation = APP_CONFIG.source_installation
+    
     if @person.save
       @role = Role.new(:person => @person,
                        :client_id => @client.id,

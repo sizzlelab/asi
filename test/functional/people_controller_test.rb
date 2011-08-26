@@ -85,6 +85,7 @@ class PeopleControllerTest < ActionController::TestCase
     created_user = Person.find_by_username("newbie")
     assert_equal created_user.username, user.username
     assert_equal created_user.consent, user.consent
+    assert_not_nil created_user.source_installation
   end
 
   def test_create_association
