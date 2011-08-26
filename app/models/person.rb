@@ -34,7 +34,7 @@ class Person < ActiveRecord::Base
   usesnpguid
 
   attr_reader :password
-  attr_protected :roles, :encrypted_password, :salt, :delta, :guid, :coin_amount
+  attr_protected :roles, :encrypted_password, :salt, :delta, :guid, :coin_amount, :source_installation
 
   has_one :name, :class_name => "PersonName", :dependent => :destroy
   has_one :address, :as => :owner, :dependent => :destroy

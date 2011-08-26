@@ -37,6 +37,7 @@ default: &default_settings
   pysmsd_proxy_username: nil
   pysmsd_proxy_password: nil
 
+  source_installation: "example_installation_code"
   asi_mail_from_address: "asi@example.com"
   error_mailer_recipients: 'admins@example.com'
   error_mailer_from_address: 'Error Mailer <ASIErrors@example.com>'

@@ -89,6 +89,7 @@ class PeopleController < ApplicationController
   #   welcome_email:: Optional parameter. If false, no welcome email is sent. Default is true.
   def create
     @person = Person.new(params[:person])
+    @person.source_installation = APP_CONFIG.source_installation
     if @person.save
       @role = Role.new(:person => @person,
                        :client_id => @client.id,
