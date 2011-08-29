@@ -17,10 +17,31 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_index
+    max_limit = 100
+    # actual max_limit can be found from people_controller.rb, use the same number here.
+
+    for i in (1..(max_limit*1.5).to_i)
+      Factory(:person)
+    end
     get :index, { :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal Person.count, json["entry"].size
+    assert_equal max_limit, json["entry"].size
+    
+    get :index, { :page => 2, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert json["entry"].size <= max_limit
+    
+    get :index, { :per_page => max_limit*2, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal max_limit, json["entry"].size
+    
+    get :index, { :per_page => 10, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal 10, json["entry"].size
   end
 
   def test_show

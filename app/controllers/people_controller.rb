@@ -19,13 +19,23 @@ class PeopleController < ApplicationController
   #   phone_number:: (optional) If this is entered (without search), returns only one person who has the exact same phone number stored
   #                  (358501234567 will match also +358501234567). This parameter is ignored if "search" parameter is submited.
   def index
+    max_limit = 100
+    # max_limit number is also used on people_controller_test.rb
     options = {:include => PERSON_HASH_INCLUDES}
+    
     if params[:per_page]
-      options[:limit] = params[:per_page].to_i
-      if params[:page] && params[:page].to_i >= 1
-        options[:offset] = params[:per_page].to_i * (params[:page].to_i-1)
+      if params[:per_page].to_i > max_limit
+        options[:limit] = max_limit
+      else
+        options[:limit] = params[:per_page].to_i
       end
+    else
+      options[:limit] = max_limit
     end
+    if params[:page] && params[:page].to_i >= 1
+      options[:offset] = options[:limit] * (params[:page].to_i-1)
+    end
+    
     if not params[:search]
       modified = Rails.cache.fetch(Person.build_cache_key(:person_modified)) {
         Time.now
