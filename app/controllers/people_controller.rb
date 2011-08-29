@@ -15,9 +15,11 @@ class PeopleController < ApplicationController
   #
   # params::
   #   search:: (optional) The search term. Every user whose name matches the regular expression /.*search.*/ will be returned.
-  #            However, all charactersin the search term are interpreted as literals rather than special regexp characters.
+  #            However, all characters in the search term are interpreted as literals rather than special regexp characters.
   #   phone_number:: (optional) If this is entered (without search), returns only one person who has the exact same phone number stored
   #                  (358501234567 will match also +358501234567). This parameter is ignored if "search" parameter is submited.
+  #   per_page:: (optional) Number of people that are to be shown per page.
+  #   page:: (optional) Used in conjunction with the "per_page" parameter to control paging of results.
   def index
     max_limit = 100
     # max_limit number is also used on people_controller_test.rb
