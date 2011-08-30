@@ -16,11 +16,11 @@ class GroupsController < ApplicationController
   # description:: Creates a new group. The creator is automatically added to the new group as an admin.
   #
   # params::
+  #   create_channel:: If set to <tt>true</tt>, a channel for the group is also created with same name as group's title.
   #   group::
   #     title:: The title (or name) of the group.
   #     type:: Can be open, closed, personal or hidden.
   #     description:: A descriptive text for the group (optional).
-  #     create_channel:: If set to <tt>true</tt>, a channel for the group is also created with same name as group's title.
   def create
     unless params[:group]
       render_json :status => :bad_request, :messages => "No group supplied. Note that params must be given as group[title] etc." and return
