@@ -106,7 +106,8 @@ class CollectionsController < ApplicationController
   # return_code:: 403 - The current application or user doesn't have read access to this collection.
   # description:: Updates the attributes of this collection.
   # 
-  # param:: collection
+  # params::
+  #  collection::
   #     title:: A title describing this collection.
   #     owner_id:: The id of the user owning this collection. If unspecified, this collection will belong to the application (and will be visible to all users).
   #     priv:: Whether this collection is private. A private collection is visible to only the owner and their friends.
