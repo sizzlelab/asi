@@ -59,8 +59,8 @@ class ApplicationController < ActionController::Base
 
   def escape_parameters
     params.each_pair do |key, value|
-      unless PARAMETERS_NOT_TO_BE_ESCAPED.include? key
-        params[key] = escape_html(value)
+      if PARAMETERS_NOT_TO_BE_ESCAPED.include? key
+        params[key] = value.html_safe
       end
     end
   end
@@ -175,23 +175,6 @@ class ApplicationController < ActionController::Base
       end
     rescue ThinkingSphinx::ConnectionError => e
       render_json :status => 500, :messages => "The search daemon is dead." and return
-    end
-  end
-
-  private
-
-  def escape_html(value)
-    return ActionView::Helpers::TagHelper.escape_once(value) if value.class == String
-    return value if value.class != Array && value.class != Hash && value.class != HashWithIndifferentAccess
-
-    if value.class == Array
-      value.collect! do |v|
-        escape_html v
-      end
-    elsif value.class == Hash || value.class == HashWithIndifferentAccess
-      value.each_pair do |k, v|
-        value[k] = escape_html(v)
-      end
     end
   end
 
