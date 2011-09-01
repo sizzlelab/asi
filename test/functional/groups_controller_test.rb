@@ -58,7 +58,7 @@ class GroupsControllerTest < ActionController::TestCase
     post :create, { :group => { :title => "html", :description => '<a href="testi">', :type => 'open'}, :format => 'json'}, { :cos_session_id => sessions(:session2).id}
     assert_response :created, @response.body
     json = JSON.parse @response.body
-    assert ! (json["entry"]["description"] =~ /[<>"]/)
+    assert (json["entry"]["description"] == '<a href="testi">')
   end
 
   def test_grant_and_remove_admin_status
