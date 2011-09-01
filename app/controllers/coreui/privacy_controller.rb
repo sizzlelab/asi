@@ -5,7 +5,7 @@ class Coreui::PrivacyController < ApplicationController
     if @user
       redirect_to edit_coreui_privacy_path(:id => @user.id) and return
     else
-      redirect_to coreui_root_path and return
+      redirect_to coreui_path and return
     end
   end
 
@@ -30,7 +30,7 @@ class Coreui::PrivacyController < ApplicationController
 
     else
       flash[:warning] = "Please login to edit your profile privacy."
-      redirect_to coreui_root_path and return
+      redirect_to coreui_path and return
     end
   end
 
@@ -39,7 +39,7 @@ class Coreui::PrivacyController < ApplicationController
 
     if @person.id != @user.id
       flash[:warning] = "You can only update your own privacy settings."
-      redirect_to coreui_root_path and return
+      redirect_to coreui_path and return
     end
 
     @rule = @person.profile_rule #TODO create profile rule if it's not there. The profile rule is already created at people_controller when a user is created.

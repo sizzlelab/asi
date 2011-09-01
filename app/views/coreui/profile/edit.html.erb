@@ -2,7 +2,19 @@
 
 
 <div style="background-color: red">
-<%= error_messages_for 'person' %>
+<% if @person.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@person.errors.count, "error") %>
+      prohibited this <%= @person.class.to_s.underscore.humanize.downcase %>
+      from being saved:</h2>
+    <p>There were problems with the following fields:</p>
+    <ul>
+    <% @person.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 </div>
 <%= form_for @person, :url => { :controller => "profile", :action => "update", :id => @person.id }, :html => {:multipart => true} do |f| %>
 

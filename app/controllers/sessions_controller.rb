@@ -194,7 +194,7 @@ class SessionsController < ApplicationController
 
     if ui_mode
       flash[:notice] = "Successfully logged out."
-      redirect_to coreui_root_path and return
+      redirect_to coreui_path and return
     end
 
     render_json :status => :ok

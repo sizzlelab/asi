@@ -70,7 +70,7 @@ class Coreui::ProfileController < ApplicationController
       @profile = Person.find_by_id(@user.id).to_hash(@user)
     else
       flash[:warning] = "Please login to see the profile."
-      redirect_to coreui_root_path and return
+      redirect_to coreui_path and return
     end
   end
 
@@ -81,7 +81,7 @@ class Coreui::ProfileController < ApplicationController
       @person.create_address if not @person.address
     else
       flash[:warning] = "Please login to edit the profile."
-      redirect_to coreui_root_path and return
+      redirect_to coreui_path and return
     end
   end
 
@@ -90,7 +90,7 @@ class Coreui::ProfileController < ApplicationController
     
     if @person.id != @user.id
       flash[:warning] = "You can only update your own profile."
-      redirect_to coreui_root_path and return
+      redirect_to coreui_path and return
     end
 
     if params[:person][:password] != params[:person][:password2]
