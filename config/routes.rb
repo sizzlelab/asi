@@ -131,6 +131,8 @@ Asi::Application.routes.draw do
   match '/session', :to => 'sessions#destroy', :via => :delete, :format => 'json'
   match '/session', :to => 'sessions#create', :via => :post, :format => 'json'
 
+  # Enable logging out from coreui, using link_to (GET).
+  match '/coreui/logout', :to => 'sessions#destroy', :via => :get
 
   # Search
   match '/search', :to => 'search#search', :via => :get, :format => 'json'

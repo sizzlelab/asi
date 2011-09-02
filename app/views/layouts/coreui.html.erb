@@ -13,7 +13,7 @@
     <div id="navi">
       [ <%= link_to_unless_current "Home", coreui_path %> ]
       [ <%= link_to_unless_current "Profile", edit_coreui_profile_path(:id => @person.id) %> ]
-      [ <%= link_to_unless_current "Logout", "/session", :method=>"delete" %> ]
+      [ <%= link_to_unless_current "Logout", coreui_logout_path %> ]
     </div>
     <% else %>
     <div id="navi">
