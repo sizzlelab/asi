@@ -22,13 +22,20 @@ class PersonName < ActiveRecord::Base
   validates_length_of :given_name, :maximum => GIVEN_NAME_MAX_LENGTH
   validates_length_of :family_name, :maximum => FAMILY_NAME_MAX_LENGTH
 
-
   def to_json(*a)
+    as_json(*a).to_json(*a)
+  end
+
+  def as_json(*a)
+    to_hash(*a)
+  end
+
+  def to_hash(*a)
     {
       :unstructured => self.unstructured,
       :given_name => self.given_name,
       :family_name => self.family_name
-    }.to_json
+    }
   end
 
   def unstructured_lowercase

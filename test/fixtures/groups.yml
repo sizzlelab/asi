@@ -19,10 +19,10 @@ open:
   group_type: open
 
 another_open:
-    id: adhaiegtwb
-    title: "täää on testi!!"
-    creator_id: 1
-    group_type: open
+  id: adhaiegtwb
+  title: "täää on testi!!"
+  creator_id: 1
+  group_type: open
 
 closed:
   id: yure23t
@@ -58,4 +58,3 @@ personal:
   description: "Perso naali oli parsakaali"
   creator_id: 1
   group_type: personal
-  

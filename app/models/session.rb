@@ -13,7 +13,7 @@
 
 class Session < ActiveRecord::Base
 
-  EXPIRES_IN = 2.weeks
+  EXPIRES_IN = APP_CONFIG.session_validity_time.to_i.weeks
 
   attr_accessor :username, :password, :client_name, :client_password, :person_match, :application_login
   belongs_to :person
@@ -35,12 +35,18 @@ class Session < ActiveRecord::Base
   end
 
   def to_json(*a)
-    session_hash = {
+    as_json(*a).to_json(*a)
+  end
+
+  def as_json(*a)
+    to_hash(*a)
+  end
+
+  def to_hash(*a)
+    {
       'app_id' => self.client_id,
       'user_id' =>  self.person.andand.guid
-
     }
-    return session_hash.to_json(*a)
   end
 
   private

@@ -33,13 +33,14 @@ class Rule < ActiveRecord::Base
   def Rule.authorize?(subject_person=nil, object_person_id=nil, action_type=nil, action_value=nil)
     # print "************ in rule/authorize? ******************* \n"
     # if subject_person
-    #  print "subject_person.id: #{subject_person.id} \n"
+    #   print "%%% #{subject_person.inspect} %%%"
+    #   print "subject_person.id: #{subject_person.id} \n"
     # end
     #print "object_person_id: #{object_person_id} \n"
     #print "action_type: #{action_type} \n"
     #print "action_value: #{action_value} \n"
 
-    active_rules = Rule.find(:all, :conditions => {'person_id'=>object_person_id, 'state'=>'active'})
+    active_rules = Rule.where('person_id'=>object_person_id, 'state'=>'active')
     
     if active_rules.length != 0
       undecided = true
@@ -112,7 +113,6 @@ class Rule < ActiveRecord::Base
 
     sets_hash.each_pair do |key, value|
       action = Action.get_or_create(:action_type => "view", :action_value => key)
-      puts action
       if value == "public"
         condition_id = condition_public.id
       elsif value == "friends_only"
@@ -139,28 +139,10 @@ class Rule < ActiveRecord::Base
 
   # added by ville
   def condition_action_sets_concerning(action_value)
-    condition_action_sets.find(:all, :conditions => { :actions => { :action_value => action_value } }, :joins => [:action] ).inspect
+    condition_action_sets.join(:action).where(:actions => { :action_value => action_value }).inspect
   end
 
-  # get the rule
-  def get_rule_hash(asking_person)
-    if asking_person.id == self.person_id
-      rule_hash = {'rule'  => {
-          'id' => id,
-          'person_id' => person_id,
-          'rule_name' => rule_name,
-          'state' => state,
-          'logic' => logic,
-          'created_at' => created_at,
-          'updated_at' => updated_at
-        }
-      }
-    end
-
-    return rule_hash
-  end
-
-    # check if the rule is active
+  # check if the rule is active
   def active?
     return true if self.state == "active"
   end
@@ -175,12 +157,29 @@ class Rule < ActiveRecord::Base
       self.update_attribute(:state, 'inactive')
   end
 
+  def to_json(asking_person, *a)
+    as_json(asking_person, *a).to_json(*a)
+  end
 
+  def as_json(asking_person, *a)
+    to_hash(asking_person, *a)
+  end
 
-
-  def to_json (asking_person, *a)
-    rule_hash = get_rule_hash(asking_person)
-    return rule_hash.to_json(*a)
+  def to_hash(asking_person, *a)
+    if asking_person.id == self.person_id
+      return {
+        'rule'  => {
+          'id' => id,
+          'person_id' => person_id,
+          'rule_name' => rule_name,
+          'state' => state,
+          'logic' => logic,
+          'created_at' => created_at,
+          'updated_at' => updated_at
+        }
+      }
+    end
+    return {}
   end
 
   # get all the condition_action_sets belong to this rule
@@ -332,7 +331,7 @@ class Rule < ActiveRecord::Base
   def check_condition_friend(connection_person=nil, object_person_id=nil, condition_value=nil)
     #print "************ in rule/check_condition_friend ******************* \n"
     if !connection_person.nil? && !object_person_id.nil? && condition_value
-      friend = Connection.find(:all, :conditions => {'person_id' =>  object_person_id, 'contact_id' => connection_person.id, 'status'=>'accepted'})
+      friend = Connection.where('person_id' =>  object_person_id, 'contact_id' => connection_person.id, 'status'=>'accepted')
       if friend.length != 0
         return true
       end
@@ -355,7 +354,7 @@ class Rule < ActiveRecord::Base
   def check_condition_user(connection_person=nil, condition_value=nil)
     #print "************ in rule/check_condition_user ******************* \n"
     if !connection_person.nil? && !condition_value.nil?
-      user = Person.find(:all, :conditions => {'username' => condition_value, 'id'=> connection_person.id})
+      user = Person.where('username' => condition_value, 'id'=> connection_person.id)
       if user.length != 0
         return true
       end

@@ -1,4 +1,5 @@
-set :application, "cos"
+require 'bundler/capistrano'
+set :application, "asi"
 
 
 set :scm, :git
@@ -15,10 +16,29 @@ elsif ENV['DEPLOY_ENV'] == "icsi"
   set :server_name, "icsi"
   set :host, "sizl.icsi.berkeley.edu"
   set :user, ENV['USER']
+elsif ENV['DEPLOY_ENV'] == "alpha.aws"
+  set :deploy_to, "/opt/asi.alpha"
+  set :server_name, "alpha"
+  set :host, "46.137.99.187"
+  set :user, "cos"
+  set :application, "asi.alpha"
+elsif ENV['DEPLOY_ENV'] == "beta.aws"
+  set :deploy_to, "/opt/asi"
+  set :server_name, "beta"
+  set :host, "46.137.99.187"
+  set :user, "cos"
+elsif ENV['DEPLOY_ENV'] == "mara"
+  set :deploy_to, "/opt/asi"
+  set :server_name, "mara"
+  set :host, "mara.kassi.eu"
+  set :user, "kassi"
 else
   set :server_name, "localhost"
   set :host, "localhost"
 end
+
+# get branch from the environment or default to "master"
+set :branch, ENV['BRANCH'] || "master"
 
 role :app, "#{user}@#{host}"
 role :db, "#{user}@#{host}", :primary => true
@@ -44,7 +64,7 @@ namespace :deploy do
 
   task :setup do
     run "mkdir -p #{deploy_to}/releases"
-    %w(db/sphinx tmp/pids log config).each do |dir|
+    %w(db/sphinx tmp/pids log config bundle).each do |dir|
       run "mkdir -p #{shared_path}/#{dir}"
     end
   end
@@ -89,8 +109,9 @@ namespace :deploy do
   before "deploy:sphinx", "deploy:rapidocs"
 
   task :rapidocs do
-    #required for the Factory in rapidoc generation to work
-    run "cd #{current_path} && rake db:migrate RAILS_ENV=development"
+    #required for the APIFactory in rapidoc generation to work
+    #run "cd #{current_path} && rake db:migrate RAILS_ENV=development"
+    run "cd #{current_path}"
     rapidoc.generate
   end
 
@@ -99,9 +120,9 @@ namespace :deploy do
     thinking_sphinx.configure
     thinking_sphinx.start
   end
-
+  
   task :finalize do
-    whenever.write_crontab
+    whenever.update_crontab
   end
 
   desc "Link up Sphinx's indexes."

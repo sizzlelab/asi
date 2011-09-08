@@ -7,7 +7,7 @@ module AuthenticationHelper
   def password=(password)
     @password = password
     
-    unless errors.on(:password)
+    if errors[:password].empty?
         self.salt = [Array.new(9){rand(256).chr}.join].pack('m').chomp
         self.encrypted_password = ENCRYPT.hexdigest(password + self.salt)
     end

@@ -28,7 +28,7 @@ class PersonSpecTest < ActiveSupport::TestCase
 
   def test_max_lengths
     Person::STRING_FIELDS.each do |field|
-      assert_length :max, @valid_person, field, DB_STRING_MAX_LENGTH\
+      assert_length :max, @valid_person, field, Asi::Application.config.DB_STRING_MAX_LENGTH\
     end
   end
 

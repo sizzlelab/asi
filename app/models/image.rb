@@ -54,13 +54,21 @@ class Image < ActiveRecord::Base
 
 
   def to_json(*a)
+    as_json(*a).to_json(*a)
+  end
+
+  def as_json(*a)
+    to_hash(*a)
+  end
+
+  def to_hash(*a)
     {
       :id => id,
       :filename => filename,
       :data => data,
       :small_thumb => small_thumb,
       :large_thumb => large_thumb
-    }.to_json(*a)
+    }
   end
 
   def data
@@ -92,19 +100,19 @@ class Image < ActiveRecord::Base
 
     #There should be image data.
     unless self.data?
-      errors.add_to_base("No image data.")
+      errors.add(:base, "No image data.")
       return false
     end
 
     #There should be large thumbnail data.
     unless self.large_thumb?
-      errors.add_to_base("No large thumbnail image data.")
+      errors.add(:base, "No large thumbnail image data.")
       return false
     end
 
     #There should be small thumbnail data.
     unless self.small_thumb?
-      errors.add_to_base("No small thumbnail image data.")
+      errors.add(:base, "No small thumbnail image data.")
       return false
     end
 
@@ -126,13 +134,13 @@ class Image < ActiveRecord::Base
 
     #The upload should be nonempty.
     if filename == nil
-      errors.add_to_base("Please enter an image filename")
+      errors.add(:base, "Please enter an image filename")
       return false
     end
 
     #The upload should have file suffix.
     unless filename =~ /\.(jpg)|(jpeg)|(png)|(gif)$/i
-      errors.add_to_base("Please use image file with a filename suffix")
+      errors.add(:base, "Please use image file with a filename suffix")
       return false
     end
 
@@ -149,10 +157,10 @@ class Image < ActiveRecord::Base
 
     uuid = UUID.timestamp_create().to_s22
 
-    source_file          = File.join(RAILS_ROOT, DIRECTORY, "#{uuid}_#{filename}")
-    full_size_image_file = File.join(RAILS_ROOT, DIRECTORY, "#{uuid}_full_image.jpg")
-    large_thumbnail_file = File.join(RAILS_ROOT, DIRECTORY, "#{uuid}_large_thumb_image.jpg")
-    small_thumbnail_file = File.join(RAILS_ROOT, DIRECTORY, "#{uuid}_small_thumb_image.jpg")
+    source_file          = Rails.root.join(DIRECTORY, "#{uuid}_#{filename}")
+    full_size_image_file = Rails.root.join(DIRECTORY, "#{uuid}_full_image.jpg")
+    large_thumbnail_file = Rails.root.join(DIRECTORY, "#{uuid}_large_thumb_image.jpg")
+    small_thumbnail_file = Rails.root.join(DIRECTORY, "#{uuid}_small_thumb_image.jpg")
 
     # Write the source file to directory.
     f = File.new(source_file, "wb")
@@ -184,7 +192,7 @@ class Image < ActiveRecord::Base
     # All conversions must succeed, else it's an error, probably because image file
     # is somehow corrupted.
     unless File.exists?(full_size_image_file) and File.exists?(large_thumbnail_file) and File.exists?(small_thumbnail_file)
-      errors.add_to_base("File upload failed. Image file is probably corrupted.")
+      errors.add(:base, "File upload failed. Image file is probably corrupted.")
       return false
     end
 

@@ -25,11 +25,11 @@
 ASI_ROOT = '/opt/asi/current'
 
 every 1.hour do
-  command 'cd '+ASI_ROOT+'; rake thinking_sphinx:rebuild;'
+#  command 'cd '+ASI_ROOT+'; rake thinking_sphinx:rebuild;'
+  rake "thinking_sphinx:index", :cron_log => "/dev/null"
 end
 
 every 1.day, :at => '3am' do
-  command 'cd '+ASI_ROOT+'; rake ressi:upload;'
-  command 'cd '+ASI_ROOT+'; rake tmp:sessions:clear;'
-  command 'cd '+ASI_ROOT+'; rake db:sessions:clear;'
+  rake "ressi:upload"
+  rake "sessions:cleanup"
 end

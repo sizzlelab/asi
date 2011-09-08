@@ -1,7 +1,7 @@
 ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
-require 'test_help'
-require 'factory'
+require File.expand_path('../../config/environment', __FILE__)
+require 'rails/test_help'
+
 begin
   require 'redgreen'
 rescue Exception => e
@@ -25,7 +25,7 @@ class ActiveSupport::TestCase
   # The only drawback to using transactional fixtures is when you actually
   # need to test transactions.  Since your test is bracketed by a transaction,
   # any transactions started in your code will be automatically rolled back.
-  self.use_transactional_fixtures = true
+  self.use_transactional_fixtures = false
 
   # Instantiated fixtures are slow, but give you @david where otherwise you
   # would need people(:david).  If you don't want to migrate your existing
@@ -39,8 +39,6 @@ class ActiveSupport::TestCase
   # Note: You'll currently still have to declare fixtures explicitly in integration tests
   # -- they do not yet inherit this setting
   fixtures :all
-
-  include Factory
 
   # Test the minimum or maximum length of an attribute.
   def assert_length(boundary, object, attribute, length, options = {})
@@ -95,7 +93,7 @@ class ActiveSupport::TestCase
   def login_as(person, client=nil)
     client ||= Client.find :first
     session = Session.new(:person => person, :client => client)
-    session.save(false)
+    session.save(:validate => false)
     @request.session[:cos_session_id] = session.id
   end
 end

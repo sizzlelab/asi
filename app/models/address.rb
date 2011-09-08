@@ -27,12 +27,20 @@ class Address < ActiveRecord::Base
   validates_length_of :locality, :allow_nil => true, :maximum => LOCALITY_MAX_LENGTH
 
   def to_json(*a)
+    as_json(*a).to_json(*a)
+  end
+
+  def as_json(*a)
+    to_hash(*a)
+  end
+
+  def to_hash(*a)  
     {
       :unstructured => self.unstructured,
       :street_address => self.street_address,
       :postal_code => self.postal_code,
       :locality => self.locality
-    }.to_json(*a)
+    }
   end
 
   def unstructured

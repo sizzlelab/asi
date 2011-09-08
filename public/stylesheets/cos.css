@@ -1,358 +1,622 @@
-body {
-    width : 600px;
-    margin : auto;
-    margin-top : 4em;
-    font : medium Verdana, sans-serif
+/**
+ * HTML5 ✰ Boilerplate
+ *
+ * style.css contains a reset, font normalization and some base styles.
+ *
+ * Credit is left where credit is due.
+ * Much inspiration was taken from these projects:
+ * - yui.yahooapis.com/2.8.1/build/base/base.css
+ * - camendesign.com/design/
+ * - praegnanz.de/weblog/htmlcssjs-kickstart
+ */
+
+
+/**
+ * html5doctor.com Reset Stylesheet (Eric Meyer's Reset Reloaded + HTML5 baseline)
+ * v1.6.1 2010-09-17 | Authors: Eric Meyer & Richard Clark
+ * html5doctor.com/html-5-reset-stylesheet/
+ */
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 
-h1, h2 {
-    font-family : Helvetica, Arial, sans-serif
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
 }
 
+blockquote, q { quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after { content: ""; content: none; }
+
+ins { background-color: #ff9; color: #000; text-decoration: none; }
+
+mark { background-color: #ff9; color: #000; font-style: italic; font-weight: bold; }
+
+del { text-decoration: line-through; }
+
+abbr[title], dfn[title] { border-bottom: 1px dotted; cursor: help; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0; }
+
+input, select { vertical-align: middle; }
+
+
+/**
+ * Font normalization inspired by YUI Library's fonts.css: developer.yahoo.com/yui/
+ */
+
+body { font:13px/1.231 sans-serif; *font-size:small; } /* Hack retained to preserve specificity */
+select, input, textarea, button { font:99% sans-serif; }
+
+/* Normalize monospace sizing:
+   en.wikipedia.org/wiki/MediaWiki_talk:Common.css/Archive_11#Teletype_style_fix_for_Chrome */
+pre, code, kbd, samp { font-family: monospace, sans-serif; }
+
+
+/**
+ * Minimal base styles.
+ */
+
+/* Always force a scrollbar in non-IE */
+html { overflow-y: scroll; }
+
+/* Accessible focus treatment: people.opera.com/patrickl/experiments/keyboard/test */
+a:hover, a:active { outline: none; }
+
+ul, ol { margin-left: 2em; }
+ol { list-style-type: decimal; }
+
+/* Remove margins for navigation lists */
+nav ul, nav li { margin: 0; list-style:none; list-style-image: none; }
+
+small { font-size: 85%; }
+strong, th { font-weight: bold; }
+
+td { vertical-align: top; }
+
+/* Set sub, sup without affecting line-height: gist.github.com/413930 */
+sub, sup { font-size: 75%; line-height: 0; position: relative; }
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+pre {
+  /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
+  white-space: pre; white-space: pre-wrap; word-wrap: break-word;
+  padding: 15px;
+}
+
+textarea { overflow: auto; } /* www.sitepoint.com/blogs/2010/08/20/ie-remove-textarea-scrollbars/ */
+
+.ie6 legend, .ie7 legend { margin-left: -7px; } 
+
+/* Align checkboxes, radios, text inputs with their label by: Thierry Koblentz tjkdesign.com/ez-css/css/base.css  */
+input[type="radio"] { vertical-align: text-bottom; }
+input[type="checkbox"] { vertical-align: bottom; }
+.ie7 input[type="checkbox"] { vertical-align: baseline; }
+.ie6 input { vertical-align: text-bottom; }
+
+/* Hand cursor on clickable input elements */
+label, input[type="button"], input[type="submit"], input[type="image"], button { cursor: pointer; }
+
+/* Webkit browsers add a 2px margin outside the chrome of form elements */
+button, input, select, textarea { margin: 0; }
+
+/* Colors for form validity */
+input:valid, textarea:valid   {  }
+input:invalid, textarea:invalid {
+   border-radius: 1px; -moz-box-shadow: 0px 0px 5px red; -webkit-box-shadow: 0px 0px 5px red; box-shadow: 0px 0px 5px red;
+}
+.no-boxshadow input:invalid, .no-boxshadow textarea:invalid { background-color: #f0dddd; }
+
+
+/* These selection declarations have to be separate
+   No text-shadow: twitter.com/miketaylr/status/12228805301
+   Also: hot pink! */
+::-moz-selection{ background: #FF5E99; color:#fff; text-shadow: none; }
+::selection { background:#FF5E99; color:#fff; text-shadow: none; }
+
+/* j.mp/webkit-tap-highlight-color */
+a:link { -webkit-tap-highlight-color: #FF5E99; }
+
+/* Make buttons play nice in IE:
+   www.viget.com/inspire/styling-the-button-element-in-internet-explorer/ */
+button {  width: auto; overflow: visible; }
+
+/* Bicubic resizing for non-native sized IMG:
+   code.flickr.com/blog/2008/11/12/on-ui-quality-the-little-things-client-side-image-resizing/ */
+.ie7 img { -ms-interpolation-mode: bicubic; }
+
+/**
+ * You might tweak these..
+ */
+
+body, select, input, textarea {
+  /* #444 looks better than black: twitter.com/H_FJ/statuses/11800719859 */
+  color: #444;
+  /* Set your base font here, to apply evenly */
+  /* font-family: Georgia, serif;  */
+}
+
+/* Headers (h1, h2, etc) have no default font-size or margin; define those yourself */
+h1, h2, h3, h4, h5, h6 { font-weight: bold; }
+
+a, a:active, a:visited { color: #607890; }
+a:hover { color: #036; }
+
+
+/**
+ * Primary styles
+ *
+ * Author: Konrad Markus <konker@gmail.com>
+ */
+
+#flash {
+    margin: 0 1.0em 0 1.0em;
+    }
+    #flash p { margin: 0; }
+    #flash .notice { color: #0a0; }
+    #flash .warning { color: #f93; }
+    #flash .error { color: #a00; }
+
+
+/* common styles */
+body { 
+	font-size: 100%; 
+	line-height: 1.5;	
+	font-family: "Georgia", "Times New Roman", times, serif;
+	color: #444;
+	background: #fff;
+	text-align: left;
+	}				
+	html>body {
+		font-size: 100%; /* 16px; */
+		}
+
+/* links */
+a {
+    color: #0820a6; /* chelsea blue */
+    text-decoration: underline;
+    }
+    a:hover { text-decoration: none; }
+a:visited { color: #990066; }
+a:active {  color: #009933; }
+a:hover { color: #000; }
+
+/* headings */
 h1 {
-    text-align : center;
-    margin-bottom : 1em;
-}
+	font-size: 2.0em;
+	font-weight: normal;
+	margin: 0.2em 0.2em 0em 0.2em;
+	font-family: verdana, arial, helvetica, sans-serif;
+	}
+h2 {
+	font-size: 1.25em;
+	line-height: 1.2;
+	margin: 0.2em 0 0.35em 0;
+	font-family: verdana, arial, helvetica, sans-serif;
+	}
 
-h2, h3 {
-    margin-top : 1.5em;
-}
-
-table {
-    font-size : small
-}
-
+/* paragraphs */
 p {
-    font-size: medium
-}
+	font-size: 1em;
+	margin: 0 0 1.0em 0;
+	line-height: 1.5;
+	}
+strong { font-weight: bold; }
 
-th.inner_parameters {
-    border-right : 1px solid black;
-    width : 20%;
-    padding : 0;
-
-}
-
-div.inner_parameters {
-    border-bottom : 1px solid black;
-    width : 100%
-}
+/* header styles */
+header {
+    position: relative;
+    background: #00b0ca;
+    background: #eee;
+    padding: 1.0em 1.5em 0.5em 1.5em;
+    margin-bottom: 1.0em;
+    border-bottom: 3px solid #ddd;
+    }
+    header h1 {
+        text-shadow: #ccc 2px 2px;
+        font-weight: bold;
+        color: #000;
+        }
+    header h1 a {
+        color: #000 !important;
+        text-decoration: none;
+        }
 
 tt {
-    background-color : #eeeeee;
-    padding : 2px;
-}
+    background: #ddd;
+    padding: 2px;
+    }
+code {
+    font-family: "Courier new", courier, monospace;
+    font-size: 85%; 
+    }
 
-th {
-    text-align : left;
-    vertical-align : top;
-    padding-right : 1em;
-}
-
-div.method {
-    margin-left : 2em;
-}
-
-div.footer {
-    font-size : x-small;
-    text-align : right;
-    margin-top : 4em;
-}
-
-.response {
-    font-size : small;
-    margin-top : 1em;
-}
-
-.not_implemented {
-    border:1px solid silver;
-    background-color:#aaaacc;
-
-}
-
-/* Feedback */
-
-#feedback_admin{
-    width: 1000px;
-    margin-left: -200px;
-}
-
-#feedback {
-        width: 600px;
-        text-align: center;
-        clear: both;
-}
-
-#feedback_spacer {
-        height: 50px;
-}
-
-#feedback_form {
-        border-top: 1px solid #000;
-        margin: 50px 0;
-        padding-top: 50px;
-}
-
-div.feedback_item {
-        margin: 3px;
-        border: 1px solid #000;
-}
-
-div.listed_feedback_checkbox {
-        width: 90px;
-        float: left;
-        padding: 10px;
-}
-
-div.listed_feedback_field {
-        width: 125px;
-        float: left;
-        padding: 10px;
-}
-
-div.listed_feedback_field_wider {
-        width: 200px;
-        float: left;
-        padding: 10px;
-}
-
-div.listed_feedback_content {
-        float: left;
-        width: 280px;
-        padding: 10px;
-}
-
-div.unhandled_feedback {
-        background: #dbf5b1;
-}
-
-div.handle_feedback_button {
-        width: 80px;
-        height: 35px;
-        border: 2px solid #64a006;
-        background: #dbf5b1;
-}
-
-div.handle_feedback_button a {
-        font-size: 10px;
-        font-weight: bold;
-        text-decoration: none;
+/* form styles */
+form ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    }
+    form ul li {
+        margin: 0 0 1.0em 0;
+        }
+    label {
         display: block;
-        height: 25px;
-        background: #c0e783;
-        padding: 5px;
-}
+	    font-family: verdana, arial, helvetica, sans-serif;
+        font-weight: bold;
+        font-size: 75%;
+        color: #444;
+        padding-bottom: 0.25em;
+        }
+        label.inline {
+            display: inline;
+            font-weight: normal;
+            vertical-align: bottom;
+            padding-left: 0.5em;
+            }
 
-div.handle_feedback_button a:hover {
-        background: #dbf5b1;
-}
 
-div.accept_or_reject_terms {
-        margin-left: 10px;
-        overflow: hidden;
-}
+/* main */
+#main {
+	padding: 2.0em 4.0em 1.125em 4.0em;
+    max-width: 980px;
+    }
 
-div.terms {
-        clear: both;
-}
+section {
+    margin: 0 0 2.0em 0;
+    }
 
-/* Content page -specific link panel */
-div.links_panel {
-        background: #e0e6d8;
-        margin-top: 10px;
-        padding: 7px 8px;
-        overflow: hidden;
-        border: 1px solid #000;
-}
+.instructions {
+    margin-bottom: 1.5em;
+    }
 
-div.visibility_checkboxes {
-        margin: 5px;
-}
+/* nav styles */
+nav ul {
+    list-style: none;
+    margin: 0;
+    }
+    nav ul li {
+        float: left;
+        border-right: 1px solid #000;
+        } 
+        nav ul li:last-child {
+            border-width: 0;
+            }
+        nav ul li a {
+            display: block;
+            padding: 0 0.5em;
+            color: #fd8a07 !important;
+            text-decoration: none;
+	        font-family: verdana, arial, helvetica, sans-serif;
+            }
+            nav ul li a:hover { text-decoration: underline; }
 
-/* Pagination links */
+#mainNav {
+    position: absolute;
+    float: left;
+    display: block;
+    top: 1.0em;
+    right: 1.0em;
+    background: #fff;
+    padding: 0.25em;
+    font-size: 80%;
+    }
 
-div.pagination {
-        margin-top: 0px;
+
+/* interactive tester styles */
+#console {
+    border-top: 1px dotted #aaa;
+    padding-top: 1.0em;
+    margin-top: 1.5em;
+    margin-left: 1.5em;
+    }
+    #console p {
+        margin-bottom: 0.5em;
+        }
+    #console .prettyOption,
+    #console .params,
+    #console .exec {
+        margin-left: 6.0em;
+        }
+    #console select { width: 6.0em; }
+    #console input.button,
+    #console input.text {
+        width: 24em;
+        font-family: "Courier new", courier, monospace;
+        font-size: 85%;
+        }
+    #console textarea {
+        width: 24em;
+        height: 6em;
+        font-family: "Courier new", courier, monospace;
+        font-size: 85%;
+        }
+
+#console #responses {
+    margin-top: 1.5em;
+    font-family: "Courier new", courier, monospace;
+    font-size: 85%;
+    }
+    #responses ol {
+        padding-left: 1.5em;
+        margin: 0;
+        }
+    #responses .response {
+        padding: 0.25em 0 0 0;
+        border-top: 1px dotted #ccc;
+        margin-top: 0.5em;
+        }
+        #responses .response p {
+            margin: 2px;
+            }
+        #responses .response .method { font-size: 90%; }
+        #responses .response .url { font-size: 90%; }
+        #responses .response .status {
+            font-size: 90%;
+            font-weight: bold;
+            }
+        #responses .response pre {
+            padding: 0;
+            font-family: "Courier new", courier, monospace;
+            border-width: 0 !important;
+            }
+
+
+
+/* API doc styles */
+.rapidoc h2 {
+    font-family: "Courier new", courier, monospace;
+    font-size: 130%;
+    font-weight: normal;
+    margin: 0 0 0.5em 0;
+    padding-bottom: 0.5em;
+    border-bottom: 2px solid #666;
+    }
+    .rapidoc h2 a {
+        text-decoration: none; 
+        color: #000 !important;
+        }
+        .rapidoc h2 a:hover { text-decoration: underline; }
+
+.rapidoc h3 {
+    margin: 0 0 0.5em 0;
+    color: #fd8a07;
+    padding-bottom: 0.5em;
+    border-bottom: 1px dotted #666;
+    font-family: verdana, arial, helvetica, sans-serif;
+    }
+    .rapidoc h3 .inlineNav {
+        font-weight: normal;
+        font-size: 70%;
         float: right;
-}
+        padding-top: 0.55em;
+        }
+        .rapidoc h3 .inlineNav a {
+            color: #fd8a07;
+            text-decoration: none;
+            }
+            .rapidoc h3 .inlineNav a:hover { text-decoration: underline; }
 
-div.form_container {
-        overflow: hidden;
-        width: 600px;
-}
-
-div.form_left {
-        font-weight: bold;
-        float: left;
-        width: 150px;
-        margin-top: 8px;
-        margin-bottom: 10px;
-}
-
-div.form_right {
-        float: left;
-        margin-top: 5px;
-        margin-bottom: 10px;
-}
-
-div.form_header {
-        font-weight: bold;
-        margin-bottom: 7px;
-}
-
-div.form_field {
-        margin-bottom: 15px;
-}
-
-div.search_form_left {
-        font-weight: bold;
-        float: left;
-        width: 75px;
-        margin-top: 5px;
-        margin-bottom: 10px;
-}
-
-div.search_form_right {
-        float: left;
-        margin-top: 3px;
-        margin-bottom: 7px;
-}
-
-/* Listed objects */
-
-div.listed_object {
-        width: 731px;
-        overflow: hidden;
-}
-
-div.listed_full_width_object {
-        width: 958px;
-        overflow: hidden;
-}
-
-div.listed_object_person_image {
-        float: left;
-        padding: 10px;
-        width: 50px;
-}
-
-div.listed_object_title {
-        font-size: 16px;
-        font-weight: bold;
-        margin-bottom: 13px;
-}
-
-div.listed_object_title a {
-        font-size: 16px;
-        font-weight: bold;
-}
-
-div.listed_object_right {
-        width: 292px;
-        float: left;
-        padding: 10px;
-}
-
-div.listed_object_right_line {
-        overflow: hidden;
-        width: 270px;
-        margin-bottom: 3px;
-}
-
-div.listed_object_right_line_title {
-        font-weight: bold;
-        float: left;
-        width: 155px;
-}
-
-div.listed_object_right_line_content {
-        float: left;
-        width: 115px;
-}
-
-div.pagination_padding {
-        padding-top: 6px;
-}
-
-.deprecated {
-        padding: 5px;
-        border: 2px solid red;
-}
-
-/* COREUI */
-
-#OtaSizzle {
-       position: absolute;
-       left: 46px;
-       top: 8px;
-       width: 288px;
-       height: 135px;
-       z-index: -100;
-       }
-
-#background {
-       position: absolute;
-       left: 108px;
-       top: 115px;
-       width: 540px;
-       height: 610px;
-       z-index: -100;
-       background: url(../images/background.png) no-repeat;
-       }
-
-#navi {
-    text-align: center;
-}
-
-#content {
-    background-color: white;
-    padding: 1em;
-    padding-right: 0; 
-}
-
-div.profile_update_form_left,
-div.profile_update_form_two_columns,
-div.profile_update_form_right,
-div.profile_update_form_center {
-    padding-bottom: 1em;
-}
-
-div.profile_update_form_left {
+.rapidoc h4 {
+    margin: 0 0 0.5em 0;
+    background: #eee;
+    padding: 0.2em 0.5em;
+    border-bottom: 1px solid #aaa;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 85%;
+    }
+.rapidoc section {
+    margin-bottom: 3.5em;
     clear: both;
-    float: left;
-    width: 32%;
-}
+    }
+.rapidoc p {
+    margin: 0 0 1.0em 0;
+    }
+.rapidoc dl {
+    margin: 0 0 0 0.75em;
+    }
+    .rapidoc dl dl {
+        border-left: 1px solid #000;
+        padding-left: 0.75em;
+        }
+    .rapidoc dl dt {
+	    font-family: verdana, arial, helvetica, sans-serif;
+        font-weight: bold;
+        color: #444;
+        font-size: 85%;
+        margin: 0.25em 0 0.25em 0;
+        }
+        .rapidoc dl dt span {
+            border-bottom: 1px solid #000;
+            }
+    .rapidoc dl dd p {
+        margin: 0 0 0.25em 0;
+        font-size: 85%;
+        }
 
-div.profile_update_form_two_columns {
-    float: left;
-    width: 42%;
-}
+.rapidoc .params,
+.rapidoc .access,
+.rapidoc .returns {
+    margin-top: 1.0em;
+    }
+.rapidoc .json {
+    margin-top: 1.0em;
+    }
+    .rapidoc .json pre {
+        font-size: 80%;
+        border-width: 0 !important;
+        }
+.rapidoc .access p {
+    margin: 0 0 0 1.0em;
+    font-size: 85%;
+    }
+    .rapidoc .returns ul li {
+        font-size: 85%;
+        }
 
-div.profile_update_form_right {
-    float: left;
-    width: 22%;
-    text-align: right;
-}
-
-div.profile_update_form_center {
-    float: left;
-    width: 67%;
-}
-
-h3, div.profile_update_form_buttons { 
-    clear:both
-}
-
-div#buttons{
-    margin-left: auto;
-    margin-right: auto;
-    width: 80px;
-}
-
-div#link_button_left{
-    float: left;
-}
-
-div#link_button_right{
+.rapidoc #docNav {
     float: right;
+    font-size: 80%;
+    margin-bottom: 3.5em;
+    }
+    .rapidoc #docNav ul {
+        list-style: none;
+        margin: 0;
+        }
+        .rapidoc #docNav ul li {
+            float: left;
+            border-right: 1px solid #000;
+            } 
+            .rapidoc #docNav ul li:last-child {
+                border-width: 0;
+                }
+            .rapidoc #docNav ul li a {
+	            font-family: verdana, arial, helvetica, sans-serif;
+                display: block;
+                padding: 0 0.5em;
+                color: #fd8a07;
+                text-decoration: none;
+                }
+                .rapidoc #docNav ul li a:hover { text-decoration: underline; }
+
+.rapidoc #subresources {
+    font-size: 90%;
+    }
+    .rapidoc #subresources li {
+        font-family: verdana, arial, helvetica, sans-serif;
+        padding: 2px 0;
+        }
+    .rapidoc #subresources a { text-decoration: none; }
+        .rapidoc #subresources a:hover { text-decoration: underline; }
+
+
+
+/* footer styles */
+footer {
+    background: #efefef;
+    border-top: 2px dotted #ddd;
+    margin: 6.0em 0 0 0;
+    padding: 2.0em 2.0em 1.0em 2.0em;
+    }
+
+    footer .version {
+        text-align: center;
+        font-size: 75%;
+	    font-family: verdana, arial, helvetica, sans-serif;
+        padding: 0.5em;
+        background: #fff;
+        margin-top: 2.5em;
+        }
+
+/* feedback form styles */
+#feedback input {
+    width: 24em;
+    font-size: 85%;
+    }
+#feedback textarea {
+    font-size: 85%;
+    width: 24em;
+    height: 6em;
+    }
+
+
+
+
+
+
+
+/**
+ * Non-semantic helper classes: please define your styles before this section.
+ */
+
+/* For image replacement */
+.ir { display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; }
+
+/* Hide for both screenreaders and browsers:
+   css-discuss.incutio.com/wiki/Screenreader_Visibility */
+.hidden { display: none; visibility: hidden; }
+
+/* Hide only visually, but have it available for screenreaders: by Jon Neal.
+  www.webaim.org/techniques/css/invisiblecontent/  &  j.mp/visuallyhidden */
+.visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+/* Extends the .visuallyhidden class to allow the element to be focusable when navigated to via the keyboard: drupal.org/node/897638 */
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; }
+
+/* Hide visually and from screenreaders, but maintain layout */
+.invisible { visibility: hidden; }
+
+/* The Magnificent Clearfix: Updated to prevent margin-collapsing on child elements.
+   j.mp/bestclearfix */
+.clearfix:before, .clearfix:after { content: "\0020"; display: block; height: 0; overflow: hidden; }
+.clearfix:after { clear: both; }
+/* Fix clearfix: blueprintcss.lighthouseapp.com/projects/15318/tickets/5-extra-margin-padding-bottom-of-page */
+.clearfix { zoom: 1; }
+
+
+
+/**
+ * Media queries for responsive design.
+ *
+ * These follow after primary styles so they will successfully override.
+ */
+
+@media all and (orientation:portrait) {
+  /* Style adjustments for portrait mode goes here */
+
 }
+
+@media all and (orientation:landscape) {
+  /* Style adjustments for landscape mode goes here */
+
+}
+
+/* Grade-A Mobile Browsers (Opera Mobile, Mobile Safari, Android Chrome)
+   consider this: www.cloudfour.com/css-media-query-for-mobile-is-fools-gold/ */
+@media screen and (max-device-width: 480px) {
+
+
+  /* Uncomment if you don't want iOS and WinMobile to mobile-optimize the text for you: j.mp/textsizeadjust */
+  /* html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; } */
+}
+
+
+/**
+ * Print styles.
+ *
+ * Inlined to avoid required HTTP connection: www.phpied.com/delay-loading-your-print-css/
+ */
+@media print {
+  * { background: transparent !important; color: black !important; text-shadow: none !important; filter:none !important;
+  -ms-filter: none !important; } /* Black prints faster: sanbeiji.com/archives/953 */
+  a, a:visited { color: #444 !important; text-decoration: underline; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }  /* Don't show links for images, or javascript/internal links */
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  thead { display: table-header-group; } /* css-discuss.incutio.com/wiki/Printing_Tables */
+  tr, img { page-break-inside: avoid; }
+  @page { margin: 0.5cm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3{ page-break-after: avoid; }
+}
+

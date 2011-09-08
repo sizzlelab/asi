@@ -5,10 +5,10 @@ class ApiController < ApplicationController
   skip_before_filter :log
 
   def api
-    if  ENV['RAILS_ENV'] == "development" && api_changed?
+    if  Rails.env.development? && api_changed?
       system("script/rapidoc/generate")
     end
-    render :action => request.path[1..-1].gsub(/\/$/, "").gsub("doc/", ""), :layout => "doc"
+    render :template => "api/#{request.path[1..-1].gsub(/\/$/, "").gsub("doc/", "")}"
   end
 
   private
@@ -18,6 +18,8 @@ class ApiController < ApplicationController
     b = last_modified("app/views/api")
     if a && b
       return a > b
+    elsif b.nil?
+      return true
     end
     return false
   end

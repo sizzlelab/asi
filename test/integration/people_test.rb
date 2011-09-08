@@ -59,7 +59,7 @@ class PeopleTest < ActionController::IntegrationTest
   end
 
   def test_register_and_validate_email
-    if VALIDATE_EMAILS
+    if Asi::Application.config.VALIDATE_EMAILS
       new_session do |kassi|
         kassi.logs_in_with({:app_name => clients(:one).name, :app_password => "testi"})
         kassi.creates_user_with({:username => "Testimies69", :password => "testi",

@@ -34,7 +34,7 @@ class Person < ActiveRecord::Base
   usesnpguid
 
   attr_reader :password
-  attr_protected :roles, :encrypted_password, :salt, :delta, :guid, :coin_amount
+  attr_protected :roles, :encrypted_password, :salt, :delta, :guid, :coin_amount, :source_installation
 
   has_one :name, :class_name => "PersonName", :dependent => :destroy
   has_one :address, :as => :owner, :dependent => :destroy
@@ -95,7 +95,7 @@ class Person < ActiveRecord::Base
   START_YEAR = 1900
   VALID_DATES = DateTime.new(START_YEAR)..DateTime.now
 
-  validates_length_of STRING_FIELDS, :maximum => DB_STRING_MAX_LENGTH, :allow_nil => true, :allow_blank => true
+  validates_length_of STRING_FIELDS, :maximum => Asi::Application.config.DB_STRING_MAX_LENGTH, :allow_nil => true, :allow_blank => true
   validates_length_of :phone_number, :maximum => 25, :allow_nil => true, :allow_blank => true
 
   validates_inclusion_of :gender,
@@ -157,7 +157,7 @@ class Person < ActiveRecord::Base
                       :allow_nil => true
 
   validates_format_of :email,
-                      :with => /^[A-Z0-9._%-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i,
+                      :with => /^[A-Z0-9._%\-\+\~\/]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i,
                       :message => "is invalid",
                       :allow_blank => true,
                       :allow_nil => true
@@ -223,10 +223,19 @@ class Person < ActiveRecord::Base
     
     return success
   end
-  
-  def to_hash(user=nil, client=nil)
 
-    # if the requested user is not a user of the requesting client service (i.e. no role yet)
+public
+
+  def to_json(client_id=nil, connection=nil, *a)
+    to_hash(client_id, connection, *a).to_json(*a)
+  end
+  
+  def as_json(*a)
+    to_hash
+  end
+
+  def to_hash(user=nil, client=nil)
+    # if the requested user is not a user of the client service (i.e. no role yet)
     # return only minimal hash, without any real details.
     # The reason is that we don't wan't users' details to appear in services they don't possibly
     # even know about.
@@ -247,12 +256,7 @@ class Person < ActiveRecord::Base
       person_hash.merge!({ field => self.send(field) })
     end
 
-
-    if user == self || client.andand.show_email?
-      person_hash.merge!({'email' => email})
-    end
-
-    if user
+    if user and user.class == Person
       person_hash.merge!({'connection' => get_connection_string(user)})
       # if the asker is a friend (or self), include location
       if location && (person_hash['connection'] == ACCEPTED_CONNECTION_STRING || user == self)
@@ -264,32 +268,21 @@ class Person < ActiveRecord::Base
       person_hash.merge!({'role' => role_title(client.id)})
     end
 
-   #Added by Marcos to possibilite the person_hash to use the rules system with the authorize method
-#    logger.debug "HASH in the begging. Complete: #{person_hash.inspect}"
-    # loop trough the Profile_fields and check if the user is authorize
+    # Added by Marcos to possibilite the person_hash to use the rules system with the authorize method
+    # loop trough the Profile_fields and check if the user is authorized
     # to view each field with the method Rule.Authorize.
     # if the user is not able to see will delete this entry from the person_hash
     PROFILE_FIELDS.each do |field|
       if !Rule.authorize?(user, id, "view", field)
-#        logger.debug "Wasnt authorize by the rule"
         person_hash.delete(field)
- #       p "Deleted the filed = "+field
-      else
-  #      p "AUTHORIZED the field "+ field
       end
     end
-#    logger.debug "HASH after pass trough the rules : #{person_hash.inspect}"
-   if user == self || client.andand.show_email?
+
+    if user == self || client.andand.show_email?
       person_hash.merge!({'email' => email})
     end
 
     return person_hash
-  end
-
-public
-
-  def to_json(client_id=nil, connection=nil, *a)
-    to_hash(connection, Client.find_by_id(client_id)).to_json(*a)
   end
 
   def moderator?(client)
@@ -377,8 +370,8 @@ public
   private
 
   #returns a string representing the connection between the user and the asker
-  def get_connection_string(asker)
-    type = Connection.type(asker, self)
+  def get_connection_string(asking_person)
+    type = Connection.type(asking_person, self)
     if type == "accepted"
       type = ACCEPTED_CONNECTION_STRING
     end

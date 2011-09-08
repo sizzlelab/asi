@@ -1,10 +1,9 @@
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 require 'logging_helper'
-require 'json'
 
 class ApplicationController < ActionController::Base
-
+  
   helper :all
   layout 'default'
 
@@ -17,19 +16,15 @@ class ApplicationController < ActionController::Base
   PARAMETERS_NOT_TO_BE_ESCAPED = ["password", "confirm_password", "search", "query"]
   before_filter :escape_parameters
 
-  filter_parameter_logging :password
-
   def index
-    render :layout => "doc"
   end
 
   def doc
-    render :action => request.path[1..-1].gsub(/\/$/, ""), :layout => "doc"
+    render :template => "application/#{request.path[1..-1].gsub(/\/$/, "")}"
   end
 
-  if RAILS_ENV == "test"
+  if Rails.env.test?
     def test
-      render :layout => "doc"
     end
   end
 
@@ -64,8 +59,8 @@ class ApplicationController < ActionController::Base
 
   def escape_parameters
     params.each_pair do |key, value|
-      unless PARAMETERS_NOT_TO_BE_ESCAPED.include? key
-        params[key] = escape_html(value)
+      if PARAMETERS_NOT_TO_BE_ESCAPED.include? key
+        params[key] = value.html_safe
       end
     end
   end
@@ -76,12 +71,12 @@ class ApplicationController < ActionController::Base
       e.application_id    = @client ? @client.id : nil
       e.cos_session_id    = session[:cos_session_id]
       e.ip_address        = request.remote_ip
-      e.action            = controller_class_name + "\#" + action_name
-      e.parameters        = filter_parameters(params).to_json
+      e.action            = controller_name + "\#" + action_name
+      e.parameters        = params.to_json
       e.return_value      = @_response.status
       e.semantic_event_id = params[:event_id]
       e.headers           = request.headers.reject do |*a|
-        a[0].starts_with?("rack") or a[0].starts_with?("action_controller")
+        a[0].starts_with?("rack") or a[0].starts_with?("action_controller") or a[0].starts_with?("action_dispatch")
       end.to_json
     end
   end
@@ -183,23 +178,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  private
-
-  def escape_html(value)
-    return ActionView::Helpers::TagHelper.escape_once(value) if value.class == String
-    return value if value.class != Array && value.class != Hash && value.class != HashWithIndifferentAccess
-
-    if value.class == Array
-      value.collect! do |v|
-        escape_html v
-      end
-    elsif value.class == Hash || value.class == HashWithIndifferentAccess
-      value.each_pair do |k, v|
-        value[k] = escape_html(v)
-      end
-    end
-  end
-
   protected
 
   def log_error(exception)
@@ -207,17 +185,17 @@ class ApplicationController < ActionController::Base
 
     begin
 
-      if RAILS_ENV == "production" && !APP_CONFIG.error_mailer_recipients.blank? 
+      if Rails.env.production? && !APP_CONFIG.error_mailer_recipients.blank? 
         if APP_CONFIG.error_mailer_ignore_routing && exception.kind_of?(ActionController::RoutingError)
           return
         end
-        ErrorMailer.deliver_snapshot(
+        ErrorMailer.snapshot(
           exception,
           clean_backtrace(exception),
           session,
           params,
           request,
-          @user)
+          @user).deliver
       end
     rescue => e
       logger.error(e)

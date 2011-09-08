@@ -25,7 +25,7 @@ class Message < ActiveRecord::Base
 
   validates_presence_of :poster_id
   validates_presence_of :channel_id
-  validate_on_create :associations_must_exist
+  validate :associations_must_exist, :on => :create
 
   # Messages shouldn't be changed but in the future could, so protect some
   attr_readonly :poster_id, :channel_id, :guid, :id
@@ -47,6 +47,14 @@ class Message < ActiveRecord::Base
     set_property :min_infix_len => 1
   end
 
+  def to_json(*a)
+    as_json(*a).to_json(*a)
+  end
+
+  def as_json(*a)
+    to_hash(*a)
+  end
+
   def to_hash(user=nil, client=nil)
     ref_message = nil
     if self.reference_to
@@ -66,10 +74,6 @@ class Message < ActiveRecord::Base
       :updated_at => updated_at,
       :created_at => created_at
     }
-  end
-
-  def to_json(*a)
-    return to_hash.to_json(*a)
   end
 
   def show?(user, client=nil)

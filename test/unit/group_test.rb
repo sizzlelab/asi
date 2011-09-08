@@ -200,9 +200,9 @@ class GroupTest < ActiveSupport::TestCase
   end
 
   def test_admin_rights_restoration
-    group = Factory.create_group
-    member = Factory.create_person
-    newer_member = Factory.create_person
+    group = Factory(:group)
+    member = Factory(:person)
+    newer_member = Factory(:person)
 
     creator = group.creator
 

@@ -5,10 +5,11 @@ class DocTest < ActionController::IntegrationTest
   def test_presence
     system("script/rapidoc/generate > /dev/null")
     missing = []
-    ActionController::Routing::Routes.routes.each do |r|
-      path = r.segments.inject("") { |str,s| str << s.to_s }
-      if path.start_with? "/doc"
-        get path
+    Rails.application.routes.routes.each do |r|
+      #path = r.segment_keys.inject("") { |str,s| str << s.to_s }
+      path = r.path.gsub(/\(\.:format\)/, '')
+      if path.start_with? "/doc" and !path.include? "*"
+        get path, :format => :html
         assert_response :success, "If response is 500, check /app/helpers/api_helper.rb for correct http_status definitions."
         if @response.body =~ /Documentation missing/
           missing << path

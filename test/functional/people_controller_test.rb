@@ -17,10 +17,31 @@ class PeopleControllerTest < ActionController::TestCase
   end
 
   def test_index
+    max_limit = 100
+    # actual max_limit can be found from people_controller.rb, use the same number here.
+
+    for i in (1..(max_limit*1.5).to_i)
+      Factory(:person)
+    end
     get :index, { :format => 'json' }, { :cos_session_id => sessions(:session1).id }
     assert_response :success
     json = JSON.parse(@response.body)
-    assert_equal Person.count, json["entry"].size
+    assert_equal max_limit, json["entry"].size
+    
+    get :index, { :page => 2, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert json["entry"].size <= max_limit
+    
+    get :index, { :per_page => max_limit*2, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal max_limit, json["entry"].size
+    
+    get :index, { :per_page => 10, :format => 'json' }, { :cos_session_id => sessions(:session1).id }
+    assert_response :success
+    json = JSON.parse(@response.body)
+    assert_equal 10, json["entry"].size
   end
 
   def test_show
@@ -56,7 +77,7 @@ class PeopleControllerTest < ActionController::TestCase
     user = assigns["person"]
     assert_not_nil user
     json = JSON.parse(@response.body)
-    if VALIDATE_EMAILS
+    if Asi::Application.config.VALIDATE_EMAILS
       assert_equal(1, @emails.length)
       assert_not_nil(user.pending_validation)
       assert_equal(user.id, user.pending_validation.person_id)
@@ -85,6 +106,7 @@ class PeopleControllerTest < ActionController::TestCase
     created_user = Person.find_by_username("newbie")
     assert_equal created_user.username, user.username
     assert_equal created_user.consent, user.consent
+    assert_not_nil created_user.source_installation
   end
 
   def test_create_association
@@ -135,7 +157,7 @@ class PeopleControllerTest < ActionController::TestCase
 
     mail = ActionMailer::Base.deliveries.first
 
-    id = mail.body[/id=(.*)/, 1]
+    id = mail.body.decoded[/id=(.*)/, 1]
 
     get :reset_password, { :format => 'html', :id => id },
                          { :cos_session_id => sessions(:client_only_session).id}
@@ -165,13 +187,13 @@ class PeopleControllerTest < ActionController::TestCase
     assert !ActionMailer::Base.deliveries.empty?
 
     mail = ActionMailer::Base.deliveries.first
-    id = mail.body[/id=(.*)/, 1]
+    id = mail.body.decoded[/id=(.*)/, 1]
 
     { "password" => "pass" , "o" => "o", "" => "" }.each do |password, confirm_password|
       post :change_password, { :format => 'html', :id => id,
                                :password => password, :confirm_password => confirm_password},
                              { :cos_session_id => sessions(:client_only_session).id}
-      assert_redirected_to("people/reset_password?id=#{id}",
+      assert_redirected_to("/people/reset_password?id=#{id}",
                            "Testing invalid password combinations. Password: #{password}, Confirmation: #{confirm_password}")
     end
   end
@@ -227,8 +249,6 @@ class PeopleControllerTest < ActionController::TestCase
     assert_response :bad_request
     #assert_not_equal("Joeboyloloasdugesknfdsfuesfsdfnsudkfsndfnusaa", assigns["person"].name.given_name)
     json = JSON.parse(@response.body)
-   # puts json
-
 
     # try to update with too long given name
     put :update, {
@@ -368,7 +388,9 @@ class PeopleControllerTest < ActionController::TestCase
     assert_not_nil assigns["person"]
     assert_not_nil assigns["friends"]
     assert_equal(assigns["person"].contacts, assigns["friends"])
+
     json = JSON.parse(@response.body)
+    assert !json["entry"].empty?
     assert_equal people(:invalid_person).username, json["entry"][0]["username"]
     assert_equal people(:friend).username, json["entry"][1]["username"]
 
@@ -622,7 +644,6 @@ class PeopleControllerTest < ActionController::TestCase
     get :show, { :user_id => people(:contact).guid, :format => "json"}
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    puts json.inspect
     assert_equal people(:contact).email, json["entry"]["email"]
     
     # Should not show profile details when role does not exist for this client
@@ -630,7 +651,6 @@ class PeopleControllerTest < ActionController::TestCase
     get :show, { :user_id => people(:contact).guid, :format => "json"}
     assert_response :success, @response.body
     json = JSON.parse(@response.body)
-    puts json.inspect
     assert_nil(json["entry"]["email"])
     assert_nil(json["entry"]["name"])
     assert_nil(json["entry"]["address"])

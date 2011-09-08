@@ -6,7 +6,7 @@ class Condition < ActiveRecord::Base
   validates_presence_of [:condition_type, :condition_value]
 
   def Condition.get_or_create(options)
-    condition = Condition.find(:first, :conditions => options)
+    condition = Condition.where(options).first
     if not condition
       condition = Condition.new(options)
       if condition.save

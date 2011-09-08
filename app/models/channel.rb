@@ -30,10 +30,10 @@ class Channel < ActiveRecord::Base
   attr_accessible :name, :description, :channel_type, :hidden, :owner, :creator_app
   attr_readonly :channel_type, :creator_app, :hidden
 
-  named_scope :not_hidden, :conditions => { :hidden => 0 }
+  scope :not_hidden, where(:hidden => 0)
 
   after_create :subscribe
-  before_validation_on_create :set_default_type
+  before_validation(:on => :create){ set_default_type }
 
   validates_inclusion_of :channel_type, :in => %w( public friend group private), :message => "must be public, friend group or private."
   validates_presence_of :owner_id
@@ -93,9 +93,18 @@ class Channel < ActiveRecord::Base
     return false
   end
 
-  #user and client parameters are required for sphinx
+  def to_json(*a)
+    as_json(*a).to_json(*a)
+  end
+
+  def as_json(*a)
+    to_hash(*a)
+  end
+
+  # user and client parameters are required for sphinx
   def to_hash(user=nil, client=nil)
-    hash = { :id => guid,
+    hash = {
+      :id => guid,
       :name => name,
       :description => description,
       :owner_id => owner.guid,
@@ -117,11 +126,6 @@ class Channel < ActiveRecord::Base
     end
 
     hash
-  end
-
-
-  def to_json(*a)
-    return to_hash.to_json
   end
 
   def touch

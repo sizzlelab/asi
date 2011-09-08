@@ -2,7 +2,7 @@
 <p> Please, enter your personal info. After filling in your personal info, you will be redicted back to the originating service. Fill in at least the fields marked with a star (*).</p>
 <% end %>
 
-<% form_for :person, @person, :url => { :controller => "profile", :action => "create"}, :html => {:multipart => true} do |f| %>
+<%= form_for :person, @person, :url => { :controller => "profile", :action => "create"}, :html => {:multipart => true} do |f| %>
 <%= render :partial => 'form', :locals => { :f => f } %>
 <div class="profile_update_form_buttons">
   <%= submit_tag "Submit" %>

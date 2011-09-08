@@ -14,7 +14,7 @@
 
 <%
 def fixture_data(name)
-  render_binary("#{RAILS_ROOT}/test/fixtures/#{name}")
+  render_binary("#{Rails.root.to_s}/test/fixtures/#{name}")
 end
 
 def render_binary(filename)

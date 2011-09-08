@@ -13,11 +13,19 @@ class TextItem < ActiveRecord::Base
   usesguid
 
   def to_json(*a)
+    as_json(*a).to_json(*a)
+  end
+
+  def as_json(*a)
+    to_hash(*a)
+  end
+
+  def to_hash(*a)
     {
       :id => id,
       :type => "text/plain",
       :value => text
-   }.to_json(*a)
+    }
   end
 
 end

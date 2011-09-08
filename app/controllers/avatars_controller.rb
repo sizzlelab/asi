@@ -2,39 +2,36 @@ class AvatarsController < ApplicationController
 
   cache_sweeper :people_sweeper, :only => [:update_avatar]
 
-=begin rapidoc
-return_code:: 200
-description:: Gets the full-sized avatar image of the user. If an avatar has not been set, a default avatar is returned. Maximum width is 600px and maximum height 800px.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Gets the full-sized avatar image of the user. If an avatar has not been set, a default avatar is returned.
+  #               Maximum width is 600px and maximum height 800px.
   def show
     fetch_avatar("full")
   end
 
-=begin rapidoc
-return_code:: 200
-description:: Gets a thumbnail of the avatar of the user. Thumbnail dimensions are 50x50.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Gets a thumbnail of the avatar of the user. Thumbnail dimensions are 50x50.
   def show_small_thumbnail
     expires_in 60.minutes, :public => true
     fetch_avatar("small_thumb")
   end
 
-=begin rapidoc
-return_code:: 200
-description:: Gets a thumbnail of the avatar of the user. Maximum thumbnail dimensions are 350x200.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Gets a thumbnail of the avatar of the user. Maximum thumbnail dimensions are 350x200.
   def show_large_thumbnail
     fetch_avatar("large_thumb")
   end
 
-=begin rapidoc
-return_code:: 200
-return_code:: 400 - The avatar is of an unsupported type. Supported types are <tt>image/jpeg</tt>, <tt>image/png</tt> and <tt>image/gif</tt>.
-
-param:: file - The avatar picture file (as a multipart file upload).
-
-description:: Replaces this user's avatar. Each user is given an implicit default avatar at creation.<p>The semantics of this method are closer to that of <tt>PUT</tt> than <tt>POST</tt>. <tt>POST</tt> is used here due to the difficulty of multipart file uploads with the <tt>PUT</tt> method in some HTTP client libraries.
-=end
+  ##
+  # return_code:: 200 - OK
+  # return_code:: 400 - The avatar is of an unsupported type. Supported types are <tt>image/jpeg</tt>, <tt>image/png</tt> and <tt>image/gif</tt>.
+  # description:: Replaces this user's avatar. Each user is given an implicit default avatar at creation.<p>The semantics of this method are closer to that of <tt>PUT</tt> than <tt>POST</tt>. <tt>POST</tt> is used here due to the difficulty of multipart file uploads with the <tt>PUT</tt> method in some HTTP client libraries.
+  # 
+  # params::
+  #   file:: The avatar picture file (as a multipart file upload).
   def update
 
     if ! ensure_same_as_logged_person(params['user_id'])
@@ -61,11 +58,9 @@ description:: Replaces this user's avatar. Each user is given an implicit defaul
     end
   end
 
-=begin rapidoc
-return_code:: 200
-
-description:: Deletes this user's avatar. <tt>GET</tt> will hereon return the default avatar.
-=end
+  ##
+  # return_code:: 200 - OK
+  # description:: Deletes this user's avatar. <tt>GET</tt> will hereon return the default avatar.
   def delete
     @person = Person.find_by_guid(params['user_id'])
     if ! @person
@@ -115,7 +110,7 @@ private
       service_name = "cos"
     end
 
-    full_filename = "#{RAILS_ROOT}/public/images/#{Image::DEFAULT_AVATAR_IMAGES[service_name][image_type]}"
+    full_filename = "#{Rails.root}/public/images/#{Image::DEFAULT_AVATAR_IMAGES[service_name][image_type]}"
 
     @data = File.open(full_filename,'rb').read
     @filename = "default-avatar.jpg"

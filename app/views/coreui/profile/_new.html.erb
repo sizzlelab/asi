@@ -1,4 +1,4 @@
-<% form_for @person, :url => { :controller => "profile", :action => "create"}, :html => {:multipart => true} do |f| %>
+<%= form_for @person, :url => { :controller => "profile", :action => "create"}, :html => {:multipart => true} do |f| %>
 
   <h3>User account</h3>
 
@@ -52,7 +52,7 @@
   
   <h3>Personal information</h3>
   
-<% f.fields_for :name, @person.name do |name_fields| %>
+<%= f.fields_for :name, @person.name do |name_fields| %>
   <div class="profile_info_field">  
     <div class="profile_update_form_left">
       Given name:
@@ -143,7 +143,7 @@
 
 <h3>Address and location</h3>
 
-<% f.fields_for :address, @person.address do |address_fields| %>
+<%= f.fields_for :address, @person.address do |address_fields| %>
   <div class="profile_info_field">  
     <div class="profile_update_form_left">
       Street address:

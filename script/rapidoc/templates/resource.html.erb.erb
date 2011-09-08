@@ -1,59 +1,81 @@
-<%= DocUtil.print_erb "doc_title '#{@title}'", true if @path%>
-<%= @description %>
-<% @documentation.each_pair do |method, comment| %>
-
-  <a name="<%= method.to_s.upcase %>"><h3><%= method.to_s.upcase %></h3></a>
-
-  <%if comment%>
-    <p><%= comment.description %></p>
-
-    <% unless comment.parameters.empty? %>
-      <p><strong>Parameters:</strong></p>
-      <table>
-        <% comment.parameters.each do |p| %><%=p.to_table %><% end %>
-      </table>
+<div class="rapidoc">
+  <h2 id="top"><a href="/doc#reference">ASI</a><%= DocUtil.render_breadcrumb(@path, @breadcrumb_hash) %></h2>
+  <nav id="docNav">
+    <ul>
+    <% ['GET', 'POST', 'PUT', 'DELETE'].each do |verb| %>
+      <% if @verbs[verb] %>
+        <li><a href="#<%= verb %>"><%= verb %></a></li>
+      <% end %>
     <% end %>
-
-    <% unless comment.access == nil %>
-    <p><strong>Access:</strong> <%= comment.access %> </p>
+    <% unless @subresources.empty? %>
+      <li><a href="#subresources">SUBRESOURCES</a></li>
     <% end %>
+    </ul>
+  </nav>
 
-    <% unless comment.return_codes.empty? %>
-<table>
-<tr>
-<td rowspan="<%= comment.return_codes.size %>" style="vertical-align: top; padding-right: 1em">
-    <p><strong>Returns:</strong></p>
-</td>
-    <th style="padding-top: 0.3em"><%= DocUtil.print_erb "\"#{comment.return_codes[0][0].strip + "&nbsp"};\" + http_status( #{comment.return_codes[0][0]}.to_s )", true %></th>
-    <td><%= comment.return_codes[0][1] %></td>
-</tr>
+  <% ['GET', 'POST', 'PUT', 'DELETE'].each do |verb| %>
+    <% if @verbs[verb] %>
+      <section id="<%= verb %>">
+        <h3>
+          <%= verb %>
+          <span class="inlineNav"><a href="#top">^top</a></span>
+        </h3>
+        <% unless @verbs[verb][:comment][:description].empty? %>
+          <div class="description">
+            <% unless @verbs[verb][:comment][:description].empty? %>
+              <%= DocUtil.render_array_to_p(@verbs[verb][:comment][:description]) %>
+            <% end %>
+          </div>
+        <% end %>
+        
+        <% unless @verbs[verb][:comment][:params].empty? %>
+          <div class="params">
+            <h4>Parameters</h4>
+            <%= DocUtil.render_hash_to_dl(@verbs[verb][:comment][:params]) %>
+          </div>
+        <% end %>
 
+        <% unless @verbs[verb][:comment][:access].empty? %>
+          <div class="access">
+            <h4>Access</h4>
+            <p><%= @verbs[verb][:comment][:access] %></p>
+          </div>
+        <% end %>
 
-<% comment.return_codes[1..-1].each do |r| %>
-  <tr>
-    <th><%= DocUtil.print_erb "\"#{r[0].strip + "&nbsp;"}\" + http_status( #{r[0]}.to_s )", true %></th>
-    <td><%= r[1] %></td>
-  </tr>
-  <%end%>
-</table>
+        <% unless @verbs[verb][:comment][:return_codes].empty? %>
+          <div class="returns">
+            <h4>Returns</h4>
+            <%= DocUtil.render_array_to_ul(@verbs[verb][:comment][:return_codes]) %>
+          </div>
+        <% end %>
+
+        <% unless @verbs[verb][:comment][:json].empty? %>
+          <div class="json">
+            <h4>Response example</h4>
+            <pre class="prettyprint">
+<!-- don't indent this line because of pre tag -->
+<%= DocUtil.pretty_print(@verbs[verb][:comment][:json]) %>
+            </pre>
+          </div>
+        <% end %>
+      </section>
     <% end %>
+  <% end %>
 
-
-    <% unless comment.json == nil %>
-    <p><strong>Response example:</strong><p>
-    <pre><%=DocUtil.pretty_print(comment.json)%></pre>
-<% end %>
-  <%else%>
-    <p> (Documentation missing) </p>
-  <%end%>
-<% end %>
-
-<% unless @childs.empty?%>
-  <h2> Subresources </h2>
-  <ul>
-    <% @childs.each do |c| %>
-      <%= c.subresource_paths_as_ul_items %>
-    <% end %>
-  </ul>
-<% end %>
-
+  <% unless @subresources.empty? %>
+    <section id="subresources">
+      <h3>
+        SUBRESOURCES
+        <span class="inlineNav"><a href="#top">^top</a></span>
+      </h3>
+      <%= DocUtil.render_subresources_to_ul(@subresources, @subresources_index) %>
+    </section>
+  <% end %>
+</div>
+<%= DocUtil.print_erb('javascript_include_tag "jquery.min"', true) %>
+<%= DocUtil.print_erb('javascript_include_tag "prettify"', true) %>
+<script type="text/javascript">
+    $(function() {
+        prettyPrint();
+    })
+</script>

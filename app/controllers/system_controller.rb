@@ -1,8 +1,8 @@
-require 'rake'
-require 'rake/testtask'
-require 'rake/rdoctask'
-require 'tasks/rails'
-require "#{RAILS_ROOT}/vendor/plugins/thinking-sphinx/lib/thinking_sphinx/tasks"
+#require 'rake'
+#require 'rake/testtask'
+#require 'rake/rdoctask'
+#require 'tasks/rails'
+#require "#{Rails.root.to_s}/vendor/plugins/thinking-sphinx/lib/thinking_sphinx/tasks"
 
 class SystemController < ApplicationController
 
@@ -30,13 +30,13 @@ class SystemController < ApplicationController
   private
 
   def ensure_localhost
-    unless local_request? || ENV['RAILS_ENV'] == "test"
+    unless request.local? || Rails.env.test?
       render :status => :forbidden, :template => "system/default"
     end
   end
 
   def rake(task)
-    system "rake #{task} RAILS_ENV=#{ENV['RAILS_ENV']} > /dev/null &"
+    system "rake #{task} RAILS_ENV=#{Rails.env.to_s} > /dev/null &"
   end
 
 end

@@ -27,13 +27,15 @@ class Collection < ActiveRecord::Base
 
   validates_presence_of :client
 
+  after_initialize :do_after_initialize
+
   def initialize(params={})
     handle_user_requested_id_param(params[:id])
     super(params)
   end
 
   # GUID plugin sets its own random id automatically, but if user set an id, use it here
-  def after_initialize
+  def do_after_initialize
     if self.user_set_id
       self.id = self.user_set_id
     end
@@ -170,7 +172,7 @@ class Collection < ActiveRecord::Base
     update_attributes({:updated_at => time, :updated_by => updater})
 
     #Check for parent collections and update them too
-    parent_relations = Ownership.find :all, :conditions => ['item_id = ?', id]
+    parent_relations = Ownership.where(:item_id => id)
     parent_relations.each do |parent_ref|
       parent = parent_ref.parent
       #check that not already updated to avoind loops
@@ -228,7 +230,7 @@ class Collection < ActiveRecord::Base
       if  !(id =~ /^[A-Z0-9_]{8,22}$/i)
         errors.add :id, "is not in valid format. Use only letters, numbers and underscore. Length preferably 22. (min 8)"
       elsif Collection.find_by_id(id)
-        errors.add(:id, "is already taken.")
+        errors.add :id, "is already taken."
       else
         self.user_set_id = id #store id from params to temporary attribute which is used in after_initialize
       end

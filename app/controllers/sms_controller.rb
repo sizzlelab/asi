@@ -1,5 +1,6 @@
 require 'net/http'
 require 'net/https'
+
 class SmsController < ApplicationController
   before_filter :ensure_client_login
   before_filter :ensure_sms_enabled
@@ -13,12 +14,10 @@ class SmsController < ApplicationController
     :only => :index, 
     :render => {:text => '405 HTTP GET required', :status => 405}
   
-=begin rapidoc
-return_code:: 200 - Returns SMSs fetched from pySMSd gateway for the logged in application
-return_code:: 405 - Incorrect HTTP verb, only GET method allowed; OR SMS functionality not enabled
-
-description:: ASI acts as a proxy and gets SMS stored at pySMSd as per the current application's name.
-=end
+  ##
+  # return_code:: 200 - Returns SMSs fetched from pySMSd gateway for the logged in application
+  # return_code:: 405 - Incorrect HTTP verb, only GET method allowed; OR SMS functionality not enabled
+  # description:: ASI acts as a proxy and gets SMS stored at pySMSd as per the current application's name.
   def index
     @client_name = nil
     if session[:cos_session_id]
@@ -43,13 +42,13 @@ description:: ASI acts as a proxy and gets SMS stored at pySMSd as per the curre
     render_json :status => :bad_request, :messages => "No matching application ID was found, cannot proceed to fetch SMS from server." and return
   end
  
-=begin rapidoc
-return_code:: 200 - Message successfully marked as read in pySMSd database
-return_code:: 405 - Incorrect HTTP verb, only PUT method allowed; OR SMS functionality not enabled
-param:: ids - A comma-delimited list of sms ids which to mark as read.
-
-description:: Mark particular message as read at pySMSd. Once marked, messages will not appear in an index query.
-=end
+  ##
+  # return_code:: 200 - Message successfully marked as read in pySMSd database
+  # return_code:: 405 - Incorrect HTTP verb, only PUT method allowed; OR SMS functionality not enabled
+  # description:: Mark particular message as read at pySMSd. Once marked, messages will not appear in an index query.
+  # 
+  # params::
+  #   ids:: A comma-delimited list of sms ids which to mark as read.
   def smsmark
     post_args = { 'ids' => params[:ids], 'name' => APP_CONFIG.pysmsd_app_name, 'password' => APP_CONFIG.pysmsd_app_password }
     http = get_http_connection()
@@ -60,15 +59,15 @@ description:: Mark particular message as read at pySMSd. Once marked, messages w
     render_json :entry => json
   end
 
-=begin rapidoc
-return_code:: 200 - Message successfully sent
-return_code:: 405 - Incorrect HTTP verb, only POST method allowed; OR SMS functionality not enabled
-param:: number - The number to which to send the message.
-param:: text - The text of the message.
-param:: replyto - Optional sms id to which the message is a reply. This has the effect of automatically marking the given message as read.
-
-description:: Send one SMS message.
-=end
+  ##
+  # return_code:: 200 - Message successfully sent
+  # return_code:: 405 - Incorrect HTTP verb, only POST method allowed; OR SMS functionality not enabled
+  # description:: Send one SMS message.
+  #
+  # params::
+  #   number:: The number to which to send the message.
+  #   text:: The text of the message.
+  #   replyto:: Optional sms id to which the message is a reply. This has the effect of automatically marking the given message as read.
   def smssend
     post_args = { 'number' => params[:number], 'text' => params[:text], 'replyto' => params[:replyto], 'name' => APP_CONFIG.pysmsd_app_name, 'password' => APP_CONFIG.pysmsd_app_password }
     http = get_http_connection()
