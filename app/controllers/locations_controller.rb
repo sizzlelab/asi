@@ -62,9 +62,13 @@ class LocationsController < ApplicationController
   ##
   # description:: Clears the location of a user.
   def destroy
+    ui_mode = (@client && @client == Client.find_by_name(APP_CONFIG.coreui_app_name))
     
     user = Person.find_by_guid(params['user_id'])
     user.location.andand.destroy  
+    if ui_mode
+      redirect_to edit_coreui_profile_path(:id => user.id) and return
+    end
     render_json :status => :ok
   end
 

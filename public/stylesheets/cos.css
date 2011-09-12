@@ -508,7 +508,8 @@ nav ul {
     .rapidoc #subresources a { text-decoration: none; }
         .rapidoc #subresources a:hover { text-decoration: underline; }
 
-
+/* coreui styles */
+body.coreui { margin: 2em 4em; }
 
 /* footer styles */
 footer {

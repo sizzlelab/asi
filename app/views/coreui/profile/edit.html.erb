@@ -195,15 +195,13 @@
     <% if l = @person.location %>
     <div class="profile_update_form_two_columns" id="location_data">
       <div class="left_float">
-        <%= "\"#{l.label}\"<br /> at " unless ! l.label %>
+        <%= "#{l.label} at " unless ! l.label %>
         <%= link_to("#{l.latitude}, #{l.longitude}", "http://maps.google.com/maps?q=#{l.latitude}+#{l.longitude}") %>
       </div>
       <div class="right_float">
         <small>(<%= distance_of_time_in_words_to_now(l.updated_at) %> ago)</small>
-        <%= button_to_remote "Clear", 
-          :update => "location_data",
-          :url => { :controller => "/people/@me/@location"  },
-         :method => :delete
+        <%= link_to "Clear", 
+         "/location/#{@person.guid}/clear"
         %>
       </div>
     </div>
