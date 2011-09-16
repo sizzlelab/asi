@@ -1,4 +1,6 @@
 .DS_Store
+*~
+*.swp
 db/*.sqlite3
 db/sphinx
 config/*.sphinx.conf

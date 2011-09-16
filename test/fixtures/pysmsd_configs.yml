@@ -33,7 +33,7 @@ valid_pysmsd_config:
   pysmsd_number: "12345678"
   pysmsd_use_proxy: 0
   pysmsd_proxy_host: nil
-  pysmsd_proxy_port: 0
+  pysmsd_proxy_port: nil
   pysmsd_proxy_username: nil
   pysmsd_proxy_password: nil
   client_id: "acm-TkziJr3z9Tab_ZvnhG"
@@ -76,8 +76,3 @@ invalid_pysmsd_config:
   pysmsd_proxy_password: nil
   client_id: nil
 
-
-
-#
-two: {}
-#  column: value
