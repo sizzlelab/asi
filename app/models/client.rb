@@ -15,10 +15,11 @@ class Client < ActiveRecord::Base
   usesguid
 
   has_many :channels
-
+  has_one  :pysmsd_config
   attr_reader :password
   attr_protected :encrypted_password, :salt, :created_at, :updated_at
-
+#creates a client with default settings
+#  after_create :create_pysmsd_config
   validates_presence_of [:name, :encrypted_password]
   validates_uniqueness_of :name
 
