@@ -21,21 +21,6 @@ default: &default_settings
   # If not needed leave empty
   cas_base_url: ""
   cas_validate_url: ""
-  
-  pysmsd_enabled: false
-  pysmsd_test_application_name: "pysmsd_test"
-  pysmsd_test_application_password: "pysmsd_test_password"
-  pysmsd_app_name: "pysmsd_name"
-  pysmsd_app_password: "pysmsd_secret"
-  pysmsd_host: '0.0.0.0'
-  pysmsd_port: 443
-  pysmsd_use_ssl: true
-  pysmsd_number: '+358123456789'
-  pysmsd_use_proxy: false
-  pysmsd_proxy_host: nil
-  pysmsd_proxy_port: 0
-  pysmsd_proxy_username: nil
-  pysmsd_proxy_password: nil
 
   source_installation: "example_installation_code"
   asi_mail_from_address: "asi@example.com"
@@ -58,3 +43,17 @@ development:
   
 test:
   <<: *default_settings
+  
+  pysmsd_test_enabled: false
+  pysmsd_test_app_name: "pysmsd_name"
+  pysmsd_test_app_password: "pysmsd_secret"
+  pysmsd_test_host: '0.0.0.0'
+  pysmsd_test_port: 443
+  pysmsd_test_use_ssl: true
+  pysmsd_test_number: '+358123456789'
+  pysmsd_test_use_proxy: false
+  pysmsd_test_proxy_host: nil
+  pysmsd_test_proxy_port: 0
+  pysmsd_test_proxy_username: nil
+  pysmsd_test_proxy_password: nil
+

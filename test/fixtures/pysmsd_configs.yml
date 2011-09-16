@@ -1,8 +1,6 @@
   # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 # enabled                   | tinyint(1)   | YES  |     | 0       
-# test_application_name     | varchar(255) | YES  |     | NULL    
-# test_application_password | varchar(255) | YES  |     | NULL    
 # app_name                  | varchar(255) | YES  |     | NULL    
 # app_password              | varchar(255) | YES  |     | NULL    
 # host                      | varchar(255) | YES  |     | NULL    
@@ -23,8 +21,6 @@
 valid_pysmsd_config: 
   id: 1
   enabled: 1
-  test_application_name: "pysmsd_test_application_name"
-  test_application_password: "pysmsd_test_application_password"
   app_name: "pysmsd_app_name"
   app_password: "pysmsd_app_password"
   host: "127.0.0.1"
@@ -36,14 +32,12 @@ valid_pysmsd_config:
   proxy_port: nil
   proxy_username: nil
   proxy_password: nil
-  client_id: "acm-TkziJr3z9Tab_ZvnhG"
+  client_id: "K-acm-TkziJr3z9Tab_ZvnhG"
 
 
 valid_pysmsd_config_with_proxy: 
   id: 2
   enabled: 1
-  test_application_name: "pysmsd_test_application_name"
-  test_application_password: "pysmsd_test_application_password"
   app_name: "pysmsd_app_name"
   app_password: "pysmsd_app_password"
   host: "127.0.0.1"
@@ -58,21 +52,19 @@ valid_pysmsd_config_with_proxy:
   client_id: "1"
 
 
-invalid_pysmsd_config: 
-  id: 3
+test_pysmsd_config: 
+  id: 99
   enabled: 1
-  test_application_name: "pysmsd_test_application_name"
-  test_application_password: "pysmsd_test_application_password"
-  app_name: "pysmsd_app_name"
-  app_password: "pysmsd_app_password"
-  host: nil
-  port: -80
-  use_ssl: 0
-  number: "12345678"
-  use_proxy: 1
-  proxy_host: nil
-  proxy_port: -8080
-  proxy_username: nil
-  proxy_password: nil
-  client_id: nil
+  app_name: "test_pysmsd_app_name"
+  app_password: "test_pysmsd_app_password"
+  host: <%= APP_CONFIG.pysmsd_test_host %>
+  port: <%= APP_CONFIG.pysmsd_test_port %>
+  use_ssl: <%= APP_CONFIG.pysmsd_test_use_ssl %>
+  number: <%= APP_CONFIG.pysmsd_test_number %>
+  use_proxy: <%= APP_CONFIG.pysmsd_test_use_proxy %>
+  proxy_host: <%= APP_CONFIG.pysmsd_test_proxy_host %>
+  proxy_port: <%= APP_CONFIG.pysmsd_test_proxy_port %>
+  proxy_username: <%= APP_CONFIG.pysmsd_test_proxy_username %>
+  proxy_password: <%= APP_CONFIG.pysmsd_test_proxy_password %>
+  client_id: "acm-TkziJr3z9Tab_ZvnhG"
 

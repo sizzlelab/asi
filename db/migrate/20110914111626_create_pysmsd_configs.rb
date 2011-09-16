@@ -2,8 +2,6 @@ class CreatePysmsdConfigs < ActiveRecord::Migration
   def self.up
     create_table :pysmsd_configs, :options => 'ENGINE=InnoDB' do |t|
       t.column :enabled, :boolean, :default=>0
-      t.column :test_application_name, :string, :default=>nil
-      t.column :test_application_password, :string, :default=>nil
       t.column :app_name, :string, :default=> nil
       t.column :app_password, :string, :default=> nil
       t.column :host, :string, :default=> nil
