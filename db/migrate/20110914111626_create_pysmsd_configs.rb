@@ -1,20 +1,20 @@
 class CreatePysmsdConfigs < ActiveRecord::Migration
   def self.up
     create_table :pysmsd_configs, :options => 'ENGINE=InnoDB' do |t|
-      t.column :pysmsd_enabled, :boolean, :default=>0
-      t.column :pysmsd_test_application_name, :string, :default=>nil
-      t.column :pysmsd_test_application_password, :string, :default=>nil
-      t.column :pysmsd_app_name, :string, :default=> nil
-      t.column :pysmsd_app_password, :string, :default=> nil
-      t.column :pysmsd_host, :string, :default=> nil
-      t.column :pysmsd_port, :integer, :default=> nil
-      t.column :pysmsd_use_ssl,:boolean, :default=>1
-      t.column :pysmsd_number, :string, :default=>nil
-      t.column :pysmsd_use_proxy, :boolean, :default=>0
-      t.column :pysmsd_proxy_host, :string, :default=>nil
-      t.column :pysmsd_proxy_port, :integer, :default=>nil
-      t.column :pysmsd_proxy_username, :string, :default=>nil
-      t.column :pysmsd_proxy_password, :string, :default=>nil
+      t.column :enabled, :boolean, :default=>0
+      t.column :test_application_name, :string, :default=>nil
+      t.column :test_application_password, :string, :default=>nil
+      t.column :app_name, :string, :default=> nil
+      t.column :app_password, :string, :default=> nil
+      t.column :host, :string, :default=> nil
+      t.column :port, :integer, :default=> nil
+      t.column :use_ssl,:boolean, :default=>1
+      t.column :number, :string, :default=>nil
+      t.column :use_proxy, :boolean, :default=>0
+      t.column :proxy_host, :string, :default=>nil
+      t.column :proxy_port, :integer, :default=>nil
+      t.column :proxy_username, :string, :default=>nil
+      t.column :proxy_password, :string, :default=>nil
       t.column :client_id, :string
       t.timestamps
       
