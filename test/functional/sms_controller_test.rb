@@ -1,8 +1,15 @@
 require 'test_helper'
 
 class SmsControllerTest < ActionController::TestCase
+  fixtures :sessions
+
+
+  def setup
+    @pysmsd_config = PysmsdConfig.where(:client_id => sessions(:session14).client_id).first
+  end
+
   def test_should_get_index
-    unless APP_CONFIG.pysmsd_enabled
+    unless @pysmsd_config.enabled
       assert(true)
     else
       get :index, {:format => "json" }, { :cos_session_id => sessions(:session14).id } 
@@ -10,10 +17,10 @@ class SmsControllerTest < ActionController::TestCase
     end
   end
   def test_should_send_and_mark_sms
-    unless APP_CONFIG.pysmsd_enabled
+    unless @pysmsd_config.enabled
       assert(true)
     else
-      post :smssend, {:format => "json", :text => 'pysmsd_test test message for functional tests.', :number => APP_CONFIG.pysmsd_number }, { :cos_session_id => sessions(:session14).id }
+      post :smssend, {:format => "json", :text => 'pysmsd_test test message for functional tests.', :number => @pysmsd_config.number }, { :cos_session_id => sessions(:session14).id }
       assert_response :success
 
       sleep 5 # unfortunately quite arbitrary, have to wait for the message to get there first
@@ -29,7 +36,7 @@ class SmsControllerTest < ActionController::TestCase
     end
   end
   def test_invalid_send_sms_methods
-    unless APP_CONFIG.pysmsd_enabled
+    unless @pysmsd_config.enabled
       assert(true)
     else
       [:get, :put, :delete].each do |http_method|
@@ -39,7 +46,7 @@ class SmsControllerTest < ActionController::TestCase
     end
   end
   def test_invalid_index_methods
-    unless APP_CONFIG.pysmsd_enabled
+    unless @pysmsd_config.enabled
       assert(true)
     else
       [:post, :put, :delete].each do |http_method|

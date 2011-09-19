@@ -55,10 +55,10 @@ valid_pysmsd_config_with_proxy:
 test_pysmsd_config: 
   id: 99
   enabled: 1
-  app_name: "test_pysmsd_app_name"
-  app_password: "test_pysmsd_app_password"
   host: <%= APP_CONFIG.pysmsd_test_host %>
   port: <%= APP_CONFIG.pysmsd_test_port %>
+  app_name: <%= APP_CONFIG.pysmsd_test_app_name %>
+  app_password: <%= APP_CONFIG.pysmsd_test_app_password %>
   use_ssl: <%= APP_CONFIG.pysmsd_test_use_ssl %>
   number: <%= APP_CONFIG.pysmsd_test_number %>
   use_proxy: <%= APP_CONFIG.pysmsd_test_use_proxy %>
