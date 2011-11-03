@@ -22,3 +22,5 @@ vendor/plugins/rails_upgrade/
 .rvmrc
 .bundle
 TODO
+
+log/production.log
