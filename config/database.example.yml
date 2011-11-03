@@ -29,4 +29,4 @@ production:
   username: cos
   password: put_your_db_password_here
   host: localhost
-  socket: /var/run/mysqld/mysqld.sock
+  #socket: /var/run/mysqld/mysqld.sock
