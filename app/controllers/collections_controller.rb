@@ -3,9 +3,9 @@ class CollectionsController < ApplicationController
 
   before_filter :verify_client
 
-  before_filter :get_or_not_found, :except => [ :create, :index, :delete_item ]
+  before_filter :get_or_not_found, :except => [ :create, :index, :delete_item, :near ]
 
-  after_filter :update_updated_at_and_by, :except => [ :create, :index, :show, :delete ]
+  after_filter :update_updated_at_and_by, :except => [ :create, :index, :show, :delete, :near ]
 
   ##
   # return_code:: 200 - OK
@@ -52,10 +52,43 @@ class CollectionsController < ApplicationController
   end
 
   ##
+  # return_code:: 200 - OK
+  # return_code:: 400 - Mestadb query failed.
+  # description:: Lists collections near the user
+  #
+  # params::
+  #   limit:: Maximum amount of collections to return (Starting from the nearest)
+  #   tags:: Limit to collections that match this tag
+  def near
+    conditions = { :client_id => @client.id }
+    if params["tags"]
+      conditions.merge!({:tags => params["tags"]})
+    end
+
+    @collections = Collection.where(conditions).order('updated_at DESC')
+    @collections.reject! { |item| ! item.read?(@user, @client) }
+    elements = @collections
+
+    if params[:limit].nil?
+      limit = 50
+    else
+      limit = params[:limit]
+    end
+
+    list = Location.get_near(@user, @client, elements, nil, 100000, limit)
+
+    if list.class != Array
+      render_json list and return
+    end
+    render_json :entry => list and return	
+  end
+
+  ##
   # return_code:: 201 - Created
   # description:: Creates a collection. All parameters are optional.
   # 
   # params::
+  #   location:: 'true' if user location is to be used as this collections location.
   #   collection::
   #     title:: A title describing the collection.
   #     owner_id:: The id of the user owning the collection. If unspecified, the collection will belong to the application (and will be visible to all users).
@@ -75,6 +108,9 @@ class CollectionsController < ApplicationController
         render_json :status => :bad_request, :messages =>  @collection.errors.full_messages and return
       end
 
+      if params[:location]
+        Location.update_object_location(@user, @collection.id)
+      end
       if @user && params[:collection][:owner_id]
         if @collection.indestructible
           render_json :status => :bad_request, :messages => "Cannot set both: owner and indestructible" and return
@@ -134,6 +170,7 @@ class CollectionsController < ApplicationController
       render_json :status => :forbidden and return
     end
     @collection.destroy
+    res = Location.delete_location(@collection.id)
     render_json :entry => @collection.to_hash(@user, @client)
   end
 
@@ -186,6 +223,7 @@ class CollectionsController < ApplicationController
     render_json :status => :forbidden, :messages => "The user is not allowed to delete from this collection." and return if (!collection.delete?(@user, @client))
 
     collection.delete_item(item_id)
+    Location.delete_location(item_id)
     render_json :entry => {} and return
   end
 

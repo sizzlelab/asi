@@ -60,6 +60,11 @@ class Message < ActiveRecord::Base
     if self.reference_to
       ref_message = Message.find_by_id(reference_to).andand.guid
     end
+
+    location = Location.get_list_locations(user, client, guid)
+    unless location.nil?
+      location = JSON.parse(location.body)["geojson"]["features"][0]
+    end
     replies = Message.count(:conditions => { :reference_to => id})
     { :id => guid,
       :title => title,
@@ -72,7 +77,8 @@ class Message < ActiveRecord::Base
       :poster_id => poster.guid,
       :poster_name => poster.name_or_username,
       :updated_at => updated_at,
-      :created_at => created_at
+      :created_at => created_at,
+      :location => location
     }
   end
 

@@ -1,7 +1,7 @@
 class MessagesController < ApplicationController
 
   before_filter :get_channel
-  before_filter :ensure_can_read_channel, :only => [ :index, :create, :show ]
+  before_filter :ensure_can_read_channel, :only => [ :index, :create, :show, :near ]
   before_filter :get_message, :only => [ :delete, :edit, :show, :replies ]
 
   ##
@@ -48,6 +48,7 @@ class MessagesController < ApplicationController
       @messages = Message.all(options)
       size = Message.count(:conditions => options[:conditions])
     end
+    # NOTE: direct render_json doesn't pass @user, @client to models to_hash function.
     render_json :entry => @messages, :size => size and return
   end
 
@@ -58,6 +59,7 @@ class MessagesController < ApplicationController
   # description:: Creates a new message.
   # 
   # params::
+  #   location:: 'true' if user location is to be used as message location.
   #   message::
   #     title:: Message title
   #     body:: Message content. Text only.
@@ -79,6 +81,11 @@ class MessagesController < ApplicationController
       render_json :status => :bad_request,
                   :messages => @message.errors.full_messages and return
     end
+
+    if params[:location]
+        Location.update_object_location(@user, @message.guid)
+    end
+
     render_json :status => :created, :entry => @message and return
   end
 
@@ -89,6 +96,34 @@ class MessagesController < ApplicationController
   # description:: Show message.
   def show
     render_json :entry => @message
+  end
+
+  ##
+  # return_code:: 200 - OK
+  # return_code:: 400 - Mestadb query failed.
+  # description:: Lists messages near the user.
+  #
+  # params::
+  #   limit:: Maximum amount of messaged to return (Starting from the nearest)
+  def near
+    options = {}
+    options[:conditions] = {:channel_id => @channel.id }
+    sort_order = 'DESC'
+    options[:order] = 'updated_at ' + sort_order
+    elements = Message.all(options)
+
+    if params[:limit].nil?
+      limit = 50
+    else
+      limit = params[:limit]
+    end
+
+    list = Location.get_near(@user, @client, elements, nil, 100000, limit)
+    
+    if list.class != Array
+      render_json list and return
+    end
+    render_json :entry => list and return	
   end
 
   ##
@@ -136,9 +171,11 @@ class MessagesController < ApplicationController
   def delete
     if ensure_same_as_logged_person(@message.poster.guid)
       @message.delete
+      res = Location.delete_location(@message.id)
       render :status => :ok and return
     elsif ensure_same_as_logged_person(@channel.owner.guid)
       @message.delete
+      res = Location.delete_location(@message.id)
       render :status => :ok and return
     end
     render :status => :forbidden and return

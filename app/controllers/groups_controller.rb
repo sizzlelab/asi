@@ -250,6 +250,31 @@ class GroupsController < ApplicationController
 
   ##
   # return_code:: 200 - OK
+  # return_code:: 400 - Mestadb query failed.
+  # description:: Lists group members near the user.
+  #
+  # params::
+  #   limit:: Maximum amount of members to return (Starting from the nearest)
+  def get_near_members
+    @group = Group.find(params[:group_id])
+    elements = @group.members
+    
+    if params[:limit].nil?
+      limit = 50
+    else
+      limit = params[:limit]
+    end
+
+    list = Location.get_near(@user, @client, elements, nil, 100000, limit)
+
+    if list.class != Array
+      render_json list and return
+    end
+    render_json :entry => list and return	
+  end
+
+  ##
+  # return_code:: 200 - OK
   # description:: Changes the membership status. User's admin status in group can be changed. Also, pending membership requests can be accepted. User's own admin status cannot be changed, changing of admin status must be done by different group admin.
   #
   # params::

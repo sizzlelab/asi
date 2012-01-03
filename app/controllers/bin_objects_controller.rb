@@ -37,6 +37,32 @@ class BinObjectsController < ApplicationController
     size = BinObject.count(:conditions => options[:conditions])
     render_json :entry => @bin_objects, :size => size and return
   end
+  
+  ##
+  # return_code:: 200
+  # return_code:: 400 - Mestadb query failed.
+  # description:: List nearby binary objects posted by currently logged in user.
+  #
+  # params::
+  #   limit:: Maximum amount of objecto to return (Starting from the nearest)
+  def near
+    options = {}
+    options[:conditions] = {:poster_id => @user.id }
+    elements = BinObject.all(options)
+
+    if params[:limit].nil?
+      limit = 50
+    else
+      limit = params[:limit]
+    end
+
+    list = Location.get_near(@user, @client, elements, nil, 100000, limit)
+    
+    if list.class != Array
+      render_json list and return
+    end
+    render_json :entry => list and return	
+  end
 
   ##
   # return_code:: 200 - Returns binary object, metadata only.
@@ -79,6 +105,7 @@ class BinObjectsController < ApplicationController
   #     data:: Binary object data payload.
   #     content_type:: Binary object's content type.
   #     orig_name:: The original filename (if any) of the binary object.
+  #     location:: 'true' if user location is to be used as object location.
   def create
     unless params[:binobject]
       render_json :status => :bad_request and return
@@ -90,6 +117,18 @@ class BinObjectsController < ApplicationController
       render_json :status => :bad_request,
                   :messages => @bin_object.errors.full_messages and return
     end
+    # NOTE: Location of the object is added only if the user has updated his location within 1 hour
+    # TODO: Maybe we should allow custom locations in order to upload pictures based on metadata for wxample?
+    if params[:binobject][:location]
+      res = Location.get_list_locations(@user,@client,@user.guid)
+      unless res.nil?
+        @location = ActiveSupport::JSON.decode(res.body)["geojson"]["features"][0]
+        if Time.parse(@location["properties"]["updated"]) > 1.hour.ago.utc
+          res = Location.update_location(@message.guid, @location["geometry"]["coordinates"][1], @location["geometry"]["coordinates"][0], @location["properties"]["name"])
+        end
+      end
+    end
+
     render_json :status => :created, :entry => @bin_object and return
   end
 
@@ -121,6 +160,7 @@ class BinObjectsController < ApplicationController
   def delete
     if ensure_same_as_logged_person(@bin_object.poster.guid)
       @bin_object.delete
+      res = Location.delete_location(@bin_object.guid)
       render :status => :ok and return
     end
     render :status => :forbidden and return

@@ -32,6 +32,8 @@ Asi::Application.routes.draw do
   match '/appdata/:app_id/@collections', :to => 'collections#index', :via => :get, :format => 'json'
   match '/appdata/:app_id/@collections', :to => 'collections#create', :via => :post, :format => 'json'
 
+  match '/appdata/:app_id/@collections/near', :to => 'collections#near', :via => :get, :format => 'json'
+
   match '/appdata/:app_id/@collections/:id', :to => 'collections#show', :via => :get, :format => 'json'
   match '/appdata/:app_id/@collections/:id', :to => 'collections#delete', :via => :delete, :format => 'json'
   match '/appdata/:app_id/@collections/:id', :to => 'collections#add', :via => :post, :format => 'json'
@@ -61,6 +63,8 @@ Asi::Application.routes.draw do
 
   match '/people/:user_id/@friends', :to => 'people#get_friends', :via => :get, :format => 'json'
   match '/people/:user_id/@friends', :to => 'people#add_friend', :via => :post, :format => 'json'
+
+  match '/people/:user_id/@friends/near', :to => 'people#get_near_friends', :via => :get, :format => 'json'
 
   match '/people/:user_id/@pending_friend_requests', :to => 'people#pending_friend_requests', :via => :get, :format => 'json'
 
@@ -105,6 +109,7 @@ Asi::Application.routes.draw do
   match '/groups/:group_id', :to => 'groups#update', :via => :put, :format => 'json'
 
   match '/groups/:group_id/@members', :to => 'groups#get_members', :via => :get, :format => 'json'
+  match '/groups/:group_id/@members/near', :to => 'groups#get_near_members', :via => :get, :format => 'json'
 
   # New version
   match '/groups/@public/:group_id', :to => 'groups#show', :via => :get, :format => 'json'
@@ -154,6 +159,8 @@ Asi::Application.routes.draw do
 
   match '/channels/:channel_id/@messages', :to => 'messages#index', :via => :get, :format => 'json'
   match '/channels/:channel_id/@messages', :to => 'messages#create', :via => :post, :format => 'json'
+
+  match '/channels/:channel_id/@messages/near', :to => 'messages#near', :via => :get, :format => 'json'
 
   match '/channels/:channel_id/@messages/:msg_id', :to => 'messages#show', :via => :get, :format => 'json'
   match '/channels/:channel_id/@messages/:msg_id', :to => 'messages#delete', :via => :delete, :format => 'json'

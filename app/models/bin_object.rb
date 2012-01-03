@@ -33,6 +33,10 @@ class BinObject < ActiveRecord::Base
   end
 
   def to_hash(*a)
+    location = Location.get_list_locations(user, client, guid)
+    unless location.nil?
+      location = JSON.parse(location.body)["geojson"]["features"][0]
+    end
     {
       :id => guid,
       :name => name,
@@ -41,7 +45,8 @@ class BinObject < ActiveRecord::Base
       :poster_id => poster.guid,
       :poster_name => poster.name_or_username,
       :updated_at => updated_at,
-      :created_at => created_at
+      :created_at => created_at,
+      :location => location 
     }
   end
 

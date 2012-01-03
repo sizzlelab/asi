@@ -68,6 +68,10 @@ class Collection < ActiveRecord::Base
 
   # Returns a hash containing the basic info of the collection. Used for info_hash and coplete JSON
   def basic_hash(user, client)
+    location = Location.get_list_locations(user, client, id)
+    unless location.nil?
+      location = JSON.parse(location.body)["geojson"]["features"][0]
+    end
     basic_hash = {
       :id => id,
       :title => title,
@@ -78,7 +82,8 @@ class Collection < ActiveRecord::Base
       :updated_at => updated_at.utc,
       :updated_by => updated_by,
       :read_only => read_only,
-      :indestructible => indestructible
+      :indestructible => indestructible,
+      :location => location
     }
     updated_by_name = ""
     if ! updated_by.nil?

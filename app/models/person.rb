@@ -258,10 +258,11 @@ public
 
     if user and user.class == Person
       person_hash.merge!({'connection' => get_connection_string(user)})
-      # if the asker is a friend (or self), include location
-      if location && (person_hash['connection'] == ACCEPTED_CONNECTION_STRING || user == self)
-        person_hash.merge!({:location => location})
+      location = Location.get_list_locations(user, client, guid)
+      unless location.nil?
+        location = JSON.parse(location.body)["geojson"]["features"][0]
       end
+      person_hash.merge!({:location => location})
     end
 
     if client

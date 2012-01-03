@@ -8,21 +8,21 @@ class LocationsController < ApplicationController
 
   ##
   # return_code:: 200
-  # json:: { :entry => Factory.build(:location) }
+  # json:: { "entry" => { "guid" => "tmocBoArC993ONurh", "type" => "Feature", "geometry" => { "coordinates" => [50.0122, 60.22359], "type" => "Point"}, "Properties" => { "name" => "Alepa", "updated" => "20111002T170223" } } }
   # description:: Returns this person's location.
   def get
+  # json:: { :entry => Factory.build(:location) }
     @person = Person.find_by_guid(params['user_id'])
     unless @person
-      render_json :status => 404, :messages => "Person not found"
+      render_json :status => 404, :messages => "Person not found" and return
     end
 
-    @location = @person.location
-    if ! @location || !Rule.authorize?(@user, @person.id, "view", "location")
-      #if location is not set, return just nils
-      @location = Location.new
-      @location.updated_at = nil
+    location = Location.get_list_locations(@user, @client, @person.guid)
+    unless location.nil?
+      location = JSON.parse(location.body)["geojson"]["features"][0]
     end
-    render_json :entry => @location
+    render_json :status => 401, :entry => Array.new and return if location.nil?
+    render_json :entry => location
   end
 
   ##
@@ -34,28 +34,29 @@ class LocationsController < ApplicationController
   #     latitude:: Latitude coordinates in Decimal Degree format
   #     longitude:: Longitude coordinate sin Decimal Degree format
   #     label:: Text label given to current location
-  #     accuracy:: Accuracy of the location
   def update
+    # XXX: "If only some of the fields are updated, rest will be set to null.", not anymore?
+    # NOTE: Accuracy is not used anymore:      accuracy:: Accuracy of the location
     user_id = params['user_id'] || @role.person.guid unless @person
 
     if !user_id
       user_id = @person.guid
     end
 
-    user = Person.find_by_guid(user_id)
-
-    @location = user.location
-
-    if ! @location
-      @location = Location.new(:person => user)
-      @location.save
-    end
-
-    if ! @location.update_attributes(params[:location])
+    if params[:location][:latitude].nil? || params[:location][:longitude].nil?
       render_json :status  => 406, :json => "Problem with parameters.".to_json and  return
-      #TODO return more info about which parameter went wrong
     end
 
+    # user = Person.find_by_guid(user_id)
+    # NOTE: not used
+
+    res = Location.update_location(user_id, params[:location][:latitude], params[:location][:longitude], params[:location][:label])
+
+#    # Mestadb queries can also be posted as json data..
+#    data =  ActiveSupport::JSON.encode({'operation' => 'entity_post', 'guid' => user_id, 'lat' => @location.latitude, 'lon' => @location.longitude})
+#    res = Net::HTTP.post_form(URI.parse("http://#{APP_CONFIG.mestadb_host}:#{APP_CONFIG.mestadb_port}/api/"),{'data' => data, 'operation' => 'entity_post'})
+
+    render_json :status => :bad_request, :messages => "MestaDB returned code #{res.code}" and return if res.code != "200"
     render_json :status => :ok
   end
 
@@ -65,10 +66,13 @@ class LocationsController < ApplicationController
     ui_mode = (@client && @client == Client.find_by_name(APP_CONFIG.coreui_app_name))
     
     user = Person.find_by_guid(params['user_id'])
-    user.location.andand.destroy  
+    res = Location.delete_location(user.guid)
+
     if ui_mode
       redirect_to edit_coreui_profile_path(:id => user.id) and return
     end
+
+    render_json :status => 400 if res.nil?
     render_json :status => :ok
   end
 

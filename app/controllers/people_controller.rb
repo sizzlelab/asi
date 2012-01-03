@@ -186,6 +186,7 @@ class PeopleController < ApplicationController
       render_json :status => :forbidden and return
     end
     @person.destroy
+    res = Location.delete_location(@person.guid)
     @application_session.destroy
     session[:cos_session_id] = nil
     render_json :status => :ok
@@ -321,6 +322,34 @@ class PeopleController < ApplicationController
     @friends.filter_paginate!(params[:per_page], params[:page]){true}
     @friends.collect! { |p| p.to_hash(@user, @client)}
     render_json :entry => @friends, :size => @friends.count_available and return
+  end
+
+  ##
+  # return_code:: 200 - OK
+  # return_code:: 400 - Mestadb query failed.
+  # description:: Lists persons friends near the current user.
+  #
+  # params::
+  #   limit:: Maximum amount of friends to return (Starting from the nearest)
+  def get_near_friends
+    # XXX: at the moment it shows @persons friends that are near the _current user_
+    #      as long as you're only allowed to view locations of people connected to you,
+    #      this allows lookup for nearby common friends
+    @person = Person.find_by_guid(params['user_id'])
+    elements = @person.contacts
+
+    if params[:limit].nil?
+      limit = 50
+    else
+      limit = params[:limit]
+    end
+
+    list = Location.get_near(@user, @client, elements, nil, 100000, limit)
+    
+    if list.class != Array
+      render_json list and return
+    end
+    render_json :entry => list and return	
   end
 
   ##
